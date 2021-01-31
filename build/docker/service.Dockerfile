@@ -22,10 +22,14 @@ COPY ./pkg ${RODS_PATH}/pkg
 
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/gocache \
-    go mod vendor && go build -v -o /rods ./cmd/main.go
+    go mod vendor \
+    && go build -v -o /rods ./cmd/main.go
 
 FROM scratch
 
-COPY --from=builder /rods /rods
+WORKDIR /
 
-CMD ["/rods"]
+COPY --from=builder /rods /rods
+COPY ./configs/default.yaml /rods.yaml
+
+ENTRYPOINT ["/rods"]
