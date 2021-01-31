@@ -1,0 +1,9 @@
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.go]
+indent_style = tab
+
+[*.md]
+indent_style = tab
