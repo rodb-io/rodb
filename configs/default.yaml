@@ -1,1 +1,66 @@
-test: "Hello World!"
+sources:
+  filesystem:
+    defaultSource:
+      path: ./dummy.csv
+inputs:
+  csv:
+    defaultInput:
+      source: defaultSource
+      ignoreFirstRow: true
+      columns:
+        - name: id
+          type: integer
+          ignoreCharacters: ", .€$"
+        - name: name
+          type: string
+        - name: number
+          type: float
+          decimalSeparator: "."
+          ignoreCharacters: ", "
+        - name: bool
+          type: boolean
+          trueValues: ["true", "1", "yes", "TRUE", "YES"]
+          falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+indexes:
+  memoryMapUnique:
+    defaultIndexId:
+      input: defaultInput
+      column: id
+  memoryMapMultiple:
+    defaultIndexName:
+      input: defaultInput
+      column: name
+services:
+  http:
+    defaultService:
+      port: 80
+outputs:
+  graphql:
+    defaultGraphqlOutput:
+      service: defaultService
+      endpoint: "/"
+      # TODO configure
+  jsonArray:
+    defaultJsonArrayOutput:
+      service: defaultService
+      endpoint: "/dummies"
+      limit:
+        default: 100
+        max: 1000
+        param: "limit"
+      offset:
+        param: "offset"
+      search:
+        - param: "id"
+          index: defaultIndexId
+        - param: "name"
+          index: defaultIndexName
+        # TODO how to handle search over multiple indexes?
+  jsonObject:
+    defaultJsonObjectOutput:
+      service: defaultService
+      endpoint: "/dummies/{id}"
+      pattern: "{id}"
+      index: memoryMapUnique
+# TODO have only arrays with the type as a key
+# TODO validate the json schema separately
