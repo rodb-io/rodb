@@ -30,7 +30,7 @@ type CsvInputConfig struct{
 type CsvInputColumnConfig struct{
 	Name string
 	Type string
-	IgnoreCharacters []string
+	IgnoreCharacters string
 	DecimalSeparator string
 	TrueValues []string
 	FalseValues []string
@@ -53,7 +53,7 @@ type ServiceConfig struct{
 	Http HttpServiceConfig
 }
 type HttpServiceConfig struct{
-	Port string
+	Port uint16
 }
 
 type OutputConfig struct{
@@ -92,8 +92,12 @@ type JsonArrayOutputSearchConfig struct{
 	Index string
 }
 
-func NewConfigFromYaml(yamlConfig []byte) (Config, error) {
-	config := Config{}
-	err := yaml.UnmarshalStrict(yamlConfig, &config)
+func NewConfigFromYaml(yamlConfig []byte) (*Config, error) {
+	config := &Config{}
+	err := yaml.UnmarshalStrict(yamlConfig, config)
+	if err != nil {
+		return nil, err
+	}
+
 	return config, err
 }

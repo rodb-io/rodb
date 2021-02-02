@@ -10,13 +10,13 @@ inputs:
       columns:
         - name: id
           type: integer
-          ignoreCharacters: [",", " ", ".", "€", "$"]
+          ignoreCharacters: ", .€$"
         - name: name
           type: string
         - name: number
           type: float
           decimalSeparator: "."
-          ignoreCharacters: [",", " "]
+          ignoreCharacters: ", "
         - name: bool
           type: boolean
           trueValues: ["true", "1", "yes", "TRUE", "YES"]
@@ -62,5 +62,4 @@ outputs:
       endpoint: "/dummies/{id}"
       pattern: "{id}"
       index: memoryMapUnique
-# TODO validate each object has only one key defined
-# TODO additional validation rules (specific fields)
+# TODO validate that each object has only one key defined
