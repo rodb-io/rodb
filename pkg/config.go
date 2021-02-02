@@ -13,14 +13,14 @@ type Config struct{
 }
 
 type SourceConfig struct{
-	Filesystem FilesystemSourceConfig
+	Filesystem *FilesystemSourceConfig
 }
 type FilesystemSourceConfig struct{
 	Path string
 }
 
 type InputConfig struct{
-	Csv CsvInputConfig
+	Csv *CsvInputConfig
 }
 type CsvInputConfig struct{
 	Source string
@@ -29,16 +29,16 @@ type CsvInputConfig struct{
 }
 type CsvInputColumnConfig struct{
 	Name string
-	Type string
-	IgnoreCharacters string
-	DecimalSeparator string
+	Type *string
+	IgnoreCharacters *string
+	DecimalSeparator *string
 	TrueValues []string
 	FalseValues []string
 }
 
 type IndexConfig struct{
-	MemoryMapUnique MemoryMapUniqueIndexConfig
-	MemoryMapMultiple MemoryMapMultipleIndexConfig
+	MemoryMapUnique *MemoryMapUniqueIndexConfig
+	MemoryMapMultiple *MemoryMapMultipleIndexConfig
 }
 type MemoryMapUniqueIndexConfig struct{
 	Input string
@@ -50,16 +50,16 @@ type MemoryMapMultipleIndexConfig struct{
 }
 
 type ServiceConfig struct{
-	Http HttpServiceConfig
+	Http *HttpServiceConfig
 }
 type HttpServiceConfig struct{
 	Port uint16
 }
 
 type OutputConfig struct{
-	GraphQL GraphQLOutputConfig
-	JsonArray JsonArrayOutputConfig
-	JsonObject JsonObjectOutputConfig
+	GraphQL *GraphQLOutputConfig
+	JsonArray *JsonArrayOutputConfig
+	JsonObject *JsonObjectOutputConfig
 }
 type GraphQLOutputConfig struct{
 	Service string
@@ -74,15 +74,15 @@ type JsonObjectOutputConfig struct{
 type JsonArrayOutputConfig struct{
 	Service string
 	Endpoint string
-	Limit JsonArrayOutputLimitConfig
-	Offset JsonArrayOutputOffsetConfig
+	Limit *JsonArrayOutputLimitConfig
+	Offset *JsonArrayOutputOffsetConfig
 	Search []JsonArrayOutputSearchConfig
 }
 
 type JsonArrayOutputLimitConfig struct{
-	Default uint
-	Max uint
-	Param string
+	Default *uint
+	Max *uint
+	Param *string
 }
 type JsonArrayOutputOffsetConfig struct{
 	Param string
