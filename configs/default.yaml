@@ -1,65 +1,66 @@
 sources:
   defaultSource:
-    type: filesystem
-    path: ./dummy.csv
+    filesystem:
+      path: ./dummy.csv
 inputs:
   defaultInput:
-    type: csv
-    source: defaultSource
-    ignoreFirstRow: true
-    columns:
-      - name: id
-        type: integer
-        ignoreCharacters: ", .€$"
-      - name: name
-        type: string
-      - name: number
-        type: float
-        decimalSeparator: "."
-        ignoreCharacters: ", "
-      - name: bool
-        type: boolean
-        trueValues: ["true", "1", "yes", "TRUE", "YES"]
-        falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+    csv:
+      source: defaultSource
+      ignoreFirstRow: true
+      columns:
+        - name: id
+          type: integer
+          ignoreCharacters: [",", " ", ".", "€", "$"]
+        - name: name
+          type: string
+        - name: number
+          type: float
+          decimalSeparator: "."
+          ignoreCharacters: [",", " "]
+        - name: bool
+          type: boolean
+          trueValues: ["true", "1", "yes", "TRUE", "YES"]
+          falseValues: ["false", "0", "no", "FALSE", "NO", ""]
 indexes:
   defaultIndexId:
-    type: memoryMapUnique
-    input: defaultInput
-    column: id
+    memoryMapUnique:
+      input: defaultInput
+      column: id
   defaultIndexName:
-    type: memoryMapMultiple
-    input: defaultInput
-    column: name
+    memoryMapMultiple:
+      input: defaultInput
+      column: name
 services:
   defaultService:
-    type: http
-    port: 80
+    http:
+      port: 80
 outputs:
   defaultGraphqlOutput:
-    type: graphql
-    service: defaultService
-    endpoint: "/"
-    # TODO configure
+    graphql:
+      service: defaultService
+      endpoint: "/"
+      # TODO configure
   defaultJsonArrayOutput:
-    type: jsonArray
-    service: defaultService
-    endpoint: "/dummies"
-    limit:
-      default: 100
-      max: 1000
-      param: "limit"
-    offset:
-      param: "offset"
-    search:
-      - param: "id"
-        index: defaultIndexId
-      - param: "name"
-        index: defaultIndexName
-      # TODO how to handle search over multiple indexes?
+    jsonArray:
+      service: defaultService
+      endpoint: "/dummies"
+      limit:
+        default: 100
+        max: 1000
+        param: "limit"
+      offset:
+        param: "offset"
+      search:
+        - param: "id"
+          index: defaultIndexId
+        - param: "name"
+          index: defaultIndexName
+        # TODO how to handle search over multiple indexes?
   defaultJsonObjectOutput:
-    type: jsonObject
-    service: defaultService
-    endpoint: "/dummies/{id}"
-    pattern: "{id}"
-    index: memoryMapUnique
-# TODO validate the json schema separately
+    jsonObject:
+      service: defaultService
+      endpoint: "/dummies/{id}"
+      pattern: "{id}"
+      index: memoryMapUnique
+# TODO validate each object has only one key defined
+# TODO additional validation rules (specific fields)
