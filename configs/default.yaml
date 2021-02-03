@@ -59,7 +59,5 @@ outputs:
   defaultJsonObjectOutput:
     jsonObject:
       service: defaultService
-      endpoint: "/dummies/{id}"
-      pattern: "{id}"
+      endpoint: "/dummies/?"
       index: memoryMapUnique
-# TODO validate that each object has only one key defined

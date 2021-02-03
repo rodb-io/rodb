@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"rods/pkg"
+	"rods/pkg/config"
 
 	flag "github.com/spf13/pflag"
 )
@@ -20,7 +20,7 @@ func main() {
 		return
 	}
 
-	config, err := pkg.NewConfigFromYaml(configData)
+	config, err := config.NewConfigFromYaml(configData)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Cannot parse config file %v: %v", *configPath, err)
 		return
