@@ -8,16 +8,16 @@ inputs:
       source: defaultSource
       ignoreFirstRow: true
       columns:
-        - name: id
+        id:
           type: integer
           ignoreCharacters: ", .€$"
-        - name: name
+        name:
           type: string
-        - name: number
+        number:
           type: float
           decimalSeparator: "."
           ignoreCharacters: ", "
-        - name: bool
+        bool:
           type: boolean
           trueValues: ["true", "1", "yes", "TRUE", "YES"]
           falseValues: ["false", "0", "no", "FALSE", "NO", ""]
@@ -51,9 +51,9 @@ outputs:
       offset:
         param: "offset"
       search:
-        - param: "id"
+        id:
           index: defaultIndexId
-        - param: "name"
+        name:
           index: defaultIndexName
         # TODO how to handle search over multiple indexes?
   defaultJsonObjectOutput:

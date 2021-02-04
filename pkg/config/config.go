@@ -45,9 +45,8 @@ func (config *Config) validate() error {
 	return nil
 }
 
-// TODO Implement json schema anyway?
-// TODO validate type enum (or change this configuration structure?)
-// TODO validate that each object has only one key defined
-// TODO unit test for utils
-// TODO implement the missing validation functions
-// TODO where possible, set a default value and warn in the console instead of an error
+// TODO unit test for utils and config functions
+// TODO when setting a default value, warn in the console
+// TODO validate endpoint unique
+// TODO merge source and input? Or should not contain file name?
+// TODO merge service and output?
