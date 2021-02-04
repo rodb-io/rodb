@@ -6,6 +6,7 @@ import (
 
 type CsvInputConfig struct{
 	Source string
+	Path string
 	IgnoreFirstRow bool
 	Columns map[string]CsvInputColumnConfig
 }
@@ -19,6 +20,7 @@ type CsvInputColumnConfig struct{
 }
 
 func (config *CsvInputConfig) validate() error {
+	// The source and path will be validated at runtime
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")
 	}

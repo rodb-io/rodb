@@ -1,11 +1,12 @@
 sources:
   defaultSource:
     filesystem:
-      path: ./dummy.csv
+      path: ./
 inputs:
   defaultInput:
     csv:
       source: defaultSource
+      path: ./dummy.csv
       ignoreFirstRow: true
       columns:
         id:

@@ -45,8 +45,6 @@ func (config *Config) validate() error {
 	return nil
 }
 
-// TODO unit test for utils and config functions
+// TODO unit test for utils.go and input_csv.go functions
 // TODO when setting a default value, warn in the console
-// TODO validate endpoint unique
-// TODO merge source and input? Or should not contain file name?
-// TODO merge service and output?
+// TODO validate endpoint unique per-service
