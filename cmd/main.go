@@ -1,30 +1,33 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
-	"os"
 
 	"rods/pkg/config"
 
 	flag "github.com/spf13/pflag"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	log := logrus.New()
+
 	configPath := flag.String("config", "rods.yaml", "Path to the configuration file")
 	flag.Parse()
 
 	configData, err := ioutil.ReadFile(*configPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Cannot read config file %v: %v", *configPath, err)
+		log.Fatalf("Cannot read config file %v: %v", *configPath, err)
 		return
 	}
 
-	config, err := config.NewConfigFromYaml(configData)
+	config, err := config.NewConfigFromYaml(configData, log)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Cannot parse config file %v: %v", *configPath, err)
+		log.Fatalf("Cannot parse config file %v: %v", *configPath, err)
 		return
 	}
 
-	fmt.Printf("Config: %+v\n", config)
+	log.Infof("Config: %+v\n", config)
 }
+// TODO unit test for pkg/config/utils.go
+// TODO argument to set the log level

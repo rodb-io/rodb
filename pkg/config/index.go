@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 )
 
 type IndexConfig struct{
@@ -9,7 +10,7 @@ type IndexConfig struct{
 	MemoryMapMultiple *MemoryMapMultipleIndexConfig
 }
 
-func (config *IndexConfig) validate() error {
+func (config *IndexConfig) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -20,5 +21,5 @@ func (config *IndexConfig) validate() error {
 		return errors.New("An index can only have one configuration")
 	}
 
-	return fields[0].validate()
+	return fields[0].validate(log)
 }

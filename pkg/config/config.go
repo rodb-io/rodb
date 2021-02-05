@@ -1,8 +1,11 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 	yaml "gopkg.in/yaml.v2"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct{
@@ -13,26 +16,27 @@ type Config struct{
 	Outputs map[string]OutputConfig
 }
 
-func NewConfigFromYaml(yamlConfig []byte) (*Config, error) {
+func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
 	config := &Config{}
 	err := yaml.UnmarshalStrict(yamlConfig, config)
 	if err != nil {
 		return nil, err
 	}
 
-	config.validate()
+	config.validate(log)
 
 	return config, err
 }
 
-func (config *Config) validate() error {
+func (config *Config) validate(log *logrus.Logger) error {
 	reflectConfig := reflect.ValueOf(config)
 	for fieldIndex := 0; fieldIndex < reflectConfig.NumField(); fieldIndex++ {
 		field := reflectConfig.Field(fieldIndex).Interface().(map[string]validable)
-		for _, categoryConfig := range field {
-			err := categoryConfig.validate()
+		fieldName := reflectConfig.Type().Field(fieldIndex).Name
+		for categoryKey, categoryConfig := range field {
+			err := categoryConfig.validate(log)
 			if err != nil {
-				return err
+				return fmt.Errorf("%v.%v: %v", strings.ToLower(fieldName), categoryKey, err)
 			}
 		}
 	}
@@ -44,6 +48,3 @@ func (config *Config) validate() error {
 
 	return nil
 }
-
-// TODO unit test for utils.go
-// TODO when setting a default value, warn in the console

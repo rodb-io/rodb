@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 )
 
 type OutputConfig struct{
@@ -10,16 +11,16 @@ type OutputConfig struct{
 	JsonObject *JsonObjectOutputConfig
 }
 
-func (config *OutputConfig) validate() error {
+func (config *OutputConfig) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
-		return errors.New("All outputs must have a configuration")
+		return errors.New("One of your outputs does not have a definition.")
 	}
 
 	if len(fields) > 0 {
-		return errors.New("An output can only have one configuration")
+		return errors.New("One of your outputs has two different definitions.")
 	}
 
-	return fields[0].validate()
+	return fields[0].validate(log)
 }

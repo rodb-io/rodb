@@ -2,13 +2,14 @@ package config
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 )
 
 type SourceConfig struct{
 	Filesystem *FilesystemSourceConfig
 }
 
-func (config *SourceConfig) validate() error {
+func (config *SourceConfig) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -19,5 +20,5 @@ func (config *SourceConfig) validate() error {
 		return errors.New("A source can only have one configuration")
 	}
 
-	return fields[0].validate()
+	return fields[0].validate(log)
 }

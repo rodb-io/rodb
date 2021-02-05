@@ -2,13 +2,14 @@ package config
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 )
 
 type ServiceConfig struct{
 	Http *HttpServiceConfig
 }
 
-func (config *ServiceConfig) validate() error {
+func (config *ServiceConfig) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -19,5 +20,5 @@ func (config *ServiceConfig) validate() error {
 		return errors.New("A services can only have one configuration")
 	}
 
-	return fields[0].validate()
+	return fields[0].validate(log)
 }

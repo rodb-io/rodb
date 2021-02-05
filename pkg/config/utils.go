@@ -3,10 +3,11 @@ package config
 import (
 	"errors"
 	"reflect"
+	"github.com/sirupsen/logrus"
 )
 
 type validable interface{
-	validate() error
+	validate(log *logrus.Logger) error
 }
 
 func getAllNonNilFields(config interface{}) []validable {
