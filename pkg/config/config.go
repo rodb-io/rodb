@@ -28,12 +28,7 @@ func NewConfigFromYaml(yamlConfig []byte) (*Config, error) {
 func (config *Config) validate() error {
 	reflectConfig := reflect.ValueOf(config)
 	for fieldIndex := 0; fieldIndex < reflectConfig.NumField(); fieldIndex++ {
-		field := reflectConfig.
-			Field(fieldIndex).
-			Interface().
-			(map[string]interface{
-				validate() error
-			})
+		field := reflectConfig.Field(fieldIndex).Interface().(map[string]validable)
 		for _, categoryConfig := range field {
 			err := categoryConfig.validate()
 			if err != nil {
@@ -42,9 +37,13 @@ func (config *Config) validate() error {
 		}
 	}
 
+	err := checkDuplicateEndpointsPerService(config.Outputs)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// TODO unit test for utils.go and input_csv.go functions
+// TODO unit test for utils.go
 // TODO when setting a default value, warn in the console
-// TODO validate endpoint unique per-service

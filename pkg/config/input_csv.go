@@ -8,6 +8,7 @@ type CsvInputConfig struct{
 	Source string
 	Path string
 	IgnoreFirstRow bool
+	Delimiter rune
 	Columns map[string]CsvInputColumnConfig
 }
 
@@ -23,6 +24,10 @@ func (config *CsvInputConfig) validate() error {
 	// The source and path will be validated at runtime
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")
+	}
+
+	if config.Delimiter == 0 {
+		config.Delimiter = ','
 	}
 
 	for _, column := range config.Columns {
@@ -58,15 +63,4 @@ func (config *CsvInputColumnConfig) validate() error {
 	}
 
 	return nil
-}
-
-func isCsvInputColumnTypeValid(typeToCheck string) bool {
-	types := []string {"string", "integer", "float", "boolean"}
-	for _, definedType := range types {
-		if definedType == typeToCheck {
-			return true
-		}
-	}
-
-	return false
 }

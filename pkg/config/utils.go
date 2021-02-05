@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"reflect"
 )
 
@@ -10,7 +11,7 @@ type validable interface{
 
 func getAllNonNilFields(config interface{}) []validable {
 	reflectConfig := reflect.ValueOf(config)
-    nonNilFields := make([]validable, 0)
+	nonNilFields := make([]validable, 0)
 	for fieldIndex := 0; fieldIndex < reflectConfig.NumField(); fieldIndex++ {
 		field := reflectConfig.Field(fieldIndex).Interface().(*validable)
 		if field != nil {
@@ -19,4 +20,42 @@ func getAllNonNilFields(config interface{}) []validable {
 	}
 
 	return nonNilFields
+}
+
+func checkDuplicateEndpointsPerService(outputConfigs map[string]OutputConfig) error {
+	endpointsPerService := make(map[string]map[string]interface{})
+	for _, outputConfigContainer := range outputConfigs {
+		outputConfig := reflect.ValueOf(getAllNonNilFields(outputConfigContainer)[0])
+
+		service := outputConfig.Elem().FieldByName("Service").String()
+		endpoint := outputConfig.Elem().FieldByName("Endpoint").String()
+		if service == "" || endpoint == "" {
+			continue
+		}
+
+		serviceEndpoints, serviceExists := endpointsPerService[service]
+		if !serviceExists {
+			serviceEndpoints = make(map[string]interface{})
+			endpointsPerService[service] = serviceEndpoints
+		}
+
+		if _, endpointExists := serviceEndpoints[endpoint]; endpointExists {
+			return errors.New("Duplicate endpoint '" + endpoint + "' in service '" + service + "'")
+		}
+
+		serviceEndpoints[endpoint] = nil
+	}
+
+	return nil
+}
+
+func isCsvInputColumnTypeValid(typeToCheck string) bool {
+	types := []string {"string", "integer", "float", "boolean"}
+	for _, definedType := range types {
+		if definedType == typeToCheck {
+			return true
+		}
+	}
+
+	return false
 }
