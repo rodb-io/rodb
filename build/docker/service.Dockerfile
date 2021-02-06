@@ -25,6 +25,8 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     go mod vendor \
     && go build -v -o /rods ./cmd/main.go
 
+RUN go test ./...
+
 FROM scratch
 
 WORKDIR /

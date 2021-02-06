@@ -35,4 +35,3 @@ func main() {
 
 	log.Infof("Config: %+v\n", config)
 }
-// TODO unit test for pkg/config/utils.go
