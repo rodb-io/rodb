@@ -6,19 +6,19 @@ import (
 )
 
 type CsvInputConfig struct{
-	Source string
-	Path string
-	IgnoreFirstRow bool
-	Delimiter rune
-	Columns map[string]CsvInputColumnConfig
+	Source string `yaml:"source"`
+	Path string `yaml:"path"`
+	IgnoreFirstRow bool `yaml:"ignoreFirstRow"`
+	Delimiter string `yaml:"delimiter"`
+	Columns map[string]CsvInputColumnConfig `yaml:"columns"`
 }
 
 type CsvInputColumnConfig struct{
-	Type string
-	IgnoreCharacters string
-	DecimalSeparator string
-	TrueValues []string
-	FalseValues []string
+	Type string `yaml:"type"`
+	IgnoreCharacters string `yaml:"ignoreCharacters"`
+	DecimalSeparator string `yaml:"decimalSeparator"`
+	TrueValues []string `yaml:"trueValues"`
+	FalseValues []string `yaml:"falseValues"`
 }
 
 func (config *CsvInputConfig) validate(log *logrus.Logger) error {
@@ -27,9 +27,13 @@ func (config *CsvInputConfig) validate(log *logrus.Logger) error {
 		return errors.New("A csv input must have at least one column")
 	}
 
-	if config.Delimiter == 0 {
+	if config.Delimiter == "" {
 		log.Debug("csv.delimiter not defined. Assuming ','")
-		config.Delimiter = ','
+		config.Delimiter = ","
+	}
+
+	if len(config.Delimiter) > 1 {
+		return errors.New("csv.delimiter must be a single character")
 	}
 
 	for _, column := range config.Columns {

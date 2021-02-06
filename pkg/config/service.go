@@ -6,7 +6,7 @@ import (
 )
 
 type ServiceConfig struct{
-	Http *HttpServiceConfig
+	Http *HttpServiceConfig `yaml:"http"`
 }
 
 func (config *ServiceConfig) validate(log *logrus.Logger) error {

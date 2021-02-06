@@ -5,8 +5,8 @@ import (
 )
 
 type MemoryMapUniqueIndexConfig struct{
-	Input string
-	Column string
+	Input string `yaml:"input"`
+	Column string `yaml:"column"`
 }
 
 func (config *MemoryMapUniqueIndexConfig) validate(log *logrus.Logger) error {

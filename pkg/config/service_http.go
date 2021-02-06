@@ -5,7 +5,7 @@ import (
 )
 
 type HttpServiceConfig struct{
-	Port uint16
+	Port uint16 `yaml:"port"`
 }
 
 func (config *HttpServiceConfig) validate(log *logrus.Logger) error {

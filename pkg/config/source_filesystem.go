@@ -5,7 +5,7 @@ import (
 )
 
 type FilesystemSourceConfig struct{
-	Path string
+	Path string `yaml:"path"`
 }
 
 func (config *FilesystemSourceConfig) validate(log *logrus.Logger) error {

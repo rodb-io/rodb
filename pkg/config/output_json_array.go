@@ -6,11 +6,11 @@ import (
 )
 
 type JsonArrayOutputConfig struct{
-	Service string
-	Endpoint string
-	Limit JsonArrayOutputLimitConfig
-	Offset JsonArrayOutputOffsetConfig
-	Search map[string]JsonArrayOutputSearchConfig
+	Service string `yaml:"service"`
+	Endpoint string `yaml:"endpoint"`
+	Limit JsonArrayOutputLimitConfig `yaml:"limit"`
+	Offset JsonArrayOutputOffsetConfig `yaml:"offset"`
+	Search map[string]JsonArrayOutputSearchConfig `yaml:"search"`
 }
 
 type JsonArrayOutputLimitConfig struct{

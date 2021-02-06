@@ -7,9 +7,9 @@ import (
 )
 
 type JsonObjectOutputConfig struct{
-	Service string
-	Endpoint string
-	Index string
+	Service string `yaml:"service"`
+	Endpoint string `yaml:"endpoint"`
+	Index string `yaml:"index"`
 }
 
 func (config *JsonObjectOutputConfig) validate(log *logrus.Logger) error {

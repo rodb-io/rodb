@@ -6,8 +6,8 @@ import (
 )
 
 type GraphQLOutputConfig struct{
-	Service string
-	Endpoint string
+	Service string `yaml:"service"`
+	Endpoint string `yaml:"endpoint"`
 }
 
 func (config *GraphQLOutputConfig) validate(log *logrus.Logger) error {

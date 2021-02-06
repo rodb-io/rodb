@@ -6,7 +6,7 @@ import (
 )
 
 type SourceConfig struct{
-	Filesystem *FilesystemSourceConfig
+	Filesystem *FilesystemSourceConfig `yaml:"filesystem"`
 }
 
 func (config *SourceConfig) validate(log *logrus.Logger) error {

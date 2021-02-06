@@ -6,9 +6,9 @@ import (
 )
 
 type OutputConfig struct{
-	GraphQL *GraphQLOutputConfig
-	JsonArray *JsonArrayOutputConfig
-	JsonObject *JsonObjectOutputConfig
+	GraphQL *GraphQLOutputConfig `yaml:"graphql"`
+	JsonArray *JsonArrayOutputConfig `yaml:"jsonArray"`
+	JsonObject *JsonObjectOutputConfig `yaml:"jsonObject"`
 }
 
 func (config *OutputConfig) validate(log *logrus.Logger) error {

@@ -5,8 +5,8 @@ import (
 )
 
 type MemoryMapMultipleIndexConfig struct{
-	Input string
-	Column string
+	Input string `yaml:"input"`
+	Column string `yaml:"column"`
 }
 
 func (config *MemoryMapMultipleIndexConfig) validate(log *logrus.Logger) error {

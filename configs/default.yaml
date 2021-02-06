@@ -41,7 +41,7 @@ outputs:
     graphql:
       service: defaultService
       endpoint: "/"
-      # TODO configure
+      # TODO configuration
   defaultJsonArrayOutput:
     jsonArray:
       service: defaultService

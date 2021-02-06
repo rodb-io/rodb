@@ -6,7 +6,7 @@ import (
 )
 
 type InputConfig struct{
-	Csv *CsvInputConfig
+	Csv *CsvInputConfig `yaml:"csv"`
 }
 
 func (config *InputConfig) validate(log *logrus.Logger) error {
