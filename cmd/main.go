@@ -9,6 +9,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// TODO go fmt
+// TODO extract config and log creator in other functions
+
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
 	configPath := flag.StringP("config", "c", "rods.yaml", "Path to the configuration file")
@@ -27,13 +30,11 @@ func main() {
 	configData, err := ioutil.ReadFile(*configPath)
 	if err != nil {
 		log.Fatalf("Cannot read config file %v: %v", *configPath, err)
-		return
 	}
 
 	config, err := config.NewConfigFromYaml(configData, log)
 	if err != nil {
 		log.Fatalf("Cannot parse config file %v: %v", *configPath, err)
-		return
 	}
 
 	log.Infof("Config: %+v\n", config)
