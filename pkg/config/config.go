@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"reflect"
+	"os"
 	"strings"
 	yaml "gopkg.in/yaml.v2"
 	"github.com/sirupsen/logrus"
@@ -17,12 +18,13 @@ type Config struct{
 }
 
 func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
+	yamlConfigWithEnv := []byte(os.ExpandEnv(string(yamlConfig)))
+
 	config := &Config{}
-	err := yaml.UnmarshalStrict(yamlConfig, config)
+	err := yaml.UnmarshalStrict(yamlConfigWithEnv, config)
 	if err != nil {
 		return nil, err
 	}
-
 	config.validate(log)
 
 	return config, err
