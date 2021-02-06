@@ -15,6 +15,9 @@ func main() {
 	flag.Parse()
 
 	log := logrus.New()
+	log.SetFormatter(&logrus.TextFormatter{
+		DisableTimestamp: true,
+	})
 	if *verbose {
 		log.SetLevel(logrus.TraceLevel)
 	} else {
