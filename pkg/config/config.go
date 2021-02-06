@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"reflect"
 	"os"
 	"strings"
 	yaml "gopkg.in/yaml.v2"
@@ -31,15 +30,33 @@ func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
 }
 
 func (config *Config) validate(log *logrus.Logger) error {
-	reflectConfig := reflect.ValueOf(config)
-	for fieldIndex := 0; fieldIndex < reflectConfig.NumField(); fieldIndex++ {
-		field := reflectConfig.Field(fieldIndex).Interface().(map[string]validable)
-		fieldName := reflectConfig.Type().Field(fieldIndex).Name
-		for categoryKey, categoryConfig := range field {
-			err := categoryConfig.validate(log)
-			if err != nil {
-				return fmt.Errorf("%v.%v: %v", strings.ToLower(fieldName), categoryKey, err)
-			}
+	for subConfigName, subConfig := range config.Sources {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("sources.%v: %v", strings.ToLower(subConfigName), err)
+		}
+	}
+
+	for subConfigName, subConfig := range config.Inputs {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("inputs.%v: %v", strings.ToLower(subConfigName), err)
+		}
+	}
+
+	for subConfigName, subConfig := range config.Indexes {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("indexes.%v: %v", strings.ToLower(subConfigName), err)
+		}
+	}
+
+	for subConfigName, subConfig := range config.Services {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("services.%v: %v", strings.ToLower(subConfigName), err)
+		}
+	}
+
+	for subConfigName, subConfig := range config.Outputs {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("outputs.%v: %v", strings.ToLower(subConfigName), err)
 		}
 	}
 

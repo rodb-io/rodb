@@ -11,12 +11,13 @@ type validable interface{
 }
 
 func getAllNonNilFields(config interface{}) []validable {
-	reflectConfig := reflect.ValueOf(config)
+	reflectConfig := reflect.ValueOf(config).Elem()
 	nonNilFields := make([]validable, 0)
 	for fieldIndex := 0; fieldIndex < reflectConfig.NumField(); fieldIndex++ {
-		field := reflectConfig.Field(fieldIndex).Interface().(*validable)
-		if field != nil {
-			nonNilFields = append(nonNilFields, *field)
+		reflectFieldIndex := reflectConfig.Field(fieldIndex)
+		if !reflectFieldIndex.IsNil() {
+			field := reflectFieldIndex.Interface().(validable)
+			nonNilFields = append(nonNilFields, field)
 		}
 	}
 
