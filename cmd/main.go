@@ -10,10 +10,16 @@ import (
 )
 
 func main() {
-	log := logrus.New()
-
-	configPath := flag.String("config", "rods.yaml", "Path to the configuration file")
+	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
+	configPath := flag.StringP("config", "c", "rods.yaml", "Path to the configuration file")
 	flag.Parse()
+
+	log := logrus.New()
+	if *verbose {
+		log.SetLevel(logrus.TraceLevel)
+	} else {
+		log.SetLevel(logrus.InfoLevel)
+	}
 
 	configData, err := ioutil.ReadFile(*configPath)
 	if err != nil {
@@ -30,4 +36,4 @@ func main() {
 	log.Infof("Config: %+v\n", config)
 }
 // TODO unit test for pkg/config/utils.go
-// TODO argument to set the log level
+// TODO replace environment variables
