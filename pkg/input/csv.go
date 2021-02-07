@@ -51,7 +51,7 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	return sourceReader, csvReader, nil
 }
 
-func (csvInput *Csv) IterateAll() (chan []string, chan error) {
+func (csvInput *Csv) IterateAll() (<-chan []string, <-chan error) {
 	rowsChannel := make(chan []string)
 	errorsChannel := make(chan error)
 
