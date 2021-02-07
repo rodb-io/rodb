@@ -19,14 +19,9 @@ type Csv struct{
 
 func NewCsv(
 	config *config.CsvInputConfig,
-	sources source.SourceList,
+	source source.Source,
 	log *logrus.Logger,
 ) (*Csv, error) {
-	source, sourceExists := sources[config.Source]
-	if !sourceExists {
-		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
-	}
-
 	csvInput := &Csv{
 		config: config,
 		source: source,

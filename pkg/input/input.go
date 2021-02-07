@@ -2,6 +2,7 @@ package input
 
 import (
 	"errors"
+	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/source"
 	"github.com/sirupsen/logrus"
@@ -19,7 +20,11 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Input, error) {
 	if config.Csv != nil {
-		return NewCsv(config.Csv, sources, log)
+		if source, sourceExists := sources[config.Csv.Source]; !sourceExists {
+			return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Csv.Source)
+		} else {
+			return NewCsv(config.Csv, source, log)
+		}
 	}
 
 	return nil, errors.New("Failed to initialize input")
