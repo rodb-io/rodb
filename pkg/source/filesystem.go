@@ -11,6 +11,7 @@ import (
 
 type Filesystem struct{
 	config *config.FilesystemSourceConfig
+	logger *logrus.Logger
 	opened map[io.ReadSeeker]*os.File
 }
 
@@ -20,6 +21,7 @@ func NewFilesystem(
 ) (*Filesystem, error) {
 	return &Filesystem{
 		config: config,
+		logger: log,
 	}, nil
 }
 

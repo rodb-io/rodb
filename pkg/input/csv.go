@@ -2,6 +2,7 @@ package input
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
 	"rods/pkg/config"
@@ -12,9 +13,9 @@ import (
 type Csv struct{
 	config *config.CsvInputConfig
 	source source.Source
+	logger *logrus.Logger
 	sourceReader io.ReadSeeker
 	csvReader *csv.Reader
-	logger *logrus.Logger
 }
 
 func NewCsv(
@@ -25,6 +26,7 @@ func NewCsv(
 	csvInput := &Csv{
 		config: config,
 		source: source,
+		logger: log,
 	}
 
 	sourceReader, csvReader, err := csvInput.openSource()
@@ -75,7 +77,7 @@ func (csvInput *Csv) IterateAll() (<-chan []string, <-chan error) {
 			row, err := csvReader.Read()
 			if err == io.EOF {
 				break
-			} else if err == csv.ErrFieldCount {
+			} else if errors.Is(err, csv.ErrFieldCount) {
 				csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			} else if err != nil {
 				errorsChannel <- fmt.Errorf("Cannot read csv data: %v", err)
