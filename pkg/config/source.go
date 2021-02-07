@@ -16,7 +16,7 @@ func (config *SourceConfig) validate(log *logrus.Logger) error {
 		return errors.New("All sources must have a configuration")
 	}
 
-	if len(fields) > 0 {
+	if len(fields) > 1 {
 		return errors.New("A source can only have one configuration")
 	}
 

@@ -16,7 +16,7 @@ func (config *ServiceConfig) validate(log *logrus.Logger) error {
 		return errors.New("All services must have a configuration")
 	}
 
-	if len(fields) > 0 {
+	if len(fields) > 1 {
 		return errors.New("A services can only have one configuration")
 	}
 

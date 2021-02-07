@@ -17,7 +17,7 @@ func (config *IndexConfig) validate(log *logrus.Logger) error {
 		return errors.New("All indexes must have a configuration")
 	}
 
-	if len(fields) > 0 {
+	if len(fields) > 1 {
 		return errors.New("An index can only have one configuration")
 	}
 

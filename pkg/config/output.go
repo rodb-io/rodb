@@ -18,7 +18,7 @@ func (config *OutputConfig) validate(log *logrus.Logger) error {
 		return errors.New("One of your outputs does not have a definition.")
 	}
 
-	if len(fields) > 0 {
+	if len(fields) > 1 {
 		return errors.New("One of your outputs has two different definitions.")
 	}
 

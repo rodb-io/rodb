@@ -16,7 +16,7 @@ func (config *InputConfig) validate(log *logrus.Logger) error {
 		return errors.New("All inputs must have a configuration")
 	}
 
-	if len(fields) > 0 {
+	if len(fields) > 1 {
 		return errors.New("An input can only have one configuration")
 	}
 

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 	yaml "gopkg.in/yaml.v2"
@@ -24,9 +25,27 @@ func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	config.validate(log)
+
+	err = config.validate(log)
+	if err != nil {
+		return nil, err
+	}
 
 	return config, err
+}
+
+func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
+	configData, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("Cannot read config file %v: %v", configPath, err)
+	}
+
+	config, err := NewConfigFromYaml(configData, log)
+	if err != nil {
+		return nil, fmt.Errorf("Cannot parse config file %v: %v", configPath, err)
+	}
+
+	return config, nil
 }
 
 func (config *Config) validate(log *logrus.Logger) error {
