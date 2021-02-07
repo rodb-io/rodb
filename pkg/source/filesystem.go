@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"rods/pkg/config"
+	"github.com/sirupsen/logrus"
 )
 
 type Filesystem struct{
@@ -13,7 +14,10 @@ type Filesystem struct{
 	opened map[io.ReadSeeker]*os.File
 }
 
-func NewFilesystem(config *config.FilesystemSourceConfig) (*Filesystem, error) {
+func NewFilesystem(
+	config *config.FilesystemSourceConfig,
+	log *logrus.Logger,
+) (*Filesystem, error) {
 	return &Filesystem{
 		config: config,
 	}, nil

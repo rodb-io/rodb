@@ -6,6 +6,7 @@ import (
 	"io"
 	"rods/pkg/config"
 	"rods/pkg/source"
+	"github.com/sirupsen/logrus"
 )
 
 type Csv struct{
@@ -13,11 +14,13 @@ type Csv struct{
 	source source.Source
 	sourceReader io.ReadSeeker
 	csvReader *csv.Reader
+	logger *logrus.Logger
 }
 
 func NewCsv(
 	config *config.CsvInputConfig,
 	sources source.SourceList,
+	log *logrus.Logger,
 ) (*Csv, error) {
 	source, sourceExists := sources[config.Source]
 	if !sourceExists {
@@ -41,6 +44,37 @@ func NewCsv(
 	}, nil
 }
 
-func (csv *Csv) Close() error {
-	return csv.source.CloseReader(csv.sourceReader)
+func (csvInput *Csv) IterateAll() (chan []string, chan error) {
+	rowsChannel := make(chan []string, 10)
+	errorsChannel := make(chan error)
+
+	go func() {
+		defer close(rowsChannel)
+		defer close(errorsChannel)
+
+		csvInput.sourceReader.Seek(0, io.SeekStart)
+		if csvInput.config.IgnoreFirstRow {
+			_, _ = csvInput.csvReader.Read()
+		}
+
+		for {
+			row, err := csvInput.csvReader.Read()
+			if err == io.EOF {
+				break
+			} else if err == csv.ErrFieldCount {
+				csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
+			} else if err != nil {
+				errorsChannel <- fmt.Errorf("Cannot read csv data: %v", err)
+				return
+			}
+
+			rowsChannel <- row
+		}
+	}()
+
+	return rowsChannel, errorsChannel
+}
+
+func (csvInput *Csv) Close() error {
+	return csvInput.source.CloseReader(csvInput.sourceReader)
 }

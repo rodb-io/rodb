@@ -9,6 +9,8 @@ import (
 )
 
 // TODO go fmt
+// TODO test csv iterate function
+// TODO csv parse the rows data according to the config
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
@@ -31,14 +33,14 @@ func main() {
 		return
 	}
 
-	sources, err := source.NewFromConfigs(config.Sources)
+	sources, err := source.NewFromConfigs(config.Sources, log)
 	if err != nil {
 		log.Errorf("Error initializing sources: %v", err)
 		return
 	}
 	defer source.Close(sources)
 
-	inputs, err := input.NewFromConfigs(config.Inputs, sources)
+	inputs, err := input.NewFromConfigs(config.Inputs, sources, log)
 	if err != nil {
 		log.Errorf("Error initializing inputs: %v", err)
 		return

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"rods/pkg/config"
 	"io"
+	"github.com/sirupsen/logrus"
 )
 
 type Source interface {
@@ -14,18 +15,24 @@ type Source interface {
 
 type SourceList = map[string]Source
 
-func NewFromConfig(config config.SourceConfig) (Source, error) {
+func NewFromConfig(
+	config config.SourceConfig,
+	log *logrus.Logger,
+) (Source, error) {
 	if config.Filesystem != nil {
-		return NewFilesystem(config.Filesystem)
+		return NewFilesystem(config.Filesystem, log)
 	}
 
 	return nil, errors.New("Failed to initialize source")
 }
 
-func NewFromConfigs(configs map[string]config.SourceConfig) (SourceList, error) {
+func NewFromConfigs(
+	configs map[string]config.SourceConfig,
+	log *logrus.Logger,
+) (SourceList, error) {
 	sources := make(SourceList)
 	for sourceName, sourceConfig := range configs {
-		source, err := NewFromConfig(sourceConfig)
+		source, err := NewFromConfig(sourceConfig, log)
 		if err != nil {
 			return nil, err
 		}
