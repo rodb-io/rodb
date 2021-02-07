@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/source"
 	"rods/pkg/input"
@@ -28,18 +27,23 @@ func main() {
 
 	config, err := config.NewConfigFromYamlFile(*configPath, log)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
+		return
 	}
 
 	sources, err := source.NewFromConfigs(config.Sources)
 	if err != nil {
-		log.Fatalf("Error initializing sources: %v", err)
+		log.Errorf("Error initializing sources: %v", err)
+		return
 	}
+	defer source.Close(sources)
 
 	inputs, err := input.NewFromConfigs(config.Inputs, sources)
 	if err != nil {
-		log.Fatalf("Error initializing inputs: %v", err)
+		log.Errorf("Error initializing inputs: %v", err)
+		return
 	}
+	defer input.Close(inputs)
 
 	log.Infof("Inputs: %+v\n", inputs)
 }

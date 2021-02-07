@@ -8,6 +8,8 @@ import (
 
 type Source interface {
 	Open(filePath string) (io.ReadSeeker, error)
+	Close() error
+	CloseReader(reader io.ReadSeeker) error
 }
 
 type SourceList = map[string]Source
@@ -31,4 +33,15 @@ func NewFromConfigs(configs map[string]config.SourceConfig) (SourceList, error) 
 	}
 
 	return sources, nil
+}
+
+func Close(sources SourceList) error {
+	for _, source := range sources {
+		err := source.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 )
 
 type Input interface {
+	Close() error
 }
 
 type InputList = map[string]Input
@@ -36,4 +37,15 @@ func NewFromConfigs(
 	}
 
 	return inputs, nil
+}
+
+func Close(inputs InputList) error {
+	for _, input := range inputs {
+		err := input.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
