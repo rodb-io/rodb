@@ -1,6 +1,7 @@
 package input
 
 import (
+	"encoding/csv"
 	"fmt"
 	"io"
 	"rods/pkg/config"
@@ -10,7 +11,8 @@ import (
 type Csv struct{
 	config *config.CsvInputConfig
 	source source.Source
-	reader io.ReadSeeker
+	sourceReader io.ReadSeeker
+	csvReader *csv.Reader
 }
 
 func NewCsv(
@@ -22,18 +24,23 @@ func NewCsv(
 		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
 	}
 
-	reader, err := source.Open(config.Path)
+	sourceReader, err := source.Open(config.Path)
 	if err != nil {
 		return nil, err
 	}
 
+	csvReader := csv.NewReader(sourceReader)
+	csvReader.Comma = []rune(config.Delimiter)[0]
+	csvReader.FieldsPerRecord = len(config.Columns)
+
 	return &Csv{
 		config: config,
 		source: source,
-		reader: reader,
+		sourceReader: sourceReader,
+		csvReader: csvReader,
 	}, nil
 }
 
 func (csv *Csv) Close() error {
-	return csv.source.CloseReader(csv.reader)
+	return csv.source.CloseReader(csv.sourceReader)
 }
