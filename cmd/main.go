@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/source"
+	"rods/pkg/input"
 	flag "github.com/spf13/pflag"
 	"github.com/sirupsen/logrus"
 )
@@ -29,7 +31,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sources := source.NewFromConfigs(config.Sources)
+	sources, err := source.NewFromConfigs(config.Sources)
+	if err != nil {
+		log.Fatalf("Error initializing sources: %v", err)
+	}
 
-	log.Infof("Config: %+v\n", sources)
+	inputs, err := input.NewFromConfigs(config.Inputs, sources)
+	if err != nil {
+		log.Fatalf("Error initializing inputs: %v", err)
+	}
+
+	log.Infof("Inputs: %+v\n", inputs)
 }

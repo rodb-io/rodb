@@ -11,10 +11,10 @@ type Filesystem struct{
 	config *config.FilesystemSourceConfig
 }
 
-func NewFilesystem(config *config.FilesystemSourceConfig) *Filesystem {
+func NewFilesystem(config *config.FilesystemSourceConfig) (*Filesystem, error) {
 	return &Filesystem{
 		config: config,
-	}
+	}, nil
 }
 
 func (fs *Filesystem) Open(filePath string) (io.ReadSeeker, error) {

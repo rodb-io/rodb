@@ -1,6 +1,7 @@
 package source
 
 import (
+	"errors"
 	"rods/pkg/config"
 	"io"
 )
@@ -9,19 +10,25 @@ type Source interface {
 	Open(filePath string) (io.ReadSeeker, error)
 }
 
-func NewFromConfig(config config.SourceConfig) Source {
+type SourceList = map[string]Source
+
+func NewFromConfig(config config.SourceConfig) (Source, error) {
 	if config.Filesystem != nil {
 		return NewFilesystem(config.Filesystem)
 	}
 
-	return nil
+	return nil, errors.New("Failed to initialize source")
 }
 
-func NewFromConfigs(configs map[string]config.SourceConfig) map[string]Source {
-	sources := make(map[string]Source)
+func NewFromConfigs(configs map[string]config.SourceConfig) (SourceList, error) {
+	sources := make(SourceList)
 	for sourceName, sourceConfig := range configs {
-		sources[sourceName] = NewFromConfig(sourceConfig)
+		source, err := NewFromConfig(sourceConfig)
+		if err != nil {
+			return nil, err
+		}
+		sources[sourceName] = source
 	}
 
-	return sources
+	return sources, nil
 }
