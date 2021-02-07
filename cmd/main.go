@@ -2,6 +2,7 @@ package main
 
 import (
 	"rods/pkg/config"
+	"rods/pkg/source"
 	flag "github.com/spf13/pflag"
 	"github.com/sirupsen/logrus"
 )
@@ -28,5 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Infof("Config: %+v\n", config)
+	sources := source.NewFromConfigs(config.Sources)
+
+	log.Infof("Config: %+v\n", sources)
 }
