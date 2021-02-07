@@ -27,38 +27,57 @@ func NewCsv(
 		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
 	}
 
-	sourceReader, err := source.Open(config.Path)
+	csvInput := &Csv{
+		config: config,
+		source: source,
+	}
+
+	sourceReader, csvReader, err := csvInput.openSource()
 	if err != nil {
 		return nil, err
 	}
 
-	csvReader := csv.NewReader(sourceReader)
-	csvReader.Comma = []rune(config.Delimiter)[0]
-	csvReader.FieldsPerRecord = len(config.Columns)
+	csvInput.sourceReader = sourceReader
+	csvInput.csvReader = csvReader
 
-	return &Csv{
-		config: config,
-		source: source,
-		sourceReader: sourceReader,
-		csvReader: csvReader,
-	}, nil
+	return csvInput, nil
+}
+
+func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
+	sourceReader, err := csvInput.source.Open(csvInput.config.Path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	csvReader := csv.NewReader(sourceReader)
+	csvReader.Comma = []rune(csvInput.config.Delimiter)[0]
+	csvReader.FieldsPerRecord = len(csvInput.config.Columns)
+
+	return sourceReader, csvReader, nil
 }
 
 func (csvInput *Csv) IterateAll() (chan []string, chan error) {
-	rowsChannel := make(chan []string, 10)
+	rowsChannel := make(chan []string)
 	errorsChannel := make(chan error)
 
 	go func() {
 		defer close(rowsChannel)
 		defer close(errorsChannel)
 
-		csvInput.sourceReader.Seek(0, io.SeekStart)
+		sourceReader, csvReader, err := csvInput.openSource()
+		if err != nil {
+			errorsChannel <- err
+			return
+		}
+		defer csvInput.source.CloseReader(sourceReader)
+
+		sourceReader.Seek(0, io.SeekStart)
 		if csvInput.config.IgnoreFirstRow {
-			_, _ = csvInput.csvReader.Read()
+			_, _ = csvReader.Read()
 		}
 
 		for {
-			row, err := csvInput.csvReader.Read()
+			row, err := csvReader.Read()
 			if err == io.EOF {
 				break
 			} else if err == csv.ErrFieldCount {

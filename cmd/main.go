@@ -9,7 +9,7 @@ import (
 )
 
 // TODO go fmt
-// TODO test csv iterate function
+// TODO test csv iterate function + openSource
 // TODO csv parse the rows data according to the config
 
 func main() {
