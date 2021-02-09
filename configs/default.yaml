@@ -25,11 +25,11 @@ inputs:
           falseValues: ["false", "0", "no", "FALSE", "NO", ""]
 indexes:
   defaultIndexId:
-    memoryMapUnique:
+    memoryMap:
       input: defaultInput
       column: id
   defaultIndexName:
-    memoryMapMultiple:
+    memoryMap:
       input: defaultInput
       column: name
 services:
@@ -62,4 +62,4 @@ outputs:
     jsonObject:
       service: defaultService
       endpoint: "/dummies/?"
-      index: memoryMapUnique
+      index: defaultIndexName

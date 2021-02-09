@@ -6,8 +6,7 @@ import (
 )
 
 type IndexConfig struct{
-	MemoryMapUnique *MemoryMapUniqueIndexConfig `yaml:"memoryMapUnique"`
-	MemoryMapMultiple *MemoryMapMultipleIndexConfig `yaml:"memoryMapMultiple"`
+	MemoryMap *MemoryMapIndexConfig `yaml:"memoryMap"`
 }
 
 func (config *IndexConfig) validate(log *logrus.Logger) error {

@@ -4,12 +4,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type MemoryMapMultipleIndexConfig struct{
+type MemoryMapIndexConfig struct{
 	Input string `yaml:"input"`
 	Column string `yaml:"column"`
 }
 
-func (config *MemoryMapMultipleIndexConfig) validate(log *logrus.Logger) error {
+func (config *MemoryMapIndexConfig) validate(log *logrus.Logger) error {
 	// The input and column will be validated at runtime
 	return nil
 }
