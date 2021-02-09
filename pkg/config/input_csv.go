@@ -11,6 +11,7 @@ type CsvInputConfig struct{
 	IgnoreFirstRow bool `yaml:"ignoreFirstRow"`
 	Delimiter string `yaml:"delimiter"`
 	Columns []CsvInputColumnConfig `yaml:"columns"`
+	ColumnIndexByName map[string]int
 }
 
 type CsvInputColumnConfig struct{
@@ -37,17 +38,17 @@ func (config *CsvInputConfig) validate(log *logrus.Logger) error {
 		return errors.New("csv.delimiter must be a single character")
 	}
 
-	metColumns := make(map[string]struct{})
-	for _, column := range config.Columns {
+	config.ColumnIndexByName = make(map[string]int)
+	for columnIndex, column := range config.Columns {
 		err := column.validate(log)
 		if err != nil {
 			return err
 		}
 
-		if _, exists := metColumns[column.Name]; exists {
+		if _, exists := config.ColumnIndexByName[column.Name]; exists {
 			return errors.New("Column names must be unique. Found '" + column.Name + "' twice.")
 		}
-		metColumns[column.Name] = struct{}{}
+		config.ColumnIndexByName[column.Name] = columnIndex
 	}
 
 	return nil

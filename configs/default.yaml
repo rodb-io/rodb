@@ -58,8 +58,10 @@ outputs:
         name:
           index: defaultIndexName
         # TODO how to handle search over multiple indexes?
+        # TODO handle the filters even without index (basic search)
   defaultJsonObjectOutput:
     jsonObject:
       service: defaultService
       endpoint: "/dummies/?"
       index: defaultIndexName
+      # TODO handle this even without index (basic search)

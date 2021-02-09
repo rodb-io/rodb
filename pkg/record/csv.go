@@ -5,13 +5,25 @@ import (
 )
 
 type CsvRecord struct{
-	config []config.CsvInputColumnConfig
+	config *config.CsvInputConfig
 	data []string
 }
 
-func (record *CsvRecord) ColumnsCount() int {
-	return len(record.data)
+func (record *CsvRecord) GetString(field string) (string, bool) {
+	index, exists := record.config.ColumnIndexByName[field]
+	if !exists {
+		return "", false
+	}
+
+	if index >= len(record.data) {
+		return "", false
+	}
+
+	return record.data[index], true
 }
-// TODO fix test
-// TODO implement properly the record interface
-// TODO make the csv input recorn a record
+
+// TODO replace exists boolean return value with proper error
+// TODO implement other available types
+// TODO implement properly the record for csv
+// TODO implement the record interface
+// TODO use the record interface in the csv input return and test
