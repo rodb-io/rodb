@@ -10,10 +10,11 @@ type CsvInputConfig struct{
 	Path string `yaml:"path"`
 	IgnoreFirstRow bool `yaml:"ignoreFirstRow"`
 	Delimiter string `yaml:"delimiter"`
-	Columns map[string]CsvInputColumnConfig `yaml:"columns"`
+	Columns []CsvInputColumnConfig `yaml:"columns"`
 }
 
 type CsvInputColumnConfig struct{
+	Name string `yaml:"name"`
 	Type string `yaml:"type"`
 	IgnoreCharacters string `yaml:"ignoreCharacters"`
 	DecimalSeparator string `yaml:"decimalSeparator"`
@@ -36,17 +37,27 @@ func (config *CsvInputConfig) validate(log *logrus.Logger) error {
 		return errors.New("csv.delimiter must be a single character")
 	}
 
+	metColumns := make(map[string]struct{})
 	for _, column := range config.Columns {
 		err := column.validate(log)
 		if err != nil {
 			return err
 		}
+
+		if _, exists := metColumns[column.Name]; exists {
+			return errors.New("Column names must be unique. Found '" + column.Name + "' twice.")
+		}
+		metColumns[column.Name] = struct{}{}
 	}
 
 	return nil
 }
 
 func (config *CsvInputColumnConfig) validate(log *logrus.Logger) error {
+	if config.Name == "" {
+		return errors.New("csv.columns[].name is required")
+	}
+
 	if config.Type == "" {
 		log.Warn("csv.columns[].type not defined. Assuming 'string'")
 		config.Type = "string"

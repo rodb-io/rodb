@@ -46,9 +46,9 @@ func TestIterateAll(t *testing.T) {
 				Path: "test",
 				IgnoreFirstRow: false,
 				Delimiter: ",",
-				Columns: map[string]config.CsvInputColumnConfig{
-					"a": { Type: "string" },
-					"b": { Type: "string" },
+				Columns: []config.CsvInputColumnConfig{
+					{ Name: "a", Type: "string" },
+					{ Name: "b", Type: "string" },
 				},
 			}
 			csv, err := NewCsv(config, source, logrus.StandardLogger())

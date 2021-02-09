@@ -9,7 +9,7 @@ import (
 )
 
 // TODO go fmt
-// TODO test csv iterate function + cannot break the IterateAll by seeking in the middle
+// TODO test cannot break IterateAll by seeking in the middle
 // TODO csv parse the rows data according to the config
 
 func main() {

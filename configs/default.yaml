@@ -10,16 +10,16 @@ inputs:
       ignoreFirstRow: true
       delimiter: ","
       columns:
-        id:
+        - name: id
           type: integer
           ignoreCharacters: ", .€$"
-        name:
+        - name: name
           type: string
-        number:
+        - name: number
           type: float
           decimalSeparator: "."
           ignoreCharacters: ", "
-        bool:
+        - name: bool
           type: boolean
           trueValues: ["true", "1", "yes", "TRUE", "YES"]
           falseValues: ["false", "0", "no", "FALSE", "NO", ""]

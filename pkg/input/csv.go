@@ -49,6 +49,7 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	csvReader := csv.NewReader(sourceReader)
 	csvReader.Comma = []rune(csvInput.config.Delimiter)[0]
 	csvReader.FieldsPerRecord = len(csvInput.config.Columns)
+	csvReader.ReuseRecord = false
 
 	return sourceReader, csvReader, nil
 }
