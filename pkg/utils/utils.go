@@ -21,3 +21,19 @@ func IsInArray(value string, array []string) bool {
 
 	return false
 }
+
+func PString(s string) *string {
+	return &s
+}
+
+func PInt(i int) *int {
+	return &i
+}
+
+func PFloat(f float64) *float64 {
+	return &f
+}
+
+func PBool(b bool) *bool {
+	return &b
+}

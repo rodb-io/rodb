@@ -7,6 +7,7 @@ import (
 	"io"
 	"rods/pkg/config"
 	"rods/pkg/source"
+	"rods/pkg/record"
 	"github.com/sirupsen/logrus"
 )
 
@@ -54,8 +55,8 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	return sourceReader, csvReader, nil
 }
 
-func (csvInput *Csv) IterateAll() (<-chan []string, <-chan error) {
-	rowsChannel := make(chan []string)
+func (csvInput *Csv) IterateAll() (<-chan *record.CsvRecord, <-chan error) {
+	rowsChannel := make(chan *record.CsvRecord)
 	errorsChannel := make(chan error)
 
 	go func() {
@@ -85,7 +86,7 @@ func (csvInput *Csv) IterateAll() (<-chan []string, <-chan error) {
 				return
 			}
 
-			rowsChannel <- row
+			rowsChannel <- record.NewCsvRecord(csvInput.config, row)
 		}
 	}()
 
