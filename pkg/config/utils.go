@@ -54,14 +54,3 @@ func checkDuplicateEndpointsPerService(outputConfigs map[string]OutputConfig) er
 
 	return nil
 }
-
-func isCsvInputColumnTypeValid(typeToCheck string) bool {
-	types := []string {"string", "integer", "float", "boolean"}
-	for _, definedType := range types {
-		if definedType == typeToCheck {
-			return true
-		}
-	}
-
-	return false
-}

@@ -60,7 +60,10 @@ func TestIterateAll(t *testing.T) {
 			for i := 0; i < len(testCase.expectedRows); i++ {
 				select {
 					case row := <-rows:
-						for j := 0; j < len(testCase.expectedRows); j++ {
+						if len(row) != len(testCase.expectedRows[i]) {
+							t.Errorf("Received row have %v columns, expected %v", len(row), len(testCase.expectedRows[i]))
+						}
+						for j := 0; j < len(row) && j < len(testCase.expectedRows); j++ {
 							if row[j] != testCase.expectedRows[i][j] {
 								t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", row[j], testCase.expectedRows[i][j], i, j)
 							}

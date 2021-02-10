@@ -68,21 +68,3 @@ func TestCheckDuplicateEndpointsPerService(t *testing.T) {
 		}
 	})
 }
-
-func TestIsCsvInputColumnTypeValid(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		if result := isCsvInputColumnTypeValid("string"); !result {
-			t.Fail()
-		}
-	})
-	t.Run("invalid", func(t *testing.T) {
-		if result := isCsvInputColumnTypeValid("invalid"); result {
-			t.Fail()
-		}
-	})
-	t.Run("empty", func(t *testing.T) {
-		if result := isCsvInputColumnTypeValid(""); result {
-			t.Fail()
-		}
-	})
-}

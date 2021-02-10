@@ -12,6 +12,7 @@ import (
 // TODO test cannot break IterateAll by seeking in the middle
 // TODO csv parse the rows data according to the config
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
+// TODO use the record interface in the csv input return and test
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")

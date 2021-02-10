@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/utils"
 )
 
 type CsvInputConfig struct{
@@ -64,7 +65,10 @@ func (config *CsvInputColumnConfig) validate(log *logrus.Logger) error {
 		config.Type = "string"
 	}
 
-	if !isCsvInputColumnTypeValid(config.Type) {
+	if !utils.IsInArray(
+		config.Type,
+		[]string {"string", "integer", "float", "boolean"},
+	) {
 		return errors.New("csv.columns[].type = '" + config.Type + "' is invalid")
 	}
 
