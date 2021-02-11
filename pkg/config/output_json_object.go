@@ -2,14 +2,14 @@ package config
 
 import (
 	"errors"
-	"strings"
 	"github.com/sirupsen/logrus"
+	"strings"
 )
 
-type JsonObjectOutputConfig struct{
-	Service string `yaml:"service"`
+type JsonObjectOutputConfig struct {
+	Service  string `yaml:"service"`
 	Endpoint string `yaml:"endpoint"`
-	Index string `yaml:"index"`
+	Index    string `yaml:"index"`
 }
 
 func (config *JsonObjectOutputConfig) validate(log *logrus.Logger) error {

@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type FilesystemSourceConfig struct{
+type FilesystemSourceConfig struct {
 	Path string `yaml:"path"`
 }
 

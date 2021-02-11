@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type Mock struct{
+type Mock struct {
 	data string
 }
 

@@ -6,14 +6,14 @@ import (
 
 func TestGetAllNonNilFields(t *testing.T) {
 	t.Run("one", func(t *testing.T) {
-		data := &ServiceConfig{ Http: &HttpServiceConfig{} }
+		data := &ServiceConfig{Http: &HttpServiceConfig{}}
 		if got, expect := len(getAllNonNilFields(data)), 1; got != expect {
 			t.Errorf("Expected to get %v field, got %v", expect, got)
 		}
 	})
 	t.Run("many", func(t *testing.T) {
 		data := &OutputConfig{
-			JsonArray: &JsonArrayOutputConfig{},
+			JsonArray:  &JsonArrayOutputConfig{},
 			JsonObject: &JsonObjectOutputConfig{},
 		}
 		if got, expect := len(getAllNonNilFields(data)), 2; got != expect {
@@ -33,7 +33,7 @@ func TestCheckDuplicateEndpointsPerService(t *testing.T) {
 		data := map[string]OutputConfig{
 			"Test": {
 				JsonArray: &JsonArrayOutputConfig{
-					Service: "test",
+					Service:  "test",
 					Endpoint: "/",
 				},
 			},
@@ -46,13 +46,13 @@ func TestCheckDuplicateEndpointsPerService(t *testing.T) {
 		data := map[string]OutputConfig{
 			"Test": {
 				JsonArray: &JsonArrayOutputConfig{
-					Service: "test",
+					Service:  "test",
 					Endpoint: "/",
 				},
 			},
 			"Test2": {
 				JsonArray: &JsonArrayOutputConfig{
-					Service: "test",
+					Service:  "test",
 					Endpoint: "/",
 				},
 			},

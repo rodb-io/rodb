@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type InputConfig struct{
+type InputConfig struct {
 	Csv *CsvInputConfig `yaml:"csv"`
 }
 

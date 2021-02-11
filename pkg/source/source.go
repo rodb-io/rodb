@@ -2,9 +2,9 @@ package source
 
 import (
 	"errors"
-	"rods/pkg/config"
-	"io"
 	"github.com/sirupsen/logrus"
+	"io"
+	"rods/pkg/config"
 )
 
 type Source interface {

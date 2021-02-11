@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type IndexConfig struct{
+type IndexConfig struct {
 	MemoryMap *MemoryMapIndexConfig `yaml:"memoryMap"`
 }
 

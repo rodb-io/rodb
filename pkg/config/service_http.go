@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type HttpServiceConfig struct{
+type HttpServiceConfig struct {
 	Port uint16 `yaml:"port"`
 }
 

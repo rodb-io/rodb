@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ServiceConfig struct{
+type ServiceConfig struct {
 	Http *HttpServiceConfig `yaml:"http"`
 }
 

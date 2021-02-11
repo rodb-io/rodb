@@ -3,9 +3,9 @@ package input
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/source"
-	"github.com/sirupsen/logrus"
 )
 
 type Input interface {

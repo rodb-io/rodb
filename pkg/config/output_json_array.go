@@ -5,25 +5,25 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type JsonArrayOutputConfig struct{
-	Service string `yaml:"service"`
-	Endpoint string `yaml:"endpoint"`
-	Limit JsonArrayOutputLimitConfig `yaml:"limit"`
-	Offset JsonArrayOutputOffsetConfig `yaml:"offset"`
-	Search map[string]JsonArrayOutputSearchConfig `yaml:"search"`
+type JsonArrayOutputConfig struct {
+	Service  string                                 `yaml:"service"`
+	Endpoint string                                 `yaml:"endpoint"`
+	Limit    JsonArrayOutputLimitConfig             `yaml:"limit"`
+	Offset   JsonArrayOutputOffsetConfig            `yaml:"offset"`
+	Search   map[string]JsonArrayOutputSearchConfig `yaml:"search"`
 }
 
-type JsonArrayOutputLimitConfig struct{
+type JsonArrayOutputLimitConfig struct {
 	Default uint
-	Max uint
+	Max     uint
+	Param   string
+}
+
+type JsonArrayOutputOffsetConfig struct {
 	Param string
 }
 
-type JsonArrayOutputOffsetConfig struct{
-	Param string
-}
-
-type JsonArrayOutputSearchConfig struct{
+type JsonArrayOutputSearchConfig struct {
 	Index string
 }
 

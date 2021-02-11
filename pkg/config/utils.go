@@ -2,11 +2,11 @@ package config
 
 import (
 	"errors"
-	"reflect"
 	"github.com/sirupsen/logrus"
+	"reflect"
 )
 
-type validable interface{
+type validable interface {
 	validate(log *logrus.Logger) error
 }
 

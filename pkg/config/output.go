@@ -5,9 +5,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type OutputConfig struct{
-	GraphQL *GraphQLOutputConfig `yaml:"graphql"`
-	JsonArray *JsonArrayOutputConfig `yaml:"jsonArray"`
+type OutputConfig struct {
+	GraphQL    *GraphQLOutputConfig    `yaml:"graphql"`
+	JsonArray  *JsonArrayOutputConfig  `yaml:"jsonArray"`
 	JsonObject *JsonObjectOutputConfig `yaml:"jsonObject"`
 }
 

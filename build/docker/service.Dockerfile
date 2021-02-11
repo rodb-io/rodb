@@ -25,6 +25,8 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     go mod vendor \
     && go build -v -o /rods ./cmd/main.go
 
+RUN if [ "$(go fmt ./... | wc -l)" -gt 0 ]; then echo "Invalid code-style. Please run 'go fmt ./...'" && exit 1; fi
+
 RUN go test ./...
 
 FROM scratch

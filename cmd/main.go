@@ -1,14 +1,13 @@
 package main
 
 import (
-	"rods/pkg/config"
-	"rods/pkg/source"
-	"rods/pkg/input"
-	flag "github.com/spf13/pflag"
 	"github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
+	"rods/pkg/config"
+	"rods/pkg/input"
+	"rods/pkg/source"
 )
 
-// TODO go fmt
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 
 func main() {

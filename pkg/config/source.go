@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type SourceConfig struct{
+type SourceConfig struct {
 	Filesystem *FilesystemSourceConfig `yaml:"filesystem"`
 }
 

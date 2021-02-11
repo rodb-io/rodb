@@ -5,8 +5,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type GraphQLOutputConfig struct{
-	Service string `yaml:"service"`
+type GraphQLOutputConfig struct {
+	Service  string `yaml:"service"`
 	Endpoint string `yaml:"endpoint"`
 }
 

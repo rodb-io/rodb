@@ -4,8 +4,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type MemoryMapIndexConfig struct{
-	Input string `yaml:"input"`
+type MemoryMapIndexConfig struct {
+	Input  string `yaml:"input"`
 	Column string `yaml:"column"`
 }
 

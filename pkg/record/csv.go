@@ -2,21 +2,21 @@ package record
 
 import (
 	"errors"
-	"strconv"
-	"strings"
 	"rods/pkg/config"
 	"rods/pkg/utils"
+	"strconv"
+	"strings"
 )
 
-type CsvRecord struct{
+type CsvRecord struct {
 	config *config.CsvInputConfig
-	data []string
+	data   []string
 }
 
 func NewCsvRecord(config *config.CsvInputConfig, data []string) *CsvRecord {
 	return &CsvRecord{
 		config: config,
-		data: data,
+		data:   data,
 	}
 }
 

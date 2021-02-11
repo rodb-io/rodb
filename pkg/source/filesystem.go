@@ -2,14 +2,14 @@ package source
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"path/filepath"
 	"rods/pkg/config"
-	"github.com/sirupsen/logrus"
 )
 
-type Filesystem struct{
+type Filesystem struct {
 	config *config.FilesystemSourceConfig
 	logger *logrus.Logger
 	opened map[io.ReadSeeker]*os.File

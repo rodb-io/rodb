@@ -6,22 +6,22 @@ import (
 	"rods/pkg/utils"
 )
 
-type CsvInputConfig struct{
-	Source string `yaml:"source"`
-	Path string `yaml:"path"`
-	IgnoreFirstRow bool `yaml:"ignoreFirstRow"`
-	Delimiter string `yaml:"delimiter"`
-	Columns []CsvInputColumnConfig `yaml:"columns"`
+type CsvInputConfig struct {
+	Source            string                 `yaml:"source"`
+	Path              string                 `yaml:"path"`
+	IgnoreFirstRow    bool                   `yaml:"ignoreFirstRow"`
+	Delimiter         string                 `yaml:"delimiter"`
+	Columns           []CsvInputColumnConfig `yaml:"columns"`
 	ColumnIndexByName map[string]int
 }
 
-type CsvInputColumnConfig struct{
-	Name string `yaml:"name"`
-	Type string `yaml:"type"`
-	IgnoreCharacters string `yaml:"ignoreCharacters"`
-	DecimalSeparator string `yaml:"decimalSeparator"`
-	TrueValues []string `yaml:"trueValues"`
-	FalseValues []string `yaml:"falseValues"`
+type CsvInputColumnConfig struct {
+	Name             string   `yaml:"name"`
+	Type             string   `yaml:"type"`
+	IgnoreCharacters string   `yaml:"ignoreCharacters"`
+	DecimalSeparator string   `yaml:"decimalSeparator"`
+	TrueValues       []string `yaml:"trueValues"`
+	FalseValues      []string `yaml:"falseValues"`
 }
 
 func (config *CsvInputConfig) validate(log *logrus.Logger) error {
@@ -67,7 +67,7 @@ func (config *CsvInputColumnConfig) validate(log *logrus.Logger) error {
 
 	if !utils.IsInArray(
 		config.Type,
-		[]string {"string", "integer", "float", "boolean"},
+		[]string{"string", "integer", "float", "boolean"},
 	) {
 		return errors.New("csv.columns[].type = '" + config.Type + "' is invalid")
 	}

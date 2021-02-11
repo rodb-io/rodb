@@ -4,19 +4,19 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
 	"rods/pkg/config"
-	"rods/pkg/source"
 	"rods/pkg/record"
-	"github.com/sirupsen/logrus"
+	"rods/pkg/source"
 )
 
-type Csv struct{
-	config *config.CsvInputConfig
-	source source.Source
-	logger *logrus.Logger
+type Csv struct {
+	config       *config.CsvInputConfig
+	source       source.Source
+	logger       *logrus.Logger
 	sourceReader io.ReadSeeker
-	csvReader *csv.Reader
+	csvReader    *csv.Reader
 }
 
 func NewCsv(

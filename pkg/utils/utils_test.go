@@ -24,22 +24,22 @@ func TestRemoveCharacters(t *testing.T) {
 
 func TestIsInArray(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		if result := IsInArray("string", []string { "a", "string" }); !result {
+		if result := IsInArray("string", []string{"a", "string"}); !result {
 			t.Fail()
 		}
 	})
 	t.Run("invalid", func(t *testing.T) {
-		if result := IsInArray("invalid", []string { "string" }); result {
+		if result := IsInArray("invalid", []string{"string"}); result {
 			t.Fail()
 		}
 	})
 	t.Run("empty value", func(t *testing.T) {
-		if result := IsInArray("", []string { "string" }); result {
+		if result := IsInArray("", []string{"string"}); result {
 			t.Fail()
 		}
 	})
 	t.Run("empty array", func(t *testing.T) {
-		if result := IsInArray("string", []string {}); result {
+		if result := IsInArray("string", []string{}); result {
 			t.Fail()
 		}
 	})

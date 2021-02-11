@@ -2,19 +2,19 @@ package config
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"strings"
-	yaml "gopkg.in/yaml.v2"
-	"github.com/sirupsen/logrus"
 )
 
-type Config struct{
-	Sources map[string]SourceConfig
-	Inputs map[string]InputConfig
-	Indexes map[string]IndexConfig
+type Config struct {
+	Sources  map[string]SourceConfig
+	Inputs   map[string]InputConfig
+	Indexes  map[string]IndexConfig
 	Services map[string]ServiceConfig
-	Outputs map[string]OutputConfig
+	Outputs  map[string]OutputConfig
 }
 
 func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
