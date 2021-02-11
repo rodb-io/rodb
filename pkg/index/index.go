@@ -12,7 +12,7 @@ type Index interface {
 	Close() error
 }
 
-type IndexList = map[string]Index
+type List = map[string]Index
 
 func NewFromConfig(
 	config config.Index,
@@ -27,10 +27,10 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Index,
-	inputs input.InputList,
+	inputs input.List,
 	log *logrus.Logger,
-) (IndexList, error) {
-	sources := make(IndexList)
+) (List, error) {
+	sources := make(List)
 	for sourceName, sourceConfig := range configs {
 		index, err := NewFromConfig(sourceConfig, log)
 		if err != nil {
@@ -48,7 +48,7 @@ func NewFromConfigs(
 	return sources, nil
 }
 
-func Close(sources IndexList) error {
+func Close(sources List) error {
 	for _, index := range sources {
 		err := index.Close()
 		if err != nil {

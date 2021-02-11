@@ -12,11 +12,11 @@ type Input interface {
 	Close() error
 }
 
-type InputList = map[string]Input
+type List = map[string]Input
 
 func NewFromConfig(
 	config config.Input,
-	sources source.SourceList,
+	sources source.List,
 	log *logrus.Logger,
 ) (Input, error) {
 	if config.Csv != nil {
@@ -32,10 +32,10 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Input,
-	sources source.SourceList,
+	sources source.List,
 	log *logrus.Logger,
-) (InputList, error) {
-	inputs := make(InputList)
+) (List, error) {
+	inputs := make(List)
 	for inputName, inputConfig := range configs {
 		input, err := NewFromConfig(inputConfig, sources, log)
 		if err != nil {
@@ -47,7 +47,7 @@ func NewFromConfigs(
 	return inputs, nil
 }
 
-func Close(inputs InputList) error {
+func Close(inputs List) error {
 	for _, input := range inputs {
 		err := input.Close()
 		if err != nil {

@@ -13,7 +13,7 @@ type Source interface {
 	CloseReader(reader io.ReadSeeker) error
 }
 
-type SourceList = map[string]Source
+type List = map[string]Source
 
 func NewFromConfig(
 	config config.Source,
@@ -29,8 +29,8 @@ func NewFromConfig(
 func NewFromConfigs(
 	configs map[string]config.Source,
 	log *logrus.Logger,
-) (SourceList, error) {
-	sources := make(SourceList)
+) (List, error) {
+	sources := make(List)
 	for sourceName, sourceConfig := range configs {
 		source, err := NewFromConfig(sourceConfig, log)
 		if err != nil {
@@ -42,7 +42,7 @@ func NewFromConfigs(
 	return sources, nil
 }
 
-func Close(sources SourceList) error {
+func Close(sources List) error {
 	for _, source := range sources {
 		err := source.Close()
 		if err != nil {
