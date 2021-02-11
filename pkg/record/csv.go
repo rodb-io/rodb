@@ -40,7 +40,13 @@ func (record *Csv) getField(field string) (*string, int, error) {
 }
 
 func (record *Csv) GetString(field string) (*string, error) {
-	value, _, err := record.getField(field)
+	value, fieldIndex, err := record.getField(field)
+
+	columnConfig := record.config.Columns[fieldIndex]
+	if columnConfig.Type != "string" {
+		return nil, errors.New("The column '" + field + "' is not a string")
+	}
+
 	return value, err
 }
 
@@ -51,8 +57,11 @@ func (record *Csv) GetInteger(field string) (*int, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
+	if columnConfig.Type != "integer" {
+		return nil, errors.New("The column '" + field + "' is not an integer")
+	}
 
+	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
 	intValue, err := strconv.Atoi(cleanedValue)
 	if err != nil {
 		return nil, err
@@ -68,8 +77,11 @@ func (record *Csv) GetFloat(field string) (*float64, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
+	if columnConfig.Type != "float" {
+		return nil, errors.New("The column '" + field + "' is not a float")
+	}
 
+	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
 	if columnConfig.DecimalSeparator != "." {
 		cleanedValue = strings.ReplaceAll(cleanedValue, columnConfig.DecimalSeparator, ".")
 	}
@@ -89,6 +101,10 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
+	if columnConfig.Type != "boolean" {
+		return nil, errors.New("The column '" + field + "' is not a boolean")
+	}
+
 	if util.IsInArray(*value, columnConfig.TrueValues) {
 		return util.PBool(true), nil
 	}

@@ -23,8 +23,8 @@ func NewMemoryMap(
 }
 
 func (mm *MemoryMap) Prepare() bool {
-	// TODO in record: check type and emit error in GetXXX if wrong type
 	// TODO in record: have a generic GetXXX that returns an interface{} with the right type
+	// TODO test all of the index classes (+ add necessary mocks)
 }
 
 func (mm *MemoryMap) DoesIndex(inputName string, columnName string) bool {
