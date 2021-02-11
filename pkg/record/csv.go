@@ -115,6 +115,29 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 	return nil, errors.New("The value '" + *value + "' was found but is neither declared in trueValues or falseValues.")
 }
 
+func (record *Csv) Get(field string) (interface{}, error) {
+	fieldIndex, exists := record.config.ColumnIndexByName[field]
+	if !exists {
+		return nil, errors.New("The column '" + field + "' does not exist.")
+	}
+
+	columnConfig := record.config.Columns[fieldIndex]
+	if columnConfig.Type == "string" {
+		return record.GetString(field)
+	}
+	if columnConfig.Type == "integer" {
+		return record.GetInteger(field)
+	}
+	if columnConfig.Type == "float" {
+		return record.GetFloat(field)
+	}
+	if columnConfig.Type == "boolean" {
+		return record.GetBoolean(field)
+	}
+
+	return nil, errors.New("Unknown type '" + columnConfig.Type + "' in CsvRecord.Get")
+}
+
 func (record *Csv) Position() Position {
 	return record.position
 }
