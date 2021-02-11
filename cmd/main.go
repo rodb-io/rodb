@@ -6,6 +6,7 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/source"
+	"rods/pkg/index"
 )
 
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
@@ -44,6 +45,13 @@ func main() {
 		return
 	}
 	defer input.Close(inputs)
+
+	indexes, err := index.NewFromConfigs(config.Indexes, inputs, log)
+	if err != nil {
+		log.Errorf("Error initializing indexes: %v", err)
+		return
+	}
+	defer index.Close(indexes)
 
 	log.Infof("Inputs: %+v\n", inputs)
 }
