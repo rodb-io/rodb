@@ -1,6 +1,7 @@
 package input
 
 import (
+	"io"
 	"testing"
 	"rods/pkg/config"
 	"rods/pkg/source"
@@ -80,6 +81,9 @@ func TestIterateAll(t *testing.T) {
 					case err := <-errors:
 						t.Error(err)
 				}
+
+				// Asserts that IterateAll does not fail with concurrent accesses
+				csv.sourceReader.Seek(0, io.SeekStart)
 			}
 		})
 	}

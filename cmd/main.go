@@ -9,8 +9,6 @@ import (
 )
 
 // TODO go fmt
-// TODO test cannot break IterateAll by seeking in the middle
-// TODO csv parse the rows data according to the config
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 
 func main() {
