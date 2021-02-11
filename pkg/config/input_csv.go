@@ -3,19 +3,19 @@ package config
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
-	"rods/pkg/utils"
+	"rods/pkg/util"
 )
 
-type CsvInputConfig struct {
-	Source            string                 `yaml:"source"`
-	Path              string                 `yaml:"path"`
-	IgnoreFirstRow    bool                   `yaml:"ignoreFirstRow"`
-	Delimiter         string                 `yaml:"delimiter"`
-	Columns           []CsvInputColumnConfig `yaml:"columns"`
+type CsvInput struct {
+	Source            string           `yaml:"source"`
+	Path              string           `yaml:"path"`
+	IgnoreFirstRow    bool             `yaml:"ignoreFirstRow"`
+	Delimiter         string           `yaml:"delimiter"`
+	Columns           []CsvInputColumn `yaml:"columns"`
 	ColumnIndexByName map[string]int
 }
 
-type CsvInputColumnConfig struct {
+type CsvInputColumn struct {
 	Name             string   `yaml:"name"`
 	Type             string   `yaml:"type"`
 	IgnoreCharacters string   `yaml:"ignoreCharacters"`
@@ -24,7 +24,7 @@ type CsvInputColumnConfig struct {
 	FalseValues      []string `yaml:"falseValues"`
 }
 
-func (config *CsvInputConfig) validate(log *logrus.Logger) error {
+func (config *CsvInput) validate(log *logrus.Logger) error {
 	// The source and path will be validated at runtime
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")
@@ -55,7 +55,7 @@ func (config *CsvInputConfig) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *CsvInputColumnConfig) validate(log *logrus.Logger) error {
+func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 	if config.Name == "" {
 		return errors.New("csv.columns[].name is required")
 	}
@@ -65,7 +65,7 @@ func (config *CsvInputColumnConfig) validate(log *logrus.Logger) error {
 		config.Type = "string"
 	}
 
-	if !utils.IsInArray(
+	if !util.IsInArray(
 		config.Type,
 		[]string{"string", "integer", "float", "boolean"},
 	) {

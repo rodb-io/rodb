@@ -4,10 +4,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type HttpServiceConfig struct {
+type HttpService struct {
 	Port uint16 `yaml:"port"`
 }
 
-func (config *HttpServiceConfig) validate(log *logrus.Logger) error {
+func (config *HttpService) validate(log *logrus.Logger) error {
 	return nil
 }

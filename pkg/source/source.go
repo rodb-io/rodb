@@ -16,7 +16,7 @@ type Source interface {
 type SourceList = map[string]Source
 
 func NewFromConfig(
-	config config.SourceConfig,
+	config config.Source,
 	log *logrus.Logger,
 ) (Source, error) {
 	if config.Filesystem != nil {
@@ -27,7 +27,7 @@ func NewFromConfig(
 }
 
 func NewFromConfigs(
-	configs map[string]config.SourceConfig,
+	configs map[string]config.Source,
 	log *logrus.Logger,
 ) (SourceList, error) {
 	sources := make(SourceList)

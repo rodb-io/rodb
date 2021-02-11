@@ -28,7 +28,7 @@ func getAllNonNilFields(config interface{}) []validable {
 	return nonNilFields
 }
 
-func checkDuplicateEndpointsPerService(outputConfigs map[string]OutputConfig) error {
+func checkDuplicateEndpointsPerService(outputConfigs map[string]Output) error {
 	endpointsPerService := make(map[string]map[string]interface{})
 	for _, outputConfigContainer := range outputConfigs {
 		outputConfig := reflect.ValueOf(getAllNonNilFields(outputConfigContainer)[0])

@@ -5,11 +5,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ServiceConfig struct {
-	Http *HttpServiceConfig `yaml:"http"`
+type Service struct {
+	Http *HttpService `yaml:"http"`
 }
 
-func (config *ServiceConfig) validate(log *logrus.Logger) error {
+func (config *Service) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

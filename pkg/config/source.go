@@ -5,11 +5,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type SourceConfig struct {
-	Filesystem *FilesystemSourceConfig `yaml:"filesystem"`
+type Source struct {
+	Filesystem *FilesystemSource `yaml:"filesystem"`
 }
 
-func (config *SourceConfig) validate(log *logrus.Logger) error {
+func (config *Source) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

@@ -5,29 +5,29 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type JsonArrayOutputConfig struct {
-	Service  string                                 `yaml:"service"`
-	Endpoint string                                 `yaml:"endpoint"`
-	Limit    JsonArrayOutputLimitConfig             `yaml:"limit"`
-	Offset   JsonArrayOutputOffsetConfig            `yaml:"offset"`
-	Search   map[string]JsonArrayOutputSearchConfig `yaml:"search"`
+type JsonArrayOutput struct {
+	Service  string                           `yaml:"service"`
+	Endpoint string                           `yaml:"endpoint"`
+	Limit    JsonArrayOutputLimit             `yaml:"limit"`
+	Offset   JsonArrayOutputOffset            `yaml:"offset"`
+	Search   map[string]JsonArrayOutputSearch `yaml:"search"`
 }
 
-type JsonArrayOutputLimitConfig struct {
+type JsonArrayOutputLimit struct {
 	Default uint
 	Max     uint
 	Param   string
 }
 
-type JsonArrayOutputOffsetConfig struct {
+type JsonArrayOutputOffset struct {
 	Param string
 }
 
-type JsonArrayOutputSearchConfig struct {
+type JsonArrayOutputSearch struct {
 	Index string
 }
 
-func (config *JsonArrayOutputConfig) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutput) validate(log *logrus.Logger) error {
 	// The service will be validated at runtime
 
 	if config.Endpoint == "" {
@@ -54,7 +54,7 @@ func (config *JsonArrayOutputConfig) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputLimitConfig) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputLimit) validate(log *logrus.Logger) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")
 		config.Default = 100
@@ -73,7 +73,7 @@ func (config *JsonArrayOutputLimitConfig) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputOffsetConfig) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputOffset) validate(log *logrus.Logger) error {
 	if config.Param == "" {
 		log.Debug("jsonArray.offset.param not set. Assuming 'offset'")
 		config.Param = "offset"
@@ -82,7 +82,7 @@ func (config *JsonArrayOutputOffsetConfig) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputSearchConfig) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputSearch) validate(log *logrus.Logger) error {
 	// The index will be validated at runtime
 	return nil
 }

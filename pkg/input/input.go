@@ -15,7 +15,7 @@ type Input interface {
 type InputList = map[string]Input
 
 func NewFromConfig(
-	config config.InputConfig,
+	config config.Input,
 	sources source.SourceList,
 	log *logrus.Logger,
 ) (Input, error) {
@@ -31,13 +31,13 @@ func NewFromConfig(
 }
 
 func NewFromConfigs(
-	configs map[string]config.InputConfig,
+	configs map[string]config.Input,
 	sources source.SourceList,
 	log *logrus.Logger,
 ) (InputList, error) {
 	inputs := make(InputList)
-	for inputName, InputConfig := range configs {
-		input, err := NewFromConfig(InputConfig, sources, log)
+	for inputName, inputConfig := range configs {
+		input, err := NewFromConfig(inputConfig, sources, log)
 		if err != nil {
 			return nil, err
 		}

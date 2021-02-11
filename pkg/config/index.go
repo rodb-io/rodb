@@ -5,11 +5,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type IndexConfig struct {
-	MemoryMap *MemoryMapIndexConfig `yaml:"memoryMap"`
+type Index struct {
+	MemoryMap *MemoryMapIndex `yaml:"memoryMap"`
 }
 
-func (config *IndexConfig) validate(log *logrus.Logger) error {
+func (config *Index) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

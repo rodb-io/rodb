@@ -10,13 +10,13 @@ import (
 )
 
 type Filesystem struct {
-	config *config.FilesystemSourceConfig
+	config *config.FilesystemSource
 	logger *logrus.Logger
 	opened map[io.ReadSeeker]*os.File
 }
 
 func NewFilesystem(
-	config *config.FilesystemSourceConfig,
+	config *config.FilesystemSource,
 	log *logrus.Logger,
 ) (*Filesystem, error) {
 	return &Filesystem{

@@ -10,11 +10,11 @@ import (
 )
 
 type Config struct {
-	Sources  map[string]SourceConfig
-	Inputs   map[string]InputConfig
-	Indexes  map[string]IndexConfig
-	Services map[string]ServiceConfig
-	Outputs  map[string]OutputConfig
+	Sources  map[string]Source
+	Inputs   map[string]Input
+	Indexes  map[string]Index
+	Services map[string]Service
+	Outputs  map[string]Output
 }
 
 func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {

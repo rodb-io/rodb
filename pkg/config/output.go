@@ -5,13 +5,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type OutputConfig struct {
-	GraphQL    *GraphQLOutputConfig    `yaml:"graphql"`
-	JsonArray  *JsonArrayOutputConfig  `yaml:"jsonArray"`
-	JsonObject *JsonObjectOutputConfig `yaml:"jsonObject"`
+type Output struct {
+	GraphQL    *GraphQLOutput    `yaml:"graphql"`
+	JsonArray  *JsonArrayOutput  `yaml:"jsonArray"`
+	JsonObject *JsonObjectOutput `yaml:"jsonObject"`
 }
 
-func (config *OutputConfig) validate(log *logrus.Logger) error {
+func (config *Output) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

@@ -5,11 +5,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type InputConfig struct {
-	Csv *CsvInputConfig `yaml:"csv"`
+type Input struct {
+	Csv *CsvInput `yaml:"csv"`
 }
 
-func (config *InputConfig) validate(log *logrus.Logger) error {
+func (config *Input) validate(log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

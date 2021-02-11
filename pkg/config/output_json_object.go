@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-type JsonObjectOutputConfig struct {
+type JsonObjectOutput struct {
 	Service  string `yaml:"service"`
 	Endpoint string `yaml:"endpoint"`
 	Index    string `yaml:"index"`
 }
 
-func (config *JsonObjectOutputConfig) validate(log *logrus.Logger) error {
+func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 	// The service will be validated at runtime
 	// The index will be validated at runtime
 

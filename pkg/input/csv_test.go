@@ -5,7 +5,7 @@ import (
 	"io"
 	"rods/pkg/config"
 	"rods/pkg/source"
-	"rods/pkg/utils"
+	"rods/pkg/util"
 	"testing"
 )
 
@@ -18,7 +18,7 @@ func TestIterateAll(t *testing.T) {
 		{
 			name:         "normal",
 			file:         "test1,\"test2\"\n\"test\"\"3\",test 4",
-			expectedRows: [][]*string{{utils.PString("test1"), utils.PString("test2")}, {utils.PString("test\"3"), utils.PString("test 4")}},
+			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test\"3"), util.PString("test 4")}},
 		}, {
 			name:         "empty",
 			file:         "",
@@ -26,29 +26,29 @@ func TestIterateAll(t *testing.T) {
 		}, {
 			name:         "empty row",
 			file:         "test1,test2\n\ntest3,test4",
-			expectedRows: [][]*string{{utils.PString("test1"), utils.PString("test2")}, {utils.PString("test3"), utils.PString("test4")}},
+			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4")}},
 		}, {
 			name:         "end after one row",
 			file:         "test1,test2",
-			expectedRows: [][]*string{{utils.PString("test1"), utils.PString("test2")}},
+			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}},
 		}, {
 			name:         "too many columns",
 			file:         "test1,test2\ntest3,test4,test5",
-			expectedRows: [][]*string{{utils.PString("test1"), utils.PString("test2")}, {utils.PString("test3"), utils.PString("test4"), utils.PString("test5")}},
+			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4"), util.PString("test5")}},
 		}, {
 			name:         "not enough columns",
 			file:         "test1,test2\ntest3",
-			expectedRows: [][]*string{{utils.PString("test1"), utils.PString("test2")}, {utils.PString("test3"), nil}},
+			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), nil}},
 		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			source := source.NewMock(testCase.file)
-			config := &config.CsvInputConfig{
+			config := &config.CsvInput{
 				Path:           "test",
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
-				Columns: []config.CsvInputColumnConfig{
+				Columns: []config.CsvInputColumn{
 					{Name: "a", Type: "string"},
 					{Name: "b", Type: "string"},
 				},

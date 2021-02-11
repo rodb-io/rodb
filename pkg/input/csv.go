@@ -12,7 +12,7 @@ import (
 )
 
 type Csv struct {
-	config       *config.CsvInputConfig
+	config       *config.CsvInput
 	source       source.Source
 	logger       *logrus.Logger
 	sourceReader io.ReadSeeker
@@ -20,7 +20,7 @@ type Csv struct {
 }
 
 func NewCsv(
-	config *config.CsvInputConfig,
+	config *config.CsvInput,
 	source source.Source,
 	log *logrus.Logger,
 ) (*Csv, error) {
@@ -55,8 +55,8 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	return sourceReader, csvReader, nil
 }
 
-func (csvInput *Csv) IterateAll() (<-chan *record.CsvRecord, <-chan error) {
-	rowsChannel := make(chan *record.CsvRecord)
+func (csvInput *Csv) IterateAll() (<-chan *record.Csv, <-chan error) {
+	rowsChannel := make(chan *record.Csv)
 	errorsChannel := make(chan error)
 
 	go func() {
@@ -86,7 +86,7 @@ func (csvInput *Csv) IterateAll() (<-chan *record.CsvRecord, <-chan error) {
 				return
 			}
 
-			rowsChannel <- record.NewCsvRecord(csvInput.config, row)
+			rowsChannel <- record.NewCsv(csvInput.config, row)
 		}
 	}()
 
