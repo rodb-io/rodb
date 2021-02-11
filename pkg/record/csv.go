@@ -11,12 +11,18 @@ import (
 type Csv struct {
 	config *config.CsvInput
 	data   []string
+	position Position
 }
 
-func NewCsv(config *config.CsvInput, data []string) *Csv {
+func NewCsv(
+	config *config.CsvInput,
+	data []string,
+	position Position,
+) *Csv {
 	return &Csv{
 		config: config,
 		data:   data,
+		position: position,
 	}
 }
 
@@ -91,4 +97,8 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 	}
 
 	return nil, errors.New("The value '" + *value + "' was found but is neither declared in trueValues or falseValues.")
+}
+
+func (record *Csv) Position() Position {
+	return record.position
 }

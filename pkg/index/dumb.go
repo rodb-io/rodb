@@ -18,6 +18,10 @@ func NewDumb(
 	}, nil
 }
 
+func (d *Dumb) Prepare() error {
+	return nil
+}
+
 func (d *Dumb) DoesIndex(inputName string, columnName string) bool {
 	return true
 }

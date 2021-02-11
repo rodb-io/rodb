@@ -86,7 +86,16 @@ func (csvInput *Csv) IterateAll() (<-chan *record.Csv, <-chan error) {
 				return
 			}
 
-			rowsChannel <- record.NewCsv(csvInput.config, row)
+			position, err := sourceReader.Seek(0, io.SeekCurrent)
+			if err != nil {
+				errorsChannel <- fmt.Errorf("Cannot read csv position: %v", err)
+			}
+
+			rowsChannel <- record.NewCsv(
+				csvInput.config,
+				row,
+				position,
+			)
 		}
 	}()
 

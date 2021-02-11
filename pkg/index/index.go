@@ -8,6 +8,7 @@ import (
 )
 
 type Index interface {
+	Prepare() error
 	DoesIndex(inputName string, columnName string) bool
 	Close() error
 }
