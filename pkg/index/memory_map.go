@@ -9,7 +9,7 @@ import (
 type MemoryMap struct {
 	config *config.MemoryMapIndex
 	logger *logrus.Logger
-	index map[interface{}]record.Position
+	index  map[interface{}]record.Position
 }
 
 func NewMemoryMap(
@@ -22,8 +22,8 @@ func NewMemoryMap(
 	}, nil
 }
 
-func (mm *MemoryMap) Prepare() bool {
-
+func (mm *MemoryMap) Prepare() error {
+	return nil
 }
 
 func (mm *MemoryMap) DoesIndex(inputName string, columnName string) bool {

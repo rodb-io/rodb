@@ -9,8 +9,8 @@ import (
 )
 
 type Csv struct {
-	config *config.CsvInput
-	data   []string
+	config   *config.CsvInput
+	data     []string
 	position Position
 }
 
@@ -20,8 +20,8 @@ func NewCsv(
 	position Position,
 ) *Csv {
 	return &Csv{
-		config: config,
-		data:   data,
+		config:   config,
+		data:     data,
 		position: position,
 	}
 }

@@ -1,6 +1,7 @@
 package record
 
 import (
+	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/util"
 	"testing"
@@ -38,9 +39,9 @@ var testConfig *config.CsvInput = &config.CsvInput{
 func TestGetString(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"string"}, 0)
-		expect := util.PString("string")
+		expect := "string"
 		got, err := record.GetString("col_a")
-		if *got != *expect {
+		if *got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -71,14 +72,25 @@ func TestGetString(t *testing.T) {
 			t.Errorf("Expected an error, got '%v'", got)
 		}
 	})
+	t.Run("via .Get", func(t *testing.T) {
+		record := NewCsv(testConfig, []string{"string"}, 0)
+		got, err := record.Get("col_a")
+		expect := util.PString("string")
+		if fmt.Sprintf("%v", got) == *expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+		if err != nil {
+			t.Errorf("Got error: '%v'", err)
+		}
+	})
 }
 
 func TestGetInteger(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "$ 123,456"}, 0)
-		expect := util.PInt(123456)
+		expect := 123456
 		got, err := record.GetInteger("col_b")
-		if *got != *expect {
+		if *got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -103,10 +115,21 @@ func TestGetInteger(t *testing.T) {
 		}
 	})
 	t.Run("error if wrong type", func(t *testing.T) {
-		record := NewCsv(testConfig, []string{}, 0)
+		record := NewCsv(testConfig, []string{"abc"}, 0)
 		got, err := record.GetInteger("col_a")
 		if err == nil {
 			t.Errorf("Expected an error, got '%v'", got)
+		}
+	})
+	t.Run("via .Get", func(t *testing.T) {
+		record := NewCsv(testConfig, []string{"", "$ 123,456"}, 0)
+		got, err := record.GetInteger("col_b")
+		expect := "123456"
+		if fmt.Sprintf("%v", got) == expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+		if err != nil {
+			t.Errorf("Got error: '%v'", err)
 		}
 	})
 }
@@ -114,9 +137,9 @@ func TestGetInteger(t *testing.T) {
 func TestGetFloat(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "", "1,234.56€"}, 0)
-		expect := util.PFloat(1234.56)
+		expect := 1234.56
 		got, err := record.GetFloat("col_c")
-		if *got != *expect {
+		if *got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -141,10 +164,21 @@ func TestGetFloat(t *testing.T) {
 		}
 	})
 	t.Run("error if wrong type", func(t *testing.T) {
-		record := NewCsv(testConfig, []string{}, 0)
+		record := NewCsv(testConfig, []string{"abc"}, 0)
 		got, err := record.GetFloat("col_a")
 		if err == nil {
 			t.Errorf("Expected an error, got '%v'", got)
+		}
+	})
+	t.Run("via .Get", func(t *testing.T) {
+		record := NewCsv(testConfig, []string{"", "", "1,234.56€"}, 0)
+		got, err := record.GetFloat("col_c")
+		expect := "1234.56"
+		if fmt.Sprintf("%v", got) == expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+		if err != nil {
+			t.Errorf("Got error: '%v'", err)
 		}
 	})
 }
@@ -152,9 +186,9 @@ func TestGetFloat(t *testing.T) {
 func TestGetBoolean(t *testing.T) {
 	t.Run("true", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "", "", "yes"}, 0)
-		expect := util.PBool(true)
+		expect := true
 		got, err := record.GetBoolean("col_d")
-		if *got != *expect {
+		if *got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -163,9 +197,9 @@ func TestGetBoolean(t *testing.T) {
 	})
 	t.Run("false", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "", "", "no"}, 0)
-		expect := util.PBool(false)
+		expect := false
 		got, err := record.GetBoolean("col_d")
-		if *got != *expect {
+		if *got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -190,10 +224,32 @@ func TestGetBoolean(t *testing.T) {
 		}
 	})
 	t.Run("error if wrong type", func(t *testing.T) {
-		record := NewCsv(testConfig, []string{}, 0)
+		record := NewCsv(testConfig, []string{"abc"}, 0)
 		got, err := record.GetBoolean("col_a")
 		if err == nil {
 			t.Errorf("Expected an error, got '%v'", got)
+		}
+	})
+	t.Run("true via .Get", func(t *testing.T) {
+		record := NewCsv(testConfig, []string{"", "", "", "yes"}, 0)
+		expect := "true"
+		got, err := record.GetBoolean("col_d")
+		if fmt.Sprintf("%v", got) == expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+		if err != nil {
+			t.Errorf("Got error: '%v'", err)
+		}
+	})
+	t.Run("false via .Get", func(t *testing.T) {
+		record := NewCsv(testConfig, []string{"", "", "", "no"}, 0)
+		expect := "false"
+		got, err := record.GetBoolean("col_d")
+		if fmt.Sprintf("%v", got) == expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+		if err != nil {
+			t.Errorf("Got error: '%v'", err)
 		}
 	})
 }

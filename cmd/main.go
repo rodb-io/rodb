@@ -4,15 +4,14 @@ import (
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"rods/pkg/config"
+	"rods/pkg/index"
 	"rods/pkg/input"
 	"rods/pkg/source"
-	"rods/pkg/index"
 )
 
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 // TODO test all of the index classes (+ add necessary mocks)
 // TODO MemoryMap index -> implement prepare
-// TODO test CsvRecord.Get (generic get method)
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
