@@ -2,6 +2,7 @@ package index
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
@@ -17,10 +18,15 @@ type List = map[string]Index
 
 func NewFromConfig(
 	config config.Index,
+	inputs input.List,
 	log *logrus.Logger,
 ) (Index, error) {
 	if config.MemoryMap != nil {
-		return NewMemoryMap(config.MemoryMap, log)
+		if input, inputExists := inputs[config.MemoryMap.Input]; !inputExists {
+			return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.MemoryMap.Input)
+		} else {
+			return NewMemoryMap(config.MemoryMap, input, log)
+		}
 	}
 
 	return nil, errors.New("Failed to initialize index")
@@ -33,14 +39,14 @@ func NewFromConfigs(
 ) (List, error) {
 	sources := make(List)
 	for sourceName, sourceConfig := range configs {
-		index, err := NewFromConfig(sourceConfig, log)
+		index, err := NewFromConfig(sourceConfig, inputs, log)
 		if err != nil {
 			return nil, err
 		}
 		sources[sourceName] = index
 	}
 
-	dumbIndex, err := NewDumb(log)
+	dumbIndex, err := NewDumb(inputs, log)
 	if err != nil {
 		return nil, err
 	}

@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
+	"rods/pkg/record"
 	"rods/pkg/source"
 )
 
 type Input interface {
 	Close() error
+	IterateAll() (<-chan record.Record, <-chan error)
 }
 
 type List = map[string]Input

@@ -3,17 +3,20 @@ package index
 import (
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
+	"rods/pkg/input"
 	"rods/pkg/record"
 )
 
 type MemoryMap struct {
 	config *config.MemoryMapIndex
+	input  input.Input
 	logger *logrus.Logger
 	index  map[interface{}]record.Position
 }
 
 func NewMemoryMap(
 	config *config.MemoryMapIndex,
+	input input.Input,
 	log *logrus.Logger,
 ) (*MemoryMap, error) {
 	return &MemoryMap{
