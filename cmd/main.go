@@ -11,7 +11,7 @@ import (
 
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 // TODO test all of the index classes (+ add necessary mocks)
-// TODO MemoryMap index -> implement prepare
+// TODO MemoryMap.Prepare() -> add a test + check syntax of the select
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
@@ -54,6 +54,11 @@ func main() {
 		return
 	}
 	defer index.Close(indexes)
+	err = index.Prepare(indexes)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 
-	log.Infof("Inputs: %+v\n", inputs)
+	log.Infof("Indexes: %+v\n", indexes)
 }
