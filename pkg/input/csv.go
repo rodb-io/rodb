@@ -55,17 +55,15 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	return sourceReader, csvReader, nil
 }
 
-func (csvInput *Csv) IterateAll() (<-chan record.Record, <-chan error) {
-	rowsChannel := make(chan record.Record)
-	errorsChannel := make(chan error)
+func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
+	channel := make(chan IterateAllResult)
 
 	go func() {
-		defer close(rowsChannel)
-		defer close(errorsChannel)
+		defer close(channel)
 
 		sourceReader, csvReader, err := csvInput.openSource()
 		if err != nil {
-			errorsChannel <- err
+			channel <- IterateAllResult{Error: err}
 			return
 		}
 		defer csvInput.source.CloseReader(sourceReader)
@@ -82,24 +80,26 @@ func (csvInput *Csv) IterateAll() (<-chan record.Record, <-chan error) {
 			} else if errors.Is(err, csv.ErrFieldCount) {
 				csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			} else if err != nil {
-				errorsChannel <- fmt.Errorf("Cannot read csv data: %v", err)
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %v", err)}
 				return
 			}
 
 			position, err := sourceReader.Seek(0, io.SeekCurrent)
 			if err != nil {
-				errorsChannel <- fmt.Errorf("Cannot read csv position: %v", err)
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %v", err)}
 			}
 
-			rowsChannel <- record.NewCsv(
-				csvInput.config,
-				row,
-				position,
-			)
+			channel <- IterateAllResult{
+				Record: record.NewCsv(
+					csvInput.config,
+					row,
+					position,
+				),
+			}
 		}
 	}()
 
-	return rowsChannel, errorsChannel
+	return channel
 }
 
 func (csvInput *Csv) Close() error {

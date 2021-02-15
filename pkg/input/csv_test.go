@@ -62,24 +62,26 @@ func TestIterateAll(t *testing.T) {
 				t.Error(err)
 			}
 
-			records, errors := csv.IterateAll()
+			resultsChannel := csv.IterateAll()
 			for i := 0; i < len(testCase.expectedRows); i++ {
 				select {
-				case record := <-records:
-					for j, k := range []string{"a", "b"} {
-						result, err := record.GetString(k)
-						if err != nil {
-							t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
-							continue
-						}
+				case result := <-resultsChannel:
+					if result.Error != nil {
+						t.Error(err)
+					} else {
+						for j, k := range []string{"a", "b"} {
+							result, err := result.Record.GetString(k)
+							if err != nil {
+								t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
+								continue
+							}
 
-						expected := testCase.expectedRows[i][j]
-						if !(result == nil && expected == nil) && *result != *expected {
-							t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
+							expected := testCase.expectedRows[i][j]
+							if !(result == nil && expected == nil) && *result != *expected {
+								t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
+							}
 						}
 					}
-				case err := <-errors:
-					t.Error(err)
 				}
 
 				// Asserts that IterateAll does not fail with concurrent accesses

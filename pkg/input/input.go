@@ -11,10 +11,15 @@ import (
 
 type Input interface {
 	Close() error
-	IterateAll() (<-chan record.Record, <-chan error)
+	IterateAll() <-chan IterateAllResult
 }
 
 type List = map[string]Input
+
+type IterateAllResult struct {
+	Record record.Record
+	Error  error
+}
 
 func NewFromConfig(
 	config config.Input,

@@ -28,31 +28,21 @@ func NewMemoryMap(
 func (mm *MemoryMap) Prepare() error {
 	mm.index = make(map[interface{}][]record.Position)
 
-	records, errors := mm.input.IterateAll()
-	for !(records == nil && errors == nil) {
-		select {
-		case currentRecord, ok := <-records:
-			if ok {
-				value, err := currentRecord.Get(mm.config.Column)
-				if err != nil {
-					return err
-				}
+	for result := range mm.input.IterateAll() {
+		if result.Error != nil {
+			return result.Error
+		}
 
-				valueIndexes, valueIndexesExists := mm.index[value]
-				if valueIndexesExists {
-					valueIndexes = append(valueIndexes, currentRecord.Position())
-				} else {
-					mm.index[value] = []record.Position{currentRecord.Position()}
-				}
-			} else {
-				records = nil
-			}
-		case err, ok := <-errors:
-			if ok {
-				return err
-			} else {
-				errors = nil
-			}
+		value, err := result.Record.Get(mm.config.Column)
+		if err != nil {
+			return err
+		}
+
+		valueIndexes, valueIndexesExists := mm.index[value]
+		if valueIndexesExists {
+			valueIndexes = append(valueIndexes, result.Record.Position())
+		} else {
+			mm.index[value] = []record.Position{result.Record.Position()}
 		}
 	}
 
