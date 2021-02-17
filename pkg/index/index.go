@@ -25,7 +25,7 @@ func NewFromConfig(
 		if input, inputExists := inputs[config.MemoryMap.Input]; !inputExists {
 			return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.MemoryMap.Input)
 		} else {
-			return NewMemoryMap(config.MemoryMap, input, log)
+			return NewMemoryMap(config.MemoryMap, input, log), nil
 		}
 	}
 

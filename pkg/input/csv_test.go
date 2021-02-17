@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestIterateAll(t *testing.T) {
+func TestCsvIterateAll(t *testing.T) {
 	testCases := []struct {
 		name         string
 		file         string
@@ -64,22 +64,19 @@ func TestIterateAll(t *testing.T) {
 
 			resultsChannel := csv.IterateAll()
 			for i := 0; i < len(testCase.expectedRows); i++ {
-				select {
-				case result := <-resultsChannel:
-					if result.Error != nil {
-						t.Error(err)
-					} else {
-						for j, k := range []string{"a", "b"} {
-							result, err := result.Record.GetString(k)
-							if err != nil {
-								t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
-								continue
-							}
+				if result := <-resultsChannel; result.Error != nil {
+					t.Error(err)
+				} else {
+					for j, k := range []string{"a", "b"} {
+						result, err := result.Record.GetString(k)
+						if err != nil {
+							t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
+							continue
+						}
 
-							expected := testCase.expectedRows[i][j]
-							if !(result == nil && expected == nil) && *result != *expected {
-								t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
-							}
+						expected := testCase.expectedRows[i][j]
+						if !(result == nil && expected == nil) && *result != *expected {
+							t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
 						}
 					}
 				}

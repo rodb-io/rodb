@@ -10,8 +10,10 @@ import (
 )
 
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
-// TODO test all of the index classes (+ add necessary mocks)
-// TODO MemoryMap.Prepare() -> add a test
+// TODO remove nullable types where possible
+// TODO rename DoesIndex for GetRecordsByColumn
+// TODO input method to get record by position
+// TODO check for concurrency-safety of the input (reader position) -> simple mutex like https://stackoverflow.com/questions/46138395/how-make-a-function-thread-safe-in-golang
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")

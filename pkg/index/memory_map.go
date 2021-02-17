@@ -2,6 +2,7 @@ package index
 
 import (
 	"github.com/sirupsen/logrus"
+	"reflect"
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -18,11 +19,12 @@ func NewMemoryMap(
 	config *config.MemoryMapIndex,
 	input input.Input,
 	log *logrus.Logger,
-) (*MemoryMap, error) {
+) *MemoryMap {
 	return &MemoryMap{
 		config: config,
+		input:  input,
 		logger: log,
-	}, nil
+	}
 }
 
 func (mm *MemoryMap) Prepare() error {
@@ -38,9 +40,13 @@ func (mm *MemoryMap) Prepare() error {
 			return err
 		}
 
+		if value != nil {
+			value = reflect.ValueOf(value).Elem().Interface()
+		}
+
 		valueIndexes, valueIndexesExists := mm.index[value]
 		if valueIndexesExists {
-			valueIndexes = append(valueIndexes, result.Record.Position())
+			mm.index[value] = append(valueIndexes, result.Record.Position())
 		} else {
 			mm.index[value] = []record.Position{result.Record.Position()}
 		}

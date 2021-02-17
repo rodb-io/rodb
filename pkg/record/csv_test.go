@@ -36,7 +36,7 @@ var testConfig *config.CsvInput = &config.CsvInput{
 	},
 }
 
-func TestGetString(t *testing.T) {
+func TestCsvGetString(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"string"}, 0)
 		expect := "string"
@@ -85,7 +85,7 @@ func TestGetString(t *testing.T) {
 	})
 }
 
-func TestGetInteger(t *testing.T) {
+func TestCsvGetInteger(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "$ 123,456"}, 0)
 		expect := 123456
@@ -134,7 +134,7 @@ func TestGetInteger(t *testing.T) {
 	})
 }
 
-func TestGetFloat(t *testing.T) {
+func TestCsvGetFloat(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "", "1,234.56€"}, 0)
 		expect := 1234.56
@@ -183,7 +183,7 @@ func TestGetFloat(t *testing.T) {
 	})
 }
 
-func TestGetBoolean(t *testing.T) {
+func TestCsvGetBoolean(t *testing.T) {
 	t.Run("true", func(t *testing.T) {
 		record := NewCsv(testConfig, []string{"", "", "", "yes"}, 0)
 		expect := true
