@@ -1,7 +1,7 @@
 package record
 
 import (
-	"errors"
+	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/util"
 	"strconv"
@@ -29,7 +29,7 @@ func NewCsv(
 func (record *Csv) getField(field string) (*string, int, error) {
 	index, exists := record.config.ColumnIndexByName[field]
 	if !exists {
-		return nil, index, errors.New("The column '" + field + "' does not exist.")
+		return nil, index, fmt.Errorf("The column '%v' does not exist.", field)
 	}
 
 	if index >= len(record.data) {
@@ -44,7 +44,7 @@ func (record *Csv) GetString(field string) (*string, error) {
 
 	columnConfig := record.config.Columns[fieldIndex]
 	if columnConfig.Type != "string" {
-		return nil, errors.New("The column '" + field + "' is not a string")
+		return nil, fmt.Errorf("The column '%v' is not a string", field)
 	}
 
 	return value, err
@@ -58,7 +58,7 @@ func (record *Csv) GetInteger(field string) (*int, error) {
 
 	columnConfig := record.config.Columns[fieldIndex]
 	if columnConfig.Type != "integer" {
-		return nil, errors.New("The column '" + field + "' is not an integer")
+		return nil, fmt.Errorf("The column '%v' is not an integer", field)
 	}
 
 	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
@@ -78,7 +78,7 @@ func (record *Csv) GetFloat(field string) (*float64, error) {
 
 	columnConfig := record.config.Columns[fieldIndex]
 	if columnConfig.Type != "float" {
-		return nil, errors.New("The column '" + field + "' is not a float")
+		return nil, fmt.Errorf("The column '%v' is not a float", field)
 	}
 
 	cleanedValue := util.RemoveCharacters(*value, columnConfig.IgnoreCharacters)
@@ -102,7 +102,7 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 
 	columnConfig := record.config.Columns[fieldIndex]
 	if columnConfig.Type != "boolean" {
-		return nil, errors.New("The column '" + field + "' is not a boolean")
+		return nil, fmt.Errorf("The column '%v' is not a boolean", field)
 	}
 
 	if util.IsInArray(*value, columnConfig.TrueValues) {
@@ -112,13 +112,13 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 		return util.PBool(false), nil
 	}
 
-	return nil, errors.New("The value '" + *value + "' was found but is neither declared in trueValues or falseValues.")
+	return nil, fmt.Errorf("The value '%v' was found but is neither declared in trueValues or falseValues.", *value)
 }
 
 func (record *Csv) Get(field string) (interface{}, error) {
 	fieldIndex, exists := record.config.ColumnIndexByName[field]
 	if !exists {
-		return nil, errors.New("The column '" + field + "' does not exist.")
+		return nil, fmt.Errorf("The column '%v' does not exist.", field)
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
@@ -135,7 +135,7 @@ func (record *Csv) Get(field string) (interface{}, error) {
 		return record.GetBoolean(field)
 	}
 
-	return nil, errors.New("Unknown type '" + columnConfig.Type + "' in CsvRecord.Get")
+	return nil, fmt.Errorf("Unknown type '%v' in CsvRecord.Get", columnConfig.Type)
 }
 
 func (record *Csv) Position() Position {

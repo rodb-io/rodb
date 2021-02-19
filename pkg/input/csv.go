@@ -62,7 +62,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 			csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			err = nil
 		} else {
-			return nil, fmt.Errorf("Cannot read csv data: %v", err)
+			return nil, fmt.Errorf("Cannot read csv data: %w", err)
 		}
 	}
 
@@ -110,7 +110,7 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 		for {
 			position, err := getCsvReaderOffset(sourceReader, csvReaderBuffer)
 			if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %v", err)}
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %w", err)}
 			}
 
 			row, err := csvReader.Read()
@@ -119,7 +119,7 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			} else if errors.Is(err, csv.ErrFieldCount) {
 				csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			} else if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %v", err)}
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %w", err)}
 				return
 			}
 

@@ -9,7 +9,8 @@ import (
 	"rods/pkg/source"
 )
 
-// TODO rename DoesIndex for GetRecordsByColumn
+// TODO implement GetRecordsByColumn for the dumb index
+// TODO test GetRecordsByColumn (dumb + memory_map)
 // TODO remove nullable types where possible
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 

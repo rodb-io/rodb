@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"reflect"
 )
@@ -46,7 +46,7 @@ func checkDuplicateEndpointsPerService(outputConfigs map[string]Output) error {
 		}
 
 		if _, endpointExists := serviceEndpoints[endpoint]; endpointExists {
-			return errors.New("Duplicate endpoint '" + endpoint + "' in service '" + service + "'")
+			return fmt.Errorf("Duplicate endpoint '%v' in service '%v'", endpoint, service)
 		}
 
 		serviceEndpoints[endpoint] = nil

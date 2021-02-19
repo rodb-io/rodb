@@ -37,12 +37,12 @@ func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
 func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
 	configData, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		return nil, fmt.Errorf("Cannot read config file %v: %v", configPath, err)
+		return nil, fmt.Errorf("Cannot read config file %v: %w", configPath, err)
 	}
 
 	config, err := NewConfigFromYaml(configData, log)
 	if err != nil {
-		return nil, fmt.Errorf("Cannot parse config file %v: %v", configPath, err)
+		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
 	}
 
 	return config, nil
@@ -51,31 +51,31 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 func (config *Config) validate(log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Sources {
 		if err := subConfig.validate(log); err != nil {
-			return fmt.Errorf("sources.%v: %v", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("sources.%v: %w", strings.ToLower(subConfigName), err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Inputs {
 		if err := subConfig.validate(log); err != nil {
-			return fmt.Errorf("inputs.%v: %v", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("inputs.%v: %w", strings.ToLower(subConfigName), err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Indexes {
 		if err := subConfig.validate(log); err != nil {
-			return fmt.Errorf("indexes.%v: %v", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("indexes.%v: %w", strings.ToLower(subConfigName), err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Services {
 		if err := subConfig.validate(log); err != nil {
-			return fmt.Errorf("services.%v: %v", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("services.%v: %w", strings.ToLower(subConfigName), err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Outputs {
 		if err := subConfig.validate(log); err != nil {
-			return fmt.Errorf("outputs.%v: %v", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("outputs.%v: %w", strings.ToLower(subConfigName), err)
 		}
 	}
 

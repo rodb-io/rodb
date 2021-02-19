@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/util"
 )
@@ -47,7 +48,7 @@ func (config *CsvInput) validate(log *logrus.Logger) error {
 		}
 
 		if _, exists := config.ColumnIndexByName[column.Name]; exists {
-			return errors.New("Column names must be unique. Found '" + column.Name + "' twice.")
+			return fmt.Errorf("Column names must be unique. Found '%v' twice.", column.Name)
 		}
 		config.ColumnIndexByName[column.Name] = columnIndex
 	}
@@ -69,7 +70,7 @@ func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 		config.Type,
 		[]string{"string", "integer", "float", "boolean"},
 	) {
-		return errors.New("csv.columns[].type = '" + config.Type + "' is invalid")
+		return fmt.Errorf("csv.columns[].type = '%v' is invalid", config.Type)
 	}
 
 	if config.Type == "float" && len(config.DecimalSeparator) == 0 {

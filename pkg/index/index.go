@@ -70,7 +70,7 @@ func Prepare(indexes List) error {
 	for indexName, index := range indexes {
 		err := index.Prepare()
 		if err != nil {
-			return fmt.Errorf("Error preparing index '%v': %v", indexName, err)
+			return fmt.Errorf("Error preparing index '%v': %w", indexName, err)
 		}
 	}
 
