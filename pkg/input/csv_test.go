@@ -11,34 +11,41 @@ import (
 
 func TestCsvIterateAll(t *testing.T) {
 	testCases := []struct {
-		name         string
-		file         string
-		expectedRows [][]*string
+		name              string
+		file              string
+		expectedRows      [][]*string
+		expectedPositions []int64
 	}{
 		{
-			name:         "normal",
-			file:         "test1,\"test2\"\n\"test\"\"3\",test 4",
-			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test\"3"), util.PString("test 4")}},
+			name:              "normal",
+			file:              "test1,\"test2\"\n\"test\"\"3\",test 4",
+			expectedRows:      [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test\"3"), util.PString("test 4")}},
+			expectedPositions: []int64{0, 14},
 		}, {
-			name:         "empty",
-			file:         "",
-			expectedRows: [][]*string{},
+			name:              "empty",
+			file:              "",
+			expectedRows:      [][]*string{},
+			expectedPositions: []int64{},
 		}, {
-			name:         "empty row",
-			file:         "test1,test2\n\ntest3,test4",
-			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4")}},
+			name:              "empty row",
+			file:              "test1,test2\n\ntest3,test4",
+			expectedRows:      [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4")}},
+			expectedPositions: []int64{0, 12},
 		}, {
-			name:         "end after one row",
-			file:         "test1,test2",
-			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}},
+			name:              "end after one row",
+			file:              "test1,test2",
+			expectedRows:      [][]*string{{util.PString("test1"), util.PString("test2")}},
+			expectedPositions: []int64{0},
 		}, {
-			name:         "too many columns",
-			file:         "test1,test2\ntest3,test4,test5",
-			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4"), util.PString("test5")}},
+			name:              "too many columns",
+			file:              "test1,test2\ntest3,test4,test5",
+			expectedRows:      [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), util.PString("test4"), util.PString("test5")}},
+			expectedPositions: []int64{0, 12},
 		}, {
-			name:         "not enough columns",
-			file:         "test1,test2\ntest3",
-			expectedRows: [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), nil}},
+			name:              "not enough columns",
+			file:              "test1,test2\ntest3",
+			expectedRows:      [][]*string{{util.PString("test1"), util.PString("test2")}, {util.PString("test3"), nil}},
+			expectedPositions: []int64{0, 12},
 		},
 	}
 	for _, testCase := range testCases {
@@ -78,6 +85,10 @@ func TestCsvIterateAll(t *testing.T) {
 						if !(result == nil && expected == nil) && *result != *expected {
 							t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
 						}
+					}
+
+					if got, expect := result.Record.Position(), testCase.expectedPositions[i]; got != expect {
+						t.Errorf("Got position '%v', expected '%v' for row [%v]", got, expect, i)
 					}
 				}
 

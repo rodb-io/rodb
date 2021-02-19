@@ -1,14 +1,17 @@
 package input
 
 import (
+	"bufio"
 	"encoding/csv"
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"io"
+	"reflect"
 	"rods/pkg/config"
 	"rods/pkg/record"
 	"rods/pkg/source"
+	"unsafe"
 )
 
 type Csv struct {
@@ -55,6 +58,25 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	return sourceReader, csvReader, nil
 }
 
+func getCsvReaderOffset(reader io.ReadSeeker, csvReader *csv.Reader) (int64, error) {
+	offset, err := reader.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, err
+	}
+
+	// Getting the underlying instance of bufio in a dirty way
+	bufferedReaderField := reflect.ValueOf(csvReader).Elem().FieldByName("r")
+	bufferedReaderInterface := reflect.NewAt(
+		bufferedReaderField.Type(),
+		unsafe.Pointer(bufferedReaderField.UnsafeAddr()),
+	).Elem().Interface()
+	bufferedReader := bufferedReaderInterface.(*bufio.Reader)
+
+	bufferSize := int64(bufferedReader.Buffered())
+
+	return offset - bufferSize, nil
+}
+
 func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 	channel := make(chan IterateAllResult)
 
@@ -74,6 +96,11 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 		}
 
 		for {
+			position, err := getCsvReaderOffset(sourceReader, csvReader)
+			if err != nil {
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %v", err)}
+			}
+
 			row, err := csvReader.Read()
 			if err == io.EOF {
 				break
@@ -82,11 +109,6 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			} else if err != nil {
 				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %v", err)}
 				return
-			}
-
-			position, err := sourceReader.Seek(0, io.SeekCurrent)
-			if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %v", err)}
 			}
 
 			channel <- IterateAllResult{
