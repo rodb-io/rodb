@@ -9,7 +9,6 @@ import (
 	"rods/pkg/source"
 )
 
-// TODO test CsvInput.Get
 // TODO rename DoesIndex for GetRecordsByColumn
 // TODO remove nullable types where possible
 // TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter

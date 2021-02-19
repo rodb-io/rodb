@@ -6,8 +6,82 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/source"
 	"rods/pkg/util"
+	"sync"
 	"testing"
 )
+
+func TestCsvGet(t *testing.T) {
+	config := &config.CsvInput{
+		Path:           "test",
+		IgnoreFirstRow: false,
+		Delimiter:      ",",
+		Columns: []config.CsvInputColumn{
+			{Name: "a", Type: "string"},
+			{Name: "b", Type: "string"},
+		},
+		ColumnIndexByName: map[string]int{
+			"a": 0,
+			"b": 1,
+		},
+	}
+
+	source := source.NewMock("test1,test2\n\ntest3")
+	csv, err := NewCsv(config, source, logrus.StandardLogger())
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		// Testing a normal read
+		expect := "test1"
+		row, err := csv.Get(0)
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+		if result, _ := row.GetString("a"); *result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+
+		// Testing if the position in the file and buffer are properly set
+		// when it has already been used once
+		expect = "test3"
+		row, err = csv.Get(12)
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+		if result, _ := row.GetString("a"); *result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+	})
+	t.Run("parallel", func(t *testing.T) {
+		// Executing two read operations in parallel to test the safety
+		wait := sync.WaitGroup{}
+		wait.Add(2)
+		go (func() {
+			expect := "test3"
+			row, err := csv.Get(12)
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+			if result, _ := row.GetString("a"); *result != expect {
+				t.Errorf("Expected '%v', got '%v'", expect, result)
+			}
+			wait.Done()
+		})()
+		go (func() {
+			expect := "test1"
+			row, err := csv.Get(0)
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+			if result, _ := row.GetString("a"); *result != expect {
+				t.Errorf("Expected '%v', got '%v'", expect, result)
+			}
+			wait.Done()
+		})()
+		wait.Wait()
+	})
+}
 
 func TestCsvIterateAll(t *testing.T) {
 	testCases := []struct {
