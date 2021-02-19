@@ -10,8 +10,9 @@ import (
 )
 
 type Input interface {
-	Close() error
+	Get(position record.Position) (record.Record, error)
 	IterateAll() <-chan IterateAllResult
+	Close() error
 }
 
 type List = map[string]Input

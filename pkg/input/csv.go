@@ -11,15 +11,18 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/record"
 	"rods/pkg/source"
+	"sync"
 	"unsafe"
 )
 
 type Csv struct {
-	config       *config.CsvInput
-	source       source.Source
-	logger       *logrus.Logger
-	sourceReader io.ReadSeeker
-	csvReader    *csv.Reader
+	config           *config.CsvInput
+	source           source.Source
+	logger           *logrus.Logger
+	sourceReader     io.ReadSeeker
+	sourceReaderLock sync.Mutex
+	csvReader        *csv.Reader
+	csvReaderBuffer  *bufio.Reader
 }
 
 func NewCsv(
@@ -28,9 +31,10 @@ func NewCsv(
 	log *logrus.Logger,
 ) (*Csv, error) {
 	csvInput := &Csv{
-		config: config,
-		source: source,
-		logger: log,
+		config:           config,
+		source:           source,
+		logger:           log,
+		sourceReaderLock: sync.Mutex{},
 	}
 
 	sourceReader, csvReader, err := csvInput.openSource()
@@ -40,8 +44,33 @@ func NewCsv(
 
 	csvInput.sourceReader = sourceReader
 	csvInput.csvReader = csvReader
+	csvInput.csvReaderBuffer = getCsvReaderBuffer(csvReader)
 
 	return csvInput, nil
+}
+
+func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
+	csvInput.sourceReaderLock.Lock()
+	defer csvInput.sourceReaderLock.Unlock()
+
+	csvInput.sourceReader.Seek(position, io.SeekStart)
+	csvInput.csvReaderBuffer.Reset(csvInput.sourceReader)
+
+	row, err := csvInput.csvReader.Read()
+	if err != nil {
+		if errors.Is(err, csv.ErrFieldCount) {
+			csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
+			err = nil
+		} else {
+			return nil, fmt.Errorf("Cannot read csv data: %v", err)
+		}
+	}
+
+	return record.NewCsv(
+		csvInput.config,
+		row,
+		position,
+	), nil
 }
 
 func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
@@ -56,25 +85,6 @@ func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	csvReader.ReuseRecord = false
 
 	return sourceReader, csvReader, nil
-}
-
-func getCsvReaderOffset(reader io.ReadSeeker, csvReader *csv.Reader) (int64, error) {
-	offset, err := reader.Seek(0, io.SeekCurrent)
-	if err != nil {
-		return 0, err
-	}
-
-	// Getting the underlying instance of bufio in a dirty way
-	bufferedReaderField := reflect.ValueOf(csvReader).Elem().FieldByName("r")
-	bufferedReaderInterface := reflect.NewAt(
-		bufferedReaderField.Type(),
-		unsafe.Pointer(bufferedReaderField.UnsafeAddr()),
-	).Elem().Interface()
-	bufferedReader := bufferedReaderInterface.(*bufio.Reader)
-
-	bufferSize := int64(bufferedReader.Buffered())
-
-	return offset - bufferSize, nil
 }
 
 func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
@@ -95,8 +105,10 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			_, _ = csvReader.Read()
 		}
 
+		csvReaderBuffer := getCsvReaderBuffer(csvReader)
+
 		for {
-			position, err := getCsvReaderOffset(sourceReader, csvReader)
+			position, err := getCsvReaderOffset(sourceReader, csvReaderBuffer)
 			if err != nil {
 				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %v", err)}
 			}
@@ -126,4 +138,24 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 
 func (csvInput *Csv) Close() error {
 	return csvInput.source.CloseReader(csvInput.sourceReader)
+}
+
+func getCsvReaderBuffer(csvReader *csv.Reader) *bufio.Reader {
+	bufferedReaderField := reflect.ValueOf(csvReader).Elem().FieldByName("r")
+	bufferedReaderInterface := reflect.NewAt(
+		bufferedReaderField.Type(),
+		unsafe.Pointer(bufferedReaderField.UnsafeAddr()),
+	).Elem().Interface()
+	return bufferedReaderInterface.(*bufio.Reader)
+}
+
+func getCsvReaderOffset(reader io.ReadSeeker, csvReaderBuffer *bufio.Reader) (int64, error) {
+	offset, err := reader.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, err
+	}
+
+	bufferSize := int64(csvReaderBuffer.Buffered())
+
+	return offset - bufferSize, nil
 }

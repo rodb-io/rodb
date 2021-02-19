@@ -9,11 +9,10 @@ import (
 	"rods/pkg/source"
 )
 
-// TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
-// TODO remove nullable types where possible
+// TODO test CsvInput.Get
 // TODO rename DoesIndex for GetRecordsByColumn
-// TODO input method to get record by position
-// TODO check for concurrency-safety of the input (reader position) -> simple mutex like https://stackoverflow.com/questions/46138395/how-make-a-function-thread-safe-in-golang
+// TODO remove nullable types where possible
+// TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
