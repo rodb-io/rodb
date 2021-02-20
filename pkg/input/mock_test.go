@@ -8,7 +8,9 @@ import (
 
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := record.NewSingleStringColumnMock("col", "value", 0)
+		expectedRecord := record.NewStringColumnsMock(map[string]string{
+			"col": "value",
+		}, 0)
 		mock := NewMock([]IterateAllResult{{Record: expectedRecord}})
 
 		record, err := mock.Get(0)
@@ -42,7 +44,9 @@ func TestMockGet(t *testing.T) {
 func TestMockIterateAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := []IterateAllResult{
-			{Record: record.NewSingleStringColumnMock("col", "value", 0)},
+			{Record: record.NewStringColumnsMock(map[string]string{
+				"col": "value",
+			}, 0)},
 			{Error: errors.New("Test error")},
 		}
 		mock := NewMock(data)

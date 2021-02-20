@@ -28,15 +28,12 @@ func NewMock(
 	}
 }
 
-func NewSingleStringColumnMock(
-	key string,
-	value string,
+func NewStringColumnsMock(
+	values map[string]string,
 	position Position,
 ) *Mock {
 	return NewMock(
-		map[string]string{
-			key: value,
-		},
+		values,
 		map[string]int{},
 		map[string]float64{},
 		map[string]bool{},
