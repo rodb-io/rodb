@@ -51,6 +51,7 @@ outputs:
       service: defaultService
       endpoint: "/"
       # TODO configuration
+  # TODO have the dumb index as a default value if no index is specified
   defaultJsonArrayOutput:
     jsonArray:
       service: defaultService

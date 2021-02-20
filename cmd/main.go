@@ -10,7 +10,8 @@ import (
 )
 
 // TODO test index/Dumb.GetRecords
-// TODO have the dumb index as a default value if no index is specified by the output search/filter
+// TODO implement the service layer
+// TODO implement the json output layers
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")

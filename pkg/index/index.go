@@ -38,22 +38,22 @@ func NewFromConfigs(
 	inputs input.List,
 	log *logrus.Logger,
 ) (List, error) {
-	sources := make(List)
-	for sourceName, sourceConfig := range configs {
-		index, err := NewFromConfig(sourceConfig, inputs, log)
+	indexes := make(List)
+	for indexName, indexConfig := range configs {
+		index, err := NewFromConfig(indexConfig, inputs, log)
 		if err != nil {
 			return nil, err
 		}
-		sources[sourceName] = index
+		indexes[indexName] = index
 	}
 
 	dumbIndex, err := NewDumb(inputs, log)
 	if err != nil {
 		return nil, err
 	}
-	sources[""] = dumbIndex
+	indexes[""] = dumbIndex
 
-	return sources, nil
+	return indexes, nil
 }
 
 func Close(sources List) error {
