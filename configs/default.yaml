@@ -2,6 +2,8 @@ sources:
   defaultSource:
     filesystem:
       path: ./
+  # TODO S3 source
+  # TODO http source
 inputs:
   defaultInput:
     csv:
@@ -23,19 +25,26 @@ inputs:
           type: boolean
           trueValues: ["true", "1", "yes", "TRUE", "YES"]
           falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+  # TODO xml input
+  # TODO json input
+  # TODO json rows input
+  # TODO database source/input?
 indexes:
-  defaultIndexId:
+  defaultIndex:
     memoryMap:
       input: defaultInput
-      column: id
-  defaultIndexName:
-    memoryMap:
-      input: defaultInput
-      column: name
+      columns:
+        - id
+        - name
+  # TODO stored indexes (bson or msgpack?)
+  # TODO bleve index
+  # TODO lucene index
 services:
   defaultService:
     http:
       port: 80
+  # TODO https service
+  # TODO websocket service
 outputs:
   defaultGraphqlOutput:
     graphql:
@@ -54,14 +63,13 @@ outputs:
         param: "offset"
       search:
         id:
-          index: defaultIndexId
+          index: defaultIndex
         name:
-          index: defaultIndexName
-        # TODO how to handle search over multiple indexes?
+          index: defaultIndex
         # TODO handle the filters even without index (basic search)
   defaultJsonObjectOutput:
     jsonObject:
       service: defaultService
       endpoint: "/dummies/?"
-      index: defaultIndexName
+      index: defaultIndex
       # TODO handle this even without index (basic search)

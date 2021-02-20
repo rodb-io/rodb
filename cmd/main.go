@@ -9,10 +9,9 @@ import (
 	"rods/pkg/source"
 )
 
-// TODO implement GetRecordsByColumn for the dumb index
-// TODO test GetRecordsByColumn (dumb + memory_map)
-// TODO remove nullable types where possible
-// TODO create a non-indexed index, have it as default value if no index is specified by the output search/filter
+// TODO test index/Dumb.GetRecords
+// TODO test index/MemoryMap.GetRecords
+// TODO have the dumb index as a default value if no index is specified by the output search/filter
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")

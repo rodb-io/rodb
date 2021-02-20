@@ -11,7 +11,7 @@ import (
 
 type Index interface {
 	Prepare() error
-	GetRecordsByColumn(inputName string, columnName string, limit uint) ([]record.Record, error)
+	GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error)
 	Close() error
 }
 

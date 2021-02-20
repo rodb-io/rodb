@@ -5,11 +5,11 @@ import (
 )
 
 type MemoryMapIndex struct {
-	Input  string `yaml:"input"`
-	Column string `yaml:"column"`
+	Input   string   `yaml:"input"`
+	Columns []string `yaml:"columns"`
 }
 
 func (config *MemoryMapIndex) validate(log *logrus.Logger) error {
-	// The input and column will be validated at runtime
+	// The input and columns will be validated at runtime
 	return nil
 }

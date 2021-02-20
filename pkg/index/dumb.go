@@ -28,7 +28,7 @@ func (d *Dumb) Prepare() error {
 	return nil
 }
 
-func (d *Dumb) GetRecordsByColumn(inputName string, columnName string, limit uint) ([]record.Record, error) {
+func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
 	input, ok := d.inputs[inputName]
 	if !ok {
 		return nil, fmt.Errorf("There is no input named '%v'", inputName)
@@ -40,17 +40,25 @@ func (d *Dumb) GetRecordsByColumn(inputName string, columnName string, limit uin
 			return nil, result.Error
 		}
 
-		value, err := result.Record.Get(columnName)
-		if err != nil {
-			return nil, err
+		matches := true
+		for columnName, filter := range filters {
+			value, err := result.Record.Get(columnName)
+			if err != nil {
+				return nil, err
+			}
+
+			if value != filter {
+				matches = false
+				break
+			}
 		}
 
-		if value == columnName {
+		if matches {
 			records = append(records, result.Record)
-		}
 
-		if uint(len(records)) >= limit {
-			break
+			if uint(len(records)) >= limit {
+				break
+			}
 		}
 	}
 
