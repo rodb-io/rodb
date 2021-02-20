@@ -66,6 +66,8 @@ func (mm *MemoryMap) Prepare() error {
 	return nil
 }
 
+// Get the records from the given input (if indexed) and that matchesall the given filters
+// A limit of 0 means that there is no limit
 func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
 	if inputName != mm.config.Input {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", inputName)
@@ -74,7 +76,7 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 		return nil, fmt.Errorf("This index requires at least one filter.")
 	}
 
-	individualFiltersResults := make([]memoryMapColumnValueIndex, len(filters))
+	individualFiltersResults := make([]memoryMapColumnValueIndex, 0, len(filters))
 	for columnName, filter := range filters {
 		isHandled := false
 		for _, handledColumn := range mm.config.Columns {
@@ -98,16 +100,11 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 			return make([]record.Record, 0), nil
 		}
 
-		individualFiltersResults[len(individualFiltersResults)] = indexedResults
-	}
-
-	length := int(limit)
-	if length > len(individualFiltersResults[0]) {
-		length = len(individualFiltersResults[0])
+		individualFiltersResults = append(individualFiltersResults, indexedResults)
 	}
 
 	records := make([]record.Record, 0)
-	for i := 0; i < length; i++ {
+	for i := 0; i < len(individualFiltersResults[0]); i++ {
 		position := individualFiltersResults[0][i]
 
 		matchesAllCriterias := true
@@ -133,6 +130,9 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 			}
 
 			records = append(records, indexedRecord)
+			if limit != 0 && len(records) >= int(limit) {
+				break
+			}
 		}
 	}
 

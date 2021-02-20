@@ -10,7 +10,6 @@ import (
 )
 
 // TODO test index/Dumb.GetRecords
-// TODO test index/MemoryMap.GetRecords
 // TODO have the dumb index as a default value if no index is specified by the output search/filter
 
 func main() {
