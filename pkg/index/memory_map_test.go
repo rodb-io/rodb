@@ -109,8 +109,6 @@ func TestMemoryMapGetRecords(t *testing.T) {
 		t.Error(err)
 	}
 
-	// TODO test length 0
-
 	t.Run("normal", func(t *testing.T) {
 		for _, testCase := range []struct {
 			limit           uint

@@ -47,11 +47,7 @@ func NewFromConfigs(
 		indexes[indexName] = index
 	}
 
-	dumbIndex, err := NewDumb(inputs, log)
-	if err != nil {
-		return nil, err
-	}
-	indexes[""] = dumbIndex
+	indexes[""] = NewDumb(inputs, log)
 
 	return indexes, nil
 }

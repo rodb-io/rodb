@@ -9,7 +9,6 @@ import (
 	"rods/pkg/source"
 )
 
-// TODO test index/Dumb.GetRecords
 // TODO implement the service layer
 // TODO implement the json output layers
 

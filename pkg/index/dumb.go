@@ -3,6 +3,7 @@ package index
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"reflect"
 	"rods/pkg/input"
 	"rods/pkg/record"
 )
@@ -17,11 +18,11 @@ type Dumb struct {
 func NewDumb(
 	inputs input.List,
 	log *logrus.Logger,
-) (*Dumb, error) {
+) *Dumb {
 	return &Dumb{
 		inputs: inputs,
 		logger: log,
-	}, nil
+	}
 }
 
 func (d *Dumb) Prepare() error {
@@ -47,6 +48,16 @@ func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limi
 				return nil, err
 			}
 
+			if value == nil {
+				if filter == nil {
+					continue
+				} else {
+					matches = false
+					break
+				}
+			}
+
+			value = reflect.ValueOf(value).Elem().Interface()
 			if value != filter {
 				matches = false
 				break
@@ -55,8 +66,7 @@ func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limi
 
 		if matches {
 			records = append(records, result.Record)
-
-			if uint(len(records)) >= limit {
+			if limit != 0 && len(records) >= int(limit) {
 				break
 			}
 		}
