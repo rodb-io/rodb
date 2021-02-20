@@ -56,8 +56,35 @@ func (mm *MemoryMap) Prepare() error {
 	return nil
 }
 
-func (mm *MemoryMap) DoesIndex(inputName string, columnName string) bool {
-	return inputName == mm.config.Input && columnName == mm.config.Column
+func (mm *MemoryMap) GetRecordsByColumn(inputName string, columnName string, limit uint) ([]record.Record, error) {
+	if inputName != mm.config.Input {
+		return nil, fmt.Errorf("This index does not handle the input '%v'.", inputName)
+	}
+	if columnName != mm.config.Column {
+		return nil, fmt.Errorf("This index does not handle the column '%v'.", columnName)
+	}
+
+	indexedValues, foundIndexedValues := mm.index[columnName]
+	if !foundIndexedValues {
+		return make([]record.Record, 0), nil
+	}
+
+	length := int(limit)
+	if length > len(indexedValues) {
+		length = len(indexedValues)
+	}
+
+	records := make([]record.Record, length)
+	for i := 0; i < length; i++ {
+		indexedRecord, err := mm.input.Get(indexedValues[i])
+		if err != nil {
+			return nil, fmt.Errorf("Error retrieving indexed record: %w", err)
+		}
+
+		records[i] = indexedRecord
+	}
+
+	return records, nil
 }
 
 func (mm *MemoryMap) Close() error {

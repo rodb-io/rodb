@@ -6,11 +6,12 @@ import (
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
+	"rods/pkg/record"
 )
 
 type Index interface {
 	Prepare() error
-	DoesIndex(inputName string, columnName string) bool
+	GetRecordsByColumn(inputName string, columnName string, limit uint) ([]record.Record, error)
 	Close() error
 }
 
