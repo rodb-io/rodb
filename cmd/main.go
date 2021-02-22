@@ -6,11 +6,9 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/input"
+	"rods/pkg/service"
 	"rods/pkg/source"
 )
-
-// TODO implement the service layer
-// TODO implement the json output layers
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
@@ -58,6 +56,13 @@ func main() {
 		log.Error(err)
 		return
 	}
+
+	services, err := service.NewFromConfigs(config.Services, log)
+	if err != nil {
+		log.Errorf("Error initializing services: %v", err)
+		return
+	}
+	defer service.Close(services)
 
 	log.Infof("Indexes: %+v\n", indexes)
 }
