@@ -22,6 +22,7 @@ func NewFilesystem(
 	return &Filesystem{
 		config: config,
 		logger: log,
+		opened: make(map[io.ReadSeeker]*os.File),
 	}, nil
 }
 
