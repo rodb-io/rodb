@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
+	"regexp"
 	"rods/pkg/config"
 	"sync"
 )
@@ -12,6 +13,13 @@ type Service interface {
 }
 
 type List = map[string]Service
+
+type Route struct {
+	Endpoint            *regexp.Regexp
+	ExpectedPayloadType *string
+	ResponseType        string
+	Handler             func(params map[string]string, payload []byte) ([]byte, error)
+}
 
 func NewFromConfig(
 	config config.Service,

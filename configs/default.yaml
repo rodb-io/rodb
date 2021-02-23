@@ -42,9 +42,11 @@ indexes:
 services:
   defaultService:
     http:
+      # TODO add health-checks
       port: 80
   # TODO https service
   # TODO websocket service
+  # TODO console (stin pipeable?) service
 outputs:
   defaultGraphqlOutput:
     graphql:
