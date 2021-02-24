@@ -9,6 +9,7 @@ import (
 )
 
 type Service interface {
+	AddEndpoint(route *Route)
 	Close() error
 }
 

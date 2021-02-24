@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 	"github.com/sirupsen/logrus"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"rods/pkg/config"
 	"strconv"
 	"sync"
@@ -14,7 +16,7 @@ import (
 type Http struct {
 	server    *http.Server
 	waitGroup *sync.WaitGroup
-	routes    []Route
+	routes    []*Route
 }
 
 func NewHttp(
@@ -24,7 +26,7 @@ func NewHttp(
 ) (*Http, error) {
 	service := &Http{
 		waitGroup: waitGroup,
-		routes:    make([]Route, 0),
+		routes:    make([]*Route, 0),
 		server: &http.Server{
 			Addr: ":" + strconv.Itoa(int(config.Port)),
 		},
@@ -44,7 +46,7 @@ func NewHttp(
 	return service, nil
 }
 
-func (service *Http) AddEndpoint(route Route) {
+func (service *Http) AddEndpoint(route *Route) {
 	service.routes = append(service.routes, route)
 }
 
@@ -56,13 +58,13 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		payload, err := service.getPayload(route, request)
+		payload, err := service.getPayload(route, request.Body)
 		if err != nil {
 			http.Error(response, err.Error(), 500)
 			return
 		}
 
-		params := service.getParams(route, request.URL)
+		params := service.getParams(route.Endpoint, request.URL)
 		data, err := route.Handler(params, payload)
 		if err != nil {
 			http.Error(response, err.Error(), 500)
@@ -83,14 +85,14 @@ func (service *Http) getMatchingRoute(request *http.Request) *Route {
 			route.ExpectedPayloadType != nil &&
 			request.Header.Get("Content-Type") == *route.ExpectedPayloadType
 		if (isValidGet || isValidPost) && route.Endpoint.MatchString(request.URL.Path) {
-			return &route
+			return route
 		}
 	}
 
 	return nil
 }
 
-func (service *Http) getParams(route *Route, url *url.URL) map[string]string {
+func (service *Http) getParams(endpoint *regexp.Regexp, url *url.URL) map[string]string {
 	// Getting params from the query string
 	params := make(map[string]string)
 	for k, v := range url.Query() {
@@ -98,8 +100,8 @@ func (service *Http) getParams(route *Route, url *url.URL) map[string]string {
 	}
 
 	// Adding params from the path's regex
-	endpointSubexps := route.Endpoint.SubexpNames()
-	routeMatches := route.Endpoint.FindStringSubmatch(url.Path)
+	endpointSubexps := endpoint.SubexpNames()
+	routeMatches := endpoint.FindStringSubmatch(url.Path)
 	for i := 1; i < len(routeMatches) && i < len(endpointSubexps); i++ {
 		params[endpointSubexps[i]] = routeMatches[i]
 	}
@@ -107,9 +109,9 @@ func (service *Http) getParams(route *Route, url *url.URL) map[string]string {
 	return params
 }
 
-func (service *Http) getPayload(route *Route, request *http.Request) ([]byte, error) {
+func (service *Http) getPayload(route *Route, body io.Reader) ([]byte, error) {
 	if route.ExpectedPayloadType != nil {
-		return ioutil.ReadAll(request.Body)
+		return ioutil.ReadAll(body)
 	}
 
 	return make([]byte, 0), nil
