@@ -8,7 +8,6 @@ import (
 	"rods/pkg/input"
 	"rods/pkg/service"
 	"rods/pkg/source"
-	"sync"
 )
 
 func main() {
@@ -58,8 +57,7 @@ func main() {
 		return
 	}
 
-	waitGroup := &sync.WaitGroup{}
-	services, err := service.NewFromConfigs(config.Services, waitGroup, log)
+	services, err := service.NewFromConfigs(config.Services, log)
 	if err != nil {
 		log.Errorf("Error initializing services: %v", err)
 		return
@@ -69,5 +67,9 @@ func main() {
 	log.Infof("Indexes: %+v\n", indexes)
 	log.Infof("Services: %+v\n", services)
 
-	waitGroup.Wait()
+	err = service.Wait(services)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
+	goLog "log"
 	"net"
 	"net/http"
 	"net/url"
@@ -19,11 +20,11 @@ type Http struct {
 	server    *http.Server
 	waitGroup *sync.WaitGroup
 	routes    []*Route
+	lastError error
 }
 
 func NewHttp(
 	config *config.HttpService,
-	waitGroup *sync.WaitGroup,
 	log *logrus.Logger,
 ) (*Http, error) {
 	listener, err := net.Listen("tcp", ":"+strconv.Itoa(int(config.Port)))
@@ -32,21 +33,21 @@ func NewHttp(
 	}
 
 	service := &Http{
-		waitGroup: waitGroup,
+		waitGroup: &sync.WaitGroup{},
 		routes:    make([]*Route, 0),
 		listener:  listener,
-		server:    &http.Server{},
+		lastError: nil,
+		server: &http.Server{
+			ErrorLog: goLog.New(log.WriterLevel(logrus.ErrorLevel), "", 0),
+		},
 	}
 
 	service.server.Handler = service.getHandlerFunc()
 
-	waitGroup.Add(1)
+	service.waitGroup.Add(1)
 	go func() {
-		defer waitGroup.Done()
-		err := service.server.Serve(service.listener)
-		if err != http.ErrServerClosed {
-			log.Fatalf("Http service: %v", err)
-		}
+		defer service.waitGroup.Done()
+		service.lastError = service.server.Serve(service.listener)
 	}()
 
 	return service, nil
@@ -127,12 +128,20 @@ func (service *Http) getPayload(route *Route, body io.Reader) ([]byte, error) {
 	return make([]byte, 0), nil
 }
 
+func (service *Http) Wait() error {
+	service.waitGroup.Wait()
+	if service.lastError != http.ErrServerClosed {
+		return service.lastError
+	}
+
+	return nil
+}
+
 func (service *Http) Close() error {
 	err := service.server.Shutdown(context.Background())
 	if err != nil {
 		return err
 	}
 
-	service.waitGroup.Wait()
-	return nil
+	return service.Wait()
 }

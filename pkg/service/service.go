@@ -2,15 +2,16 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
-	"sync"
 )
 
 type Service interface {
 	AddEndpoint(route *Route)
 	Address() string
+	Wait() error
 	Close() error
 }
 
@@ -25,11 +26,10 @@ type Route struct {
 
 func NewFromConfig(
 	config config.Service,
-	waitGroup *sync.WaitGroup,
 	log *logrus.Logger,
 ) (Service, error) {
 	if config.Http != nil {
-		return NewHttp(config.Http, waitGroup, log)
+		return NewHttp(config.Http, log)
 	}
 
 	return nil, errors.New("Failed to initialize source")
@@ -37,12 +37,11 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Service,
-	waitGroup *sync.WaitGroup,
 	log *logrus.Logger,
 ) (List, error) {
 	services := make(List)
 	for serviceName, serviceConfig := range configs {
-		service, err := NewFromConfig(serviceConfig, waitGroup, log)
+		service, err := NewFromConfig(serviceConfig, log)
 		if err != nil {
 			return nil, err
 		}
@@ -50,6 +49,17 @@ func NewFromConfigs(
 	}
 
 	return services, nil
+}
+
+func Wait(services List) error {
+	for serviceName, service := range services {
+		err := service.Wait()
+		if err != nil {
+			return fmt.Errorf("%v service: %w", serviceName, err)
+		}
+	}
+
+	return nil
 }
 
 func Close(services List) error {

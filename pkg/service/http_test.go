@@ -9,15 +9,13 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/util"
 	"strings"
-	"sync"
 	"testing"
 )
 
 func TestHttp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		waitGroup := &sync.WaitGroup{}
 		config := &config.HttpService{Port: 0} // Auto-assign port
-		server, err := NewHttp(config, waitGroup, logrus.StandardLogger())
+		server, err := NewHttp(config, logrus.StandardLogger())
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
