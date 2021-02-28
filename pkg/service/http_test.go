@@ -52,7 +52,7 @@ func TestHttp(t *testing.T) {
 	})
 }
 
-func TestAddEndpoint(t *testing.T) {
+func TestHttpAddRoute(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		server := &Http{
 			routes: make([]*Route, 0),
@@ -69,7 +69,7 @@ func TestAddEndpoint(t *testing.T) {
 	})
 }
 
-func TestGetMatchingRoute(t *testing.T) {
+func TestHttpGetMatchingRoute(t *testing.T) {
 	getFooRoute := &Route{
 		Endpoint:            regexp.MustCompile("/foo"),
 		ExpectedPayloadType: nil,
@@ -133,7 +133,7 @@ func TestGetMatchingRoute(t *testing.T) {
 	})
 }
 
-func TestGetParams(t *testing.T) {
+func TestHttpGetParams(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		url, err := url.Parse("/foo/42/bar?id=wrong&foo=bar&baz=")
 		if err != nil {
@@ -157,7 +157,7 @@ func TestGetParams(t *testing.T) {
 	})
 }
 
-func TestGetPayload(t *testing.T) {
+func TestHttpGetPayload(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		server := &Http{}
 		route := &Route{
