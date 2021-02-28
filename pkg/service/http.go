@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -14,6 +15,7 @@ import (
 )
 
 type Http struct {
+	listener  net.Listener
 	server    *http.Server
 	waitGroup *sync.WaitGroup
 	routes    []*Route
@@ -24,12 +26,16 @@ func NewHttp(
 	waitGroup *sync.WaitGroup,
 	log *logrus.Logger,
 ) (*Http, error) {
+	listener, err := net.Listen("tcp", ":"+strconv.Itoa(int(config.Port)))
+	if err != nil {
+		return nil, err
+	}
+
 	service := &Http{
 		waitGroup: waitGroup,
 		routes:    make([]*Route, 0),
-		server: &http.Server{
-			Addr: ":" + strconv.Itoa(int(config.Port)),
-		},
+		listener:  listener,
+		server:    &http.Server{},
 	}
 
 	service.server.Handler = service.getHandlerFunc()
@@ -37,7 +43,7 @@ func NewHttp(
 	waitGroup.Add(1)
 	go func() {
 		defer waitGroup.Done()
-		err := service.server.ListenAndServe()
+		err := service.server.Serve(service.listener)
 		if err != http.ErrServerClosed {
 			log.Fatalf("Http service: %v", err)
 		}
@@ -48,6 +54,10 @@ func NewHttp(
 
 func (service *Http) AddEndpoint(route *Route) {
 	service.routes = append(service.routes, route)
+}
+
+func (service *Http) Address() string {
+	return "http://" + service.listener.Addr().String()
 }
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {

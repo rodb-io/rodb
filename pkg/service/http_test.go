@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -15,14 +16,41 @@ import (
 func TestHttp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		waitGroup := &sync.WaitGroup{}
-		config := &config.HttpService{Port: 80}
+		config := &config.HttpService{Port: 0} // Auto-assign port
 		server, err := NewHttp(config, waitGroup, logrus.StandardLogger())
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 		defer server.Close()
 
-		// TODO mock and test http server
+		server.AddEndpoint(&Route{
+			Endpoint:            regexp.MustCompile("/foo"),
+			ExpectedPayloadType: nil,
+			ResponseType:        "text/plain",
+			Handler: func(
+				params map[string]string,
+				payload []byte,
+			) ([]byte, error) {
+				return []byte("Hello " + params["name"] + "!"), nil
+			},
+		})
+
+		response, err := http.Get(server.Address() + "/foo?name=Universe")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		body, err := ioutil.ReadAll(response.Body)
+		defer response.Body.Close()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if got, expect := string(body), "Hello Universe!"; got != expect {
+			t.Errorf("Expected body '%+v', got '%+v'", expect, got)
+		}
+		if got, expect := response.Header.Get("Content-Type"), "text/plain"; !strings.HasPrefix(got, expect) {
+			t.Errorf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
+		}
 	})
 }
 

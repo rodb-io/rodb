@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -10,9 +9,7 @@ type HttpService struct {
 }
 
 func (config *HttpService) validate(log *logrus.Logger) error {
-	if config.Port == 0 {
-		return errors.New("http.port is not defined. This setting is required.")
-	}
-
+	// Not setting the port or setting it to 0
+	// means that is will be automatically assigned
 	return nil
 }
