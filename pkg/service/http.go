@@ -53,7 +53,7 @@ func NewHttp(
 	return service, nil
 }
 
-func (service *Http) AddEndpoint(route *Route) {
+func (service *Http) AddRoute(route *Route) {
 	service.routes = append(service.routes, route)
 }
 

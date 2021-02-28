@@ -21,7 +21,7 @@ func TestHttp(t *testing.T) {
 		}
 		defer server.Close()
 
-		server.AddEndpoint(&Route{
+		server.AddRoute(&Route{
 			Endpoint:            regexp.MustCompile("/foo"),
 			ExpectedPayloadType: nil,
 			ResponseType:        "text/plain",
@@ -59,7 +59,7 @@ func TestAddEndpoint(t *testing.T) {
 		}
 
 		route := &Route{ResponseType: "application/test"}
-		server.AddEndpoint(route)
+		server.AddRoute(route)
 
 		if got, expect := len(server.routes), 1; got != expect {
 			t.Errorf("Expected the server to contain '%v' routes, got '%+v'", expect, got)

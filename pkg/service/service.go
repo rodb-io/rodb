@@ -9,7 +9,7 @@ import (
 )
 
 type Service interface {
-	AddEndpoint(route *Route)
+	AddRoute(route *Route)
 	Address() string
 	Wait() error
 	Close() error
