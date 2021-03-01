@@ -16,6 +16,8 @@ import (
 )
 
 type Http struct {
+	config    *config.HttpService
+	logger    *logrus.Logger
 	listener  net.Listener
 	server    *http.Server
 	waitGroup *sync.WaitGroup
@@ -33,6 +35,8 @@ func NewHttp(
 	}
 
 	service := &Http{
+		config:    config,
+		logger:    log,
 		waitGroup: &sync.WaitGroup{},
 		routes:    make([]*Route, 0),
 		listener:  listener,
