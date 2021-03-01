@@ -51,11 +51,6 @@ func main() {
 		return
 	}
 	defer index.Close(indexes)
-	err = index.Prepare(indexes)
-	if err != nil {
-		log.Error(err)
-		return
-	}
 
 	services, err := service.NewFromConfigs(config.Services, log)
 	if err != nil {

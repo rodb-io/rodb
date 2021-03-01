@@ -10,7 +10,6 @@ import (
 )
 
 type Index interface {
-	Prepare() error
 	GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error)
 	Close() error
 }
@@ -26,7 +25,7 @@ func NewFromConfig(
 		if input, inputExists := inputs[config.MemoryMap.Input]; !inputExists {
 			return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.MemoryMap.Input)
 		} else {
-			return NewMemoryMap(config.MemoryMap, input, log), nil
+			return NewMemoryMap(config.MemoryMap, input, log)
 		}
 	}
 
@@ -57,17 +56,6 @@ func Close(sources List) error {
 		err := index.Close()
 		if err != nil {
 			return err
-		}
-	}
-
-	return nil
-}
-
-func Prepare(indexes List) error {
-	for indexName, index := range indexes {
-		err := index.Prepare()
-		if err != nil {
-			return fmt.Errorf("Error preparing index '%v': %w", indexName, err)
 		}
 	}
 

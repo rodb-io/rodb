@@ -8,9 +8,9 @@ import (
 	"testing"
 )
 
-func TestMemoryMapPrepare(t *testing.T) {
+func TestMemoryMap(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		index := NewMemoryMap(
+		index, err := NewMemoryMap(
 			&config.MemoryMapIndex{
 				Columns: []string{"col", "col2"},
 				Input:   "input",
@@ -31,8 +31,6 @@ func TestMemoryMapPrepare(t *testing.T) {
 			}),
 			logrus.StandardLogger(),
 		)
-
-		err := index.Prepare()
 		if err != nil {
 			t.Error(err)
 		}
@@ -74,7 +72,7 @@ func TestMemoryMapPrepare(t *testing.T) {
 }
 
 func TestMemoryMapGetRecords(t *testing.T) {
-	index := NewMemoryMap(
+	index, err := NewMemoryMap(
 		&config.MemoryMapIndex{
 			Columns: []string{"col", "col2"},
 			Input:   "input",
@@ -103,8 +101,6 @@ func TestMemoryMapGetRecords(t *testing.T) {
 		}),
 		logrus.StandardLogger(),
 	)
-
-	err := index.Prepare()
 	if err != nil {
 		t.Error(err)
 	}

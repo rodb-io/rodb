@@ -25,10 +25,6 @@ func NewDumb(
 	}
 }
 
-func (d *Dumb) Prepare() error {
-	return nil
-}
-
 func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
 	input, ok := d.inputs[inputName]
 	if !ok {

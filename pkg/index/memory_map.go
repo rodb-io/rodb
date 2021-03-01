@@ -24,36 +24,34 @@ func NewMemoryMap(
 	config *config.MemoryMapIndex,
 	input input.Input,
 	log *logrus.Logger,
-) *MemoryMap {
-	return &MemoryMap{
+) (*MemoryMap, error) {
+	memoryMap := &MemoryMap{
 		config: config,
 		input:  input,
 		logger: log,
 	}
-}
 
-func (mm *MemoryMap) Prepare() error {
-	mm.index = make(memoryMapIndex)
-	for _, column := range mm.config.Columns {
-		mm.index[column] = make(memoryMapColumnIndex)
+	memoryMap.index = make(memoryMapIndex)
+	for _, column := range memoryMap.config.Columns {
+		memoryMap.index[column] = make(memoryMapColumnIndex)
 	}
 
-	for result := range mm.input.IterateAll() {
+	for result := range memoryMap.input.IterateAll() {
 		if result.Error != nil {
-			return result.Error
+			return nil, result.Error
 		}
 
-		for _, column := range mm.config.Columns {
+		for _, column := range memoryMap.config.Columns {
 			value, err := result.Record.Get(column)
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			if value != nil {
 				value = reflect.ValueOf(value).Elem().Interface()
 			}
 
-			columnIndex := mm.index[column]
+			columnIndex := memoryMap.index[column]
 			valueIndexes, valueIndexesExists := columnIndex[value]
 			if valueIndexesExists {
 				columnIndex[value] = append(valueIndexes, result.Record.Position())
@@ -63,7 +61,7 @@ func (mm *MemoryMap) Prepare() error {
 		}
 	}
 
-	return nil
+	return memoryMap, nil
 }
 
 // Get the records from the given input (if indexed) and that matchesall the given filters
