@@ -69,6 +69,21 @@ func TestHttpAddRoute(t *testing.T) {
 	})
 }
 
+func TestHttpDeleteRoute(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		route := &Route{ResponseType: "application/test"}
+		server := &Http{
+			routes: make([]*Route, 0),
+		}
+		server.routes = append(server.routes, route)
+
+		server.DeleteRoute(route)
+		if got, expect := len(server.routes), 0; got != expect {
+			t.Errorf("Expected the server to contain '%v' routes, got '%+v'", expect, got)
+		}
+	})
+}
+
 func TestHttpGetMatchingRoute(t *testing.T) {
 	getFooRoute := &Route{
 		Endpoint:            regexp.MustCompile("/foo"),

@@ -10,6 +10,7 @@ import (
 
 type Service interface {
 	AddRoute(route *Route)
+	DeleteRoute(route *Route)
 	Address() string
 	Wait() error
 	Close() error

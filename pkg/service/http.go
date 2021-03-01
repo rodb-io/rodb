@@ -61,6 +61,16 @@ func (service *Http) AddRoute(route *Route) {
 	service.routes = append(service.routes, route)
 }
 
+func (service *Http) DeleteRoute(route *Route) {
+	routes := service.routes
+	for i, v := range routes {
+		if v == route {
+			service.routes = append(routes[:i], routes[i+1:]...)
+			return
+		}
+	}
+}
+
 func (service *Http) Address() string {
 	return "http://" + service.listener.Addr().String()
 }

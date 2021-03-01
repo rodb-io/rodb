@@ -75,4 +75,5 @@ outputs:
       service: defaultService
       endpoint: "/dummies/?"
       index: defaultIndex
+      input: defaultInput
       # TODO handle this even without index (basic search)

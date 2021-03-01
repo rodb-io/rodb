@@ -16,6 +16,16 @@ func (service *Mock) AddRoute(route *Route) {
 	service.routes = append(service.routes, route)
 }
 
+func (service *Mock) DeleteRoute(route *Route) {
+	routes := service.routes
+	for i, v := range routes {
+		if v == route {
+			service.routes = append(routes[:i], routes[i+1:]...)
+			return
+		}
+	}
+}
+
 func (service *Mock) Address() string {
 	return ""
 }

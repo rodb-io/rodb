@@ -18,3 +18,16 @@ func TestMockAddRoute(t *testing.T) {
 		}
 	})
 }
+
+func TestMockDeleteRoute(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		route := &Route{ResponseType: "application/test"}
+		mock := NewMock()
+		mock.routes = append(mock.routes, route)
+
+		mock.DeleteRoute(route)
+		if got, expect := len(mock.routes), 0; got != expect {
+			t.Errorf("Expected the server to contain '%v' routes, got '%+v'", expect, got)
+		}
+	})
+}
