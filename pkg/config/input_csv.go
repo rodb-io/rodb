@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/types"
 )
 
 type CsvInput struct {
@@ -17,7 +18,8 @@ type CsvInput struct {
 
 type CsvInputColumn struct {
 	Name             string   `yaml:"name"`
-	Type             ColumnType `yaml:"type"`
+	Type             string `yaml:"type"`
+	typeDefinition   types.Type
 	IgnoreCharacters string   `yaml:"ignoreCharacters"`
 	DecimalSeparator string   `yaml:"decimalSeparator"`
 	TrueValues       []string `yaml:"trueValues"`
@@ -65,9 +67,11 @@ func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 		config.Type = "string"
 	}
 
-	if !isValidColumnType(config.Type) {
-		return fmt.Errorf("csv.columns[].type = '%v' is invalid", config.Type)
+	typeDefinition, err := types.NewFromString(config.Type)
+	if err != nil {
+		return fmt.Errorf("csv.columns[].type: '%w'", err)
 	}
+	config.typeDefinition = typeDefinition
 
 	if config.Type == "float" && len(config.DecimalSeparator) == 0 {
 		return errors.New("csv.columns[].decimalSeparator is required when type = 'float'")
@@ -83,4 +87,8 @@ func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 	}
 
 	return nil
+}
+
+func (config *CsvInputColumn) TypeDefinition() types.Type {
+	return config.TypeDefinition()
 }

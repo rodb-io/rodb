@@ -64,15 +64,3 @@ func checkDuplicateEndpointsPerService(outputConfigs map[string]Output) error {
 
 	return nil
 }
-
-func isValidColumnType(columnType ColumnType) bool {
-	return util.IsInArray(
-		string(columnType),
-		[]string{
-			string(String),
-			string(Integer),
-			string(Float),
-			string(Boolean),
-		},
-	)
-}

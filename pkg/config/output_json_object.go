@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"strings"
+	"rods/pkg/types"
 )
 
 type JsonObjectOutput struct {
@@ -16,8 +17,9 @@ type JsonObjectOutput struct {
 }
 
 type JsonObjectOutputParams struct {
-	Column string
-	Type   ColumnType
+	Column string `yaml:"column"`
+	Type   string `yaml:"type"`
+	typeDefinition types.Type
 }
 
 func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
@@ -54,9 +56,15 @@ func (config *JsonObjectOutputParams) validate(log *logrus.Logger) error {
 		return errors.New("jsonObject.parameters[].column is empty")
 	}
 
-	if !isValidColumnType(config.Type) {
-		return fmt.Errorf("jsonObject.parameters[].type = '%v' is invalid", config.Type)
+	typeDefinition, err := types.NewFromString(config.Type)
+	if err != nil {
+		return fmt.Errorf("jsonObject.parameters[].type: '%w'", err)
 	}
+	config.typeDefinition = typeDefinition
 
 	return nil
+}
+
+func (config *JsonObjectOutputParams) TypeDefinition() types.Type {
+	return config.typeDefinition
 }
