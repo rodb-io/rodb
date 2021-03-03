@@ -2,15 +2,17 @@ package output
 
 import (
 	"github.com/sirupsen/logrus"
+	"errors"
 	"regexp"
-	"rods/pkg/config"
+	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
 	serviceModule "rods/pkg/service"
+	"strconv"
 	"strings"
 )
 
 type JsonObject struct {
-	config  *config.JsonObjectOutput
+	config  *configModule.JsonObjectOutput
 	index   indexModule.Index
 	service serviceModule.Service
 	logger  *logrus.Logger
@@ -18,7 +20,7 @@ type JsonObject struct {
 }
 
 func NewJsonObject(
-	config *config.JsonObjectOutput,
+	config *configModule.JsonObjectOutput,
 	index indexModule.Index,
 	service serviceModule.Service,
 	log *logrus.Logger,
@@ -30,24 +32,64 @@ func NewJsonObject(
 		logger:  log,
 	}
 
-	endpoint := strings.Replace(config.Endpoint, "?", "(?P<id>.*)", 1)
+	paramName := func (i int) string {
+		return "param_" + strconv.Itoa(i)
+	}
+
+	// TODO move that in a function
+	endpoint := output.config.Endpoint
+	for i, param := range output.config.Parameters {
+		var paramPattern string
+		switch param.Type {
+			case configModule.String:
+				paramPattern = ".*"
+			case configModule.Integer:
+				paramPattern = "[-]?[0-9]+"
+			case configModule.Float:
+				paramPattern = "[-]?[0-9]+([.][0-9]+)?"
+			case configModule.Boolean:
+				paramPattern = "(true|false|1|0|TRUE|FALSE)"
+			default:
+				return nil, errors.New("Unknown param type '" + string(param.Type) + "'")
+		}
+		endpoint = strings.Replace(endpoint, "?", "(?P<" + paramName(i) + ">" + paramPattern + ")", 1)
+	}
+
+	// TODO commonize handling of the types?
+
 	route := &serviceModule.Route{
 		Endpoint:            regexp.MustCompile("^" + endpoint + "$"),
 		ExpectedPayloadType: nil,
 		ResponseType:        "application/json",
 		Handler: func(params map[string]string, payload []byte) ([]byte, error) {
-			output.index.GetRecords(
-				output.config.Input,
-				map[string]interface{} {
-					"TODO": params["id"],
-				},
-				1
-			)
+			filters := map[string]interface{} {}
+			for i, param := range output.config.Parameters {
+				switch param.Type {
+					case configModule.String:
+						filters[param.Column] = params[paramName(i)]
+					case configModule.Integer:
+						intParam, err := strconv.Atoi(params[paramName(i)])
+						if err != nil {
+							return nil, err
+						}
+						filters[param.Column] = intParam
+					case configModule.Float:
+						intParam, err := strconv.ParseFloat(params[paramName(i)], 64)
+						if err != nil {
+							return nil, err
+						}
+						filters[param.Column] = intParam
+					case configModule.Boolean:
+						paramString := params[paramName(i)]
+						filters[param.Column] = (paramString == "true" || paramString == "1" || paramString == "TRUE")
+					default:
+						return nil, errors.New("Unknown param type '" + string(param.Type) + "'")
+				}
+			}
+
+			output.index.GetRecords(output.config.Input, filters, 1)
 
 			// TODO split this handler function properly (like the http service?)
-			// TODO possibility of multiple params in the url: expose the regexp rather than a simple param?
-			// TODO find the right param id for searching in the record
-			// TODO what if types does not match (have int in record, but got string in the url)
 
 			return nil, nil
 		},

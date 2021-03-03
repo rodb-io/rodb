@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rods/pkg/util"
 )
 
 type CsvInput struct {
@@ -18,7 +17,7 @@ type CsvInput struct {
 
 type CsvInputColumn struct {
 	Name             string   `yaml:"name"`
-	Type             string   `yaml:"type"`
+	Type             ColumnType `yaml:"type"`
 	IgnoreCharacters string   `yaml:"ignoreCharacters"`
 	DecimalSeparator string   `yaml:"decimalSeparator"`
 	TrueValues       []string `yaml:"trueValues"`
@@ -66,10 +65,7 @@ func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 		config.Type = "string"
 	}
 
-	if !util.IsInArray(
-		config.Type,
-		[]string{"string", "integer", "float", "boolean"},
-	) {
+	if !isValidColumnType(config.Type) {
 		return fmt.Errorf("csv.columns[].type = '%v' is invalid", config.Type)
 	}
 

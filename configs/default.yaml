@@ -73,7 +73,9 @@ outputs:
   defaultJsonObjectOutput:
     jsonObject:
       service: defaultService
-      endpoint: "/dummies/?"
-      index: defaultIndex
       input: defaultInput
-      # TODO handle this even without index (basic search)
+      endpoint: "/dummies/?"
+      parameters:
+        - column: id
+          type: integer
+      index: defaultIndex

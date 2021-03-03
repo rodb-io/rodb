@@ -43,7 +43,7 @@ func (record *Csv) GetString(field string) (*string, error) {
 	value, fieldIndex, err := record.getField(field)
 
 	columnConfig := record.config.Columns[fieldIndex]
-	if columnConfig.Type != "string" {
+	if columnConfig.Type != config.String {
 		return nil, fmt.Errorf("The column '%v' is not a string", field)
 	}
 
@@ -57,7 +57,7 @@ func (record *Csv) GetInteger(field string) (*int, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	if columnConfig.Type != "integer" {
+	if columnConfig.Type != config.Integer {
 		return nil, fmt.Errorf("The column '%v' is not an integer", field)
 	}
 
@@ -77,7 +77,7 @@ func (record *Csv) GetFloat(field string) (*float64, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	if columnConfig.Type != "float" {
+	if columnConfig.Type != config.Float {
 		return nil, fmt.Errorf("The column '%v' is not a float", field)
 	}
 
@@ -101,7 +101,7 @@ func (record *Csv) GetBoolean(field string) (*bool, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	if columnConfig.Type != "boolean" {
+	if columnConfig.Type != config.Boolean {
 		return nil, fmt.Errorf("The column '%v' is not a boolean", field)
 	}
 
@@ -122,16 +122,16 @@ func (record *Csv) Get(field string) (interface{}, error) {
 	}
 
 	columnConfig := record.config.Columns[fieldIndex]
-	if columnConfig.Type == "string" {
+	if columnConfig.Type == config.String {
 		return record.GetString(field)
 	}
-	if columnConfig.Type == "integer" {
+	if columnConfig.Type == config.Integer {
 		return record.GetInteger(field)
 	}
-	if columnConfig.Type == "float" {
+	if columnConfig.Type == config.Float {
 		return record.GetFloat(field)
 	}
-	if columnConfig.Type == "boolean" {
+	if columnConfig.Type == config.Boolean {
 		return record.GetBoolean(field)
 	}
 
