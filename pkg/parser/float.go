@@ -1,14 +1,14 @@
 package parser
 
 import (
-	"strconv"
-	"strings"
+	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/util"
-	"github.com/sirupsen/logrus"
+	"strconv"
+	"strings"
 )
 
-type Float struct{
+type Float struct {
 	config *config.FloatParser
 	logger *logrus.Logger
 }

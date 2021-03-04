@@ -1,13 +1,13 @@
 package parser
 
 import (
-	"rods/pkg/config"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/config"
 	"rods/pkg/util"
 	"strconv"
 )
 
-type Integer struct{
+type Integer struct {
 	config *config.IntegerParser
 	logger *logrus.Logger
 }

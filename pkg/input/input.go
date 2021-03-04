@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
+	"rods/pkg/parser"
 	"rods/pkg/record"
 	"rods/pkg/source"
-	"rods/pkg/parser"
 )
 
 type Input interface {

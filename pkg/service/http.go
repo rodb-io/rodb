@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"github.com/sirupsen/logrus"
 	"errors"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	goLog "log"

@@ -6,8 +6,8 @@ import (
 )
 
 type BooleanParser struct {
-	TrueValues       []string `yaml:"trueValues"`
-	FalseValues      []string `yaml:"falseValues"`
+	TrueValues  []string `yaml:"trueValues"`
+	FalseValues []string `yaml:"falseValues"`
 }
 
 func (config *BooleanParser) validate(log *logrus.Logger) error {

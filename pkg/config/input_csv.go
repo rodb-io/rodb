@@ -17,7 +17,7 @@ type CsvInput struct {
 }
 
 type CsvInputColumn struct {
-	Name   string   `yaml:"name"`
+	Name   string `yaml:"name"`
 	Parser string `yaml:"parser"`
 }
 

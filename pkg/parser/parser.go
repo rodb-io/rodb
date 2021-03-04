@@ -2,11 +2,11 @@ package parser
 
 import (
 	"errors"
-	"rods/pkg/config"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/config"
 )
 
-type Parser interface{
+type Parser interface {
 	GetRegexpPattern() string
 	Parse(value string) (interface{}, error)
 }
@@ -47,7 +47,7 @@ func NewFromConfigs(
 	}
 
 	// Handling the default parsers
-	for parserName, parserConfig := range map[string]config.Parser {
+	for parserName, parserConfig := range map[string]config.Parser{
 		"string": {
 			String: &config.StringParser{},
 		},
@@ -64,7 +64,7 @@ func NewFromConfigs(
 		},
 		"boolean": {
 			Boolean: &config.BooleanParser{
-				TrueValues: []string{"true", "1", "TRUE"},
+				TrueValues:  []string{"true", "1", "TRUE"},
 				FalseValues: []string{"false", "0", "FALSE"},
 			},
 		},

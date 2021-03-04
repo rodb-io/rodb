@@ -6,8 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/index"
-	"rods/pkg/service"
 	"rods/pkg/parser"
+	"rods/pkg/service"
 )
 
 type Output interface {

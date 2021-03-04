@@ -9,9 +9,9 @@ import (
 	"io"
 	"reflect"
 	"rods/pkg/config"
+	"rods/pkg/parser"
 	"rods/pkg/record"
 	"rods/pkg/source"
-	"rods/pkg/parser"
 	"sync"
 	"unsafe"
 )

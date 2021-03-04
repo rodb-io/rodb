@@ -5,11 +5,11 @@ import (
 	flag "github.com/spf13/pflag"
 	"rods/pkg/config"
 	"rods/pkg/index"
-	"rods/pkg/parser"
 	"rods/pkg/input"
+	"rods/pkg/output"
+	"rods/pkg/parser"
 	"rods/pkg/service"
 	"rods/pkg/source"
-	"rods/pkg/output"
 )
 
 func main() {

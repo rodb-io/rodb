@@ -6,8 +6,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"strings"
 	"rods/pkg/util"
+	"strings"
 )
 
 type Config struct {

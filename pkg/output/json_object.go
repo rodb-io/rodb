@@ -1,25 +1,25 @@
 package output
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"regexp"
-	"errors"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
-	serviceModule "rods/pkg/service"
 	parserModule "rods/pkg/parser"
+	serviceModule "rods/pkg/service"
 	"strconv"
 	"strings"
-	"encoding/json"
 )
 
 type JsonObject struct {
-	config  *configModule.JsonObjectOutput
-	index   indexModule.Index
-	service serviceModule.Service
+	config       *configModule.JsonObjectOutput
+	index        indexModule.Index
+	service      serviceModule.Service
 	paramParsers []parserModule.Parser
-	logger  *logrus.Logger
-	route   *serviceModule.Route
+	logger       *logrus.Logger
+	route        *serviceModule.Route
 }
 
 func NewJsonObject(
@@ -39,18 +39,18 @@ func NewJsonObject(
 	}
 
 	output := &JsonObject{
-		config:  config,
-		index:   index,
-		service: service,
+		config:       config,
+		index:        index,
+		service:      service,
 		paramParsers: paramParsers,
-		logger:  log,
+		logger:       log,
 	}
 
 	route := &serviceModule.Route{
 		Endpoint:            output.endpointRegexp(),
 		ExpectedPayloadType: nil,
 		ResponseType:        "application/json",
-		Handler: output.getHandler(),
+		Handler:             output.getHandler(),
 	}
 
 	service.AddRoute(route)
@@ -92,14 +92,14 @@ func (output *JsonObject) endpointRegexp() *regexp.Regexp {
 	for i := range output.config.Parameters {
 		paramPattern := output.paramParsers[i].GetRegexpPattern()
 		paramName := output.endpointRegexpParamName(i)
-		endpoint = strings.Replace(endpoint, "?", "(?P<" + paramName + ">" + paramPattern + ")", 1)
+		endpoint = strings.Replace(endpoint, "?", "(?P<"+paramName+">"+paramPattern+")", 1)
 	}
 
 	return regexp.MustCompile("^" + endpoint + "$")
 }
 
 func (output *JsonObject) getEndpointFilters(params map[string]string) (map[string]interface{}, error) {
-	filters := map[string]interface{} {}
+	filters := map[string]interface{}{}
 	for i, param := range output.config.Parameters {
 		paramName := output.endpointRegexpParamName(i)
 		paramValue, err := output.paramParsers[i].Parse(params[paramName])

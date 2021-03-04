@@ -3,12 +3,12 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/util"
-	"github.com/sirupsen/logrus"
 )
 
-type Boolean struct{
+type Boolean struct {
 	config *config.BooleanParser
 	logger *logrus.Logger
 }

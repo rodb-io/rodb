@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"rods/pkg/config"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/config"
 )
 
-type String struct{
+type String struct {
 	config *config.StringParser
 	logger *logrus.Logger
 }
