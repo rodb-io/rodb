@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/parser"
-	"rods/pkg/util"
-	"strconv"
-	"strings"
 )
 
 type Csv struct {
@@ -28,6 +25,20 @@ func NewCsv(
 		data:          data,
 		position:      position,
 	}
+}
+
+func (record *Csv) All() (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+	for _, column := range record.config.Columns {
+		value, err := record.Get(column.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		result[column.Name] = value
+	}
+
+	return result, nil
 }
 
 func (record *Csv) Get(field string) (interface{}, error) {

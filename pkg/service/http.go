@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/sirupsen/logrus"
+	"errors"
 	"io"
 	"io/ioutil"
 	goLog "log"
@@ -85,18 +86,23 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 
 		payload, err := service.getPayload(route, request.Body)
 		if err != nil {
-			http.Error(response, err.Error(), 500)
+			http.Error(response, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		params := service.getParams(route.Endpoint, request.URL)
 		data, err := route.Handler(params, payload)
 		if err != nil {
-			http.Error(response, err.Error(), 500)
+			status := http.StatusInternalServerError
+			if errors.Is(err, RecordNotFoundError) {
+				status = http.StatusNotFound
+			}
+
+			http.Error(response, err.Error(), status)
 			return
 		}
 
-		response.WriteHeader(200)
+		response.WriteHeader(http.StatusOK)
 		response.Header().Set("Content-Type", route.ResponseType)
 		response.Write(data)
 		return

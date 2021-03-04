@@ -25,6 +25,8 @@ type Route struct {
 	Handler             func(params map[string]string, payload []byte) ([]byte, error)
 }
 
+var RecordNotFoundError = errors.New("Record not found")
+
 func NewFromConfig(
 	config config.Service,
 	log *logrus.Logger,

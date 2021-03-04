@@ -10,6 +10,7 @@ import (
 	parserModule "rods/pkg/parser"
 	"strconv"
 	"strings"
+	"encoding/json"
 )
 
 type JsonObject struct {
@@ -45,45 +46,70 @@ func NewJsonObject(
 		logger:  log,
 	}
 
-	paramName := func (i int) string {
-		return "param_" + strconv.Itoa(i)
-	}
-
-	// TODO move that in a function
-	endpoint := output.config.Endpoint
-	for i := range output.config.Parameters {
-		paramPattern := output.paramParsers[i].GetRegexpPattern()
-		endpoint = strings.Replace(endpoint, "?", "(?P<" + paramName(i) + ">" + paramPattern + ")", 1)
-	}
-
 	route := &serviceModule.Route{
-		Endpoint:            regexp.MustCompile("^" + endpoint + "$"),
+		Endpoint:            output.endpointRegexp(),
 		ExpectedPayloadType: nil,
 		ResponseType:        "application/json",
-		Handler: func(params map[string]string, payload []byte) ([]byte, error) {
-			filters := map[string]interface{} {}
-			for i, param := range output.config.Parameters {
-				paramValue, err := output.paramParsers[i].Parse(params[paramName(i)])
-				if err != nil {
-					return nil, err
-				}
-				filters[param.Column] = paramValue
-			}
-
-			output.index.GetRecords(output.config.Input, filters, 1)
-
-			// TODO split this handler function properly (like the http service?)
-
-			return nil, nil
-		},
+		Handler: output.getHandler(),
 	}
-
-	// TODO use the parsers in the csv input (and move the code)
-	// TODO test the parsers and json object
 
 	service.AddRoute(route)
 
 	return output, nil
+}
+
+func (output *JsonObject) getHandler() func(params map[string]string, payload []byte) ([]byte, error) {
+	return func(params map[string]string, payload []byte) ([]byte, error) {
+		filters, err := output.getEndpointFilters(params)
+		if err != nil {
+			return nil, err
+		}
+
+		records, err := output.index.GetRecords(output.config.Input, filters, 1)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(records) == 0 {
+			return nil, serviceModule.RecordNotFoundError
+		}
+
+		data, err := records[0].All()
+		if err != nil {
+			return nil, err
+		}
+
+		return json.Marshal(data)
+	}
+}
+
+func (output *JsonObject) endpointRegexpParamName(index int) string {
+	return "param_" + strconv.Itoa(index)
+}
+
+func (output *JsonObject) endpointRegexp() *regexp.Regexp {
+	endpoint := output.config.Endpoint
+	for i := range output.config.Parameters {
+		paramPattern := output.paramParsers[i].GetRegexpPattern()
+		paramName := output.endpointRegexpParamName(i)
+		endpoint = strings.Replace(endpoint, "?", "(?P<" + paramName + ">" + paramPattern + ")", 1)
+	}
+
+	return regexp.MustCompile("^" + endpoint + "$")
+}
+
+func (output *JsonObject) getEndpointFilters(params map[string]string) (map[string]interface{}, error) {
+	filters := map[string]interface{} {}
+	for i, param := range output.config.Parameters {
+		paramName := output.endpointRegexpParamName(i)
+		paramValue, err := output.paramParsers[i].Parse(params[paramName])
+		if err != nil {
+			return nil, err
+		}
+		filters[param.Column] = paramValue
+	}
+
+	return filters, nil
 }
 
 func (output *JsonObject) Close() error {

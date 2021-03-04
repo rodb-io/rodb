@@ -41,6 +41,25 @@ func NewStringColumnsMock(
 	)
 }
 
+func (record *Mock) All() (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+
+	for field, value := range record.strings {
+		result[field] = value
+	}
+	for field, value := range record.integers {
+		result[field] = value
+	}
+	for field, value := range record.floats {
+		result[field] = value
+	}
+	for field, value := range record.booleans {
+		result[field] = value
+	}
+
+	return result, nil
+}
+
 func (record *Mock) Get(field string) (interface{}, error) {
 	if value, ok := record.strings[field]; ok {
 		return &value, nil
