@@ -56,7 +56,7 @@ func (config *JsonObjectOutputParams) validate(log *logrus.Logger) error {
 		return errors.New("jsonObject.parameters[].column is empty")
 	}
 
-	typeDefinition, err := types.NewFromString(config.Type)
+	typeDefinition, err := types.FromString(config.Type)
 	if err != nil {
 		return fmt.Errorf("jsonObject.parameters[].type: '%w'", err)
 	}

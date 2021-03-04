@@ -4,16 +4,6 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"reflect"
-	"rods/pkg/util"
-)
-
-type ColumnType string
-
-const (
-	String  ColumnType = "string"
-	Integer ColumnType = "integer"
-	Float   ColumnType = "float"
-	Boolean ColumnType = "boolean"
 )
 
 type validable interface {

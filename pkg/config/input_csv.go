@@ -67,7 +67,7 @@ func (config *CsvInputColumn) validate(log *logrus.Logger) error {
 		config.Type = "string"
 	}
 
-	typeDefinition, err := types.NewFromString(config.Type)
+	typeDefinition, err := types.FromString(config.Type)
 	if err != nil {
 		return fmt.Errorf("csv.columns[].type: '%w'", err)
 	}

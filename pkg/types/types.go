@@ -9,17 +9,17 @@ type Type interface{
 	Parse(value string) (interface{}, error)
 }
 
-func NewFromString(typeName string) (Type, error) {
-	switch typeName {
-		case "string":
-			return NewString(), nil
-		case "integer":
-			return NewInteger(), nil
-		case "float":
-			return NewFloat(), nil
-		case "boolean":
-			return NewBoolean(), nil
-		default:
-			return nil, errors.New("Unknown type '" + string(typeName) + "'")
+var types = map[string]Type {
+	"string": NewString(),
+	"integer": NewInteger(),
+	"float": NewFloat(),
+	"boolean": NewBoolean(),
+}
+
+func FromString(typeName string) (Type, error) {
+	if typeObject, typeExists := types[typeName]; typeExists {
+		return typeObject, nil
+	} else {
+		return nil, errors.New("Unknown type '" + string(typeName) + "'")
 	}
 }

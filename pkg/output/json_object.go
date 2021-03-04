@@ -2,7 +2,6 @@ package output
 
 import (
 	"github.com/sirupsen/logrus"
-	"errors"
 	"regexp"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
@@ -66,7 +65,8 @@ func NewJsonObject(
 	}
 
 	// TODO Make the type handle the parts implemented in the record
-	// TODO make the boolean type configurable like for the csv columns?
+	// TODO make the param types configurable like for the csv columns?
+	// TODO make the types an independent parsing layer
 
 	service.AddRoute(route)
 

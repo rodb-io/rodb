@@ -41,42 +41,6 @@ func NewStringColumnsMock(
 	)
 }
 
-func (record *Mock) GetString(field string) (*string, error) {
-	value, ok := record.strings[field]
-	if !ok {
-		return nil, fmt.Errorf("String column '%v' does not exist in mocked record", field)
-	}
-
-	return &value, nil
-}
-
-func (record *Mock) GetInteger(field string) (*int, error) {
-	value, ok := record.integers[field]
-	if !ok {
-		return nil, fmt.Errorf("Integer column '%v' does not exist in mocked record", field)
-	}
-
-	return &value, nil
-}
-
-func (record *Mock) GetFloat(field string) (*float64, error) {
-	value, ok := record.floats[field]
-	if !ok {
-		return nil, fmt.Errorf("Float column '%v' does not exist in mocked record", field)
-	}
-
-	return &value, nil
-}
-
-func (record *Mock) GetBoolean(field string) (*bool, error) {
-	value, ok := record.booleans[field]
-	if !ok {
-		return nil, fmt.Errorf("Boolean column '%v' does not exist in mocked record", field)
-	}
-
-	return &value, nil
-}
-
 func (record *Mock) Get(field string) (interface{}, error) {
 	if value, ok := record.strings[field]; ok {
 		return &value, nil
@@ -91,7 +55,7 @@ func (record *Mock) Get(field string) (interface{}, error) {
 		return &value, nil
 	}
 
-	return nil, fmt.Errorf("Generic column '%v' does not exist in mocked record", field)
+	return nil, fmt.Errorf("Column '%v' does not exist in mocked record", field)
 }
 
 func (record *Mock) Position() Position {
