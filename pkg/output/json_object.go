@@ -3,9 +3,11 @@ package output
 import (
 	"github.com/sirupsen/logrus"
 	"regexp"
+	"errors"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
 	serviceModule "rods/pkg/service"
+	parserModule "rods/pkg/parser"
 	"strconv"
 	"strings"
 )
@@ -14,6 +16,7 @@ type JsonObject struct {
 	config  *configModule.JsonObjectOutput
 	index   indexModule.Index
 	service serviceModule.Service
+	paramParsers []parserModule.Parser
 	logger  *logrus.Logger
 	route   *serviceModule.Route
 }
@@ -22,12 +25,23 @@ func NewJsonObject(
 	config *configModule.JsonObjectOutput,
 	index indexModule.Index,
 	service serviceModule.Service,
+	parsers parserModule.List,
 	log *logrus.Logger,
 ) (*JsonObject, error) {
+	paramParsers := make([]parserModule.Parser, len(config.Parameters))
+	for i, param := range config.Parameters {
+		parser, parserExists := parsers[param.Parser]
+		if !parserExists {
+			return nil, errors.New("Parser '" + param.Parser + "' does not exist")
+		}
+		paramParsers[i] = parser
+	}
+
 	output := &JsonObject{
 		config:  config,
 		index:   index,
 		service: service,
+		paramParsers: paramParsers,
 		logger:  log,
 	}
 
@@ -37,8 +51,8 @@ func NewJsonObject(
 
 	// TODO move that in a function
 	endpoint := output.config.Endpoint
-	for i, param := range output.config.Parameters {
-		paramPattern := param.TypeDefinition().GetRegexpPattern()
+	for i := range output.config.Parameters {
+		paramPattern := output.paramParsers[i].GetRegexpPattern()
 		endpoint = strings.Replace(endpoint, "?", "(?P<" + paramName(i) + ">" + paramPattern + ")", 1)
 	}
 
@@ -49,7 +63,7 @@ func NewJsonObject(
 		Handler: func(params map[string]string, payload []byte) ([]byte, error) {
 			filters := map[string]interface{} {}
 			for i, param := range output.config.Parameters {
-				paramValue, err := param.TypeDefinition().Parse(params[paramName(i)])
+				paramValue, err := output.paramParsers[i].Parse(params[paramName(i)])
 				if err != nil {
 					return nil, err
 				}
@@ -64,9 +78,8 @@ func NewJsonObject(
 		},
 	}
 
-	// TODO Make the type handle the parts implemented in the record
-	// TODO make the param types configurable like for the csv columns?
-	// TODO make the types an independent parsing layer
+	// TODO use the parsers in the csv input (and move the code)
+	// TODO test the parsers and json object
 
 	service.AddRoute(route)
 

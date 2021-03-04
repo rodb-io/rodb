@@ -2,10 +2,8 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"strings"
-	"rods/pkg/types"
 )
 
 type JsonObjectOutput struct {
@@ -18,8 +16,7 @@ type JsonObjectOutput struct {
 
 type JsonObjectOutputParams struct {
 	Column string `yaml:"column"`
-	Type   string `yaml:"type"`
-	typeDefinition types.Type
+	Parser string `yaml:"parser"`
 }
 
 func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
@@ -52,19 +49,16 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 
 func (config *JsonObjectOutputParams) validate(log *logrus.Logger) error {
 	// The existence of the column value will be validated at runtime
+	// The parser will be validated at runtime
+
 	if config.Column == "" {
 		return errors.New("jsonObject.parameters[].column is empty")
 	}
 
-	typeDefinition, err := types.FromString(config.Type)
-	if err != nil {
-		return fmt.Errorf("jsonObject.parameters[].type: '%w'", err)
+	if config.Parser == "" {
+		log.Debug("jsonObjet.parameters[].parser not defined. Assuming 'string'")
+		config.Parser = "string"
 	}
-	config.typeDefinition = typeDefinition
 
 	return nil
-}
-
-func (config *JsonObjectOutputParams) TypeDefinition() types.Type {
-	return config.typeDefinition
 }

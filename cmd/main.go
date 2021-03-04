@@ -9,6 +9,7 @@ import (
 	"rods/pkg/input"
 	"rods/pkg/service"
 	"rods/pkg/source"
+	"rods/pkg/output"
 )
 
 func main() {
@@ -66,6 +67,13 @@ func main() {
 		return
 	}
 	defer service.Close(services)
+
+	outputs, err := output.NewFromConfigs(config.Outputs, indexes, services, parsers, log)
+	if err != nil {
+		log.Errorf("Error initializing outputs: %v", err)
+		return
+	}
+	defer output.Close(outputs)
 
 	log.Infof("Indexes: %+v\n", indexes)
 	log.Infof("Services: %+v\n", services)

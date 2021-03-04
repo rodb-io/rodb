@@ -17,13 +17,8 @@ type CsvInput struct {
 }
 
 type CsvInputColumn struct {
-	Name             string   `yaml:"name"`
-	Type             string `yaml:"type"`
-	typeDefinition   types.Type
-	IgnoreCharacters string   `yaml:"ignoreCharacters"`
-	DecimalSeparator string   `yaml:"decimalSeparator"`
-	TrueValues       []string `yaml:"trueValues"`
-	FalseValues      []string `yaml:"falseValues"`
+	Name   string   `yaml:"name"`
+	Parser string `yaml:"parser"`
 }
 
 func (config *CsvInput) validate(log *logrus.Logger) error {
@@ -58,37 +53,15 @@ func (config *CsvInput) validate(log *logrus.Logger) error {
 }
 
 func (config *CsvInputColumn) validate(log *logrus.Logger) error {
+	// The parser will be validated at runtime
 	if config.Name == "" {
 		return errors.New("csv.columns[].name is required")
 	}
 
-	if config.Type == "" {
-		log.Warn("csv.columns[].type not defined. Assuming 'string'")
-		config.Type = "string"
-	}
-
-	typeDefinition, err := types.FromString(config.Type)
-	if err != nil {
-		return fmt.Errorf("csv.columns[].type: '%w'", err)
-	}
-	config.typeDefinition = typeDefinition
-
-	if config.Type == "float" && len(config.DecimalSeparator) == 0 {
-		return errors.New("csv.columns[].decimalSeparator is required when type = 'float'")
-	}
-
-	if config.Type == "boolean" {
-		if len(config.TrueValues) == 0 {
-			return errors.New("csv.columns[].trueValues is required when type = 'boolean'")
-		}
-		if len(config.TrueValues) == 0 {
-			return errors.New("csv.columns[].falseValues is required when type = 'boolean'")
-		}
+	if config.Parser == "" {
+		log.Debug("csv.columns[].parser not defined. Assuming 'string'")
+		config.Parser = "string"
 	}
 
 	return nil
-}
-
-func (config *CsvInputColumn) TypeDefinition() types.Type {
-	return config.TypeDefinition()
 }

@@ -7,6 +7,7 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/service"
+	"rods/pkg/parser"
 )
 
 type Output interface {
@@ -19,6 +20,7 @@ func NewFromConfig(
 	config config.Output,
 	indexes index.List,
 	services service.List,
+	parsers parser.List,
 	log *logrus.Logger,
 ) (Output, error) {
 	if config.JsonObject != nil {
@@ -32,7 +34,7 @@ func NewFromConfig(
 			return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.JsonObject.Index)
 		}
 
-		return NewJsonObject(config.JsonObject, index, service, log)
+		return NewJsonObject(config.JsonObject, index, service, parsers, log)
 	}
 
 	return nil, errors.New("Failed to initialize output")
@@ -42,11 +44,12 @@ func NewFromConfigs(
 	configs map[string]config.Output,
 	indexes index.List,
 	services service.List,
+	parsers parser.List,
 	log *logrus.Logger,
 ) (List, error) {
 	outputs := make(List)
 	for outputName, outputConfig := range configs {
-		output, err := NewFromConfig(outputConfig, indexes, services, log)
+		output, err := NewFromConfig(outputConfig, indexes, services, parsers, log)
 		if err != nil {
 			return nil, err
 		}
