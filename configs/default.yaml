@@ -1,4 +1,5 @@
 parsers:
+	# TODO test the parsers
   defaultInteger:
     integer:
       ignoreCharacters: ", .€$"
@@ -78,6 +79,7 @@ outputs:
           index: defaultIndex
         # TODO handle the filters even without index (basic search)
   defaultJsonObjectOutput:
+    # TODO test the jsonObject
     jsonObject:
       service: defaultService
       input: defaultInput

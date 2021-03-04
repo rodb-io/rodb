@@ -2,7 +2,9 @@ package parser
 
 import (
 	"strconv"
+	"strings"
 	"rods/pkg/config"
+	"rods/pkg/util"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,5 +28,10 @@ func (float *Float) GetRegexpPattern() string {
 }
 
 func (float *Float) Parse(value string) (interface{}, error) {
-	return strconv.ParseFloat(value, 64)
+	cleanedValue := util.RemoveCharacters(value, float.config.IgnoreCharacters)
+	if float.config.DecimalSeparator != "." {
+		cleanedValue = strings.ReplaceAll(cleanedValue, float.config.DecimalSeparator, ".")
+	}
+
+	return strconv.ParseFloat(cleanedValue, 64)
 }

@@ -2,7 +2,9 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"rods/pkg/config"
+	"rods/pkg/util"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,13 +28,12 @@ func (boolean *Boolean) GetRegexpPattern() string {
 }
 
 func (boolean *Boolean) Parse(value string) (interface{}, error) {
-	if value == "true" || value == "1" || value == "TRUE" {
+	if util.IsInArray(value, boolean.config.TrueValues) {
 		return true, nil
 	}
-
-	if value == "false" || value == "0" || value == "FALSE" {
+	if util.IsInArray(value, boolean.config.FalseValues) {
 		return false, nil
 	}
 
-	return nil, errors.New("The value '" + value + "' cannot be parsed as a boolean.")
+	return nil, fmt.Errorf("The value '%v' was found but is neither declared in trueValues or falseValues.", value)
 }

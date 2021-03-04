@@ -11,6 +11,7 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/record"
 	"rods/pkg/source"
+	"rods/pkg/parser"
 	"sync"
 	"unsafe"
 )
@@ -23,18 +24,30 @@ type Csv struct {
 	sourceReaderLock sync.Mutex
 	csvReader        *csv.Reader
 	csvReaderBuffer  *bufio.Reader
+	columnParsers    []parser.Parser
 }
 
 func NewCsv(
 	config *config.CsvInput,
 	source source.Source,
+	parsers parser.List,
 	log *logrus.Logger,
 ) (*Csv, error) {
+	columnParsers := make([]parser.Parser, len(config.Columns))
+	for i, column := range config.Columns {
+		parser, parserExists := parsers[column.Parser]
+		if !parserExists {
+			return nil, errors.New("Parser '" + column.Parser + "' does not exist")
+		}
+		columnParsers[i] = parser
+	}
+
 	csvInput := &Csv{
 		config:           config,
 		source:           source,
 		logger:           log,
 		sourceReaderLock: sync.Mutex{},
+		columnParsers:    columnParsers,
 	}
 
 	sourceReader, csvReader, err := csvInput.openSource()
@@ -68,6 +81,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 
 	return record.NewCsv(
 		csvInput.config,
+		csvInput.columnParsers,
 		row,
 		position,
 	), nil
@@ -126,6 +140,7 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			channel <- IterateAllResult{
 				Record: record.NewCsv(
 					csvInput.config,
+					csvInput.columnParsers,
 					row,
 					position,
 				),

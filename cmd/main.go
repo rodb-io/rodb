@@ -47,7 +47,7 @@ func main() {
 	}
 	defer source.Close(sources)
 
-	inputs, err := input.NewFromConfigs(config.Inputs, sources, log)
+	inputs, err := input.NewFromConfigs(config.Inputs, sources, parsers, log)
 	if err != nil {
 		log.Errorf("Error initializing inputs: %v", err)
 		return

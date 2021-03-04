@@ -64,8 +64,8 @@ func NewFromConfigs(
 		},
 		"boolean": {
 			Boolean: &config.BooleanParser{
-				TrueValues: []string{"true", "1"},
-				FalseValues: []string{"false", "0"},
+				TrueValues: []string{"true", "1", "TRUE"},
+				FalseValues: []string{"false", "0", "FALSE"},
 			},
 		},
 	} {

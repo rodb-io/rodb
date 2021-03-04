@@ -3,6 +3,7 @@ package parser
 import (
 	"rods/pkg/config"
 	"github.com/sirupsen/logrus"
+	"rods/pkg/util"
 	"strconv"
 )
 
@@ -26,5 +27,6 @@ func (integer *Integer) GetRegexpPattern() string {
 }
 
 func (integer *Integer) Parse(value string) (interface{}, error) {
-	return strconv.Atoi(value)
+	cleanedValue := util.RemoveCharacters(value, integer.config.IgnoreCharacters)
+	return strconv.Atoi(cleanedValue)
 }
