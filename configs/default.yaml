@@ -1,3 +1,15 @@
+parsers:
+  defaultInteger:
+    integer:
+      ignoreCharacters: ", .€$"
+  defaultFloat:
+    float:
+      decimalSeparator: "."
+      ignoreCharacters: ", "
+  defaultBoolean:
+    boolean:
+      trueValues: ["true", "1", "yes", "TRUE", "YES"]
+      falseValues: ["false", "0", "no", "FALSE", "NO", ""]
 sources:
   defaultSource:
     filesystem:
@@ -13,18 +25,13 @@ inputs:
       delimiter: ","
       columns:
         - name: id
-          type: integer
-          ignoreCharacters: ", .€$"
+          parser: defaultInteger
         - name: name
-          type: string
+          parser: string
         - name: number
-          type: float
-          decimalSeparator: "."
-          ignoreCharacters: ", "
+          parser: defaultFloat
         - name: bool
-          type: boolean
-          trueValues: ["true", "1", "yes", "TRUE", "YES"]
-          falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+          parser: defaultBoolean
   # TODO xml input
   # TODO json input
   # TODO json rows input
@@ -77,5 +84,5 @@ outputs:
       endpoint: "/dummies/?"
       parameters:
         - column: id
-          type: integer
+          parser: integer
       index: defaultIndex

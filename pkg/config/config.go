@@ -7,9 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"rods/pkg/util"
 )
 
 type Config struct {
+	Parsers  map[string]Parser
 	Sources  map[string]Source
 	Inputs   map[string]Input
 	Indexes  map[string]Index
@@ -49,6 +51,12 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 }
 
 func (config *Config) validate(log *logrus.Logger) error {
+	for subConfigName, subConfig := range config.Parsers {
+		if err := subConfig.validate(log); err != nil {
+			return fmt.Errorf("parsers.%v: %w", strings.ToLower(subConfigName), err)
+		}
+	}
+
 	for subConfigName, subConfig := range config.Sources {
 		if err := subConfig.validate(log); err != nil {
 			return fmt.Errorf("sources.%v: %w", strings.ToLower(subConfigName), err)

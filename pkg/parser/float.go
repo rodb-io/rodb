@@ -1,14 +1,23 @@
-package types
+package parser
 
 import (
 	"strconv"
+	"rods/pkg/config"
+	"github.com/sirupsen/logrus"
 )
 
 type Float struct{
+	config *config.FloatParser
+	logger *logrus.Logger
 }
 
-func NewFloat() *Float {
+func NewFloat(
+	config *config.FloatParser,
+	log *logrus.Logger,
+) *Float {
 	return &Float{
+		config: config,
+		logger: log,
 	}
 }
 

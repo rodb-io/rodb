@@ -1,14 +1,23 @@
-package types
+package parser
 
 import (
+	"rods/pkg/config"
+	"github.com/sirupsen/logrus"
 	"strconv"
 )
 
 type Integer struct{
+	config *config.IntegerParser
+	logger *logrus.Logger
 }
 
-func NewInteger() *Integer {
+func NewInteger(
+	config *config.IntegerParser,
+	log *logrus.Logger,
+) *Integer {
 	return &Integer{
+		config: config,
+		logger: log,
 	}
 }
 

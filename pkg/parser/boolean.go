@@ -1,14 +1,23 @@
-package types
+package parser
 
 import (
 	"errors"
+	"rods/pkg/config"
+	"github.com/sirupsen/logrus"
 )
 
 type Boolean struct{
+	config *config.BooleanParser
+	logger *logrus.Logger
 }
 
-func NewBoolean() *Boolean {
+func NewBoolean(
+	config *config.BooleanParser,
+	log *logrus.Logger,
+) *Boolean {
 	return &Boolean{
+		config: config,
+		logger: log,
 	}
 }
 

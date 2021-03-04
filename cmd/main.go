@@ -5,6 +5,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"rods/pkg/config"
 	"rods/pkg/index"
+	"rods/pkg/parser"
 	"rods/pkg/input"
 	"rods/pkg/service"
 	"rods/pkg/source"
@@ -30,6 +31,13 @@ func main() {
 		log.Error(err)
 		return
 	}
+
+	parsers, err := parser.NewFromConfigs(config.Parsers, log)
+	if err != nil {
+		log.Errorf("Error initializing parsers: %v", err)
+		return
+	}
+	defer parser.Close(parsers)
 
 	sources, err := source.NewFromConfigs(config.Sources, log)
 	if err != nil {
