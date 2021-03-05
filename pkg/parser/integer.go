@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/sirupsen/logrus"
+	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/util"
 	"strconv"
@@ -23,7 +24,12 @@ func NewInteger(
 }
 
 func (integer *Integer) GetRegexpPattern() string {
-	return "[-]?[0-9]+"
+	ignore := regexp.QuoteMeta(integer.config.IgnoreCharacters)
+	ignoreBegin := ""
+	if ignore != "" {
+		ignoreBegin = "[" + ignore + "]*"
+	}
+	return ignoreBegin + "[-]?[0-9" + ignore + "]+"
 }
 
 func (integer *Integer) Parse(value string) (interface{}, error) {
