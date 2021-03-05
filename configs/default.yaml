@@ -79,7 +79,6 @@ outputs:
         # TODO handle the filters even without index (basic search)
   defaultJsonObjectOutput:
     # TODO test the jsonObject
-    # TODO test the parsers
     jsonObject:
       service: defaultService
       input: defaultInput
