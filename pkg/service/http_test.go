@@ -13,25 +13,34 @@ import (
 )
 
 func TestHttp(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		config := &config.HttpService{Port: 0} // Auto-assign port
-		server, err := NewHttp(config, logrus.StandardLogger())
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-		defer server.Close()
+	config := &config.HttpService{Port: 0} // Auto-assign port
+	server, err := NewHttp(config, logrus.StandardLogger())
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	defer server.Close()
 
-		server.AddRoute(&Route{
-			Endpoint:            regexp.MustCompile("/foo"),
-			ExpectedPayloadType: nil,
-			ResponseType:        "text/plain",
-			Handler: func(
-				params map[string]string,
-				payload []byte,
-			) ([]byte, error) {
-				return []byte("Hello " + params["name"] + "!"), nil
-			},
-		})
+	route := &Route{
+		Endpoint:            regexp.MustCompile("/foo"),
+		ExpectedPayloadType: nil,
+		ResponseType:        "text/plain",
+		Handler: func(
+			params map[string]string,
+			payload []byte,
+		) ([]byte, error) {
+			return []byte("Hello " + params["name"] + "!"), nil
+		},
+	}
+
+	server.AddRoute(route)
+
+	t.Run("normal", func(t *testing.T) {
+		route.Handler = func(
+			params map[string]string,
+			payload []byte,
+		) ([]byte, error) {
+			return []byte("Hello " + params["name"] + "!"), nil
+		}
 
 		response, err := http.Get(server.Address() + "/foo?name=Universe")
 		if err != nil {
@@ -55,24 +64,12 @@ func TestHttp(t *testing.T) {
 		}
 	})
 	t.Run("404", func(t *testing.T) {
-		config := &config.HttpService{Port: 0} // Auto-assign port
-		server, err := NewHttp(config, logrus.StandardLogger())
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+		route.Handler = func(
+			params map[string]string,
+			payload []byte,
+		) ([]byte, error) {
+			return nil, RecordNotFoundError
 		}
-		defer server.Close()
-
-		server.AddRoute(&Route{
-			Endpoint:            regexp.MustCompile("/foo"),
-			ExpectedPayloadType: nil,
-			ResponseType:        "text/plain",
-			Handler: func(
-				params map[string]string,
-				payload []byte,
-			) ([]byte, error) {
-				return nil, RecordNotFoundError
-			},
-		})
 
 		response, err := http.Get(server.Address() + "/foo")
 		if err != nil {
