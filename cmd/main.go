@@ -75,9 +75,6 @@ func main() {
 	}
 	defer output.Close(outputs)
 
-	log.Infof("Indexes: %+v\n", indexes)
-	log.Infof("Services: %+v\n", services)
-
 	err = service.Wait(services)
 	if err != nil {
 		log.Error(err)

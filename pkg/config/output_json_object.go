@@ -11,7 +11,7 @@ type JsonObjectOutput struct {
 	Input      string                   `yaml:"input"`
 	Endpoint   string                   `yaml:"endpoint"`
 	Index      string                   `yaml:"index"`
-	Parameters []JsonObjectOutputParams `yaml:"params"`
+	Parameters []JsonObjectOutputParams `yaml:"parameters"`
 }
 
 type JsonObjectOutputParams struct {

@@ -11,18 +11,15 @@ import (
 )
 
 func TestCsvGet(t *testing.T) {
-	parsers, err := parser.NewFromConfigs(map[string]config.Parser{}, logrus.StandardLogger())
-	if err != nil {
-		t.Error(err)
-	}
+	parsers := parser.List{"mock": parser.NewMock()}
 
 	config := &config.CsvInput{
 		Path:           "test",
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
 		Columns: []config.CsvInputColumn{
-			{Name: "a", Parser: "string"},
-			{Name: "b", Parser: "string"},
+			{Name: "a", Parser: "mock"},
+			{Name: "b", Parser: "mock"},
 		},
 		ColumnIndexByName: map[string]int{
 			"a": 0,
@@ -129,10 +126,7 @@ func TestCsvIterateAll(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			parsers, err := parser.NewFromConfigs(map[string]config.Parser{}, logrus.StandardLogger())
-			if err != nil {
-				t.Error(err)
-			}
+			parsers := parser.List{"mock": parser.NewMock()}
 
 			source := source.NewMock(testCase.file)
 			config := &config.CsvInput{
@@ -140,8 +134,8 @@ func TestCsvIterateAll(t *testing.T) {
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
 				Columns: []config.CsvInputColumn{
-					{Name: "a", Parser: "string"},
-					{Name: "b", Parser: "string"},
+					{Name: "a", Parser: "mock"},
+					{Name: "b", Parser: "mock"},
 				},
 				ColumnIndexByName: map[string]int{
 					"a": 0,
