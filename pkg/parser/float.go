@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/sirupsen/logrus"
+	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/util"
 	"strconv"
@@ -24,7 +25,13 @@ func NewFloat(
 }
 
 func (float *Float) GetRegexpPattern() string {
-	return "[-]?[0-9]+([.][0-9]+)?"
+	separator := regexp.QuoteMeta(float.config.DecimalSeparator)
+	ignore := regexp.QuoteMeta(float.config.IgnoreCharacters)
+	ignoreBegin := ""
+	if ignore != "" {
+		ignoreBegin = "[" + ignore + "]*"
+	}
+	return ignoreBegin + "[-]?[0-9" + ignore + "]+([" + separator + "][0-9" + ignore + "]+)?"
 }
 
 func (float *Float) Parse(value string) (interface{}, error) {

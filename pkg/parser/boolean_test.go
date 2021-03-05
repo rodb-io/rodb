@@ -48,8 +48,7 @@ func TestBooleanGetRegexpPattern(t *testing.T) {
 		FalseValues: []string{"false", "no"},
 	}
 	boolean := NewBoolean(config, logrus.StandardLogger())
-
-	pattern := regexp.MustCompile(boolean.GetRegexpPattern())
+	pattern := regexp.MustCompile("^" + boolean.GetRegexpPattern() + "$")
 
 	for value, expectedResult := range map[string]interface{}{
 		"true":  true,
