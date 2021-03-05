@@ -53,7 +53,7 @@ func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limi
 				}
 			}
 
-			value = reflect.ValueOf(value).Elem().Interface()
+			value = reflect.ValueOf(value).Interface()
 			if value != filter {
 				matches = false
 				break

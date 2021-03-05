@@ -25,7 +25,7 @@ func TestBooleanParse(t *testing.T) {
 		"FALSE": nil,
 	} {
 		t.Run(value, func(t *testing.T) {
-			got, err := boolean.Parse("true")
+			got, err := boolean.Parse(value)
 			if expectedResult == nil {
 				if err == nil {
 					t.Errorf("Expected error, got '%v', '%+v'", got, err)

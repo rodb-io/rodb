@@ -6,7 +6,6 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"rods/pkg/util"
 	"strings"
 )
 

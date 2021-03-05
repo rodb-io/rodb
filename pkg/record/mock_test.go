@@ -2,7 +2,6 @@ package record
 
 import (
 	"fmt"
-	"rods/pkg/util"
 	"testing"
 )
 
@@ -18,8 +17,8 @@ func TestMockGet(t *testing.T) {
 			0,
 		)
 		got, err := record.Get("col_a")
-		expect := util.PString("string")
-		if fmt.Sprintf("%v", got) == *expect {
+		expect := "string"
+		if fmt.Sprintf("%v", got) != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -38,7 +37,7 @@ func TestMockGet(t *testing.T) {
 		)
 		got, err := record.Get("col_a")
 		expect := 42
-		if fmt.Sprintf("%v", got) == fmt.Sprintf("%v", expect) {
+		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -57,7 +56,7 @@ func TestMockGet(t *testing.T) {
 		)
 		got, err := record.Get("col_a")
 		expect := float64(42)
-		if fmt.Sprintf("%v", got) == fmt.Sprintf("%v", expect) {
+		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
@@ -76,7 +75,7 @@ func TestMockGet(t *testing.T) {
 		)
 		got, err := record.Get("col_a")
 		expect := false
-		if fmt.Sprintf("%v", got) == fmt.Sprintf("%v", expect) {
+		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {

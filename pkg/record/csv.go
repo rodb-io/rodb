@@ -57,7 +57,7 @@ func (record *Csv) Get(field string) (interface{}, error) {
 		return nil, err
 	}
 
-	return &value, nil
+	return value, nil
 }
 
 func (record *Csv) Position() Position {

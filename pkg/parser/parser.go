@@ -18,16 +18,16 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Parser, error) {
 	if config.String != nil {
-		return NewString(config.String, log)
+		return NewString(config.String, log), nil
 	}
 	if config.Integer != nil {
-		return NewInteger(config.Integer, log)
+		return NewInteger(config.Integer, log), nil
 	}
 	if config.Float != nil {
-		return NewFloat(config.Float, log)
+		return NewFloat(config.Float, log), nil
 	}
 	if config.Boolean != nil {
-		return NewBoolean(config.Boolean, log)
+		return NewBoolean(config.Boolean, log), nil
 	}
 
 	return nil, errors.New("Failed to initialize parser")

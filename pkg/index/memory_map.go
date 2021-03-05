@@ -48,7 +48,7 @@ func NewMemoryMap(
 			}
 
 			if value != nil {
-				value = reflect.ValueOf(value).Elem().Interface()
+				value = reflect.ValueOf(value).Interface()
 			}
 
 			columnIndex := memoryMap.index[column]

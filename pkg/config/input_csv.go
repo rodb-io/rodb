@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rods/pkg/types"
 )
 
 type CsvInput struct {

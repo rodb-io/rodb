@@ -25,7 +25,7 @@ func NewBoolean(
 }
 
 func (boolean *Boolean) GetRegexpPattern() string {
-	values := make([]string, len(boolean.config.TrueValues)+len(boolean.config.FalseValues))
+	values := make([]string, 0, len(boolean.config.TrueValues)+len(boolean.config.FalseValues))
 	for _, value := range boolean.config.TrueValues {
 		values = append(values, regexp.QuoteMeta(value))
 	}

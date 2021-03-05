@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"regexp"
 	"rods/pkg/config"
-	"rods/pkg/util"
 	"strings"
 	"testing"
 )
@@ -115,13 +114,14 @@ func TestHttpDeleteRoute(t *testing.T) {
 }
 
 func TestHttpGetMatchingRoute(t *testing.T) {
+	payloadType := "application/json"
 	getFooRoute := &Route{
 		Endpoint:            regexp.MustCompile("/foo"),
 		ExpectedPayloadType: nil,
 	}
 	postBarRoute := &Route{
 		Endpoint:            regexp.MustCompile("/bar"),
-		ExpectedPayloadType: util.PString("application/json"),
+		ExpectedPayloadType: &payloadType,
 	}
 	getBarRoute := &Route{
 		Endpoint:            regexp.MustCompile("/bar"),
@@ -153,7 +153,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 	t.Run("post", func(t *testing.T) {
 		except := postBarRoute
 		requestHeader := http.Header(map[string][]string{})
-		requestHeader.Set("Content-Type", "application/json")
+		requestHeader.Set("Content-Type", payloadType)
 		got := server.getMatchingRoute(&http.Request{
 			Method: "POST",
 			URL:    requestUrl,
@@ -205,8 +205,9 @@ func TestHttpGetParams(t *testing.T) {
 func TestHttpGetPayload(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		server := &Http{}
+		payloadType := "text/plain"
 		route := &Route{
-			ExpectedPayloadType: util.PString("text/plain"),
+			ExpectedPayloadType: &payloadType,
 		}
 
 		data := "Hello World!"

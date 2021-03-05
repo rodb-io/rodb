@@ -62,16 +62,16 @@ func (record *Mock) All() (map[string]interface{}, error) {
 
 func (record *Mock) Get(field string) (interface{}, error) {
 	if value, ok := record.strings[field]; ok {
-		return &value, nil
+		return value, nil
 	}
 	if value, ok := record.integers[field]; ok {
-		return &value, nil
+		return value, nil
 	}
 	if value, ok := record.floats[field]; ok {
-		return &value, nil
+		return value, nil
 	}
 	if value, ok := record.booleans[field]; ok {
-		return &value, nil
+		return value, nil
 	}
 
 	return nil, fmt.Errorf("Column '%v' does not exist in mocked record", field)
