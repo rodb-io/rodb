@@ -49,7 +49,6 @@ indexes:
   # TODO lucene index
 services:
   defaultService:
-    # TODO test the handling of the 404 error
     http:
       # TODO add health-checks
       port: 80

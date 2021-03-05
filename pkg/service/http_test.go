@@ -38,6 +38,10 @@ func TestHttp(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
+		if expect, got := http.StatusOK, response.StatusCode; got != expect {
+			t.Errorf("Expected status %+v, got '%+v'", expect, got)
+		}
+
 		body, err := ioutil.ReadAll(response.Body)
 		defer response.Body.Close()
 		if err != nil {
@@ -48,6 +52,35 @@ func TestHttp(t *testing.T) {
 		}
 		if got, expect := response.Header.Get("Content-Type"), "text/plain"; !strings.HasPrefix(got, expect) {
 			t.Errorf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
+		}
+	})
+	t.Run("404", func(t *testing.T) {
+		config := &config.HttpService{Port: 0} // Auto-assign port
+		server, err := NewHttp(config, logrus.StandardLogger())
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer server.Close()
+
+		server.AddRoute(&Route{
+			Endpoint:            regexp.MustCompile("/foo"),
+			ExpectedPayloadType: nil,
+			ResponseType:        "text/plain",
+			Handler: func(
+				params map[string]string,
+				payload []byte,
+			) ([]byte, error) {
+				return nil, RecordNotFoundError
+			},
+		})
+
+		response, err := http.Get(server.Address() + "/foo")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := http.StatusNotFound, response.StatusCode; got != expect {
+			t.Errorf("Expected status %+v, got '%+v'", expect, got)
 		}
 	})
 }
