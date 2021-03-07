@@ -53,6 +53,7 @@ func NewJsonObject(
 		Handler:             output.getHandler(),
 	}
 
+	output.route = route
 	service.AddRoute(route)
 
 	return output, nil
@@ -88,11 +89,13 @@ func (output *JsonObject) endpointRegexpParamName(index int) string {
 }
 
 func (output *JsonObject) endpointRegexp() *regexp.Regexp {
-	endpoint := output.config.Endpoint
-	for i := range output.config.Parameters {
-		paramPattern := output.paramParsers[i].GetRegexpPattern()
-		paramName := output.endpointRegexpParamName(i)
-		endpoint = strings.Replace(endpoint, "?", "(?P<"+paramName+">"+paramPattern+")", 1)
+	parts := strings.Split(output.config.Endpoint, "?")
+
+	endpoint := parts[0]
+	for i := 1; i < len(parts); i++ {
+		paramPattern := output.paramParsers[i-1].GetRegexpPattern()
+		paramName := output.endpointRegexpParamName(i - 1)
+		endpoint = endpoint + "(?P<" + paramName + ">" + paramPattern + ")" + parts[i]
 	}
 
 	return regexp.MustCompile("^" + endpoint + "$")

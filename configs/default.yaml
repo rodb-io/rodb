@@ -85,3 +85,5 @@ outputs:
         - column: id
           parser: integer
       index: defaultIndex
+# TODO inverse the service/endpoint relationship
+# TODO mock the output layer and test the mock

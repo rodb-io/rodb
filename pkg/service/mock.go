@@ -3,24 +3,24 @@ package service
 import ()
 
 type Mock struct {
-	routes []*Route
+	Routes []*Route
 }
 
 func NewMock() *Mock {
 	return &Mock{
-		routes: make([]*Route, 0),
+		Routes: make([]*Route, 0),
 	}
 }
 
 func (service *Mock) AddRoute(route *Route) {
-	service.routes = append(service.routes, route)
+	service.Routes = append(service.Routes, route)
 }
 
 func (service *Mock) DeleteRoute(route *Route) {
-	routes := service.routes
+	routes := service.Routes
 	for i, v := range routes {
 		if v == route {
-			service.routes = append(routes[:i], routes[i+1:]...)
+			service.Routes = append(routes[:i], routes[i+1:]...)
 			return
 		}
 	}
