@@ -10,6 +10,9 @@ parsers:
     boolean:
       trueValues: ["true", "1", "yes", "TRUE", "YES"]
       falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+# TODO enum parser (or relationship with another csv file?)
+# TODO make the examples work
+# TODO make the original zip codes file work (with shift-jis encoding)
 sources:
   defaultSource:
     filesystem:
@@ -19,6 +22,7 @@ sources:
 inputs:
   defaultInput:
     csv:
+      # TODO setting to autodetect columns if there is a title row?
       source: defaultSource
       path: ./dummy.csv
       ignoreFirstRow: true

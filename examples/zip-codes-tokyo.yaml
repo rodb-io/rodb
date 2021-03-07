@@ -1,0 +1,78 @@
+parsers:
+  booleanZeroOne:
+    boolean:
+      falseValues: ["0"]
+      trueValues: ["1"]
+sources:
+  filesystem:
+    filesystem:
+      path: ./
+inputs:
+  zipCodesTokyo:
+    csv:
+      source: filesystem
+      path: ./zip-codes-tokyo.csv
+      ignoreFirstRow: false
+      delimiter: ","
+      columns:
+        - name: code
+          parser: integer
+        - name: oldZipCode
+          parser: integer
+        - name: zipCode
+          parser: string
+        - name: prefectureKana
+          parser: string
+        - name: municipalityKana
+          parser: string
+        - name: townKana
+          parser: string
+        - name: prefecture
+          parser: string
+        - name: municipality
+          parser: string
+        - name: town
+          parser: string
+        - name: townHasMultipleZipCodes
+          parser: booleanZeroOne
+        - name: streetNumberAssignedPerKana
+          parser: booleanZeroOne
+        - name: hasSubdivision
+          parser: booleanZeroOne
+        - name: zipCodeHasMultipleTowns
+          parser: booleanZeroOne
+        - name: updated
+          enum:
+            0: unchanged
+            1: changed
+            2: abolished
+        - name: reasonForUpdate
+          enum:
+            0: unchanged
+            1: administration
+            2: residential addressing
+            3: land reajustment
+            4: postal readjustment
+            5: correction
+            6: abolition
+indexes:
+  zipCode:
+    memoryMap:
+      input: postCodesTokyo
+      columns:
+        - zipCode
+services:
+  httpService:
+    http:
+      port: 80
+outputs:
+  findOnePostalCode:
+    jsonObject:
+      input: postCodesTokyo
+      index: zipCode
+      services:
+        - httpService
+      endpoint: "/zip-codes/?"
+      parameters:
+        - column: id
+          parser: string
