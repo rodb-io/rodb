@@ -38,7 +38,7 @@ func NewJsonObject(
 		paramParsers[i] = parser
 	}
 
-	output := &JsonObject{
+	jsonObject := &JsonObject{
 		config:       config,
 		index:        index,
 		service:      service,
@@ -47,26 +47,26 @@ func NewJsonObject(
 	}
 
 	route := &serviceModule.Route{
-		Endpoint:            output.endpointRegexp(),
+		Endpoint:            jsonObject.endpointRegexp(),
 		ExpectedPayloadType: nil,
 		ResponseType:        "application/json",
-		Handler:             output.getHandler(),
+		Handler:             jsonObject.getHandler(),
 	}
 
-	output.route = route
+	jsonObject.route = route
 	service.AddRoute(route)
 
-	return output, nil
+	return jsonObject, nil
 }
 
-func (output *JsonObject) getHandler() func(params map[string]string, payload []byte) ([]byte, error) {
+func (jsonObject *JsonObject) getHandler() func(params map[string]string, payload []byte) ([]byte, error) {
 	return func(params map[string]string, payload []byte) ([]byte, error) {
-		filters, err := output.getEndpointFilters(params)
+		filters, err := jsonObject.getEndpointFilters(params)
 		if err != nil {
 			return nil, err
 		}
 
-		records, err := output.index.GetRecords(output.config.Input, filters, 1)
+		records, err := jsonObject.index.GetRecords(jsonObject.config.Input, filters, 1)
 		if err != nil {
 			return nil, err
 		}
@@ -84,28 +84,28 @@ func (output *JsonObject) getHandler() func(params map[string]string, payload []
 	}
 }
 
-func (output *JsonObject) endpointRegexpParamName(index int) string {
+func (jsonObject *JsonObject) endpointRegexpParamName(index int) string {
 	return "param_" + strconv.Itoa(index)
 }
 
-func (output *JsonObject) endpointRegexp() *regexp.Regexp {
-	parts := strings.Split(output.config.Endpoint, "?")
+func (jsonObject *JsonObject) endpointRegexp() *regexp.Regexp {
+	parts := strings.Split(jsonObject.config.Endpoint, "?")
 
 	endpoint := parts[0]
 	for i := 1; i < len(parts); i++ {
-		paramPattern := output.paramParsers[i-1].GetRegexpPattern()
-		paramName := output.endpointRegexpParamName(i - 1)
+		paramPattern := jsonObject.paramParsers[i-1].GetRegexpPattern()
+		paramName := jsonObject.endpointRegexpParamName(i - 1)
 		endpoint = endpoint + "(?P<" + paramName + ">" + paramPattern + ")" + parts[i]
 	}
 
 	return regexp.MustCompile("^" + endpoint + "$")
 }
 
-func (output *JsonObject) getEndpointFilters(params map[string]string) (map[string]interface{}, error) {
+func (jsonObject *JsonObject) getEndpointFilters(params map[string]string) (map[string]interface{}, error) {
 	filters := map[string]interface{}{}
-	for i, param := range output.config.Parameters {
-		paramName := output.endpointRegexpParamName(i)
-		paramValue, err := output.paramParsers[i].Parse(params[paramName])
+	for i, param := range jsonObject.config.Parameters {
+		paramName := jsonObject.endpointRegexpParamName(i)
+		paramValue, err := jsonObject.paramParsers[i].Parse(params[paramName])
 		if err != nil {
 			return nil, err
 		}
@@ -115,7 +115,7 @@ func (output *JsonObject) getEndpointFilters(params map[string]string) (map[stri
 	return filters, nil
 }
 
-func (output *JsonObject) Close() error {
-	output.service.DeleteRoute(output.route)
+func (jsonObject *JsonObject) Close() error {
+	jsonObject.service.DeleteRoute(jsonObject.route)
 	return nil
 }
