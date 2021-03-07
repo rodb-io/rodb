@@ -16,7 +16,7 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	index        indexModule.Index
-	service      serviceModule.Service
+	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
 	logger       *logrus.Logger
 	route        *serviceModule.Route
@@ -25,7 +25,7 @@ type JsonObject struct {
 func NewJsonObject(
 	config *configModule.JsonObjectOutput,
 	index indexModule.Index,
-	service serviceModule.Service,
+	services []serviceModule.Service,
 	parsers parserModule.List,
 	log *logrus.Logger,
 ) (*JsonObject, error) {
@@ -41,7 +41,7 @@ func NewJsonObject(
 	jsonObject := &JsonObject{
 		config:       config,
 		index:        index,
-		service:      service,
+		services:     services,
 		paramParsers: paramParsers,
 		logger:       log,
 	}
@@ -54,7 +54,10 @@ func NewJsonObject(
 	}
 
 	jsonObject.route = route
-	service.AddRoute(route)
+
+	for _, service := range jsonObject.services {
+		service.AddRoute(route)
+	}
 
 	return jsonObject, nil
 }
@@ -122,6 +125,9 @@ func (jsonObject *JsonObject) getEndpointFilters(params map[string]string) (map[
 }
 
 func (jsonObject *JsonObject) Close() error {
-	jsonObject.service.DeleteRoute(jsonObject.route)
+	for _, service := range jsonObject.services {
+		service.DeleteRoute(jsonObject.route)
+	}
+
 	return nil
 }

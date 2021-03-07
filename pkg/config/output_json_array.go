@@ -6,7 +6,7 @@ import (
 )
 
 type JsonArrayOutput struct {
-	Service  string                           `yaml:"service"`
+	Services []string                         `yaml:"services"`
 	Endpoint string                           `yaml:"endpoint"`
 	Limit    JsonArrayOutputLimit             `yaml:"limit"`
 	Offset   JsonArrayOutputOffset            `yaml:"offset"`
@@ -32,6 +32,10 @@ func (config *JsonArrayOutput) validate(log *logrus.Logger) error {
 
 	if config.Endpoint == "" {
 		return errors.New("jsonArray.endpoint is not defined. This setting is required")
+	}
+
+	if len(config.Services) == 0 {
+		return errors.New("jsonArray.services is empty. As least one is required.")
 	}
 
 	err := config.Limit.validate(log)

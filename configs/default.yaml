@@ -57,12 +57,14 @@ services:
 outputs:
   defaultGraphqlOutput:
     graphql:
-      service: defaultService
+      services:
+        - defaultService
       endpoint: "/"
       # TODO configuration
   defaultJsonArrayOutput:
     jsonArray:
-      service: defaultService
+      services:
+        - defaultService
       endpoint: "/dummies"
       limit:
         default: 100
@@ -78,11 +80,11 @@ outputs:
         # TODO handle the filters even without index (basic search)
   defaultJsonObjectOutput:
     jsonObject:
-      service: defaultService
       input: defaultInput
+      index: defaultIndex
+      services:
+        - defaultService
       endpoint: "/dummies/?"
       parameters:
         - column: id
           parser: integer
-      index: defaultIndex
-# TODO inverse the service/endpoint relationship

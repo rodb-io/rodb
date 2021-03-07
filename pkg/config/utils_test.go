@@ -33,7 +33,7 @@ func TestCheckDuplicateEndpointsPerService(t *testing.T) {
 		data := map[string]Output{
 			"Test": {
 				JsonArray: &JsonArrayOutput{
-					Service:  "test",
+					Services: []string{"test"},
 					Endpoint: "/",
 				},
 			},
@@ -46,13 +46,13 @@ func TestCheckDuplicateEndpointsPerService(t *testing.T) {
 		data := map[string]Output{
 			"Test": {
 				JsonArray: &JsonArrayOutput{
-					Service:  "test",
+					Services: []string{"test"},
 					Endpoint: "/",
 				},
 			},
 			"Test2": {
 				JsonArray: &JsonArrayOutput{
-					Service:  "test",
+					Services: []string{"test"},
 					Endpoint: "/",
 				},
 			},

@@ -7,7 +7,7 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Service    string                   `yaml:"service"`
+	Services   []string                 `yaml:"services"`
 	Input      string                   `yaml:"input"`
 	Endpoint   string                   `yaml:"endpoint"`
 	Index      string                   `yaml:"index"`
@@ -26,7 +26,11 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 	// The input will be validated at runtime
 
 	if len(config.Parameters) == 0 {
-		return errors.New("A jsonObject output must have at least one parameter")
+		return errors.New("jsonObject.parameters is empty. As least one is required.")
+	}
+
+	if len(config.Services) == 0 {
+		return errors.New("jsonObject.services is empty. As least one is required.")
 	}
 
 	for _, parameter := range config.Parameters {
@@ -37,15 +41,15 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 	}
 
 	if config.Endpoint == "" {
-		return errors.New("You must specify a non-empty jsonObject endpoint")
+		return errors.New("jsonObject.endpoint is not defined. This setting is required")
 	}
 
 	if !strings.Contains(config.Endpoint, "?") {
-		return errors.New("A jsonObject endpoint must specify the identifier's location with '?'. For example \"/product/?\".")
+		return errors.New("jsonObject.endpoint must specify the identifier's location with '?'. For example \"/product/?\".")
 	}
 
 	if strings.Count(config.Endpoint, "?") != len(config.Parameters) {
-		return errors.New("A jsonObject must have the same number of parameters than occurences of '?' in the endpoint")
+		return errors.New("jsonObject.parameters: The same number of parameters than occurences of '?' in the endpoint is required")
 	}
 
 	return nil

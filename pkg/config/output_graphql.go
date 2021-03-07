@@ -6,8 +6,8 @@ import (
 )
 
 type GraphQLOutput struct {
-	Service  string `yaml:"service"`
-	Endpoint string `yaml:"endpoint"`
+	Services []string `yaml:"services"`
+	Endpoint string   `yaml:"endpoint"`
 }
 
 func (config *GraphQLOutput) validate(log *logrus.Logger) error {
@@ -15,6 +15,10 @@ func (config *GraphQLOutput) validate(log *logrus.Logger) error {
 
 	if config.Endpoint == "" {
 		return errors.New("graphql.endpoint is not defined. This setting is required.")
+	}
+
+	if len(config.Services) == 0 {
+		return errors.New("graphql.services is empty. As least one is required.")
 	}
 
 	return nil

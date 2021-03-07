@@ -24,9 +24,14 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Output, error) {
 	if config.JsonObject != nil {
-		service, serviceExists := services[config.JsonObject.Service]
-		if !serviceExists {
-			return nil, fmt.Errorf("Service '%v' not found in services list.", config.JsonObject.Service)
+		outputServices := make([]service.Service, len(config.JsonObject.Services))
+		for i, serviceName := range config.JsonObject.Services {
+			service, serviceExists := services[serviceName]
+			if !serviceExists {
+				return nil, fmt.Errorf("Service '%v' not found in services list.", serviceName)
+			}
+
+			outputServices[i] = service
 		}
 
 		index, indexExists := indexes[config.JsonObject.Index]
@@ -34,7 +39,7 @@ func NewFromConfig(
 			return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.JsonObject.Index)
 		}
 
-		return NewJsonObject(config.JsonObject, index, service, parsers, log)
+		return NewJsonObject(config.JsonObject, index, outputServices, parsers, log)
 	}
 
 	return nil, errors.New("Failed to initialize output")

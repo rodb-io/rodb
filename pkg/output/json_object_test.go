@@ -21,7 +21,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 	jsonObject, err := NewJsonObject(
 		config,
 		mockIndex,
-		mockService,
+		[]service.Service{mockService},
 		parser.List{"mock": mockParser},
 		logrus.StandardLogger(),
 	)
