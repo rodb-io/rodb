@@ -67,6 +67,47 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
 		}
 	})
+	t.Run("param count lower than wildcard count", func(t *testing.T) {
+		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Endpoint: "/foo/?/bar/?",
+			Parameters: []config.JsonObjectOutputParams{
+				{
+					Column: "foo",
+					Parser: "mock",
+				},
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		regexp := jsonObject.endpointRegexp()
+		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)/bar/(.*)$"; got != expect {
+			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
+		}
+	})
+	t.Run("wildcard count lower than param count", func(t *testing.T) {
+		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Endpoint: "/foo/?",
+			Parameters: []config.JsonObjectOutputParams{
+				{
+					Column: "foo",
+					Parser: "mock",
+				}, {
+					Column: "bar",
+					Parser: "mock",
+				},
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		regexp := jsonObject.endpointRegexp()
+		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)$"; got != expect {
+			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
+		}
+	})
 }
 
 func TestJsonObjectGetEndpointFilters(t *testing.T) {

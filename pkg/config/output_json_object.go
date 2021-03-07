@@ -44,6 +44,10 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 		return errors.New("A jsonObject endpoint must specify the identifier's location with '?'. For example \"/product/?\".")
 	}
 
+	if strings.Count(config.Endpoint, "?") != len(config.Parameters) {
+		return errors.New("A jsonObject must have the same number of parameters than occurences of '?' in the endpoint")
+	}
+
 	return nil
 }
 

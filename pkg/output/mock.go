@@ -1,14 +1,12 @@
 package output
 
-import (
-)
+import ()
 
 type Mock struct {
 }
 
 func NewMock() *Mock {
-	mock := &Mock{
-	}
+	mock := &Mock{}
 
 	return mock
 }

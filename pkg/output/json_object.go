@@ -92,10 +92,16 @@ func (jsonObject *JsonObject) endpointRegexp() *regexp.Regexp {
 	parts := strings.Split(jsonObject.config.Endpoint, "?")
 
 	endpoint := parts[0]
-	for i := 1; i < len(parts); i++ {
-		paramPattern := jsonObject.paramParsers[i-1].GetRegexpPattern()
-		paramName := jsonObject.endpointRegexpParamName(i - 1)
-		endpoint = endpoint + "(?P<" + paramName + ">" + paramPattern + ")" + parts[i]
+	for partIndex := 1; partIndex < len(parts); partIndex++ {
+		paramIndex := partIndex - 1
+
+		if paramIndex >= len(jsonObject.paramParsers) {
+			endpoint = endpoint + "(.*)" + parts[partIndex]
+		} else {
+			paramPattern := jsonObject.paramParsers[paramIndex].GetRegexpPattern()
+			paramName := jsonObject.endpointRegexpParamName(paramIndex)
+			endpoint = endpoint + "(?P<" + paramName + ">" + paramPattern + ")" + parts[partIndex]
+		}
 	}
 
 	return regexp.MustCompile("^" + endpoint + "$")
