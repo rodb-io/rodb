@@ -102,8 +102,8 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		response.WriteHeader(http.StatusOK)
 		response.Header().Set("Content-Type", route.ResponseType)
+		response.WriteHeader(http.StatusOK)
 		response.Write(data)
 		return
 	}

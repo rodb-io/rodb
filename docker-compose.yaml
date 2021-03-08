@@ -3,6 +3,15 @@ version: '3.8'
 services:
   tests:
     tty: true
+    image: rods
     build:
       context: .
       dockerfile: ./build/docker/service.Dockerfile
+  zip-codes-tokyo:
+    tty: true
+    image: rods
+    command: --config=examples/zip-codes-tokyo/config.yaml --verbose
+    volumes:
+      - $PWD/examples:/examples
+    ports:
+      - "3000:80"

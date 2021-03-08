@@ -7,11 +7,11 @@ import (
 )
 
 type CsvInput struct {
-	Source            string           `yaml:"source"`
-	Path              string           `yaml:"path"`
-	IgnoreFirstRow    bool             `yaml:"ignoreFirstRow"`
-	Delimiter         string           `yaml:"delimiter"`
-	Columns           []CsvInputColumn `yaml:"columns"`
+	Source            string            `yaml:"source"`
+	Path              string            `yaml:"path"`
+	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
+	Delimiter         string            `yaml:"delimiter"`
+	Columns           []*CsvInputColumn `yaml:"columns"`
 	ColumnIndexByName map[string]int
 }
 

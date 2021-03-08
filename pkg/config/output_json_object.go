@@ -7,11 +7,11 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Services   []string                 `yaml:"services"`
-	Input      string                   `yaml:"input"`
-	Endpoint   string                   `yaml:"endpoint"`
-	Index      string                   `yaml:"index"`
-	Parameters []JsonObjectOutputParams `yaml:"parameters"`
+	Services   []string                  `yaml:"services"`
+	Input      string                    `yaml:"input"`
+	Endpoint   string                    `yaml:"endpoint"`
+	Index      string                    `yaml:"index"`
+	Parameters []*JsonObjectOutputParams `yaml:"parameters"`
 }
 
 type JsonObjectOutputParams struct {

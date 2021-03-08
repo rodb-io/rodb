@@ -1,3 +1,7 @@
+# TODO enum parser (or relationship with another csv file?)
+# TODO make the original zip codes file work (with shift-jis encoding)
+# TODO test the configuration validators
+# TODO test the constructors
 parsers:
   defaultInteger:
     integer:
@@ -10,11 +14,9 @@ parsers:
     boolean:
       trueValues: ["true", "1", "yes", "TRUE", "YES"]
       falseValues: ["false", "0", "no", "FALSE", "NO", ""]
-# TODO enum parser (or relationship with another csv file?)
-# TODO make the examples work
-# TODO make the original zip codes file work (with shift-jis encoding)
 sources:
   defaultSource:
+    # TODO warning if another process changes a file while opened with an index
     filesystem:
       path: ./
   # TODO S3 source
@@ -92,3 +94,4 @@ outputs:
       parameters:
         - column: id
           parser: integer
+          # TODO fail early if the column is not handled by the index

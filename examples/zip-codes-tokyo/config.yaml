@@ -6,12 +6,12 @@ parsers:
 sources:
   filesystem:
     filesystem:
-      path: ./
+      path: /examples/zip-codes-tokyo
 inputs:
   zipCodesTokyo:
     csv:
       source: filesystem
-      path: ./zip-codes-tokyo.csv
+      path: ./zip-codes.csv
       ignoreFirstRow: false
       delimiter: ","
       columns:
@@ -42,23 +42,25 @@ inputs:
         - name: zipCodeHasMultipleTowns
           parser: booleanZeroOne
         - name: updated
-          enum:
-            0: unchanged
-            1: changed
-            2: abolished
+          parser: integer
+          #enum:
+          #  0: unchanged
+          #  1: changed
+          #  2: abolished
         - name: reasonForUpdate
-          enum:
-            0: unchanged
-            1: administration
-            2: residential addressing
-            3: land reajustment
-            4: postal readjustment
-            5: correction
-            6: abolition
+          parser: integer
+          #enum:
+          #  0: unchanged
+          #  1: administration
+          #  2: residential addressing
+          #  3: land reajustment
+          #  4: postal readjustment
+          #  5: correction
+          #  6: abolition
 indexes:
   zipCode:
     memoryMap:
-      input: postCodesTokyo
+      input: zipCodesTokyo
       columns:
         - zipCode
 services:
@@ -68,11 +70,11 @@ services:
 outputs:
   findOnePostalCode:
     jsonObject:
-      input: postCodesTokyo
+      input: zipCodesTokyo
       index: zipCode
       services:
         - httpService
       endpoint: "/zip-codes/?"
       parameters:
-        - column: id
+        - column: zipCode
           parser: string

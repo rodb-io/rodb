@@ -9,7 +9,7 @@ import (
 
 func TestCsvGet(t *testing.T) {
 	var testConfig *config.CsvInput = &config.CsvInput{
-		Columns: []config.CsvInputColumn{
+		Columns: []*config.CsvInputColumn{
 			{Name: "col_a"},
 			{Name: "col_b"},
 		},

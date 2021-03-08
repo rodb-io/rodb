@@ -17,7 +17,7 @@ func TestCsvGet(t *testing.T) {
 		Path:           "test",
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
-		Columns: []config.CsvInputColumn{
+		Columns: []*config.CsvInputColumn{
 			{Name: "a", Parser: "mock"},
 			{Name: "b", Parser: "mock"},
 		},
@@ -133,7 +133,7 @@ func TestCsvIterateAll(t *testing.T) {
 				Path:           "test",
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
-				Columns: []config.CsvInputColumn{
+				Columns: []*config.CsvInputColumn{
 					{Name: "a", Parser: "mock"},
 					{Name: "b", Parser: "mock"},
 				},
