@@ -8,18 +8,18 @@ import (
 )
 
 func TestStringParse(t *testing.T) {
-	config := &config.StringParser{}
-	stringParser, err := NewString(config, logrus.StandardLogger())
-	if err != nil {
-		t.Errorf("Expected no error, got '%v'", err)
-	}
-
 	for value, expectedResult := range map[string]interface{}{
 		"abc": "abc",
 		"123": "123",
 		"":    "",
 	} {
 		t.Run(value, func(t *testing.T) {
+			config := &config.StringParser{}
+			stringParser, err := NewString(config, logrus.StandardLogger())
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+
 			got, err := stringParser.Parse(value)
 			if expectedResult == nil {
 				if err == nil {
@@ -35,6 +35,28 @@ func TestStringParse(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("convertFromCharset", func(t *testing.T) {
+		config := &config.StringParser{
+			ConvertFromCharset: "Shift_JIS",
+		}
+		stringParser, err := NewString(config, logrus.StandardLogger())
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+
+		value := string([]byte{147, 140, 139, 158, 147, 115})
+		expectedResult := "東京都"
+
+		got, err := stringParser.Parse(value)
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+
+		if expectedResult != got {
+			t.Errorf("Expected '%+v', got '%v'", expectedResult, got)
+		}
+	})
 }
 
 func TestStringGetRegexpPattern(t *testing.T) {
