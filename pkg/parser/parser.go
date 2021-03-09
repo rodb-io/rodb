@@ -18,7 +18,7 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Parser, error) {
 	if config.String != nil {
-		return NewString(config.String, log), nil
+		return NewString(config.String, log)
 	}
 	if config.Integer != nil {
 		return NewInteger(config.Integer, log), nil

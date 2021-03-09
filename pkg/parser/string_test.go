@@ -9,7 +9,10 @@ import (
 
 func TestStringParse(t *testing.T) {
 	config := &config.StringParser{}
-	stringParser := NewString(config, logrus.StandardLogger())
+	stringParser, err := NewString(config, logrus.StandardLogger())
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"abc": "abc",
@@ -36,7 +39,11 @@ func TestStringParse(t *testing.T) {
 
 func TestStringGetRegexpPattern(t *testing.T) {
 	config := &config.StringParser{}
-	stringParser := NewString(config, logrus.StandardLogger())
+	stringParser, err := NewString(config, logrus.StandardLogger())
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
+
 	pattern := regexp.MustCompile("^" + stringParser.GetRegexpPattern() + "$")
 
 	for value, expectedResult := range map[string]interface{}{

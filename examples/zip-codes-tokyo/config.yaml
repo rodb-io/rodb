@@ -3,6 +3,12 @@ parsers:
     boolean:
       falseValues: ["0"]
       trueValues: ["1"]
+  integerWithSpaces:
+    integer:
+      ignoreCharacters: " "
+  shiftJisString:
+    string:
+      convertFromCharset: "Shift_JIS"
 sources:
   filesystem:
     filesystem:
@@ -18,21 +24,21 @@ inputs:
         - name: code
           parser: integer
         - name: oldZipCode
-          parser: integer
+          parser: integerWithSpaces
         - name: zipCode
           parser: string
         - name: prefectureKana
-          parser: string
+          parser: shiftJisString
         - name: municipalityKana
-          parser: string
+          parser: shiftJisString
         - name: townKana
-          parser: string
+          parser: shiftJisString
         - name: prefecture
-          parser: string
+          parser: shiftJisString
         - name: municipality
-          parser: string
+          parser: shiftJisString
         - name: town
-          parser: string
+          parser: shiftJisString
         - name: townHasMultipleZipCodes
           parser: booleanZeroOne
         - name: streetNumberAssignedPerKana

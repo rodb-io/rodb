@@ -2,28 +2,55 @@ package parser
 
 import (
 	"github.com/sirupsen/logrus"
+	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/ianaindex"
+	"golang.org/x/text/transform"
+	"io/ioutil"
 	"rods/pkg/config"
+	"strings"
 )
 
 type String struct {
-	config *config.StringParser
-	logger *logrus.Logger
+	config  *config.StringParser
+	logger  *logrus.Logger
+	decoder *encoding.Decoder
 }
 
 func NewString(
 	config *config.StringParser,
 	log *logrus.Logger,
-) *String {
-	return &String{
-		config: config,
-		logger: log,
+) (*String, error) {
+	var decoder *encoding.Decoder = nil
+	if config.ConvertFromCharset != "" {
+		encoding, err := ianaindex.MIME.Encoding(config.ConvertFromCharset)
+		if err != nil {
+			return nil, err
+		}
+
+		decoder = encoding.NewDecoder()
 	}
+
+	return &String{
+		config:  config,
+		logger:  log,
+		decoder: decoder,
+	}, nil
 }
 
-func (string *String) GetRegexpPattern() string {
+func (str *String) GetRegexpPattern() string {
 	return ".*"
 }
 
-func (string *String) Parse(value string) (interface{}, error) {
+func (str *String) Parse(value string) (interface{}, error) {
+	if str.config.ConvertFromCharset != "" {
+		rInUTF8 := transform.NewReader(strings.NewReader(value), str.decoder)
+		convertedValue, err := ioutil.ReadAll(rInUTF8)
+		if err != nil {
+			return nil, err
+		}
+
+		value = string(convertedValue)
+	}
+
 	return value, nil
 }

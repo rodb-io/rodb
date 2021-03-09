@@ -102,7 +102,7 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		response.Header().Set("Content-Type", route.ResponseType)
+		response.Header().Set("Content-Type", route.ResponseType+"; charset=UTF-8")
 		response.WriteHeader(http.StatusOK)
 		response.Write(data)
 		return

@@ -1,5 +1,4 @@
 # TODO enum parser (or relationship with another csv file?)
-# TODO make the original zip codes file work (with shift-jis encoding)
 # TODO test the configuration validators
 # TODO test the constructors
 parsers:
@@ -14,6 +13,9 @@ parsers:
     boolean:
       trueValues: ["true", "1", "yes", "TRUE", "YES"]
       falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+  defaultString:
+    string:
+      convertFromCharset: ""
 sources:
   defaultSource:
     # TODO warning if another process changes a file while opened with an index
@@ -33,7 +35,7 @@ inputs:
         - name: id
           parser: defaultInteger
         - name: name
-          parser: string
+          parser: defaultString
         - name: number
           parser: defaultFloat
         - name: bool
