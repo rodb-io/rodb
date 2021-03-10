@@ -48,7 +48,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/foo/?/bar/?",
-			Parameters: []*config.JsonObjectOutputParams{
+			Parameters: []*config.JsonObjectOutputParameter{
 				{
 					Column: "foo",
 					Parser: "mock",
@@ -70,7 +70,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("param count lower than wildcard count", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/foo/?/bar/?",
-			Parameters: []*config.JsonObjectOutputParams{
+			Parameters: []*config.JsonObjectOutputParameter{
 				{
 					Column: "foo",
 					Parser: "mock",
@@ -89,7 +89,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("wildcard count lower than param count", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/foo/?",
-			Parameters: []*config.JsonObjectOutputParams{
+			Parameters: []*config.JsonObjectOutputParameter{
 				{
 					Column: "foo",
 					Parser: "mock",
@@ -114,7 +114,7 @@ func TestJsonObjectGetEndpointFilters(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/foo/?/bar/?",
-			Parameters: []*config.JsonObjectOutputParams{
+			Parameters: []*config.JsonObjectOutputParameter{
 				{
 					Column: "foo",
 					Parser: "mock",

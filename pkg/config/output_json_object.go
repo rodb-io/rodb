@@ -7,14 +7,14 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Services   []string                  `yaml:"services"`
-	Input      string                    `yaml:"input"`
-	Endpoint   string                    `yaml:"endpoint"`
-	Index      string                    `yaml:"index"`
-	Parameters []*JsonObjectOutputParams `yaml:"parameters"`
+	Services   []string                     `yaml:"services"`
+	Input      string                       `yaml:"input"`
+	Endpoint   string                       `yaml:"endpoint"`
+	Index      string                       `yaml:"index"`
+	Parameters []*JsonObjectOutputParameter `yaml:"parameters"`
 }
 
-type JsonObjectOutputParams struct {
+type JsonObjectOutputParameter struct {
 	Column string `yaml:"column"`
 	Parser string `yaml:"parser"`
 }
@@ -55,7 +55,7 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonObjectOutputParams) validate(log *logrus.Logger) error {
+func (config *JsonObjectOutputParameter) validate(log *logrus.Logger) error {
 	// The existence of the column value will be validated at runtime
 	// The parser will be validated at runtime
 
