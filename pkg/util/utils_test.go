@@ -1,6 +1,7 @@
 package util
 
 import (
+	"net"
 	"testing"
 )
 
@@ -41,6 +42,23 @@ func TestIsInArray(t *testing.T) {
 	t.Run("empty array", func(t *testing.T) {
 		if result := IsInArray("string", []string{}); result {
 			t.Fail()
+		}
+	})
+}
+
+func TestGetAddress(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		if got, expect := GetAddress(&net.TCPAddr{IP: net.IPv4(0, 0, 0, 0), Port: 123}), "127.0.0.1:123"; got != expect {
+			t.Errorf("Expected to get '%v', got '%v'.", expect, got)
+		}
+		if got, expect := GetAddress(&net.TCPAddr{IP: net.IPv4(1, 2, 3, 4), Port: 123}), "1.2.3.4:123"; got != expect {
+			t.Errorf("Expected to get '%v', got '%v'.", expect, got)
+		}
+		if got, expect := GetAddress(&net.TCPAddr{IP: net.IPv4(100, 0, 0, 0), Port: 123}), "100.0.0.0:123"; got != expect {
+			t.Errorf("Expected to get '%v', got '%v'.", expect, got)
+		}
+		if got, expect := GetAddress(&net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 123}), "127.0.0.1:123"; got != expect {
+			t.Errorf("Expected to get '%v', got '%v'.", expect, got)
 		}
 	})
 }

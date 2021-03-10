@@ -5,11 +5,13 @@ import (
 )
 
 type HttpService struct {
-	Port uint16 `yaml:"port"`
+	Listen string `yaml:"listen"`
 }
 
 func (config *HttpService) validate(log *logrus.Logger) error {
-	// Not setting the port or setting it to 0
-	// means that is will be automatically assigned
+	if config.Listen == "" {
+		config.Listen = "127.0.0.1:0"
+	}
+
 	return nil
 }

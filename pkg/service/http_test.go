@@ -12,7 +12,7 @@ import (
 )
 
 func TestHttp(t *testing.T) {
-	config := &config.HttpService{Port: 0} // Auto-assign port
+	config := &config.HttpService{Listen: ":0"} // Auto-assign port
 	server, err := NewHttp(config, logrus.StandardLogger())
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)

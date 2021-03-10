@@ -49,6 +49,8 @@ func NewFromConfigs(
 			return nil, err
 		}
 		services[serviceName] = service
+
+		log.Infof("Service '%v' is up and available here: %v\n", serviceName, service.Address())
 	}
 
 	return services, nil

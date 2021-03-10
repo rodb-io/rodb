@@ -1,6 +1,7 @@
 package util
 
 import (
+	"net"
 	"strings"
 )
 
@@ -20,4 +21,18 @@ func IsInArray(value string, array []string) bool {
 	}
 
 	return false
+}
+
+func GetAddress(address net.Addr) string {
+	result := address.String()
+	for from, to := range map[string]string{
+		"[::]:":    "127.0.0.1:",
+		"0.0.0.0:": "127.0.0.1:",
+	} {
+		if strings.HasPrefix(result, from) {
+			result = to + result[len(from):]
+		}
+	}
+
+	return result
 }

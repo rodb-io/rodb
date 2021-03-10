@@ -72,7 +72,7 @@ indexes:
 services:
   httpService:
     http:
-      port: 80
+      listen: ":80"
 outputs:
   findOnePostalCode:
     jsonObject:

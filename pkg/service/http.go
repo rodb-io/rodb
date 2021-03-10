@@ -12,7 +12,7 @@ import (
 	"net/url"
 	"regexp"
 	"rods/pkg/config"
-	"strconv"
+	"rods/pkg/util"
 	"sync"
 )
 
@@ -30,7 +30,7 @@ func NewHttp(
 	config *config.HttpService,
 	log *logrus.Logger,
 ) (*Http, error) {
-	listener, err := net.Listen("tcp", ":"+strconv.Itoa(int(config.Port)))
+	listener, err := net.Listen("tcp", config.Listen)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (service *Http) DeleteRoute(route *Route) {
 }
 
 func (service *Http) Address() string {
-	return "http://" + service.listener.Addr().String()
+	return "http://" + util.GetAddress(service.listener.Addr())
 }
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {
