@@ -17,7 +17,6 @@ RUN go mod download
 
 COPY ./scripts ${RODS_PATH}/scripts
 COPY ./cmd ${RODS_PATH}/cmd
-COPY ./internal ${RODS_PATH}/internal
 COPY ./pkg ${RODS_PATH}/pkg
 
 RUN --mount=type=cache,target=/go/pkg/mod \

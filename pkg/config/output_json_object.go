@@ -7,16 +7,30 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Services   []string                     `yaml:"services"`
-	Input      string                       `yaml:"input"`
-	Endpoint   string                       `yaml:"endpoint"`
-	Index      string                       `yaml:"index"`
-	Parameters []*JsonObjectOutputParameter `yaml:"parameters"`
+	Services      []string                                 `yaml:"services"`
+	Input         string                                   `yaml:"input"`
+	Endpoint      string                                   `yaml:"endpoint"`
+	Index         string                                   `yaml:"index"`
+	Parameters    []*JsonObjectOutputParameter             `yaml:"parameters"`
+	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
 }
 
 type JsonObjectOutputParameter struct {
 	Column string `yaml:"column"`
 	Parser string `yaml:"parser"`
+}
+
+type JsonObjectOutputRelationship struct {
+	Input         string                                   `yaml:"input"`
+	Index         string                                   `yaml:"index"`
+	IsArray       bool                                     `yaml:"isArray"`
+	Match         []*JsonObjectOutputRelationshipMatch     `yaml:"match"`
+	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
+}
+
+type JsonObjectOutputRelationshipMatch struct {
+	ParentColumn string `yaml:"parentColumn"`
+	ChildColumn  string `yaml:"childColumn"`
 }
 
 func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
@@ -35,6 +49,13 @@ func (config *JsonObjectOutput) validate(log *logrus.Logger) error {
 
 	for _, parameter := range config.Parameters {
 		err := parameter.validate(log)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, relationship := range config.Relationships {
+		err := relationship.validate(log)
 		if err != nil {
 			return err
 		}
@@ -68,5 +89,32 @@ func (config *JsonObjectOutputParameter) validate(log *logrus.Logger) error {
 		config.Parser = "string"
 	}
 
+	return nil
+}
+
+func (config *JsonObjectOutputRelationship) validate(log *logrus.Logger) error {
+	// The index will be validated at runtime
+	// The input will be validated at runtime
+
+	for _, match := range config.Match {
+		err := match.validate(log)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, relationship := range config.Relationships {
+		err := relationship.validate(log)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (config *JsonObjectOutputRelationshipMatch) validate(log *logrus.Logger) error {
+	// The parentColumn will be validated at runtime
+	// The childColumn will be validated at runtime
 	return nil
 }

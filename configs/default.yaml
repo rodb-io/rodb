@@ -1,4 +1,5 @@
-# TODO enum parser (or relationship with another csv file?)
+# TODO implement the relation in the example
+# TODO unit test the relationships
 # TODO test the configuration validators
 # TODO test the constructors
 parsers:
@@ -47,6 +48,7 @@ inputs:
 indexes:
   defaultIndex:
     memoryMap:
+      # TODO show indexing progress
       input: defaultInput
       columns:
         - id
@@ -93,6 +95,22 @@ outputs:
       services:
         - defaultService
       endpoint: "/dummies/?"
+      relationships:
+        mySubProperty:
+          input: defaultInput
+          index: defaultIndex
+          isArray: false
+          match:
+            - parentColumn: id
+              childColumn: id
+          relationships:
+            mySubSubProperty:
+              input: defaultInput
+              index: defaultIndex
+              isArray: true
+              match:
+                - parentColumn: id
+                  childColumn: id
       parameters:
         - column: id
           parser: integer

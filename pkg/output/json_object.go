@@ -3,6 +3,7 @@ package output
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"regexp"
 	configModule "rods/pkg/config"
@@ -15,7 +16,7 @@ import (
 
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
-	index        indexModule.Index
+	indexes      indexModule.List
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
 	logger       *logrus.Logger
@@ -24,7 +25,7 @@ type JsonObject struct {
 
 func NewJsonObject(
 	config *configModule.JsonObjectOutput,
-	index indexModule.Index,
+	indexes indexModule.List,
 	services []serviceModule.Service,
 	parsers parserModule.List,
 	log *logrus.Logger,
@@ -40,7 +41,7 @@ func NewJsonObject(
 
 	jsonObject := &JsonObject{
 		config:       config,
-		index:        index,
+		indexes:      indexes,
 		services:     services,
 		paramParsers: paramParsers,
 		logger:       log,
@@ -69,7 +70,12 @@ func (jsonObject *JsonObject) getHandler() func(params map[string]string, payloa
 			return nil, err
 		}
 
-		records, err := jsonObject.index.GetRecords(jsonObject.config.Input, filters, 1)
+		index, indexExists := jsonObject.indexes[jsonObject.config.Index]
+		if !indexExists {
+			return nil, fmt.Errorf("Index '%v' not found in indexes list.", jsonObject.config.Index)
+		}
+
+		records, err := index.GetRecords(jsonObject.config.Input, filters, 1)
 		if err != nil {
 			return nil, err
 		}
@@ -79,6 +85,11 @@ func (jsonObject *JsonObject) getHandler() func(params map[string]string, payloa
 		}
 
 		data, err := records[0].All()
+		if err != nil {
+			return nil, err
+		}
+
+		data, err = jsonObject.loadRelationships(data, jsonObject.config.Relationships)
 		if err != nil {
 			return nil, err
 		}
@@ -122,6 +133,70 @@ func (jsonObject *JsonObject) getEndpointFilters(params map[string]string) (map[
 	}
 
 	return filters, nil
+}
+
+func (jsonObject *JsonObject) loadRelationships(
+	data map[string]interface{},
+	relationships map[string]*configModule.JsonObjectOutputRelationship,
+) (map[string]interface{}, error) {
+	for relationshipName, relationshipConfig := range relationships {
+		filters := map[string]interface{}{}
+		for _, match := range relationshipConfig.Match {
+			matchData, matchColumnExists := data[match.ParentColumn]
+			if !matchColumnExists {
+				return nil, errors.New("Parent column '" + match.ParentColumn + "' does not exists in relationship '" + relationshipName + "'.")
+			}
+
+			filters[match.ChildColumn] = matchData
+		}
+
+		index, indexExists := jsonObject.indexes[relationshipConfig.Index]
+		if !indexExists {
+			return nil, fmt.Errorf("Index '%v' not found in indexes list.", relationshipConfig.Index)
+		}
+
+		var limit uint = 1
+		if relationshipConfig.IsArray {
+			limit = 0
+		}
+
+		relationshipRecords, err := index.GetRecords(
+			relationshipConfig.Input,
+			filters,
+			limit,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		relationshipItems := make([]map[string]interface{}, 0, len(relationshipRecords))
+		for _, relationshipRecord := range relationshipRecords {
+			relationshipData, err := relationshipRecord.All()
+			if err != nil {
+				return nil, err
+			}
+
+			relationshipData, err = jsonObject.loadRelationships(
+				relationshipData,
+				relationshipConfig.Relationships,
+			)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if relationshipConfig.IsArray {
+			data[relationshipName] = relationshipItems
+		} else {
+			if len(relationshipItems) == 0 {
+				data[relationshipName] = nil
+			} else {
+				data[relationshipName] = relationshipItems[0]
+			}
+		}
+	}
+
+	return data, nil
 }
 
 func (jsonObject *JsonObject) Close() error {

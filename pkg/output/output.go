@@ -34,12 +34,7 @@ func NewFromConfig(
 			outputServices[i] = service
 		}
 
-		index, indexExists := indexes[config.JsonObject.Index]
-		if !indexExists {
-			return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.JsonObject.Index)
-		}
-
-		return NewJsonObject(config.JsonObject, index, outputServices, parsers, log)
+		return NewJsonObject(config.JsonObject, indexes, outputServices, parsers, log)
 	}
 
 	return nil, errors.New("Failed to initialize output")
