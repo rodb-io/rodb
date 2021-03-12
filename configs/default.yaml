@@ -1,5 +1,3 @@
-# TODO implement the relation in the example
-# TODO unit test the relationships
 # TODO test the configuration validators
 # TODO test the constructors
 parsers:
@@ -111,6 +109,7 @@ outputs:
               match:
                 - parentColumn: id
                   childColumn: id
+          # TODO fail early if relationships setup is wrong (wrong index, columns...)
       parameters:
         - column: id
           parser: integer

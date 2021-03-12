@@ -47,13 +47,9 @@ inputs:
           parser: booleanZeroOne
         - name: zipCodeHasMultipleTowns
           parser: booleanZeroOne
-        - name: updated
+        - name: updatedId
           parser: integer
-          #enum:
-          #  0: unchanged
-          #  1: changed
-          #  2: abolished
-        - name: reasonForUpdate
+        - name: reasonForUpdateId
           parser: integer
           #enum:
           #  0: unchanged
@@ -63,6 +59,28 @@ inputs:
           #  4: postal readjustment
           #  5: correction
           #  6: abolition
+  updatedValues:
+    csv:
+      source: filesystem
+      path: ./updated-values.csv
+      ignoreFirstRow: false
+      delimiter: ","
+      columns:
+        - name: id
+          parser: integer
+        - name: name
+          parser: string
+  reasonsForUpdate:
+    csv:
+      source: filesystem
+      path: ./reasons-for-updated.csv
+      ignoreFirstRow: false
+      delimiter: ","
+      columns:
+        - name: id
+          parser: integer
+        - name: name
+          parser: string
 indexes:
   zipCode:
     memoryMap:
@@ -84,3 +102,14 @@ outputs:
       parameters:
         - column: zipCode
           parser: string
+      relationships:
+        updated:
+          input: updatedValues
+          match:
+            - parentColumn: updatedId
+              childColumn: id
+        reasonsForUpdate:
+          input: reasonsForUpdate
+          match:
+            - parentColumn: reasonForUpdateId
+              childColumn: id

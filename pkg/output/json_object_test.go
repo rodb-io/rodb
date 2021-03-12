@@ -6,12 +6,26 @@ import (
 	"rods/pkg/index"
 	"rods/pkg/input"
 	"rods/pkg/parser"
+	"rods/pkg/record"
 	"rods/pkg/service"
 	"testing"
 )
 
 func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *service.Mock, error) {
-	mockInput := input.NewMock([]input.IterateAllResult{})
+	mockInput := input.NewMock([]input.IterateAllResult{
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"id":         "1",
+			"belongs_to": "0",
+		}, 0)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"id":         "2",
+			"belongs_to": "1",
+		}, 0)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"id":         "3",
+			"belongs_to": "1",
+		}, 0)},
+	})
 	mockIndex := index.NewDumb(
 		input.List{"mock": mockInput},
 		logrus.StandardLogger(),
@@ -148,6 +162,101 @@ func TestJsonObjectGetEndpointFilters(t *testing.T) {
 		}
 		if got, exists := filters["bar"]; !exists || got != barParamValue {
 			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", barParamValue, got)
+		}
+	})
+}
+
+func TestJsonObjectLoadRelationships(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Endpoint: "/test",
+			Relationships: map[string]*config.JsonObjectOutputRelationship{
+				"children": {
+					Input:   "mock",
+					Index:   "mock",
+					IsArray: true,
+					Match: []*config.JsonObjectOutputRelationshipMatch{
+						{
+							ParentColumn: "id",
+							ChildColumn:  "belongs_to",
+						},
+					},
+					Relationships: map[string]*config.JsonObjectOutputRelationship{
+						"subchild": {
+							Input:   "mock",
+							Index:   "mock",
+							IsArray: false,
+							Match: []*config.JsonObjectOutputRelationshipMatch{
+								{
+									ParentColumn: "belongs_to",
+									ChildColumn:  "id",
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		data := map[string]interface{}{
+			"id": "1",
+		}
+		data, err = jsonObject.loadRelationships(
+			data,
+			jsonObject.config.Relationships,
+		)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := "1", data["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+		}
+
+		if got, ok := data["children"]; !ok {
+			t.Errorf("Expected to get an array, got '%+v'", got)
+		}
+		if got, ok := data["children"].([]map[string]interface{}); !ok {
+			t.Errorf("Expected to get an array, got '%+v'", got)
+		}
+
+		children := data["children"].([]map[string]interface{})
+		if expect, got := 2, len(children); expect != got {
+			t.Errorf("Expected length of '%+v', got '%+v'", expect, got)
+		}
+
+		if expect, got := "2", children[0]["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+		}
+		if expect, got := "3", children[1]["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+		}
+
+		if got, ok := children[0]["subchild"]; !ok {
+			t.Errorf("Expected to get an object, got '%+v'", got)
+		}
+		if got, ok := children[1]["subchild"]; !ok {
+			t.Errorf("Expected to get an object, got '%+v'", got)
+		}
+
+		if got, ok := children[0]["subchild"].(map[string]interface{}); !ok {
+			t.Errorf("Expected to get an object, got '%+v'", got)
+		}
+		if got, ok := children[1]["subchild"].(map[string]interface{}); !ok {
+			t.Errorf("Expected to get an object, got '%+v'", got)
+		}
+
+		subchild0 := children[0]["subchild"].(map[string]interface{})
+		subchild1 := children[1]["subchild"].(map[string]interface{})
+
+		if expect, got := "1", subchild0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+		}
+		if expect, got := "1", subchild1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 }

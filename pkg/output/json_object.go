@@ -183,6 +183,8 @@ func (jsonObject *JsonObject) loadRelationships(
 			if err != nil {
 				return nil, err
 			}
+
+			relationshipItems = append(relationshipItems, relationshipData)
 		}
 
 		if relationshipConfig.IsArray {
