@@ -46,40 +46,6 @@ func NewFromConfigs(
 		parsers[parserName] = parser
 	}
 
-	// Handling the default parsers
-	for parserName, parserConfig := range map[string]config.Parser{
-		"string": {
-			String: &config.StringParser{},
-		},
-		"integer": {
-			Integer: &config.IntegerParser{
-				IgnoreCharacters: "",
-			},
-		},
-		"float": {
-			Float: &config.FloatParser{
-				DecimalSeparator: ".",
-				IgnoreCharacters: "",
-			},
-		},
-		"boolean": {
-			Boolean: &config.BooleanParser{
-				TrueValues:  []string{"true", "1", "TRUE"},
-				FalseValues: []string{"false", "0", "FALSE"},
-			},
-		},
-	} {
-		if _, exists := parsers[parserName]; exists {
-			log.Warnf("You have declared a parser named '%v', which is a reserved keyword. Your parser will not work.\n", parserName)
-		}
-		parser, err := NewFromConfig(parserConfig, log)
-		if err != nil {
-			return nil, err
-		}
-
-		parsers[parserName] = parser
-	}
-
 	return parsers, nil
 }
 

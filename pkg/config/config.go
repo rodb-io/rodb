@@ -52,7 +52,40 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	config.Indexes["default"] = Index{Noop: &NoopIndex{}}
+	if _, exists := config.Indexes["default"]; exists {
+		log.Warnf("You have declared an index named 'default', which will replace the internally used one.\n")
+	} else {
+		config.Indexes["default"] = Index{Noop: &NoopIndex{}}
+	}
+
+	for parserName, parserConfig := range map[string]Parser{
+		"string": {
+			String: &StringParser{},
+		},
+		"integer": {
+			Integer: &IntegerParser{
+				IgnoreCharacters: "",
+			},
+		},
+		"float": {
+			Float: &FloatParser{
+				DecimalSeparator: ".",
+				IgnoreCharacters: "",
+			},
+		},
+		"boolean": {
+			Boolean: &BooleanParser{
+				TrueValues:  []string{"true", "1", "TRUE"},
+				FalseValues: []string{"false", "0", "FALSE"},
+			},
+		},
+	} {
+		if _, exists := config.Parsers[parserName]; exists {
+			log.Warnf("You have declared a parser named '%v', which will replace the default one.\n", parserName)
+		} else {
+			config.Parsers[parserName] = parserConfig
+		}
+	}
 }
 
 func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
