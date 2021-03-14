@@ -1,4 +1,6 @@
-# TODO test all the configs against the rootConfig (and remove comments about checking at runtime)
+# TODO filesystem source: validate path in constructor
+# TODO memory map index: validate the columns existence in constructor
+# TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
 parsers:
   defaultInteger:

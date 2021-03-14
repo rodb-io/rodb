@@ -24,7 +24,13 @@ type CsvInputColumn struct {
 func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
-	// The source and path will be validated at runtime
+	_, sourceExists := rootConfig.Sources[config.Source]
+	if !sourceExists {
+		return fmt.Errorf("csv.source: Source '%v' not found in sources list.", config.Source)
+	}
+
+	// The path will be validated at runtime
+
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")
 	}
@@ -55,7 +61,11 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 }
 
 func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
-	// The parser will be validated at runtime
+	_, parserExists := rootConfig.Parsers[config.Parser]
+	if !parserExists {
+		return fmt.Errorf("Parser '%v' not found in parsers list.", config.Parser)
+	}
+
 	if config.Name == "" {
 		return errors.New("name is required")
 	}

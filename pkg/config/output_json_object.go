@@ -39,8 +39,12 @@ type JsonObjectOutputRelationshipMatch struct {
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
-	// The service will be validated at runtime
-	// The default index value "" matches the noop index
+	for _, serviceName := range config.Services {
+		_, serviceExists := rootConfig.Services[serviceName]
+		if !serviceExists {
+			return fmt.Errorf("jsonObject.services: Service '%v' not found in services list.", serviceName)
+		}
+	}
 
 	if len(config.Parameters) == 0 {
 		return errors.New("jsonObject.parameters is empty. As least one is required.")
@@ -98,8 +102,6 @@ func (config *JsonObjectOutputParameter) validate(
 	indexName string,
 	index Index,
 ) error {
-	// The parser will be validated at runtime
-
 	if config.Column == "" {
 		return errors.New("column is empty")
 	}
@@ -107,6 +109,10 @@ func (config *JsonObjectOutputParameter) validate(
 	if config.Parser == "" {
 		log.Debug("jsonObjet.parameters[].parser not defined. Assuming 'string'")
 		config.Parser = "string"
+	}
+	_, parserExists := rootConfig.Parsers[config.Parser]
+	if !parserExists {
+		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
 	if !index.DoesHandleColumn(config.Column) {

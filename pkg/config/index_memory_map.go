@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,13 @@ type MemoryMapIndex struct {
 func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
-	// The input and columns will be validated at runtime
+	_, inputExists := rootConfig.Inputs[config.Input]
+	if !inputExists {
+		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
+	}
+
+	// The columns will be validated at runtime
+
 	return nil
 }
 

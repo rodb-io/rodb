@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
@@ -31,14 +32,18 @@ type JsonArrayOutputSearch struct {
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
-	// The service will be validated at runtime
-
 	if config.Endpoint == "" {
 		return errors.New("jsonArray.endpoint is not defined. This setting is required")
 	}
 
 	if len(config.Services) == 0 {
 		return errors.New("jsonArray.services is empty. As least one is required.")
+	}
+	for _, serviceName := range config.Services {
+		_, serviceExists := rootConfig.Services[serviceName]
+		if !serviceExists {
+			return fmt.Errorf("jsonArray.services: Service '%v' not found in services list.", serviceName)
+		}
 	}
 
 	err := config.Limit.validate(rootConfig, log)
@@ -51,10 +56,10 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 		return err
 	}
 
-	for _, configSearchParam := range config.Search {
+	for configSearchParamName, configSearchParam := range config.Search {
 		err := configSearchParam.validate(rootConfig, log)
 		if err != nil {
-			return err
+			return fmt.Errorf("jsonArray.search.%v.%w", configSearchParamName, err)
 		}
 	}
 
@@ -90,11 +95,13 @@ func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.En
 }
 
 func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Entry) error {
-	// The index will be validated at runtime
-
 	if config.Index == "" {
 		log.Debugf("jsonArray.search[].index is empty. Assuming 'default'.\n")
 		config.Index = "default"
+	}
+	_, indexExists := rootConfig.Indexes[config.Index]
+	if !indexExists {
+		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
 	}
 
 	return nil
