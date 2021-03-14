@@ -15,20 +15,22 @@ func TestMemoryMap(t *testing.T) {
 				Columns: []string{"col", "col2"},
 				Input:   "input",
 			},
-			input.NewMock([]input.IterateAllResult{
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "value_a",
-					"col2": "value_2",
-				}, 0)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "value_b",
-					"col2": "value_2",
-				}, 0)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "value_b",
-					"col2": "value_2",
-				}, 1)},
-			}),
+			input.List{
+				"input": input.NewMock([]input.IterateAllResult{
+					{Record: record.NewStringColumnsMock(map[string]string{
+						"col":  "value_a",
+						"col2": "value_2",
+					}, 0)},
+					{Record: record.NewStringColumnsMock(map[string]string{
+						"col":  "value_b",
+						"col2": "value_2",
+					}, 0)},
+					{Record: record.NewStringColumnsMock(map[string]string{
+						"col":  "value_b",
+						"col2": "value_2",
+					}, 1)},
+				}),
+			},
 			logrus.StandardLogger(),
 		)
 		if err != nil {
@@ -77,28 +79,30 @@ func TestMemoryMapGetRecords(t *testing.T) {
 			Columns: []string{"col", "col2"},
 			Input:   "input",
 		},
-		input.NewMock([]input.IterateAllResult{
-			{Record: record.NewStringColumnsMock(map[string]string{
-				"col":  "col_a",
-				"col2": "col2_b",
-			}, 0)},
-			{Record: record.NewStringColumnsMock(map[string]string{
-				"col":  "col_a",
-				"col2": "col2_a",
-			}, 1)},
-			{Record: record.NewStringColumnsMock(map[string]string{
-				"col":  "col_b",
-				"col2": "col2_a",
-			}, 2)},
-			{Record: record.NewStringColumnsMock(map[string]string{
-				"col":  "col_a",
-				"col2": "col2_a",
-			}, 3)},
-			{Record: record.NewStringColumnsMock(map[string]string{
-				"col":  "col_b",
-				"col2": "col2_b",
-			}, 4)},
-		}),
+		input.List{
+			"input": input.NewMock([]input.IterateAllResult{
+				{Record: record.NewStringColumnsMock(map[string]string{
+					"col":  "col_a",
+					"col2": "col2_b",
+				}, 0)},
+				{Record: record.NewStringColumnsMock(map[string]string{
+					"col":  "col_a",
+					"col2": "col2_a",
+				}, 1)},
+				{Record: record.NewStringColumnsMock(map[string]string{
+					"col":  "col_b",
+					"col2": "col2_a",
+				}, 2)},
+				{Record: record.NewStringColumnsMock(map[string]string{
+					"col":  "col_a",
+					"col2": "col2_a",
+				}, 3)},
+				{Record: record.NewStringColumnsMock(map[string]string{
+					"col":  "col_b",
+					"col2": "col2_b",
+				}, 4)},
+			}),
+		},
 		logrus.StandardLogger(),
 	)
 	if err != nil {

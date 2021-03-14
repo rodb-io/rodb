@@ -12,9 +12,11 @@ import (
 
 func TestCsvGet(t *testing.T) {
 	parsers := parser.List{"mock": parser.NewMock()}
+	sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3")}
 
 	config := &config.CsvInput{
 		Path:           "test",
+		Source:         "mock",
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
 		Columns: []*config.CsvInputColumn{
@@ -27,8 +29,7 @@ func TestCsvGet(t *testing.T) {
 		},
 	}
 
-	source := source.NewMock("test1,test2\n\ntest3")
-	csv, err := NewCsv(config, source, parsers, logrus.StandardLogger())
+	csv, err := NewCsv(config, sources, parsers, logrus.StandardLogger())
 	if err != nil {
 		t.Error(err)
 	}
@@ -127,10 +128,11 @@ func TestCsvIterateAll(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			parsers := parser.List{"mock": parser.NewMock()}
+			sources := source.List{"mock": source.NewMock(testCase.file)}
 
-			source := source.NewMock(testCase.file)
 			config := &config.CsvInput{
 				Path:           "test",
+				Source:         "mock",
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
 				Columns: []*config.CsvInputColumn{
@@ -142,7 +144,7 @@ func TestCsvIterateAll(t *testing.T) {
 					"b": 1,
 				},
 			}
-			csv, err := NewCsv(config, source, parsers, logrus.StandardLogger())
+			csv, err := NewCsv(config, sources, parsers, logrus.StandardLogger())
 			if err != nil {
 				t.Error(err)
 			}

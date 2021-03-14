@@ -26,7 +26,7 @@ type JsonObject struct {
 func NewJsonObject(
 	config *configModule.JsonObjectOutput,
 	indexes indexModule.List,
-	services []serviceModule.Service,
+	services serviceModule.List,
 	parsers parserModule.List,
 	log *logrus.Logger,
 ) (*JsonObject, error) {
@@ -39,10 +39,20 @@ func NewJsonObject(
 		paramParsers[i] = parser
 	}
 
+	outputServices := make([]serviceModule.Service, len(config.Services))
+	for i, serviceName := range config.Services {
+		service, serviceExists := services[serviceName]
+		if !serviceExists {
+			return nil, fmt.Errorf("Service '%v' not found in services list.", serviceName)
+		}
+
+		outputServices[i] = service
+	}
+
 	jsonObject := &JsonObject{
 		config:       config,
 		indexes:      indexes,
-		services:     services,
+		services:     outputServices,
 		paramParsers: paramParsers,
 		logger:       log,
 	}

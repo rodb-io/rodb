@@ -29,7 +29,7 @@ type Csv struct {
 
 func NewCsv(
 	config *config.CsvInput,
-	source source.Source,
+	sources source.List,
 	parsers parser.List,
 	log *logrus.Logger,
 ) (*Csv, error) {
@@ -40,6 +40,11 @@ func NewCsv(
 			return nil, errors.New("Parser '" + column.Parser + "' does not exist")
 		}
 		columnParsers[i] = parser
+	}
+
+	source, sourceExists := sources[config.Source]
+	if !sourceExists {
+		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
 	}
 
 	csvInput := &Csv{

@@ -2,7 +2,6 @@ package index
 
 import (
 	"errors"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
@@ -22,11 +21,7 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Index, error) {
 	if config.MemoryMap != nil {
-		if input, inputExists := inputs[config.MemoryMap.Input]; !inputExists {
-			return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.MemoryMap.Input)
-		} else {
-			return NewMemoryMap(config.MemoryMap, input, log)
-		}
+		return NewMemoryMap(config.MemoryMap, inputs, log)
 	}
 	if config.Noop != nil {
 		return NewNoop(inputs, log), nil

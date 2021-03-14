@@ -22,9 +22,14 @@ type MemoryMap struct {
 
 func NewMemoryMap(
 	config *config.MemoryMapIndex,
-	input input.Input,
+	inputs input.List,
 	log *logrus.Logger,
 ) (*MemoryMap, error) {
+	input, inputExists := inputs[config.Input]
+	if !inputExists {
+		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
+	}
+
 	memoryMap := &MemoryMap{
 		config: config,
 		input:  input,

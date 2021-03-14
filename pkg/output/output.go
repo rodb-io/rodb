@@ -2,7 +2,6 @@ package output
 
 import (
 	"errors"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/index"
@@ -24,17 +23,7 @@ func NewFromConfig(
 	log *logrus.Logger,
 ) (Output, error) {
 	if config.JsonObject != nil {
-		outputServices := make([]service.Service, len(config.JsonObject.Services))
-		for i, serviceName := range config.JsonObject.Services {
-			service, serviceExists := services[serviceName]
-			if !serviceExists {
-				return nil, fmt.Errorf("Service '%v' not found in services list.", serviceName)
-			}
-
-			outputServices[i] = service
-		}
-
-		return NewJsonObject(config.JsonObject, indexes, outputServices, parsers, log)
+		return NewJsonObject(config.JsonObject, indexes, services, parsers, log)
 	}
 
 	return nil, errors.New("Failed to initialize output")
