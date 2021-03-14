@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"testing"
@@ -15,7 +14,7 @@ func TestStringParse(t *testing.T) {
 	} {
 		t.Run(value, func(t *testing.T) {
 			config := &config.StringParser{}
-			stringParser, err := NewString(config, logrus.StandardLogger())
+			stringParser, err := NewString(config)
 			if err != nil {
 				t.Errorf("Expected no error, got '%v'", err)
 			}
@@ -40,7 +39,7 @@ func TestStringParse(t *testing.T) {
 		config := &config.StringParser{
 			ConvertFromCharset: "Shift_JIS",
 		}
-		stringParser, err := NewString(config, logrus.StandardLogger())
+		stringParser, err := NewString(config)
 		if err != nil {
 			t.Errorf("Expected no error, got '%v'", err)
 		}
@@ -61,7 +60,7 @@ func TestStringParse(t *testing.T) {
 
 func TestStringGetRegexpPattern(t *testing.T) {
 	config := &config.StringParser{}
-	stringParser, err := NewString(config, logrus.StandardLogger())
+	stringParser, err := NewString(config)
 	if err != nil {
 		t.Errorf("Expected no error, got '%v'", err)
 	}

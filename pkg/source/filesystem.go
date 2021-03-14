@@ -2,7 +2,6 @@ package source
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,17 +10,14 @@ import (
 
 type Filesystem struct {
 	config *config.FilesystemSource
-	logger *logrus.Logger
 	opened map[io.ReadSeeker]*os.File
 }
 
 func NewFilesystem(
 	config *config.FilesystemSource,
-	log *logrus.Logger,
 ) (*Filesystem, error) {
 	return &Filesystem{
 		config: config,
-		logger: log,
 		opened: make(map[io.ReadSeeker]*os.File),
 	}, nil
 }

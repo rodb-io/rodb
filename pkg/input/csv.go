@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io"
 	"reflect"
 	"rods/pkg/config"
@@ -19,7 +18,6 @@ import (
 type Csv struct {
 	config           *config.CsvInput
 	source           source.Source
-	logger           *logrus.Logger
 	sourceReader     io.ReadSeeker
 	sourceReaderLock sync.Mutex
 	csvReader        *csv.Reader
@@ -31,7 +29,6 @@ func NewCsv(
 	config *config.CsvInput,
 	sources source.List,
 	parsers parser.List,
-	log *logrus.Logger,
 ) (*Csv, error) {
 	columnParsers := make([]parser.Parser, len(config.Columns))
 	for i, column := range config.Columns {
@@ -50,7 +47,6 @@ func NewCsv(
 	csvInput := &Csv{
 		config:           config,
 		source:           source,
-		logger:           log,
 		sourceReaderLock: sync.Mutex{},
 		columnParsers:    columnParsers,
 	}
@@ -77,7 +73,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	row, err := csvInput.csvReader.Read()
 	if err != nil {
 		if errors.Is(err, csv.ErrFieldCount) {
-			csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
+			csvInput.config.Logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			err = nil
 		} else {
 			return nil, fmt.Errorf("Cannot read csv data: %w", err)
@@ -136,7 +132,7 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			if err == io.EOF {
 				break
 			} else if errors.Is(err, csv.ErrFieldCount) {
-				csvInput.logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
+				csvInput.config.Logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
 			} else if err != nil {
 				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %w", err)}
 				return

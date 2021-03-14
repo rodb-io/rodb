@@ -1,7 +1,6 @@
 package index
 
 import (
-	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -31,7 +30,6 @@ func TestMemoryMap(t *testing.T) {
 					}, 1)},
 				}),
 			},
-			logrus.StandardLogger(),
 		)
 		if err != nil {
 			t.Error(err)
@@ -103,7 +101,6 @@ func TestMemoryMapGetRecords(t *testing.T) {
 				}, 4)},
 			}),
 		},
-		logrus.StandardLogger(),
 	)
 	if err != nil {
 		t.Error(err)

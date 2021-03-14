@@ -9,9 +9,12 @@ import (
 type HttpService struct {
 	Listen     string `yaml:"listen"`
 	ErrorsType string `yaml:"errorsType"`
+	Logger     *logrus.Entry
 }
 
 func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
 	}

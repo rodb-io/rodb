@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"testing"
@@ -12,7 +11,7 @@ func TestFloatParse(t *testing.T) {
 		DecimalSeparator: ".",
 		IgnoreCharacters: "$ ,",
 	}
-	float := NewFloat(config, logrus.StandardLogger())
+	float := NewFloat(config)
 
 	for value, expectedResult := range map[string]interface{}{
 		"1.0":           1.0,
@@ -45,7 +44,7 @@ func TestFloatGetRegexpPattern(t *testing.T) {
 		DecimalSeparator: ".",
 		IgnoreCharacters: "$ ,",
 	}
-	float := NewFloat(config, logrus.StandardLogger())
+	float := NewFloat(config)
 	pattern := regexp.MustCompile("^" + float.GetRegexpPattern() + "$")
 
 	for value, expectedResult := range map[string]interface{}{

@@ -8,9 +8,12 @@ import (
 type GraphQLOutput struct {
 	Services []string `yaml:"services"`
 	Endpoint string   `yaml:"endpoint"`
+	Logger   *logrus.Entry
 }
 
 func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The service will be validated at runtime
 
 	if config.Endpoint == "" {

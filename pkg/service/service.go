@@ -29,10 +29,9 @@ var RecordNotFoundError = errors.New("Record not found")
 
 func NewFromConfig(
 	config config.Service,
-	log *logrus.Logger,
 ) (Service, error) {
 	if config.Http != nil {
-		return NewHttp(config.Http, log)
+		return NewHttp(config.Http)
 	}
 
 	return nil, errors.New("Failed to initialize source")
@@ -44,7 +43,7 @@ func NewFromConfigs(
 ) (List, error) {
 	services := make(List)
 	for serviceName, serviceConfig := range configs {
-		service, err := NewFromConfig(serviceConfig, log)
+		service, err := NewFromConfig(serviceConfig)
 		if err != nil {
 			return nil, err
 		}

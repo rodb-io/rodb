@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/util"
@@ -11,16 +10,13 @@ import (
 
 type Boolean struct {
 	config *config.BooleanParser
-	logger *logrus.Logger
 }
 
 func NewBoolean(
 	config *config.BooleanParser,
-	log *logrus.Logger,
 ) *Boolean {
 	return &Boolean{
 		config: config,
-		logger: log,
 	}
 }
 

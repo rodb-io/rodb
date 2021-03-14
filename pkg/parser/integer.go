@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/util"
@@ -10,16 +9,13 @@ import (
 
 type Integer struct {
 	config *config.IntegerParser
-	logger *logrus.Logger
 }
 
 func NewInteger(
 	config *config.IntegerParser,
-	log *logrus.Logger,
 ) *Integer {
 	return &Integer{
 		config: config,
-		logger: log,
 	}
 }
 

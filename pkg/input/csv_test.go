@@ -19,6 +19,7 @@ func TestCsvGet(t *testing.T) {
 		Source:         "mock",
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
+		Logger:         logrus.NewEntry(logrus.StandardLogger()),
 		Columns: []*config.CsvInputColumn{
 			{Name: "a", Parser: "mock"},
 			{Name: "b", Parser: "mock"},
@@ -29,7 +30,7 @@ func TestCsvGet(t *testing.T) {
 		},
 	}
 
-	csv, err := NewCsv(config, sources, parsers, logrus.StandardLogger())
+	csv, err := NewCsv(config, sources, parsers)
 	if err != nil {
 		t.Error(err)
 	}
@@ -135,6 +136,7 @@ func TestCsvIterateAll(t *testing.T) {
 				Source:         "mock",
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
+				Logger:         logrus.NewEntry(logrus.StandardLogger()),
 				Columns: []*config.CsvInputColumn{
 					{Name: "a", Parser: "mock"},
 					{Name: "b", Parser: "mock"},
@@ -144,7 +146,7 @@ func TestCsvIterateAll(t *testing.T) {
 					"b": 1,
 				},
 			}
-			csv, err := NewCsv(config, sources, parsers, logrus.StandardLogger())
+			csv, err := NewCsv(config, sources, parsers)
 			if err != nil {
 				t.Error(err)
 			}

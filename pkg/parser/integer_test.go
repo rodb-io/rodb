@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"testing"
@@ -11,7 +10,7 @@ func TestIntegerParse(t *testing.T) {
 	config := &config.IntegerParser{
 		IgnoreCharacters: "$ ,",
 	}
-	integer := NewInteger(config, logrus.StandardLogger())
+	integer := NewInteger(config)
 
 	for value, expectedResult := range map[string]interface{}{
 		"1":         1,
@@ -42,7 +41,7 @@ func TestIntegerGetRegexpPattern(t *testing.T) {
 	config := &config.IntegerParser{
 		IgnoreCharacters: "$ ,",
 	}
-	integer := NewInteger(config, logrus.StandardLogger())
+	integer := NewInteger(config)
 	pattern := regexp.MustCompile("^" + integer.GetRegexpPattern() + "$")
 
 	for value, expectedResult := range map[string]interface{}{

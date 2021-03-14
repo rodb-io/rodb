@@ -1,4 +1,3 @@
-# TODO inject contextualized logger (entry) to the config in the config rather than via the constructors
 # TODO test all the configs against the rootConfig (and remove comments about checking at runtime)
 # TODO performance analysis
 parsers:

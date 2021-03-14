@@ -14,6 +14,7 @@ type JsonObjectOutput struct {
 	Index         string                                   `yaml:"index"`
 	Parameters    []*JsonObjectOutputParameter             `yaml:"parameters"`
 	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
+	Logger        *logrus.Entry
 }
 
 type JsonObjectOutputParameter struct {
@@ -36,6 +37,8 @@ type JsonObjectOutputRelationshipMatch struct {
 }
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The service will be validated at runtime
 	// The default index value "" matches the noop index
 

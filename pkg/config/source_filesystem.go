@@ -5,10 +5,13 @@ import (
 )
 
 type FilesystemSource struct {
-	Path string `yaml:"path"`
+	Path   string `yaml:"path"`
+	Logger *logrus.Entry
 }
 
 func (config *FilesystemSource) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The path will be validated at runtime
 	return nil
 }

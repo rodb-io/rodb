@@ -1,7 +1,6 @@
 package source
 
 import (
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"rods/pkg/config"
@@ -27,7 +26,7 @@ func TestFilesystemOpen(t *testing.T) {
 
 		fs, err := NewFilesystem(&config.FilesystemSource{
 			Path: path,
-		}, logrus.StandardLogger())
+		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

@@ -2,7 +2,6 @@ package input
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/parser"
 	"rods/pkg/record"
@@ -26,10 +25,9 @@ func NewFromConfig(
 	config config.Input,
 	sources source.List,
 	parsers parser.List,
-	log *logrus.Logger,
 ) (Input, error) {
 	if config.Csv != nil {
-		return NewCsv(config.Csv, sources, parsers, log)
+		return NewCsv(config.Csv, sources, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize input")
@@ -39,11 +37,10 @@ func NewFromConfigs(
 	configs map[string]config.Input,
 	sources source.List,
 	parsers parser.List,
-	log *logrus.Logger,
 ) (List, error) {
 	inputs := make(List)
 	for inputName, inputConfig := range configs {
-		input, err := NewFromConfig(inputConfig, sources, parsers, log)
+		input, err := NewFromConfig(inputConfig, sources, parsers)
 		if err != nil {
 			return nil, err
 		}

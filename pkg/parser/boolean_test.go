@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"testing"
@@ -12,7 +11,7 @@ func TestBooleanParse(t *testing.T) {
 		TrueValues:  []string{"true", "yes"},
 		FalseValues: []string{"false", "no"},
 	}
-	boolean := NewBoolean(config, logrus.StandardLogger())
+	boolean := NewBoolean(config)
 
 	for value, expectedResult := range map[string]interface{}{
 		"true":  true,
@@ -47,7 +46,7 @@ func TestBooleanGetRegexpPattern(t *testing.T) {
 		TrueValues:  []string{"true", "yes"},
 		FalseValues: []string{"false", "no"},
 	}
-	boolean := NewBoolean(config, logrus.StandardLogger())
+	boolean := NewBoolean(config)
 	pattern := regexp.MustCompile("^" + boolean.GetRegexpPattern() + "$")
 
 	for value, expectedResult := range map[string]interface{}{

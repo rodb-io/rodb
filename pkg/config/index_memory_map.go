@@ -7,9 +7,12 @@ import (
 type MemoryMapIndex struct {
 	Input   string   `yaml:"input"`
 	Columns []string `yaml:"columns"`
+	Logger  *logrus.Entry
 }
 
 func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The input and columns will be validated at runtime
 	return nil
 }

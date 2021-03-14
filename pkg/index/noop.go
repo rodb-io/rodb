@@ -2,7 +2,6 @@ package index
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"reflect"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -12,16 +11,13 @@ import (
 // but very inefficiently. It does not index anything.
 type Noop struct {
 	inputs input.List
-	logger *logrus.Logger
 }
 
 func NewNoop(
 	inputs input.List,
-	log *logrus.Logger,
 ) *Noop {
 	return &Noop{
 		inputs: inputs,
-		logger: log,
 	}
 }
 

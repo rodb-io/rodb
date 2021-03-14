@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"regexp"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
@@ -19,7 +18,6 @@ type JsonObject struct {
 	indexes      indexModule.List
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
-	logger       *logrus.Logger
 	route        *serviceModule.Route
 }
 
@@ -28,7 +26,6 @@ func NewJsonObject(
 	indexes indexModule.List,
 	services serviceModule.List,
 	parsers parserModule.List,
-	log *logrus.Logger,
 ) (*JsonObject, error) {
 	paramParsers := make([]parserModule.Parser, len(config.Parameters))
 	for i, param := range config.Parameters {
@@ -54,7 +51,6 @@ func NewJsonObject(
 		indexes:      indexes,
 		services:     outputServices,
 		paramParsers: paramParsers,
-		logger:       log,
 	}
 
 	route := &serviceModule.Route{

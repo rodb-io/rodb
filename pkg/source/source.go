@@ -2,7 +2,6 @@ package source
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"io"
 	"rods/pkg/config"
 )
@@ -17,10 +16,9 @@ type List = map[string]Source
 
 func NewFromConfig(
 	config config.Source,
-	log *logrus.Logger,
 ) (Source, error) {
 	if config.Filesystem != nil {
-		return NewFilesystem(config.Filesystem, log)
+		return NewFilesystem(config.Filesystem)
 	}
 
 	return nil, errors.New("Failed to initialize source")
@@ -28,11 +26,10 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Source,
-	log *logrus.Logger,
 ) (List, error) {
 	sources := make(List)
 	for sourceName, sourceConfig := range configs {
-		source, err := NewFromConfig(sourceConfig, log)
+		source, err := NewFromConfig(sourceConfig)
 		if err != nil {
 			return nil, err
 		}

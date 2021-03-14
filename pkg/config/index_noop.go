@@ -5,9 +5,12 @@ import (
 )
 
 type NoopIndex struct {
+	Logger *logrus.Entry
 }
 
 func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	return nil
 }
 

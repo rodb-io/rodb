@@ -2,7 +2,6 @@ package index
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"reflect"
 	"rods/pkg/config"
 	"rods/pkg/input"
@@ -16,14 +15,12 @@ type memoryMapIndex = map[string]memoryMapColumnIndex
 type MemoryMap struct {
 	config *config.MemoryMapIndex
 	input  input.Input
-	logger *logrus.Logger
 	index  memoryMapIndex
 }
 
 func NewMemoryMap(
 	config *config.MemoryMapIndex,
 	inputs input.List,
-	log *logrus.Logger,
 ) (*MemoryMap, error) {
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
@@ -33,7 +30,6 @@ func NewMemoryMap(
 	memoryMap := &MemoryMap{
 		config: config,
 		input:  input,
-		logger: log,
 	}
 
 	memoryMap.index = make(memoryMapIndex)

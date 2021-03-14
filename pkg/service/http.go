@@ -19,7 +19,6 @@ import (
 
 type Http struct {
 	config    *config.HttpService
-	logger    *logrus.Logger
 	listener  net.Listener
 	server    *http.Server
 	waitGroup *sync.WaitGroup
@@ -29,7 +28,6 @@ type Http struct {
 
 func NewHttp(
 	config *config.HttpService,
-	log *logrus.Logger,
 ) (*Http, error) {
 	listener, err := net.Listen("tcp", config.Listen)
 	if err != nil {
@@ -38,13 +36,12 @@ func NewHttp(
 
 	service := &Http{
 		config:    config,
-		logger:    log,
 		waitGroup: &sync.WaitGroup{},
 		routes:    make([]*Route, 0),
 		listener:  listener,
 		lastError: nil,
 		server: &http.Server{
-			ErrorLog: goLog.New(log.WriterLevel(logrus.ErrorLevel), "", 0),
+			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
 		},
 	}
 
@@ -123,10 +120,10 @@ func (service *Http) sendErrorResponse(
 			"error": err.Error(),
 		})
 		if err != nil {
-			service.logger.Errorf("Error while encoding the error response: %v", err)
+			service.config.Logger.Errorf("Error while encoding the error response: %v", err)
 		}
 	default:
-		service.logger.Errorf("ErrorResponse type '%v' is not supported by the HTTP service", service.config.ErrorsType)
+		service.config.Logger.Errorf("ErrorResponse type '%v' is not supported by the HTTP service", service.config.ErrorsType)
 		data = []byte(err.Error())
 		outputType = "text/plain"
 	}

@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -17,7 +16,7 @@ func TestHttp(t *testing.T) {
 		Listen:     ":0", // Auto-assign port
 		ErrorsType: "application/json",
 	}
-	server, err := NewHttp(config, logrus.StandardLogger())
+	server, err := NewHttp(config)
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}

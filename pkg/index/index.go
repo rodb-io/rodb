@@ -2,7 +2,6 @@ package index
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -18,13 +17,12 @@ type List = map[string]Index
 func NewFromConfig(
 	config config.Index,
 	inputs input.List,
-	log *logrus.Logger,
 ) (Index, error) {
 	if config.MemoryMap != nil {
-		return NewMemoryMap(config.MemoryMap, inputs, log)
+		return NewMemoryMap(config.MemoryMap, inputs)
 	}
 	if config.Noop != nil {
-		return NewNoop(inputs, log), nil
+		return NewNoop(inputs), nil
 	}
 
 	return nil, errors.New("Failed to initialize index")
@@ -33,11 +31,10 @@ func NewFromConfig(
 func NewFromConfigs(
 	configs map[string]config.Index,
 	inputs input.List,
-	log *logrus.Logger,
 ) (List, error) {
 	indexes := make(List)
 	for indexName, indexConfig := range configs {
-		index, err := NewFromConfig(indexConfig, inputs, log)
+		index, err := NewFromConfig(indexConfig, inputs)
 		if err != nil {
 			return nil, err
 		}

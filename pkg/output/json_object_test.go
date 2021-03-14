@@ -1,7 +1,6 @@
 package output
 
 import (
-	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/input"
@@ -32,7 +31,6 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 	})
 	mockIndex := index.NewNoop(
 		input.List{"mock": mockInput},
-		logrus.StandardLogger(),
 	)
 	mockService := service.NewMock()
 	mockParser := parser.NewMock()
@@ -43,7 +41,6 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 		index.List{"mock": mockIndex},
 		service.List{"mock": mockService},
 		parser.List{"mock": mockParser},
-		logrus.StandardLogger(),
 	)
 
 	return jsonObject, mockService, err

@@ -33,28 +33,28 @@ func main() {
 		return
 	}
 
-	parsers, err := parser.NewFromConfigs(config.Parsers, log)
+	parsers, err := parser.NewFromConfigs(config.Parsers)
 	if err != nil {
 		log.Errorf("Error initializing parsers: %v", err)
 		return
 	}
 	defer parser.Close(parsers)
 
-	sources, err := source.NewFromConfigs(config.Sources, log)
+	sources, err := source.NewFromConfigs(config.Sources)
 	if err != nil {
 		log.Errorf("Error initializing sources: %v", err)
 		return
 	}
 	defer source.Close(sources)
 
-	inputs, err := input.NewFromConfigs(config.Inputs, sources, parsers, log)
+	inputs, err := input.NewFromConfigs(config.Inputs, sources, parsers)
 	if err != nil {
 		log.Errorf("Error initializing inputs: %v", err)
 		return
 	}
 	defer input.Close(inputs)
 
-	indexes, err := index.NewFromConfigs(config.Indexes, inputs, log)
+	indexes, err := index.NewFromConfigs(config.Indexes, inputs)
 	if err != nil {
 		log.Errorf("Error initializing indexes: %v", err)
 		return
@@ -68,7 +68,7 @@ func main() {
 	}
 	defer service.Close(services)
 
-	outputs, err := output.NewFromConfigs(config.Outputs, indexes, services, parsers, log)
+	outputs, err := output.NewFromConfigs(config.Outputs, indexes, services, parsers)
 	if err != nil {
 		log.Errorf("Error initializing outputs: %v", err)
 		return

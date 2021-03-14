@@ -11,6 +11,7 @@ type JsonArrayOutput struct {
 	Limit    JsonArrayOutputLimit             `yaml:"limit"`
 	Offset   JsonArrayOutputOffset            `yaml:"offset"`
 	Search   map[string]JsonArrayOutputSearch `yaml:"search"`
+	Logger   *logrus.Entry
 }
 
 type JsonArrayOutputLimit struct {
@@ -28,6 +29,8 @@ type JsonArrayOutputSearch struct {
 }
 
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The service will be validated at runtime
 
 	if config.Endpoint == "" {

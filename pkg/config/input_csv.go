@@ -13,6 +13,7 @@ type CsvInput struct {
 	Delimiter         string            `yaml:"delimiter"`
 	Columns           []*CsvInputColumn `yaml:"columns"`
 	ColumnIndexByName map[string]int
+	Logger            *logrus.Entry
 }
 
 type CsvInputColumn struct {
@@ -21,6 +22,8 @@ type CsvInputColumn struct {
 }
 
 func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
+	config.Logger = log
+
 	// The source and path will be validated at runtime
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")

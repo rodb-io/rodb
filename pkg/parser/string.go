@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/ianaindex"
 	"golang.org/x/text/transform"
@@ -12,13 +11,11 @@ import (
 
 type String struct {
 	config  *config.StringParser
-	logger  *logrus.Logger
 	decoder *encoding.Decoder
 }
 
 func NewString(
 	config *config.StringParser,
-	log *logrus.Logger,
 ) (*String, error) {
 	var decoder *encoding.Decoder = nil
 	if config.ConvertFromCharset != "" {
@@ -32,7 +29,6 @@ func NewString(
 
 	return &String{
 		config:  config,
-		logger:  log,
 		decoder: decoder,
 	}, nil
 }

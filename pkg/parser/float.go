@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/sirupsen/logrus"
 	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/util"
@@ -11,16 +10,13 @@ import (
 
 type Float struct {
 	config *config.FloatParser
-	logger *logrus.Logger
 }
 
 func NewFloat(
 	config *config.FloatParser,
-	log *logrus.Logger,
 ) *Float {
 	return &Float{
 		config: config,
-		logger: log,
 	}
 }
 

@@ -1,7 +1,6 @@
 package index
 
 import (
-	"github.com/sirupsen/logrus"
 	"rods/pkg/input"
 	"rods/pkg/record"
 	"testing"
@@ -33,7 +32,6 @@ func TestNoopGetRecords(t *testing.T) {
 				}, 4)},
 			}),
 		},
-		logrus.StandardLogger(),
 	)
 
 	t.Run("normal", func(t *testing.T) {

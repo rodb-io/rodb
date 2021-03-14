@@ -2,7 +2,6 @@ package output
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/parser"
@@ -20,10 +19,9 @@ func NewFromConfig(
 	indexes index.List,
 	services service.List,
 	parsers parser.List,
-	log *logrus.Logger,
 ) (Output, error) {
 	if config.JsonObject != nil {
-		return NewJsonObject(config.JsonObject, indexes, services, parsers, log)
+		return NewJsonObject(config.JsonObject, indexes, services, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize output")
@@ -34,11 +32,10 @@ func NewFromConfigs(
 	indexes index.List,
 	services service.List,
 	parsers parser.List,
-	log *logrus.Logger,
 ) (List, error) {
 	outputs := make(List)
 	for outputName, outputConfig := range configs {
-		output, err := NewFromConfig(outputConfig, indexes, services, parsers, log)
+		output, err := NewFromConfig(outputConfig, indexes, services, parsers)
 		if err != nil {
 			return nil, err
 		}
