@@ -10,7 +10,7 @@ type BooleanParser struct {
 	FalseValues []string `yaml:"falseValues"`
 }
 
-func (config *BooleanParser) validate(log *logrus.Logger) error {
+func (config *BooleanParser) validate(rootConfig *Config, log *logrus.Logger) error {
 	if len(config.TrueValues) == 0 {
 		return errors.New("boolean.trueValues is required")
 	}

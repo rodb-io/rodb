@@ -11,7 +11,7 @@ type Output struct {
 	JsonObject *JsonObjectOutput `yaml:"jsonObject"`
 }
 
-func (config *Output) validate(log *logrus.Logger) error {
+func (config *Output) validate(rootConfig *Config, log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -22,5 +22,5 @@ func (config *Output) validate(log *logrus.Logger) error {
 		return errors.New("One of your outputs has two different definitions.")
 	}
 
-	return fields[0].validate(log)
+	return fields[0].validate(rootConfig, log)
 }

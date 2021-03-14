@@ -9,7 +9,7 @@ type Input struct {
 	Csv *CsvInput `yaml:"csv"`
 }
 
-func (config *Input) validate(log *logrus.Logger) error {
+func (config *Input) validate(rootConfig *Config, log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -20,5 +20,5 @@ func (config *Input) validate(log *logrus.Logger) error {
 		return errors.New("An input can only have one configuration")
 	}
 
-	return fields[0].validate(log)
+	return fields[0].validate(rootConfig, log)
 }

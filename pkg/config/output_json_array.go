@@ -27,7 +27,7 @@ type JsonArrayOutputSearch struct {
 	Index string
 }
 
-func (config *JsonArrayOutput) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Logger) error {
 	// The service will be validated at runtime
 
 	if config.Endpoint == "" {
@@ -38,18 +38,18 @@ func (config *JsonArrayOutput) validate(log *logrus.Logger) error {
 		return errors.New("jsonArray.services is empty. As least one is required.")
 	}
 
-	err := config.Limit.validate(log)
+	err := config.Limit.validate(rootConfig, log)
 	if err != nil {
 		return err
 	}
 
-	err = config.Offset.validate(log)
+	err = config.Offset.validate(rootConfig, log)
 	if err != nil {
 		return err
 	}
 
 	for _, configSearchParam := range config.Search {
-		err := configSearchParam.validate(log)
+		err := configSearchParam.validate(rootConfig, log)
 		if err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func (config *JsonArrayOutput) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputLimit) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Logger) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")
 		config.Default = 100
@@ -77,7 +77,7 @@ func (config *JsonArrayOutputLimit) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputOffset) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.Logger) error {
 	if config.Param == "" {
 		log.Debug("jsonArray.offset.param not set. Assuming 'offset'")
 		config.Param = "offset"
@@ -86,7 +86,7 @@ func (config *JsonArrayOutputOffset) validate(log *logrus.Logger) error {
 	return nil
 }
 
-func (config *JsonArrayOutputSearch) validate(log *logrus.Logger) error {
+func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Logger) error {
 	// The index will be validated at runtime
 	return nil
 }

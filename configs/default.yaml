@@ -1,4 +1,6 @@
+# TODO manually fill the config structs and default values from yaml maps?
 # TODO test the configuration validators
+# TODO completely test the configuration against the rootConfig (and remove comments about checking at runtime)
 # TODO test the constructors
 # TODO performance analysis
 parsers:
@@ -114,9 +116,7 @@ outputs:
               match:
                 - parentColumn: id
                   childColumn: id
-          # TODO fail early if relationships setup is wrong (wrong index, columns...)
           # TODO relationship sorting?
       parameters:
         - column: id
           parser: integer
-          # TODO fail early if the column is not handled by the index

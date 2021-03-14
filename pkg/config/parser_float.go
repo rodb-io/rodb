@@ -10,7 +10,7 @@ type FloatParser struct {
 	IgnoreCharacters string `yaml:"ignoreCharacters"`
 }
 
-func (config *FloatParser) validate(log *logrus.Logger) error {
+func (config *FloatParser) validate(rootConfig *Config, log *logrus.Logger) error {
 	if len(config.DecimalSeparator) == 0 {
 		return errors.New("float.decimalSeparator is required")
 	}

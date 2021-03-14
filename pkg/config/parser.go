@@ -12,7 +12,7 @@ type Parser struct {
 	String  *StringParser  `yaml:"string"`
 }
 
-func (config *Parser) validate(log *logrus.Logger) error {
+func (config *Parser) validate(rootConfig *Config, log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -23,5 +23,5 @@ func (config *Parser) validate(log *logrus.Logger) error {
 		return errors.New("One of your parsers has two different definitions.")
 	}
 
-	return fields[0].validate(log)
+	return fields[0].validate(rootConfig, log)
 }

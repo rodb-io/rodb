@@ -67,7 +67,7 @@ func NewMemoryMap(
 // Get the records from the given input (if indexed) and that matchesall the given filters
 // A limit of 0 means that there is no limit
 func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
-	if inputName != mm.config.Input {
+	if !mm.config.DoesHandleInput(inputName) {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", inputName)
 	}
 	if len(filters) == 0 {
@@ -76,15 +76,7 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 
 	individualFiltersResults := make([]memoryMapColumnValueIndex, 0, len(filters))
 	for columnName, filter := range filters {
-		isHandled := false
-		for _, handledColumn := range mm.config.Columns {
-			if columnName == handledColumn {
-				isHandled = true
-				break
-			}
-		}
-
-		if !isHandled {
+		if !mm.config.DoesHandleColumn(columnName) {
 			return nil, fmt.Errorf("This index does not handle the column '%v'.", columnName)
 		}
 

@@ -9,7 +9,7 @@ type Service struct {
 	Http *HttpService `yaml:"http"`
 }
 
-func (config *Service) validate(log *logrus.Logger) error {
+func (config *Service) validate(rootConfig *Config, log *logrus.Logger) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {
@@ -20,5 +20,5 @@ func (config *Service) validate(log *logrus.Logger) error {
 		return errors.New("A services can only have one configuration")
 	}
 
-	return fields[0].validate(log)
+	return fields[0].validate(rootConfig, log)
 }
