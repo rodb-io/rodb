@@ -11,7 +11,7 @@ type Output struct {
 	JsonObject *JsonObjectOutput `yaml:"jsonObject"`
 }
 
-func (config *Output) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *Output) validate(rootConfig *Config, log *logrus.Entry) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

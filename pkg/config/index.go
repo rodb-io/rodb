@@ -10,7 +10,7 @@ type Index struct {
 	Noop      *NoopIndex      `yaml:"noop"`
 }
 
-func (config *Index) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

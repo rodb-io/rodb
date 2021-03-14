@@ -35,7 +35,7 @@ type JsonObjectOutputRelationshipMatch struct {
 	ChildColumn  string `yaml:"childColumn"`
 }
 
-func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	// The service will be validated at runtime
 	// The default index value "" matches the noop index
 
@@ -54,23 +54,23 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Logger)
 
 	index, indexExists := rootConfig.Indexes[config.Index]
 	if !indexExists {
-		return fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
+		return fmt.Errorf("jsonObject.index: Index '%v' not found in indexes list.", config.Index)
 	}
 	if !index.DoesHandleInput(config.Input) {
-		return fmt.Errorf("Index '%v' does not handle input '%v'.", config.Index, config.Input)
+		return fmt.Errorf("jsonObject.index: Index '%v' does not handle input '%v'.", config.Index, config.Input)
 	}
 
-	for _, parameter := range config.Parameters {
+	for parameterIndex, parameter := range config.Parameters {
 		err := parameter.validate(rootConfig, log, config.Index, index)
 		if err != nil {
-			return err
+			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterIndex, err)
 		}
 	}
 
-	for _, relationship := range config.Relationships {
+	for relationshipIndex, relationship := range config.Relationships {
 		err := relationship.validate(rootConfig, log, config.Index, index)
 		if err != nil {
-			return err
+			return fmt.Errorf("jsonObject.relationships.%v.%w", relationshipIndex, err)
 		}
 	}
 
@@ -91,14 +91,14 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Logger)
 
 func (config *JsonObjectOutputParameter) validate(
 	rootConfig *Config,
-	log *logrus.Logger,
+	log *logrus.Entry,
 	indexName string,
 	index Index,
 ) error {
 	// The parser will be validated at runtime
 
 	if config.Column == "" {
-		return errors.New("jsonObject.parameters[].column is empty")
+		return errors.New("column is empty")
 	}
 
 	if config.Parser == "" {
@@ -107,7 +107,7 @@ func (config *JsonObjectOutputParameter) validate(
 	}
 
 	if !index.DoesHandleColumn(config.Column) {
-		return fmt.Errorf("Index '%v' does not handle column '%v'.", indexName, config.Column)
+		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", indexName, config.Column)
 	}
 
 	return nil
@@ -115,12 +115,12 @@ func (config *JsonObjectOutputParameter) validate(
 
 func (config *JsonObjectOutputRelationship) validate(
 	rootConfig *Config,
-	log *logrus.Logger,
+	log *logrus.Entry,
 	parentIndexName string,
 	parentIndex Index,
 ) error {
 	if config.Limit == 0 && config.IsArray {
-		log.Debug("jsonObjet.relationships[].limit is not set. All relationships will be returned.")
+		log.Debug("jsonObject.relationships[].limit is not set. All relationships will be returned.")
 	}
 
 	if config.Index == "" {
@@ -130,13 +130,13 @@ func (config *JsonObjectOutputRelationship) validate(
 
 	childIndex, childIndexExists := rootConfig.Indexes[config.Index]
 	if !childIndexExists {
-		return fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
+		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
 	}
 	if !childIndex.DoesHandleInput(config.Input) {
-		return fmt.Errorf("Index '%v' does not handle input '%v'.", config.Index, config.Input)
+		return fmt.Errorf("input: Index '%v' does not handle input '%v'.", config.Index, config.Input)
 	}
 
-	for _, match := range config.Match {
+	for matchIndex, match := range config.Match {
 		err := match.validate(
 			rootConfig,
 			log,
@@ -144,14 +144,14 @@ func (config *JsonObjectOutputRelationship) validate(
 			childIndex,
 		)
 		if err != nil {
-			return err
+			return fmt.Errorf("match.%v.%w", matchIndex, err)
 		}
 	}
 
-	for _, relationship := range config.Relationships {
+	for relationshipName, relationship := range config.Relationships {
 		err := relationship.validate(rootConfig, log, config.Index, childIndex)
 		if err != nil {
-			return err
+			return fmt.Errorf("relationships.%v.%w", relationshipName, err)
 		}
 	}
 
@@ -160,14 +160,14 @@ func (config *JsonObjectOutputRelationship) validate(
 
 func (config *JsonObjectOutputRelationshipMatch) validate(
 	rootConfig *Config,
-	log *logrus.Logger,
+	log *logrus.Entry,
 	childIndexName string,
 	childIndex Index,
 ) error {
 	// The parentColumn will be validated at runtime (must be validated against the input and not the index)
 
 	if !childIndex.DoesHandleColumn(config.ChildColumn) {
-		return fmt.Errorf("Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)
+		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)
 	}
 
 	return nil

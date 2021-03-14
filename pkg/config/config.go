@@ -17,13 +17,18 @@ type Config struct {
 	Outputs  map[string]Output
 }
 
-func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
-	yamlConfigWithEnv := []byte(os.ExpandEnv(string(yamlConfig)))
+func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
+	configData, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("Cannot read config file %v: %w", configPath, err)
+	}
+
+	yamlConfigWithEnv := []byte(os.ExpandEnv(string(configData)))
 
 	config := &Config{}
-	err := yaml.UnmarshalStrict(yamlConfigWithEnv, config)
+	err = yaml.UnmarshalStrict(yamlConfigWithEnv, config)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
 	}
 
 	config.addDefaultConfigs(log)
@@ -31,20 +36,6 @@ func NewConfigFromYaml(yamlConfig []byte, log *logrus.Logger) (*Config, error) {
 	err = config.validate(config, log)
 	if err != nil {
 		return nil, err
-	}
-
-	return config, err
-}
-
-func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
-	configData, err := ioutil.ReadFile(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("Cannot read config file %v: %w", configPath, err)
-	}
-
-	config, err := NewConfigFromYaml(configData, log)
-	if err != nil {
-		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
 	}
 
 	return config, nil
@@ -89,37 +80,37 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 
 func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Parsers {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "parsers."+subConfigName)); err != nil {
 			return fmt.Errorf("parsers.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Sources {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "sources."+subConfigName)); err != nil {
 			return fmt.Errorf("sources.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Inputs {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "inputs."+subConfigName)); err != nil {
 			return fmt.Errorf("inputs.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Indexes {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "indexes."+subConfigName)); err != nil {
 			return fmt.Errorf("indexes.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Services {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "services."+subConfigName)); err != nil {
 			return fmt.Errorf("services.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Outputs {
-		if err := subConfig.validate(rootConfig, log); err != nil {
+		if err := subConfig.validate(rootConfig, log.WithField("object", "outputs."+subConfigName)); err != nil {
 			return fmt.Errorf("outputs.%v: %w", subConfigName, err)
 		}
 	}

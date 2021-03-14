@@ -9,7 +9,7 @@ type Input struct {
 	Csv *CsvInput `yaml:"csv"`
 }
 
-func (config *Input) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

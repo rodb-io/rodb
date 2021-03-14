@@ -10,7 +10,7 @@ type GraphQLOutput struct {
 	Endpoint string   `yaml:"endpoint"`
 }
 
-func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	// The service will be validated at runtime
 
 	if config.Endpoint == "" {

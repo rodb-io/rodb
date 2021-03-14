@@ -9,7 +9,7 @@ type Service struct {
 	Http *HttpService `yaml:"http"`
 }
 
-func (config *Service) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *Service) validate(rootConfig *Config, log *logrus.Entry) error {
 	fields := getAllNonNilFields(config)
 
 	if len(fields) == 0 {

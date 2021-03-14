@@ -9,7 +9,7 @@ type MemoryMapIndex struct {
 	Columns []string `yaml:"columns"`
 }
 
-func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	// The input and columns will be validated at runtime
 	return nil
 }

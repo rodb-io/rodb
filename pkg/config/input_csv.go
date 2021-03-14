@@ -20,7 +20,7 @@ type CsvInputColumn struct {
 	Parser string `yaml:"parser"`
 }
 
-func (config *CsvInput) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	// The source and path will be validated at runtime
 	if len(config.Columns) == 0 {
 		return errors.New("A csv input must have at least one column")
@@ -39,7 +39,7 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Logger) error {
 	for columnIndex, column := range config.Columns {
 		err := column.validate(rootConfig, log)
 		if err != nil {
-			return err
+			return fmt.Errorf("csv.columns[%v]: %w", columnIndex, err)
 		}
 
 		if _, exists := config.ColumnIndexByName[column.Name]; exists {
@@ -51,10 +51,10 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Logger) error {
 	return nil
 }
 
-func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
 	// The parser will be validated at runtime
 	if config.Name == "" {
-		return errors.New("csv.columns[].name is required")
+		return errors.New("name is required")
 	}
 
 	if config.Parser == "" {

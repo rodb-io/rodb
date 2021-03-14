@@ -7,7 +7,7 @@ import (
 type NoopIndex struct {
 }
 
-func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 

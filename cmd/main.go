@@ -29,7 +29,7 @@ func main() {
 
 	config, err := config.NewConfigFromYamlFile(*configPath, log)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("Error initializing config: %v", err)
 		return
 	}
 

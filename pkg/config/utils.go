@@ -7,7 +7,7 @@ import (
 )
 
 type validable interface {
-	validate(rootConfig *Config, log *logrus.Logger) error
+	validate(rootConfig *Config, log *logrus.Entry) error
 }
 
 func getAllNonNilFields(config interface{}) []validable {
