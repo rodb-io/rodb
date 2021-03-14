@@ -28,6 +28,9 @@ func NewFromConfig(
 			return NewMemoryMap(config.MemoryMap, input, log)
 		}
 	}
+	if config.Noop != nil {
+		return NewNoop(inputs, log), nil
+	}
 
 	return nil, errors.New("Failed to initialize index")
 }
@@ -45,8 +48,6 @@ func NewFromConfigs(
 		}
 		indexes[indexName] = index
 	}
-
-	indexes[""] = NewNoop(inputs, log)
 
 	return indexes, nil
 }

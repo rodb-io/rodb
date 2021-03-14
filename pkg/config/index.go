@@ -7,6 +7,7 @@ import (
 
 type Index struct {
 	MemoryMap *MemoryMapIndex `yaml:"memoryMap"`
+	Noop      *NoopIndex      `yaml:"noop"`
 }
 
 func (config *Index) validate(rootConfig *Config, log *logrus.Logger) error {
@@ -32,6 +33,8 @@ func (config *Index) DoesHandleColumn(column string) bool {
 	switch fields[0].(type) {
 	case *MemoryMapIndex:
 		return fields[0].(*MemoryMapIndex).DoesHandleColumn(column)
+	case *NoopIndex:
+		return fields[0].(*NoopIndex).DoesHandleColumn(column)
 	}
 
 	return false
@@ -46,6 +49,8 @@ func (config *Index) DoesHandleInput(input string) bool {
 	switch fields[0].(type) {
 	case *MemoryMapIndex:
 		return fields[0].(*MemoryMapIndex).DoesHandleInput(input)
+	case *NoopIndex:
+		return fields[0].(*NoopIndex).DoesHandleInput(input)
 	}
 
 	return false
