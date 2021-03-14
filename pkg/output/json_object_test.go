@@ -30,7 +30,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 			"belongs_to": "1",
 		}, 0)},
 	})
-	mockIndex := index.NewDumb(
+	mockIndex := index.NewNoop(
 		input.List{"mock": mockInput},
 		logrus.StandardLogger(),
 	)

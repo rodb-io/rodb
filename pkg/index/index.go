@@ -46,7 +46,7 @@ func NewFromConfigs(
 		indexes[indexName] = index
 	}
 
-	indexes[""] = NewDumb(inputs, log)
+	indexes[""] = NewNoop(inputs, log)
 
 	return indexes, nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewFromConfigs(t *testing.T) {
-	t.Run("has default dumb index", func(t *testing.T) {
+	t.Run("has default noop index", func(t *testing.T) {
 		indexes, err := NewFromConfigs(
 			map[string]config.Parser{},
 			logrus.StandardLogger(),

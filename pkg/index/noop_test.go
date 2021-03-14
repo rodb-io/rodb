@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-func TestDumbGetRecords(t *testing.T) {
-	index := NewDumb(
+func TestNoopGetRecords(t *testing.T) {
+	index := NewNoop(
 		map[string]input.Input{
 			"input": input.NewMock([]input.IterateAllResult{
 				{Record: record.NewStringColumnsMock(map[string]string{

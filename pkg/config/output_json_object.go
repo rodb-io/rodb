@@ -37,7 +37,7 @@ type JsonObjectOutputRelationshipMatch struct {
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Logger) error {
 	// The service will be validated at runtime
-	// The default index value "" matches the dumb index
+	// The default index value "" matches the noop index
 
 	if len(config.Parameters) == 0 {
 		return errors.New("jsonObject.parameters is empty. As least one is required.")

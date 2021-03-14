@@ -8,24 +8,24 @@ import (
 	"rods/pkg/record"
 )
 
-// A dumb index is able to search into any data,
+// A noop index is able to search into any data,
 // but very inefficiently. It does not index anything.
-type Dumb struct {
+type Noop struct {
 	inputs input.List
 	logger *logrus.Logger
 }
 
-func NewDumb(
+func NewNoop(
 	inputs input.List,
 	log *logrus.Logger,
-) *Dumb {
-	return &Dumb{
+) *Noop {
+	return &Noop{
 		inputs: inputs,
 		logger: log,
 	}
 }
 
-func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
+func (d *Noop) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
 	input, ok := d.inputs[inputName]
 	if !ok {
 		return nil, fmt.Errorf("There is no input named '%v'", inputName)
@@ -71,6 +71,6 @@ func (d *Dumb) GetRecords(inputName string, filters map[string]interface{}, limi
 	return records, nil
 }
 
-func (d *Dumb) Close() error {
+func (d *Noop) Close() error {
 	return nil
 }
