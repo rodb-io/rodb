@@ -52,7 +52,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	config.Indexes[""] = Index{Noop: &NoopIndex{}}
+	config.Indexes["default"] = Index{Noop: &NoopIndex{}}
 }
 
 func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {

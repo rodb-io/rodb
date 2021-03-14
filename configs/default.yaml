@@ -1,6 +1,6 @@
+# TODO add the default objects in the default config method
 # TODO manually fill the config structs and default values from yaml maps?
 # TODO test the configuration validators
-# TODO add the default objects in the default config method
 # TODO completely test the configuration against the rootConfig (and remove comments about checking at runtime)
 # TODO test the constructors
 # TODO performance analysis

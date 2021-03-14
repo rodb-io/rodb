@@ -88,5 +88,11 @@ func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.Lo
 
 func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Logger) error {
 	// The index will be validated at runtime
+
+	if config.Index == "" {
+		log.Debugf("jsonArray.search[].index is empty. Assuming 'default'.\n")
+		config.Index = "default"
+	}
+
 	return nil
 }

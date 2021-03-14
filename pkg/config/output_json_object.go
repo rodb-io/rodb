@@ -47,6 +47,11 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Logger)
 		return errors.New("jsonObject.services is empty. As least one is required.")
 	}
 
+	if config.Index == "" {
+		log.Debugf("jsonObject.index is empty. Assuming 'default'.\n")
+		config.Index = "default"
+	}
+
 	index, indexExists := rootConfig.Indexes[config.Index]
 	if !indexExists {
 		return fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
@@ -116,6 +121,11 @@ func (config *JsonObjectOutputRelationship) validate(
 ) error {
 	if config.Limit == 0 && config.IsArray {
 		log.Debug("jsonObjet.relationships[].limit is not set. All relationships will be returned.")
+	}
+
+	if config.Index == "" {
+		log.Debugf("jsonObject.relationships[].index is empty. Assuming 'default'.\n")
+		config.Index = "default"
 	}
 
 	childIndex, childIndexExists := rootConfig.Indexes[config.Index]
