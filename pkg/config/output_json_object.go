@@ -140,8 +140,6 @@ func (config *JsonObjectOutputRelationship) validate(
 		err := match.validate(
 			rootConfig,
 			log,
-			parentIndexName,
-			parentIndex,
 			config.Index,
 			childIndex,
 		)
@@ -163,14 +161,11 @@ func (config *JsonObjectOutputRelationship) validate(
 func (config *JsonObjectOutputRelationshipMatch) validate(
 	rootConfig *Config,
 	log *logrus.Logger,
-	parentIndexName string,
-	parentIndex Index,
 	childIndexName string,
 	childIndex Index,
 ) error {
-	if !parentIndex.DoesHandleColumn(config.ParentColumn) {
-		return fmt.Errorf("Index '%v' does not handle column '%v'.", parentIndexName, config.ParentColumn)
-	}
+	// The parentColumn will be validated at runtime (must be validated against the input and not the index)
+
 	if !childIndex.DoesHandleColumn(config.ChildColumn) {
 		return fmt.Errorf("Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)
 	}
