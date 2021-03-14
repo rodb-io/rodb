@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -80,13 +81,13 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
 		route := service.getMatchingRoute(request)
 		if route == nil {
-			http.NotFound(response, request)
+			service.sendErrorResponse(response, http.StatusNotFound, errors.New("No matching route was found"))
 			return
 		}
 
 		payload, err := service.getPayload(route, request.Body)
 		if err != nil {
-			http.Error(response, err.Error(), http.StatusInternalServerError)
+			service.sendErrorResponse(response, http.StatusInternalServerError, err)
 			return
 		}
 
@@ -98,7 +99,7 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 				status = http.StatusNotFound
 			}
 
-			http.Error(response, err.Error(), status)
+			service.sendErrorResponse(response, status, err)
 			return
 		}
 
@@ -107,6 +108,32 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 		response.Write(data)
 		return
 	}
+}
+
+func (service *Http) sendErrorResponse(
+	response http.ResponseWriter,
+	status int,
+	err error,
+) {
+	var data []byte
+	var outputType string = service.config.ErrorsType
+	switch outputType {
+	case "application/json":
+		data, err = json.Marshal(map[string]interface{}{
+			"error": err.Error(),
+		})
+		if err != nil {
+			service.logger.Errorf("Error while encoding the error response: %v", err)
+		}
+	default:
+		service.logger.Errorf("ErrorResponse type '%v' is not supported by the HTTP service", service.config.ErrorsType)
+		data = []byte(err.Error())
+		outputType = "text/plain"
+	}
+
+	response.Header().Set("Content-Type", outputType+"; charset=UTF-8")
+	response.WriteHeader(status)
+	response.Write(data)
 }
 
 func (service *Http) getMatchingRoute(request *http.Request) *Route {

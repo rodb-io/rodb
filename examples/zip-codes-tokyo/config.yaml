@@ -91,6 +91,7 @@ services:
   httpService:
     http:
       listen: ":80"
+      errorsType: application/json
 outputs:
   findOnePostalCode:
     jsonObject:
@@ -105,11 +106,13 @@ outputs:
       relationships:
         updated:
           input: updatedValues
+          index: default
           match:
             - parentColumn: updatedId
               childColumn: id
         reasonsForUpdate:
           input: reasonsForUpdate
+          index: default
           match:
             - parentColumn: reasonForUpdateId
               childColumn: id

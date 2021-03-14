@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -12,7 +13,10 @@ import (
 )
 
 func TestHttp(t *testing.T) {
-	config := &config.HttpService{Listen: ":0"} // Auto-assign port
+	config := &config.HttpService{
+		Listen:     ":0", // Auto-assign port
+		ErrorsType: "application/json",
+	}
 	server, err := NewHttp(config, logrus.StandardLogger())
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
@@ -76,7 +80,26 @@ func TestHttp(t *testing.T) {
 		}
 
 		if expect, got := http.StatusNotFound, response.StatusCode; got != expect {
-			t.Errorf("Expected status %+v, got '%+v'", expect, got)
+			t.Errorf("Expected status '%+v', got '%+v'", expect, got)
+		}
+		if got, expect := response.Header.Get("Content-Type"), "application/json"; !strings.HasPrefix(got, expect) {
+			t.Errorf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
+		}
+
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		jsonBody := map[string]string{}
+		err = json.Unmarshal(body, &jsonBody)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		errorValue, errorValueExists := jsonBody["error"]
+		if !errorValueExists {
+			t.Errorf("Expected to have an 'error' key, got '%+v'", errorValue)
 		}
 	})
 }
