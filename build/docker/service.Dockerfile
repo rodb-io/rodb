@@ -35,4 +35,6 @@ WORKDIR /
 COPY --from=builder /rods /rods
 COPY ./configs/default.yaml /rods.yaml
 
+STOPSIGNAL SIGINT
+
 ENTRYPOINT ["/rods"]
