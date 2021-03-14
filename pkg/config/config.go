@@ -6,7 +6,6 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
 type Config struct {
@@ -91,37 +90,37 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Parsers {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("parsers.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("parsers.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Sources {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("sources.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("sources.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Inputs {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("inputs.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("inputs.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Indexes {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("indexes.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("indexes.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Services {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("services.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("services.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Outputs {
 		if err := subConfig.validate(rootConfig, log); err != nil {
-			return fmt.Errorf("outputs.%v: %w", strings.ToLower(subConfigName), err)
+			return fmt.Errorf("outputs.%v: %w", subConfigName, err)
 		}
 	}
 
