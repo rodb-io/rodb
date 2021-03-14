@@ -2,6 +2,7 @@ package source
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -16,6 +17,18 @@ type Filesystem struct {
 func NewFilesystem(
 	config *config.FilesystemSource,
 ) (*Filesystem, error) {
+	pathStat, err := os.Stat(config.Path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, fmt.Errorf("The base path '%v' of the filesystem object does not exist.", config.Path)
+		} else {
+			return nil, err
+		}
+	}
+	if !pathStat.IsDir() {
+		return nil, fmt.Errorf("The base path '%v' of the filesystem object is not a directory.", config.Path)
+	}
+
 	return &Filesystem{
 		config: config,
 		opened: make(map[io.ReadSeeker]*os.File),
