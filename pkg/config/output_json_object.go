@@ -24,6 +24,7 @@ type JsonObjectOutputRelationship struct {
 	Input         string                                   `yaml:"input"`
 	Index         string                                   `yaml:"index"`
 	IsArray       bool                                     `yaml:"isArray"`
+	Limit         uint                                     `yaml:"limit"`
 	Match         []*JsonObjectOutputRelationshipMatch     `yaml:"match"`
 	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
 }
@@ -95,6 +96,10 @@ func (config *JsonObjectOutputParameter) validate(log *logrus.Logger) error {
 func (config *JsonObjectOutputRelationship) validate(log *logrus.Logger) error {
 	// The index will be validated at runtime
 	// The input will be validated at runtime
+
+	if config.Limit == 0 && config.IsArray {
+		log.Debug("jsonObjet.relationships[].limit is not set. All relationships will be returned.")
+	}
 
 	for _, match := range config.Match {
 		err := match.validate(log)

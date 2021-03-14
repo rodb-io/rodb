@@ -157,7 +157,7 @@ func (jsonObject *JsonObject) loadRelationships(
 
 		var limit uint = 1
 		if relationshipConfig.IsArray {
-			limit = 0
+			limit = relationshipConfig.Limit
 		}
 
 		relationshipRecords, err := index.GetRecords(

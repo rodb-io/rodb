@@ -25,6 +25,10 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 			"id":         "3",
 			"belongs_to": "1",
 		}, 0)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"id":         "4",
+			"belongs_to": "1",
+		}, 0)},
 	})
 	mockIndex := index.NewDumb(
 		input.List{"mock": mockInput},
@@ -175,6 +179,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 					Input:   "mock",
 					Index:   "mock",
 					IsArray: true,
+					Limit:   2,
 					Match: []*config.JsonObjectOutputRelationshipMatch{
 						{
 							ParentColumn: "id",
