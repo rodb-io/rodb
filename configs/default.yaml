@@ -1,3 +1,11 @@
+# TODO test filesystem.getFilePath
+# TODO test filesystem.Watch
+# TODO test filesystem.CloseWatcher
+# TODO test mock.Watch
+# TODO test mock.CloseWatcher
+# TODO watch source from input
+# TODO on input change, have an option to reindex (or output an error)
+#
 # TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
@@ -18,7 +26,6 @@ parsers:
       convertFromCharset: ""
 sources:
   defaultSource:
-    # TODO warning if another process changes a file while opened with an index
     filesystem:
       path: ./
   # TODO S3 source
