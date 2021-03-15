@@ -47,7 +47,10 @@ func TestMockWatch(t *testing.T) {
 			t.Errorf("Expected the array to contain %+v elements, got %v.", expect, got)
 		}
 
-		mock.CloseWatcher("test", watcher)
+		err = mock.CloseWatcher("test", watcher)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 
 		if expect, got := 0, len(mock.watchers); got != expect {
 			t.Errorf("Expected the array to contain %+v elements, got %v.", expect, got)
