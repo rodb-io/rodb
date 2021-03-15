@@ -46,3 +46,20 @@ func TestFilesystemOpen(t *testing.T) {
 		}
 	})
 }
+
+func TestFilesystemGetFilePath(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		path := "/tmp"
+		fileName := "file"
+
+		fs, err := NewFilesystem(&config.FilesystemSource{
+			Path: path,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := "/tmp/file", fs.getFilePath(fileName); expect != got {
+		}
+	})
+}

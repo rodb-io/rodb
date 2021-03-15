@@ -12,10 +12,10 @@ import (
 )
 
 type Filesystem struct {
-	config *config.FilesystemSource
-	opened map[io.ReadSeeker]*os.File
-	watcher *fsnotify.Watcher
-	watchers map[string][]*Watcher
+	config       *config.FilesystemSource
+	opened       map[io.ReadSeeker]*os.File
+	watcher      *fsnotify.Watcher
+	watchers     map[string][]*Watcher
 	watchersLock *sync.Mutex
 }
 
@@ -40,10 +40,10 @@ func NewFilesystem(
 	}
 
 	fs := &Filesystem{
-		config: config,
-		opened: make(map[io.ReadSeeker]*os.File),
-		watcher: watcher,
-		watchers: make(map[string][]*Watcher),
+		config:       config,
+		opened:       make(map[io.ReadSeeker]*os.File),
+		watcher:      watcher,
+		watchers:     make(map[string][]*Watcher),
 		watchersLock: &sync.Mutex{},
 	}
 
@@ -110,7 +110,7 @@ func (fs *Filesystem) Watch(filePath string, watcher *Watcher) error {
 		watchers = append(watchers, watcher)
 		fs.watchers[path] = watchers
 	} else {
-		watchers = []*Watcher{ watcher }
+		watchers = []*Watcher{watcher}
 		fs.watchers[path] = watchers
 
 		err := fs.watcher.Add(path)
