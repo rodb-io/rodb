@@ -6,13 +6,13 @@ import (
 )
 
 type Mock struct {
-	data string
+	data     string
 	watchers []*Watcher
 }
 
 func NewMock(data string) *Mock {
 	return &Mock{
-		data: data,
+		data:     data,
 		watchers: make([]*Watcher, 0),
 	}
 }
