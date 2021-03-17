@@ -156,6 +156,14 @@ func (csvInput *Csv) Close() error {
 	return csvInput.source.CloseReader(csvInput.sourceReader)
 }
 
+func (csvInput *Csv) Watch(watcher *source.Watcher) error {
+	return csvInput.source.Watch(csvInput.config.Path, watcher)
+}
+
+func (csvInput *Csv) CloseWatcher(watcher *source.Watcher) error {
+	return csvInput.source.CloseWatcher(csvInput.config.Path, watcher)
+}
+
 func getCsvReaderBuffer(csvReader *csv.Reader) *bufio.Reader {
 	bufferedReaderField := reflect.ValueOf(csvReader).Elem().FieldByName("r")
 	bufferedReaderInterface := reflect.NewAt(

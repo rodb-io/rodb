@@ -26,6 +26,12 @@ func (mock *Mock) Watch(filePath string, watcher *Watcher) error {
 	return nil
 }
 
+func (mock *Mock) TriggerWatchers() {
+	for _, watcher := range mock.watchers {
+		watcher.OnChange()
+	}
+}
+
 func (mock *Mock) Close() error {
 	return nil
 }

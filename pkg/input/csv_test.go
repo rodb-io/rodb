@@ -180,3 +180,62 @@ func TestCsvIterateAll(t *testing.T) {
 		})
 	}
 }
+
+func TestCsvWatch(t *testing.T) {
+	parsers := parser.List{"mock": parser.NewMock()}
+	mockSource := source.NewMock("")
+	sources := source.List{"mock": mockSource}
+
+	config := &config.CsvInput{
+		Path:           "test",
+		Source:         "mock",
+		IgnoreFirstRow: false,
+		Delimiter:      ",",
+		Logger:         logrus.NewEntry(logrus.StandardLogger()),
+		Columns: []*config.CsvInputColumn{
+			{Name: "a", Parser: "mock"},
+		},
+		ColumnIndexByName: map[string]int{
+			"a": 0,
+		},
+	}
+
+	csv, err := NewCsv(config, sources, parsers)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		callCount := 0
+		watcher := &source.Watcher{
+			OnChange: func() {
+				callCount++
+			},
+		}
+
+		err := csv.Watch(watcher)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if callCount != 0 {
+			t.Errorf("Expected the function to not be called, got '%v'", callCount)
+		}
+
+		mockSource.TriggerWatchers()
+		if callCount != 1 {
+			t.Errorf("Expected the function to be called once, got '%v'", callCount)
+		}
+
+		callCount = 0
+		err = csv.CloseWatcher(watcher)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		mockSource.TriggerWatchers()
+		if callCount != 0 {
+			t.Errorf("Expected the function to not be called, got '%v'", callCount)
+		}
+	})
+}

@@ -29,8 +29,11 @@ func TestMockWatch(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := "Hello World!"
 		mock := NewMock(data)
+
+		callCount := 0
 		watcher := &Watcher{
 			OnChange: func() {
+				callCount++
 			},
 		}
 
@@ -47,6 +50,16 @@ func TestMockWatch(t *testing.T) {
 			t.Errorf("Expected the array to contain %+v elements, got %v.", expect, got)
 		}
 
+		if callCount != 0 {
+			t.Errorf("Expected the function to not be called, got '%v'", callCount)
+		}
+
+		mock.TriggerWatchers()
+		if callCount != 1 {
+			t.Errorf("Expected the function to be called once, got '%v'", callCount)
+		}
+
+		callCount = 0
 		err = mock.CloseWatcher("test", watcher)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
@@ -54,6 +67,11 @@ func TestMockWatch(t *testing.T) {
 
 		if expect, got := 0, len(mock.watchers); got != expect {
 			t.Errorf("Expected the array to contain %+v elements, got %v.", expect, got)
+		}
+
+		mock.TriggerWatchers()
+		if callCount != 0 {
+			t.Errorf("Expected the function to not be called, got '%v'", callCount)
 		}
 	})
 }

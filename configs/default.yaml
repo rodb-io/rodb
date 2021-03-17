@@ -1,5 +1,4 @@
-# TODO watch source from input
-# TODO on input change, have an option to reindex (or output an error)
+# TODO on input change, output an error and have an option to die or not
 # TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
