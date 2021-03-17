@@ -28,6 +28,10 @@ func (mock *Mock) Get(position record.Position) (record.Record, error) {
 	return result.Record, result.Error
 }
 
+func (mock *Mock) Size(filePath string) (int64, error) {
+	return int64(len(mock.data)), nil
+}
+
 func (mock *Mock) IterateAll() <-chan IterateAllResult {
 	channel := make(chan IterateAllResult)
 

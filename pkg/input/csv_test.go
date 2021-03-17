@@ -87,6 +87,43 @@ func TestCsvGet(t *testing.T) {
 	})
 }
 
+func TestCsvSize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		parsers := parser.List{"mock": parser.NewMock()}
+		data := "Hello World !"
+		mockSource := source.NewMock(data)
+		sources := source.List{"mock": mockSource}
+
+		config := &config.CsvInput{
+			Path:           "test",
+			Source:         "mock",
+			IgnoreFirstRow: false,
+			Delimiter:      ",",
+			Logger:         logrus.NewEntry(logrus.StandardLogger()),
+			Columns: []*config.CsvInputColumn{
+				{Name: "a", Parser: "mock"},
+			},
+			ColumnIndexByName: map[string]int{
+				"a": 0,
+			},
+		}
+
+		csv, err := NewCsv(config, sources, parsers)
+		if err != nil {
+			t.Error(err)
+		}
+
+		size, err := csv.Size("test")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if size != int64(len(data)) {
+			t.Errorf("Expected to get a size of '%v', got '%+v'", len(data), size)
+		}
+	})
+}
+
 func TestCsvIterateAll(t *testing.T) {
 	testCases := []struct {
 		name              string
