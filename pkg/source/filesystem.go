@@ -101,6 +101,16 @@ func (fs *Filesystem) Open(filePath string) (io.ReadSeeker, error) {
 	return reader, nil
 }
 
+func (fs *Filesystem) Size(filePath string) (int64, error) {
+	path := fs.getFilePath(filePath)
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return 0, err
+	}
+
+	return fileInfo.Size(), nil
+}
+
 func (fs *Filesystem) Watch(filePath string, watcher *Watcher) error {
 	fs.watchersLock.Lock()
 	defer fs.watchersLock.Unlock()

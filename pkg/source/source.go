@@ -8,6 +8,7 @@ import (
 
 type Source interface {
 	Open(filePath string) (io.ReadSeeker, error)
+	Size(filePath string) (int64, error)
 	Watch(filePath string, watcher *Watcher) error
 	Close() error
 	CloseWatcher(filePath string, watcher *Watcher) error

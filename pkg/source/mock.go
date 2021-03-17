@@ -21,6 +21,10 @@ func (mock *Mock) Open(filePath string) (io.ReadSeeker, error) {
 	return strings.NewReader(mock.data), nil
 }
 
+func (mock *Mock) Size(filePath string) (int64, error) {
+	return int64(len(mock.data)), nil
+}
+
 func (mock *Mock) Watch(filePath string, watcher *Watcher) error {
 	mock.watchers = append(mock.watchers, watcher)
 	return nil

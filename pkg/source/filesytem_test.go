@@ -48,6 +48,41 @@ func TestFilesystemOpen(t *testing.T) {
 	})
 }
 
+func TestFilesystemSize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		path := t.TempDir()
+		fileName := "testSize"
+		data := "Hello World!"
+
+		file, err := os.Create(path + "/" + fileName)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		_, err = file.WriteString(data)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		fs, err := NewFilesystem(&config.FilesystemSource{
+			Path: path,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		size, err := fs.Size(fileName)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if size != int64(len(data)) {
+			t.Errorf("Expected to get a size of '%v', got '%+v'", len(data), size)
+		}
+	})
+}
+
 func TestFilesystemWatch(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		path := t.TempDir()
