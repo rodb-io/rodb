@@ -1,6 +1,7 @@
 package index
 
 import (
+	"github.com/sirupsen/logrus"
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -13,6 +14,7 @@ func TestMemoryMap(t *testing.T) {
 			&config.MemoryMapIndex{
 				Columns: []string{"col", "col2"},
 				Input:   "input",
+				Logger:  logrus.NewEntry(logrus.StandardLogger()),
 			},
 			input.List{
 				"input": input.NewMock([]input.IterateAllResult{
@@ -76,6 +78,7 @@ func TestMemoryMapGetRecords(t *testing.T) {
 		&config.MemoryMapIndex{
 			Columns: []string{"col", "col2"},
 			Input:   "input",
+			Logger:  logrus.NewEntry(logrus.StandardLogger()),
 		},
 		input.List{
 			"input": input.NewMock([]input.IterateAllResult{

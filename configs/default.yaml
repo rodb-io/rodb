@@ -47,7 +47,6 @@ inputs:
 indexes:
   defaultIndex:
     memoryMap:
-      # TODO show indexing progress
       input: defaultInput
       columns:
         - id

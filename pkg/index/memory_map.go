@@ -2,10 +2,12 @@ package index
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
+	"time"
 )
 
 type memoryMapColumnValueIndex = []record.Position
@@ -46,9 +48,25 @@ func (mm *MemoryMap) Reindex() error {
 		index[column] = make(memoryMapColumnIndex)
 	}
 
+	totalSize, err := mm.input.Size()
+	if err != nil {
+		mm.config.Logger.Errorf("Cannot determine the total size of the input: '%+v'. The indexing progress will not be displayed.", err)
+	} else if totalSize == 0 {
+		mm.config.Logger.Infoln("The total size of the input is unknown. The indexing progress will not be displayed.")
+	}
+
+	nextProgress := time.Now()
 	for result := range mm.input.IterateAll() {
 		if result.Error != nil {
 			return result.Error
+		}
+
+		if totalSize != 0 {
+			if now := time.Now(); now.After(nextProgress) {
+				progress := float64(result.Record.Position()) / float64(totalSize)
+				mm.config.Logger.Infof("Indexing progress: %d%%", int(math.Floor(progress*100)))
+				nextProgress = now.Add(time.Second)
+			}
 		}
 
 		for _, column := range mm.config.Columns {
@@ -72,6 +90,7 @@ func (mm *MemoryMap) Reindex() error {
 	}
 
 	mm.index = index
+	mm.config.Logger.Infof("Successfully finished indexing")
 
 	return nil
 }
