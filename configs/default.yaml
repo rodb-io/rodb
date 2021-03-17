@@ -1,4 +1,3 @@
-# TODO on input change, output an error and have an option to die or not
 # TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
@@ -47,6 +46,7 @@ inputs:
 indexes:
   defaultIndex:
     memoryMap:
+      dieOnInputChange: true
       input: defaultInput
       columns:
         - id
@@ -88,7 +88,6 @@ outputs:
           index: defaultIndex
         name:
           index: defaultIndex
-        # TODO handle the filters even without index (basic search)
         # TODO sorting
   defaultJsonObjectOutput:
     jsonObject:

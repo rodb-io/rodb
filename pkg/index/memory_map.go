@@ -7,6 +7,7 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
+	"rods/pkg/source"
 	"time"
 )
 
@@ -15,9 +16,10 @@ type memoryMapColumnIndex = map[interface{}]memoryMapColumnValueIndex
 type memoryMapIndex = map[string]memoryMapColumnIndex
 
 type MemoryMap struct {
-	config *config.MemoryMapIndex
-	input  input.Input
-	index  memoryMapIndex
+	config       *config.MemoryMapIndex
+	input        input.Input
+	index        memoryMapIndex
+	inputWatcher *source.Watcher
 }
 
 func NewMemoryMap(
@@ -33,6 +35,18 @@ func NewMemoryMap(
 		config: config,
 		input:  input,
 	}
+
+	memoryMap.inputWatcher = &source.Watcher{
+		OnChange: func() {
+			message := "The source has been modified by another process"
+			if *memoryMap.config.DieOnInputChange {
+				memoryMap.config.Logger.Fatalln(message + ". Quitting because it may have corrupted this index and 'dieOnInputChange' is 'true'.")
+			} else {
+				memoryMap.config.Logger.Warnln(message + ", but 'dieOnInputChange' is 'false'. This could have unpredictable consequences.")
+			}
+		},
+	}
+	input.Watch(memoryMap.inputWatcher)
 
 	err := memoryMap.Reindex()
 	if err != nil {
