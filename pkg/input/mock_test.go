@@ -52,7 +52,7 @@ func TestMockSize(t *testing.T) {
 		}
 		mock := NewMock(data)
 
-		size, err := mock.Size("test")
+		size, err := mock.Size()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

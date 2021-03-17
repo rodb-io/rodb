@@ -113,7 +113,7 @@ func TestCsvSize(t *testing.T) {
 			t.Error(err)
 		}
 
-		size, err := csv.Size("test")
+		size, err := csv.Size()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

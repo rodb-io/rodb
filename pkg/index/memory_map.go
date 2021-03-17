@@ -32,27 +32,36 @@ func NewMemoryMap(
 		input:  input,
 	}
 
-	memoryMap.index = make(memoryMapIndex)
-	for _, column := range memoryMap.config.Columns {
-		memoryMap.index[column] = make(memoryMapColumnIndex)
+	err := memoryMap.Reindex()
+	if err != nil {
+		return nil, err
 	}
 
-	for result := range memoryMap.input.IterateAll() {
+	return memoryMap, nil
+}
+
+func (mm *MemoryMap) Reindex() error {
+	index := make(memoryMapIndex)
+	for _, column := range mm.config.Columns {
+		index[column] = make(memoryMapColumnIndex)
+	}
+
+	for result := range mm.input.IterateAll() {
 		if result.Error != nil {
-			return nil, result.Error
+			return result.Error
 		}
 
-		for _, column := range memoryMap.config.Columns {
+		for _, column := range mm.config.Columns {
 			value, err := result.Record.Get(column)
 			if err != nil {
-				return nil, err
+				return err
 			}
 
 			if value != nil {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			columnIndex := memoryMap.index[column]
+			columnIndex := index[column]
 			valueIndexes, valueIndexesExists := columnIndex[value]
 			if valueIndexesExists {
 				columnIndex[value] = append(valueIndexes, result.Record.Position())
@@ -62,7 +71,9 @@ func NewMemoryMap(
 		}
 	}
 
-	return memoryMap, nil
+	mm.index = index
+
+	return nil
 }
 
 // Get the records from the given input (if indexed) and that matchesall the given filters

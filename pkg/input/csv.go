@@ -88,7 +88,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	), nil
 }
 
-func (csvInput *Csv) Size(filePath string) (int64, error) {
+func (csvInput *Csv) Size() (int64, error) {
 	return csvInput.source.Size(csvInput.config.Path)
 }
 

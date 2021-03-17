@@ -10,7 +10,7 @@ import (
 
 type Input interface {
 	Get(position record.Position) (record.Record, error)
-	Size(filePath string) (int64, error)
+	Size() (int64, error)
 	IterateAll() <-chan IterateAllResult
 	Close() error
 	Watch(watcher *source.Watcher) error
