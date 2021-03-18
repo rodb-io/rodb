@@ -26,7 +26,15 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 		config.DieOnInputChange = &defaultValue
 	}
 
-	// The columns will be validated at runtime
+	alreadyExistingColumns := make(map[string]bool)
+	for _, columnName := range config.Columns {
+		if _, alreadyExists := alreadyExistingColumns[columnName]; alreadyExists {
+			return fmt.Errorf("memoryMap.columns: Duplicate column '%v' in array.", columnName)
+		}
+		alreadyExistingColumns[columnName] = true
+	}
+
+	// The columns validity will be validated at runtime
 
 	return nil
 }

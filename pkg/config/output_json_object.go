@@ -39,11 +39,17 @@ type JsonObjectOutputRelationshipMatch struct {
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
+	alreadyExistingServices := make(map[string]bool)
 	for _, serviceName := range config.Services {
 		_, serviceExists := rootConfig.Services[serviceName]
 		if !serviceExists {
 			return fmt.Errorf("jsonObject.services: Service '%v' not found in services list.", serviceName)
 		}
+
+		if _, alreadyExists := alreadyExistingServices[serviceName]; alreadyExists {
+			return fmt.Errorf("jsonObject.services: Duplicate service '%v' in array.", serviceName)
+		}
+		alreadyExistingServices[serviceName] = true
 	}
 
 	if len(config.Parameters) == 0 {
@@ -145,6 +151,7 @@ func (config *JsonObjectOutputRelationship) validate(
 		return fmt.Errorf("input: Index '%v' does not handle input '%v'.", config.Index, config.Input)
 	}
 
+	alreadyExistingChildColumn := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		err := match.validate(
 			rootConfig,
@@ -155,6 +162,11 @@ func (config *JsonObjectOutputRelationship) validate(
 		if err != nil {
 			return fmt.Errorf("match.%v.%w", matchIndex, err)
 		}
+
+		if _, alreadyExists := alreadyExistingChildColumn[match.ChildColumn]; alreadyExists {
+			return fmt.Errorf("match.%v.childColumn: Duplicate filter on childColumn %v", matchIndex, match.ChildColumn)
+		}
+		alreadyExistingChildColumn[match.ChildColumn] = true
 	}
 
 	for relationshipName, relationship := range config.Relationships {

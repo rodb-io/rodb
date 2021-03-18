@@ -1,5 +1,4 @@
 # TODO data from stdin?
-# TODO config: detect and output error if we have duplicate columns in the list
 # TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
