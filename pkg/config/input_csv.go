@@ -10,6 +10,7 @@ type CsvInput struct {
 	Source            string            `yaml:"source"`
 	Path              string            `yaml:"path"`
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
+	AutodetectColumns bool              `yaml:"autodetectColumns"`
 	Delimiter         string            `yaml:"delimiter"`
 	Columns           []*CsvInputColumn `yaml:"columns"`
 	ColumnIndexByName map[string]int
@@ -29,11 +30,24 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		return fmt.Errorf("csv.source: Source '%v' not found in sources list.", config.Source)
 	}
 
-	// The path will be validated at runtime
+	if config.AutodetectColumns {
+		if !config.IgnoreFirstRow {
+			log.Debugf("csv.autodetectColumns is enabled, but 'ignoreFirstRow' is not. The header row will be included in the data.\n")
+		}
 
-	if len(config.Columns) == 0 {
-		return errors.New("A csv input must have at least one column")
+		if config.Columns == nil {
+			config.Columns = make([]*CsvInputColumn, 0)
+		}
+		if len(config.Columns) != 0 {
+			return errors.New("A csv input with 'autodetectColumns' set to 'true' must not define columns.")
+		}
+	} else {
+		if len(config.Columns) == 0 {
+			return errors.New("A csv input must have at least one column unless 'autodetectColumns' is set to 'true'")
+		}
 	}
+
+	// The path will be validated at runtime
 
 	if config.Delimiter == "" {
 		log.Debug("csv.delimiter not defined. Assuming ','")

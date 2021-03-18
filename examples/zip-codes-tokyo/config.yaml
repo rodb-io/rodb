@@ -51,14 +51,6 @@ inputs:
           parser: integer
         - name: reasonForUpdateId
           parser: integer
-          #enum:
-          #  0: unchanged
-          #  1: administration
-          #  2: residential addressing
-          #  3: land reajustment
-          #  4: postal readjustment
-          #  5: correction
-          #  6: abolition
   updatedValues:
     csv:
       source: filesystem

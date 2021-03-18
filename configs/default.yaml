@@ -1,3 +1,5 @@
+# TODO data from stdin?
+# TODO config: detect and output error if we have duplicate columns in the list
 # TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
@@ -25,7 +27,6 @@ sources:
 inputs:
   defaultInput:
     csv:
-      # TODO setting to autodetect columns if there is a title row?
       source: defaultSource
       path: ./dummy.csv
       ignoreFirstRow: true
@@ -39,6 +40,13 @@ inputs:
           parser: defaultFloat
         - name: bool
           parser: defaultBoolean
+  defaultInput2
+    csv:
+      source: defaultSource
+      path: ./dummy2.csv
+      ignoreFirstRow: true
+      autodetectColumns: true
+      delimiter: ","
   # TODO xml input
   # TODO json input
   # TODO json rows input

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
-	"rods/pkg/config"
+	configModule "rods/pkg/config"
 	"rods/pkg/parser"
 	"rods/pkg/record"
 	"rods/pkg/source"
@@ -16,7 +16,7 @@ import (
 )
 
 type Csv struct {
-	config           *config.CsvInput
+	config           *configModule.CsvInput
 	source           source.Source
 	sourceReader     io.ReadSeeker
 	sourceReaderLock sync.Mutex
@@ -26,19 +26,10 @@ type Csv struct {
 }
 
 func NewCsv(
-	config *config.CsvInput,
+	config *configModule.CsvInput,
 	sources source.List,
 	parsers parser.List,
 ) (*Csv, error) {
-	columnParsers := make([]parser.Parser, len(config.Columns))
-	for i, column := range config.Columns {
-		parser, parserExists := parsers[column.Parser]
-		if !parserExists {
-			return nil, errors.New("Parser '" + column.Parser + "' does not exist")
-		}
-		columnParsers[i] = parser
-	}
-
 	source, sourceExists := sources[config.Source]
 	if !sourceExists {
 		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
@@ -48,17 +39,51 @@ func NewCsv(
 		config:           config,
 		source:           source,
 		sourceReaderLock: sync.Mutex{},
-		columnParsers:    columnParsers,
 	}
 
 	sourceReader, csvReader, err := csvInput.openSource()
 	if err != nil {
 		return nil, err
 	}
-
 	csvInput.sourceReader = sourceReader
 	csvInput.csvReader = csvReader
 	csvInput.csvReaderBuffer = getCsvReaderBuffer(csvReader)
+
+	if config.AutodetectColumns {
+		firstRow, err := csvInput.csvReader.Read()
+		if err != nil {
+			return nil, fmt.Errorf("Cannot read csv data: %w", err)
+		}
+
+		alreadyExistingNames := make(map[string]bool)
+		csvInput.config.Columns = make([]*configModule.CsvInputColumn, len(firstRow))
+		csvInput.config.ColumnIndexByName = make(map[string]int)
+		for columnIndex, columnName := range firstRow {
+			if columnName == "" {
+				return nil, fmt.Errorf("autodetectColumns is enabled, but the column at index %v does not have a name.", columnIndex)
+			}
+
+			if _, alreadyExists := alreadyExistingNames[columnName]; alreadyExists {
+				return nil, fmt.Errorf("autodetectColumns is enabled, but there is a duplicate column named %v.", columnName)
+			}
+			alreadyExistingNames[columnName] = true
+
+			csvInput.config.Columns[columnIndex] = &configModule.CsvInputColumn{
+				Name: columnName,
+				Parser: "string",
+			}
+			csvInput.config.ColumnIndexByName[columnName] = columnIndex
+		}
+	}
+
+	csvInput.columnParsers = make([]parser.Parser, len(config.Columns))
+	for i, column := range config.Columns {
+		parser, parserExists := parsers[column.Parser]
+		if !parserExists {
+			return nil, errors.New("Parser '" + column.Parser + "' does not exist")
+		}
+		csvInput.columnParsers[i] = parser
+	}
 
 	return csvInput, nil
 }
