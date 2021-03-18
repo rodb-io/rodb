@@ -39,7 +39,7 @@ inputs:
           parser: defaultFloat
         - name: bool
           parser: defaultBoolean
-  defaultInput2
+  defaultInput2:
     csv:
       source: defaultSource
       path: ./dummy2.csv

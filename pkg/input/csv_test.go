@@ -276,3 +276,62 @@ func TestCsvWatch(t *testing.T) {
 		}
 	})
 }
+
+func TestCsvAutodetectColumns(t *testing.T) {
+	parsers := parser.List{"string": parser.NewMock()}
+	config := &config.CsvInput{
+		Path:              "test",
+		Source:            "mock",
+		IgnoreFirstRow:    true,
+		AutodetectColumns: true,
+		Delimiter:         ",",
+		Logger:            logrus.NewEntry(logrus.StandardLogger()),
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3,test4")}
+		csv, err := NewCsv(config, sources, parsers)
+		if err != nil {
+			t.Error(err)
+		}
+
+		for index, name := range map[int]string{
+			0: "test1",
+			1: "test2",
+		} {
+			if index >= len(csv.config.Columns) {
+				t.Errorf("Expected to have a column indexed at '%v', got nothing", index)
+			}
+
+			column := csv.config.Columns[index]
+			if column.Name != name {
+				t.Errorf("Expected to have a column named '%v' indexed at '%v', got '%v'", name, index, column.Name)
+			}
+			if column.Parser != "string" {
+				t.Errorf("Expected the column indexed at '%v' to have parser '%v', got '%v'", index, "string", column.Parser)
+			}
+
+			columnIndex, columnIndexExists := csv.config.ColumnIndexByName[name]
+			if !columnIndexExists {
+				t.Errorf("Expected to have a column indexed under the name '%v', got nothing", name)
+			}
+			if columnIndex != index {
+				t.Errorf("Expected to have index '%v' for column '%v', got '%v'", index, name, columnIndex)
+			}
+		}
+	})
+	t.Run("empty", func(t *testing.T) {
+		sources := source.List{"mock": source.NewMock("test1,,test2\n\ntest3,test4")}
+		_, err := NewCsv(config, sources, parsers)
+		if err == nil {
+			t.Errorf("Expected to get an error, got '%v'", err)
+		}
+	})
+	t.Run("duplicate", func(t *testing.T) {
+		sources := source.List{"mock": source.NewMock("test1,test1\n\ntest3,test4")}
+		_, err := NewCsv(config, sources, parsers)
+		if err == nil {
+			t.Errorf("Expected to get an error, got '%v'", err)
+		}
+	})
+}

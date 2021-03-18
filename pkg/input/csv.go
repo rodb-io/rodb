@@ -50,29 +50,9 @@ func NewCsv(
 	csvInput.csvReaderBuffer = getCsvReaderBuffer(csvReader)
 
 	if config.AutodetectColumns {
-		firstRow, err := csvInput.csvReader.Read()
+		err := csvInput.autodetectColumns()
 		if err != nil {
-			return nil, fmt.Errorf("Cannot read csv data: %w", err)
-		}
-
-		alreadyExistingNames := make(map[string]bool)
-		csvInput.config.Columns = make([]*configModule.CsvInputColumn, len(firstRow))
-		csvInput.config.ColumnIndexByName = make(map[string]int)
-		for columnIndex, columnName := range firstRow {
-			if columnName == "" {
-				return nil, fmt.Errorf("autodetectColumns is enabled, but the column at index %v does not have a name.", columnIndex)
-			}
-
-			if _, alreadyExists := alreadyExistingNames[columnName]; alreadyExists {
-				return nil, fmt.Errorf("autodetectColumns is enabled, but there is a duplicate column named %v.", columnName)
-			}
-			alreadyExistingNames[columnName] = true
-
-			csvInput.config.Columns[columnIndex] = &configModule.CsvInputColumn{
-				Name: columnName,
-				Parser: "string",
-			}
-			csvInput.config.ColumnIndexByName[columnName] = columnIndex
+			return nil, err
 		}
 	}
 
@@ -115,6 +95,35 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 
 func (csvInput *Csv) Size() (int64, error) {
 	return csvInput.source.Size(csvInput.config.Path)
+}
+
+func (csvInput *Csv) autodetectColumns() error {
+	firstRow, err := csvInput.csvReader.Read()
+	if err != nil {
+		return fmt.Errorf("Cannot read csv data: %w", err)
+	}
+
+	alreadyExistingNames := make(map[string]bool)
+	csvInput.config.Columns = make([]*configModule.CsvInputColumn, len(firstRow))
+	csvInput.config.ColumnIndexByName = make(map[string]int)
+	for columnIndex, columnName := range firstRow {
+		if columnName == "" {
+			return fmt.Errorf("autodetectColumns is enabled, but the column at index %v does not have a name.", columnIndex)
+		}
+
+		if _, alreadyExists := alreadyExistingNames[columnName]; alreadyExists {
+			return fmt.Errorf("autodetectColumns is enabled, but there is a duplicate column named %v.", columnName)
+		}
+		alreadyExistingNames[columnName] = true
+
+		csvInput.config.Columns[columnIndex] = &configModule.CsvInputColumn{
+			Name:   columnName,
+			Parser: "string",
+		}
+		csvInput.config.ColumnIndexByName[columnName] = columnIndex
+	}
+
+	return nil
 }
 
 func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
