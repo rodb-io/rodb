@@ -18,6 +18,16 @@ func NewMock(data []IterateAllResult) *Mock {
 	}
 }
 
+func (mock *Mock) HasColumn(columnName string) bool {
+	if len(mock.data) == 0 {
+		return false
+	}
+
+	_, err := mock.data[0].Record.Get(columnName)
+
+	return err == nil
+}
+
 func (mock *Mock) Get(position record.Position) (record.Record, error) {
 	index := int(position)
 	if index >= len(mock.data) {

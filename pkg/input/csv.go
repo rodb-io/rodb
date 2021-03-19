@@ -68,6 +68,16 @@ func NewCsv(
 	return csvInput, nil
 }
 
+func (csvInput *Csv) HasColumn(columnName string) bool {
+	for _, column := range csvInput.config.Columns {
+		if column.Name == columnName {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	csvInput.sourceReaderLock.Lock()
 	defer csvInput.sourceReaderLock.Unlock()

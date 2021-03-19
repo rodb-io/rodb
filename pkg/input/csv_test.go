@@ -10,6 +10,46 @@ import (
 	"testing"
 )
 
+func TestCsvHasColumn(t *testing.T) {
+	parsers := parser.List{"mock": parser.NewMock()}
+	sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3")}
+
+	config := &config.CsvInput{
+		Path:           "test",
+		Source:         "mock",
+		IgnoreFirstRow: false,
+		Delimiter:      ",",
+		Logger:         logrus.NewEntry(logrus.StandardLogger()),
+		Columns: []*config.CsvInputColumn{
+			{Name: "a", Parser: "mock"},
+			{Name: "b", Parser: "mock"},
+		},
+		ColumnIndexByName: map[string]int{
+			"a": 0,
+			"b": 1,
+		},
+	}
+
+	csv, err := NewCsv(config, sources, parsers)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Run("true", func(t *testing.T) {
+		if !csv.HasColumn("a") {
+			t.Errorf("Expected to have column 'a', got false")
+		}
+		if !csv.HasColumn("b") {
+			t.Errorf("Expected to have column 'b', got false")
+		}
+	})
+	t.Run("false", func(t *testing.T) {
+		if csv.HasColumn("wrong") {
+			t.Errorf("Expected to not have column 'wrong', got true")
+		}
+	})
+}
+
 func TestCsvGet(t *testing.T) {
 	parsers := parser.List{"mock": parser.NewMock()}
 	sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3")}

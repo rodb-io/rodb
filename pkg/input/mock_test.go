@@ -7,6 +7,25 @@ import (
 	"testing"
 )
 
+func TestMockHasColumn(t *testing.T) {
+	columnName := "col"
+	expectedRecord := record.NewStringColumnsMock(map[string]string{
+		columnName: "value",
+	}, 0)
+	mock := NewMock([]IterateAllResult{{Record: expectedRecord}})
+
+	t.Run("true", func(t *testing.T) {
+		if !mock.HasColumn(columnName) {
+			t.Errorf("Expected to have column '%v', got false", columnName)
+		}
+	})
+	t.Run("false", func(t *testing.T) {
+		if mock.HasColumn("wrong_" + columnName) {
+			t.Errorf("Expected to not have column 'wrong_%v', got true", columnName)
+		}
+	})
+}
+
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		expectedRecord := record.NewStringColumnsMock(map[string]string{

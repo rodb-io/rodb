@@ -9,6 +9,7 @@ import (
 )
 
 type Input interface {
+	HasColumn(columnName string) bool
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)
 	IterateAll() <-chan IterateAllResult
