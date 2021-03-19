@@ -7,6 +7,7 @@ import (
 	"regexp"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
+	inputModule "rods/pkg/input"
 	parserModule "rods/pkg/parser"
 	serviceModule "rods/pkg/service"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
+	inputs       inputModule.List
 	indexes      indexModule.List
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
@@ -23,6 +25,7 @@ type JsonObject struct {
 
 func NewJsonObject(
 	config *configModule.JsonObjectOutput,
+	inputs inputModule.List,
 	indexes indexModule.List,
 	services serviceModule.List,
 	parsers parserModule.List,
@@ -48,9 +51,20 @@ func NewJsonObject(
 
 	jsonObject := &JsonObject{
 		config:       config,
+		inputs:       inputs,
 		indexes:      indexes,
 		services:     outputServices,
 		paramParsers: paramParsers,
+	}
+
+	for _, relationship := range jsonObject.config.Relationships {
+		err := jsonObject.checkRelationshipMatches(
+			relationship,
+			jsonObject.config.Input,
+		)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	route := &serviceModule.Route{
@@ -67,6 +81,34 @@ func NewJsonObject(
 	}
 
 	return jsonObject, nil
+}
+
+func (jsonObject *JsonObject) checkRelationshipMatches(
+	relationship *configModule.JsonObjectOutputRelationship,
+	parentInputName string,
+) error {
+	input, inputExists := jsonObject.inputs[parentInputName]
+	if !inputExists {
+		return fmt.Errorf("Input '%v' not found in inputs list.", parentInputName)
+	}
+
+	for _, match := range relationship.Match {
+		if !input.HasColumn(match.ParentColumn) {
+			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, match.ParentColumn)
+		}
+	}
+
+	for _, relationship := range relationship.Relationships {
+		err := jsonObject.checkRelationshipMatches(
+			relationship,
+			relationship.Input,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (jsonObject *JsonObject) getHandler() func(params map[string]string, payload []byte) ([]byte, error) {

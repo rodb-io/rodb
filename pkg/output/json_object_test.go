@@ -38,6 +38,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 	config.Services = []string{"mock"}
 	jsonObject, err := NewJsonObject(
 		config,
+		input.List{"mock": mockInput},
 		index.List{"mock": mockIndex},
 		service.List{"mock": mockService},
 		parser.List{"mock": mockParser},
@@ -172,6 +173,8 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/test",
+			Input:    "mock",
+			Index:    "mock",
 			Relationships: map[string]*config.JsonObjectOutputRelationship{
 				"children": {
 					Input:   "mock",

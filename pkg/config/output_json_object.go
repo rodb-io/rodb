@@ -185,7 +185,7 @@ func (config *JsonObjectOutputRelationshipMatch) validate(
 	childIndexName string,
 	childIndex Index,
 ) error {
-	// The parentColumn will be validated at runtime (must be validated against the input and not the index)
+	// The parentColumn and childColumn will be validated at runtime (must be validated against the input and not the index)
 
 	if !childIndex.DoesHandleColumn(config.ChildColumn) {
 		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)

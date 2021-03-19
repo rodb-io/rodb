@@ -100,7 +100,7 @@ func main() {
 		}
 	})()
 
-	outputs, err := output.NewFromConfigs(config.Outputs, indexes, services, parsers)
+	outputs, err := output.NewFromConfigs(config.Outputs, inputs, indexes, services, parsers)
 	if err != nil {
 		log.Errorf("Error initializing outputs: %v", err)
 		return

@@ -55,6 +55,8 @@ func NewMemoryMap(
 	}
 	input.Watch(memoryMap.inputWatcher)
 
+	// Note: need to have the watcher setup so we can fail
+	// if a file change happens during the indexing process
 	err := memoryMap.Reindex()
 	if err != nil {
 		return nil, err

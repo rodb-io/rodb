@@ -4,6 +4,7 @@ import (
 	"errors"
 	"rods/pkg/config"
 	"rods/pkg/index"
+	"rods/pkg/input"
 	"rods/pkg/parser"
 	"rods/pkg/service"
 )
@@ -16,12 +17,13 @@ type List = map[string]Output
 
 func NewFromConfig(
 	config config.Output,
+	inputs input.List,
 	indexes index.List,
 	services service.List,
 	parsers parser.List,
 ) (Output, error) {
 	if config.JsonObject != nil {
-		return NewJsonObject(config.JsonObject, indexes, services, parsers)
+		return NewJsonObject(config.JsonObject, inputs, indexes, services, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize output")
@@ -29,13 +31,14 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Output,
+	inputs input.List,
 	indexes index.List,
 	services service.List,
 	parsers parser.List,
 ) (List, error) {
 	outputs := make(List)
 	for outputName, outputConfig := range configs {
-		output, err := NewFromConfig(outputConfig, indexes, services, parsers)
+		output, err := NewFromConfig(outputConfig, inputs, indexes, services, parsers)
 		if err != nil {
 			return nil, err
 		}

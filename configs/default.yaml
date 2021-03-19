@@ -1,6 +1,5 @@
-# TODO what if modify file during IterateAll()?
-# TODO data from stdin?
-# TODO jsonObject output: validate relationship's ParentColumns in constructor
+# TODO data from stdin? Test reading /dev/stdin
+# TODO e2e tests?
 # TODO performance analysis
 parsers:
   defaultInteger:
@@ -114,6 +113,7 @@ outputs:
           relationships:
             mySubSubProperty:
               input: defaultInput
+              # TODO should the index be per-child-match? Will it work unless multiple?
               index: defaultIndex
               isArray: true
               match:
