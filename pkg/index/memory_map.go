@@ -1,6 +1,7 @@
 package index
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"reflect"
@@ -34,6 +35,12 @@ func NewMemoryMap(
 	memoryMap := &MemoryMap{
 		config: config,
 		input:  input,
+	}
+
+	for _, columnName := range memoryMap.config.Columns {
+		if !memoryMap.input.HasColumn(columnName) {
+			return nil, errors.New("Input '" + memoryMap.config.Input + "' does not have a column named '" + columnName + "'.")
+		}
 	}
 
 	memoryMap.inputWatcher = &source.Watcher{

@@ -1,5 +1,5 @@
+# TODO what if modify file during IterateAll()?
 # TODO data from stdin?
-# TODO memory map index: validate the columns existence in constructor
 # TODO jsonObject output: validate relationship's ParentColumns in constructor
 # TODO performance analysis
 parsers:
