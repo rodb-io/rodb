@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"rods/pkg/config"
 )
 
@@ -48,4 +49,61 @@ func NewFromConfigs(
 
 func Close(parsers List) error {
 	return nil
+}
+
+// Compares two values outputted by the parsers
+// returns nil if a = b, true if a < b, false if a > b
+func Compare(a interface{}, b interface{}) (*bool, error) {
+	switch a.(type) {
+	case string:
+		aString := a.(string)
+		bString, bIsString := b.(string)
+		if !bIsString {
+			return nil, fmt.Errorf("Cannot compare a string with '%#v'", b)
+		}
+
+		if aString == bString {
+			return nil, nil
+		}
+		result := aString < bString
+		return &result, nil
+	case int:
+		aInt := a.(int)
+		bInt, bIsInt := b.(int)
+		if !bIsInt {
+			return nil, fmt.Errorf("Cannot compare an integer with '%#v'", b)
+		}
+
+		if aInt == bInt {
+			return nil, nil
+		}
+		result := aInt < bInt
+		return &result, nil
+	case float64:
+		aFloat := a.(float64)
+		bFloat, bIsFloat := b.(float64)
+		if !bIsFloat {
+			return nil, fmt.Errorf("Cannot compare a float with '%#v'", b)
+		}
+
+		if aFloat == bFloat {
+			return nil, nil
+		}
+		result := aFloat < bFloat
+		return &result, nil
+	case bool:
+		aBool := a.(bool)
+		bBool, bIsBool := b.(bool)
+		if !bIsBool {
+			return nil, fmt.Errorf("Cannot compare a boolean with '%#v'", b)
+		}
+
+		if aBool == bBool {
+			return nil, nil
+		}
+		result := (aBool == false && bBool == true)
+		return &result, nil
+	}
+
+	return nil, fmt.Errorf("Unhandled type for sorting object '%#v'", a)
 }

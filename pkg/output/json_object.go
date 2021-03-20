@@ -229,6 +229,10 @@ func (jsonObject *JsonObject) loadRelationships(
 			return nil, err
 		}
 
+		if len(relationshipConfig.Sort) > 0 {
+			relationshipRecords = relationshipRecords.Sort(relationshipConfig.Sort)
+		}
+
 		relationshipItems := make([]map[string]interface{}, 0, len(relationshipRecords))
 		for _, relationshipRecord := range relationshipRecords {
 			relationshipData, err := relationshipRecord.All()
