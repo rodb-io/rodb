@@ -1,7 +1,6 @@
 # TODO data from stdin? Test reading /dev/stdin
 # TODO e2e tests?
 # TODO performance analysis
-# TODO remove nilable configurations?
 parsers:
   defaultInteger:
     integer:

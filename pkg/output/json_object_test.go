@@ -176,7 +176,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 			Endpoint: "/test",
 			Input:    "mock",
 			Index:    "mock",
-			Relationships: map[string]*config.JsonObjectOutputRelationship{
+			Relationships: map[string]*config.Relationship{
 				"children": {
 					Input:   "mock",
 					Index:   "mock",
@@ -188,18 +188,18 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 							Ascending: &ascendingSort,
 						},
 					},
-					Match: []*config.JsonObjectOutputRelationshipMatch{
+					Match: []*config.RelationshipMatch{
 						{
 							ParentColumn: "id",
 							ChildColumn:  "belongs_to",
 						},
 					},
-					Relationships: map[string]*config.JsonObjectOutputRelationship{
+					Relationships: map[string]*config.Relationship{
 						"subchild": {
 							Input:   "mock",
 							Index:   "mock",
 							IsArray: false,
-							Match: []*config.JsonObjectOutputRelationshipMatch{
+							Match: []*config.RelationshipMatch{
 								{
 									ParentColumn: "belongs_to",
 									ChildColumn:  "id",

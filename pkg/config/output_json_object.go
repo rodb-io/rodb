@@ -8,33 +8,18 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Services      []string                                 `yaml:"services"`
-	Input         string                                   `yaml:"input"`
-	Endpoint      string                                   `yaml:"endpoint"`
-	Index         string                                   `yaml:"index"`
-	Parameters    []*JsonObjectOutputParameter             `yaml:"parameters"`
-	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
+	Services      []string                     `yaml:"services"`
+	Input         string                       `yaml:"input"`
+	Endpoint      string                       `yaml:"endpoint"`
+	Index         string                       `yaml:"index"`
+	Parameters    []*JsonObjectOutputParameter `yaml:"parameters"`
+	Relationships map[string]*Relationship     `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
 type JsonObjectOutputParameter struct {
 	Column string `yaml:"column"`
 	Parser string `yaml:"parser"`
-}
-
-type JsonObjectOutputRelationship struct {
-	Input         string                                   `yaml:"input"`
-	Index         string                                   `yaml:"index"`
-	IsArray       bool                                     `yaml:"isArray"`
-	Limit         uint                                     `yaml:"limit"`
-	Sort          []*Sort                                  `yaml:"sort"`
-	Match         []*JsonObjectOutputRelationshipMatch     `yaml:"match"`
-	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
-}
-
-type JsonObjectOutputRelationshipMatch struct {
-	ParentColumn string `yaml:"parentColumn"`
-	ChildColumn  string `yaml:"childColumn"`
 }
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -82,9 +67,10 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	}
 
 	for relationshipIndex, relationship := range config.Relationships {
-		err := relationship.validate(rootConfig, log, config.Index, index)
+		logPrefix := fmt.Sprintf("jsonObject.relationships.%v.", relationshipIndex)
+		err := relationship.validate(rootConfig, log, logPrefix, config.Index, index)
 		if err != nil {
-			return fmt.Errorf("jsonObject.relationships.%v.%w", relationshipIndex, err)
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}
 
@@ -124,93 +110,6 @@ func (config *JsonObjectOutputParameter) validate(
 
 	if !index.DoesHandleColumn(config.Column) {
 		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", indexName, config.Column)
-	}
-
-	return nil
-}
-
-func (config *JsonObjectOutputRelationship) validate(
-	rootConfig *Config,
-	log *logrus.Entry,
-	parentIndexName string,
-	parentIndex Index,
-) error {
-	if config.Limit == 0 && config.IsArray {
-		log.Debug("jsonObject.relationships[].limit is not set. All relationships will be returned.")
-	}
-
-	if config.Index == "" {
-		log.Debugf("jsonObject.relationships[].index is empty. Assuming 'default'.\n")
-		config.Index = "default"
-	}
-
-	childIndex, childIndexExists := rootConfig.Indexes[config.Index]
-	if !childIndexExists {
-		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
-	}
-	if !childIndex.DoesHandleInput(config.Input) {
-		return fmt.Errorf("input: Index '%v' does not handle input '%v'.", config.Index, config.Input)
-	}
-
-	if config.Sort == nil {
-		config.Sort = make([]*Sort, 0)
-	}
-
-	if len(config.Sort) > 0 && !config.IsArray {
-		return fmt.Errorf("sort: You can only sort a relationship when isArray = 'true'.")
-	}
-
-	alreadyExistingSortColumns := make(map[string]bool)
-	for sortIndex, sort := range config.Sort {
-		err := sort.validate(rootConfig, log, "jsonObject.relationships[].sort.")
-		if err != nil {
-			return fmt.Errorf("sort.%v.%w", sortIndex, err)
-		}
-
-		if _, alreadyExists := alreadyExistingSortColumns[sort.Column]; alreadyExists {
-			return fmt.Errorf("sort.%v.column: column %v is used twice for sorting", sortIndex, sort.Column)
-		}
-		alreadyExistingSortColumns[sort.Column] = true
-	}
-
-	alreadyExistingChildColumn := make(map[string]bool)
-	for matchIndex, match := range config.Match {
-		err := match.validate(
-			rootConfig,
-			log,
-			config.Index,
-			childIndex,
-		)
-		if err != nil {
-			return fmt.Errorf("match.%v.%w", matchIndex, err)
-		}
-
-		if _, alreadyExists := alreadyExistingChildColumn[match.ChildColumn]; alreadyExists {
-			return fmt.Errorf("match.%v.childColumn: Duplicate filter on childColumn %v", matchIndex, match.ChildColumn)
-		}
-		alreadyExistingChildColumn[match.ChildColumn] = true
-	}
-
-	for relationshipName, relationship := range config.Relationships {
-		err := relationship.validate(rootConfig, log, config.Index, childIndex)
-		if err != nil {
-			return fmt.Errorf("relationships.%v.%w", relationshipName, err)
-		}
-	}
-
-	return nil
-}
-
-func (config *JsonObjectOutputRelationshipMatch) validate(
-	rootConfig *Config,
-	log *logrus.Entry,
-	childIndexName string,
-	childIndex Index,
-) error {
-	// The parentColumn and childColumn will be validated at runtime (must be validated against the input and not the index)
-
-	if !childIndex.DoesHandleColumn(config.ChildColumn) {
-		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)
 	}
 
 	return nil

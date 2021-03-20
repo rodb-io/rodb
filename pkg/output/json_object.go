@@ -85,7 +85,7 @@ func NewJsonObject(
 }
 
 func (jsonObject *JsonObject) checkRelationshipMatches(
-	relationship *configModule.JsonObjectOutputRelationship,
+	relationship *configModule.Relationship,
 	parentInputName string,
 ) error {
 	input, inputExists := jsonObject.inputs[parentInputName]
@@ -197,7 +197,7 @@ func (jsonObject *JsonObject) getEndpointFilters(params map[string]string) (map[
 
 func (jsonObject *JsonObject) loadRelationships(
 	data map[string]interface{},
-	relationships map[string]*configModule.JsonObjectOutputRelationship,
+	relationships map[string]*configModule.Relationship,
 ) (map[string]interface{}, error) {
 	for relationshipName, relationshipConfig := range relationships {
 		filters := map[string]interface{}{}
