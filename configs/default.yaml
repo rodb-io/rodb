@@ -1,4 +1,3 @@
-# TODO test sort record list
 # TODO data from stdin? Test reading /dev/stdin
 # TODO e2e tests?
 # TODO performance analysis

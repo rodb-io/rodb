@@ -171,6 +171,7 @@ func TestJsonObjectGetEndpointFilters(t *testing.T) {
 
 func TestJsonObjectLoadRelationships(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
+		ascendingSort := false
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/test",
 			Input:    "mock",
@@ -181,6 +182,12 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 					Index:   "mock",
 					IsArray: true,
 					Limit:   2,
+					Sort: []*config.Sort{
+						{
+							Column:    "id",
+							Ascending: &ascendingSort,
+						},
+					},
 					Match: []*config.JsonObjectOutputRelationshipMatch{
 						{
 							ParentColumn: "id",
@@ -234,10 +241,11 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 			t.Errorf("Expected length of '%+v', got '%+v'", expect, got)
 		}
 
-		if expect, got := "2", children[0]["id"]; expect != got {
+		// The sort result is only quickly tested, because record.List.Sort is already tested
+		if expect, got := "3", children[0]["id"]; expect != got {
 			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
-		if expect, got := "3", children[1]["id"]; expect != got {
+		if expect, got := "2", children[1]["id"]; expect != got {
 			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 
