@@ -27,6 +27,7 @@ type JsonObjectOutputRelationship struct {
 	Index         string                                   `yaml:"index"`
 	IsArray       bool                                     `yaml:"isArray"`
 	Limit         uint                                     `yaml:"limit"`
+	Sort          []*Sort                                  `yaml:"sort"`
 	Match         []*JsonObjectOutputRelationshipMatch     `yaml:"match"`
 	Relationships map[string]*JsonObjectOutputRelationship `yaml:"relationships"`
 }
@@ -149,6 +150,27 @@ func (config *JsonObjectOutputRelationship) validate(
 	}
 	if !childIndex.DoesHandleInput(config.Input) {
 		return fmt.Errorf("input: Index '%v' does not handle input '%v'.", config.Index, config.Input)
+	}
+
+	if config.Sort == nil {
+		config.Sort = make([]*Sort, 0)
+	}
+
+	if len(config.Sort) > 0 && !config.IsArray {
+		return fmt.Errorf("sort: You can only sort a relationship when isArray = 'true'.")
+	}
+
+	alreadyExistingSortColumns := make(map[string]bool)
+	for sortIndex, sort := range config.Sort {
+		err := sort.validate(rootConfig, log, "jsonObject.relationships[].sort.")
+		if err != nil {
+			return fmt.Errorf("sort.%v.%w", sortIndex, err)
+		}
+
+		if _, alreadyExists := alreadyExistingSortColumns[sort.Column]; alreadyExists {
+			return fmt.Errorf("sort.%v.column: column %v is used twice for sorting", sortIndex, sort.Column)
+		}
+		alreadyExistingSortColumns[sort.Column] = true
 	}
 
 	alreadyExistingChildColumn := make(map[string]bool)

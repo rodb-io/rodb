@@ -93,6 +93,12 @@ func (jsonObject *JsonObject) checkRelationshipMatches(
 		return fmt.Errorf("Input '%v' not found in inputs list.", parentInputName)
 	}
 
+	for _, sort := range relationship.Sort {
+		if !input.HasColumn(sort.Column) {
+			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, sort.Column)
+		}
+	}
+
 	for _, match := range relationship.Match {
 		if !input.HasColumn(match.ParentColumn) {
 			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, match.ParentColumn)
