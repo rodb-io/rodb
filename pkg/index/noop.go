@@ -21,7 +21,7 @@ func NewNoop(
 	}
 }
 
-func (d *Noop) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
+func (d *Noop) GetRecords(inputName string, filters map[string]interface{}, limit uint) (record.List, error) {
 	input, ok := d.inputs[inputName]
 	if !ok {
 		return nil, fmt.Errorf("There is no input named '%v'", inputName)

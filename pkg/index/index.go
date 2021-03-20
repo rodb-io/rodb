@@ -8,7 +8,7 @@ import (
 )
 
 type Index interface {
-	GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error)
+	GetRecords(inputName string, filters map[string]interface{}, limit uint) (record.List, error)
 	Close() error
 }
 
