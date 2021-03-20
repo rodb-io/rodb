@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"io"
 	"regexp"
 	"rods/pkg/config"
 )
@@ -18,11 +19,21 @@ type Service interface {
 
 type List = map[string]Service
 
+// Handles the route and sends a response
+// sendError should be used for all errors unless impossible
+// (error during sending an error for example)
+type RouteHandler = func(
+	params map[string]string,
+	payload []byte,
+	sendError func(err error) error,
+	sendSucces func() io.Writer,
+) error
+
 type Route struct {
 	Endpoint            *regexp.Regexp
 	ExpectedPayloadType *string
 	ResponseType        string
-	Handler             func(params map[string]string, payload []byte) ([]byte, error)
+	Handler             RouteHandler
 }
 
 var RecordNotFoundError = errors.New("Record not found")

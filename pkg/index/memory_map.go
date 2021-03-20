@@ -118,7 +118,7 @@ func (mm *MemoryMap) Reindex() error {
 	return nil
 }
 
-// Get the records from the given input (if indexed) and that matchesall the given filters
+// Get the records from the given input (if indexed) and that matches all the given filters
 // A limit of 0 means that there is no limit
 func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}, limit uint) ([]record.Record, error) {
 	if !mm.config.DoesHandleInput(inputName) {

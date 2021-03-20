@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
@@ -78,31 +79,45 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
 		route := service.getMatchingRoute(request)
 		if route == nil {
-			service.sendErrorResponse(response, http.StatusNotFound, errors.New("No matching route was found"))
+			errToSend := errors.New("No matching route was found")
+			err2 := service.sendErrorResponse(response, http.StatusNotFound, errToSend)
+			if err2 != nil {
+				service.config.Logger.Errorf("Error '%+v' while sending the error '%+v'", errToSend, err2)
+			}
 			return
 		}
 
 		payload, err := service.getPayload(route, request.Body)
 		if err != nil {
-			service.sendErrorResponse(response, http.StatusInternalServerError, err)
+			err2 := service.sendErrorResponse(response, http.StatusInternalServerError, err)
+			if err2 != nil {
+				service.config.Logger.Errorf("Error '%+v' while sending the error '%+v'", err, err2)
+			}
 			return
 		}
 
 		params := service.getParams(route.Endpoint, request.URL)
-		data, err := route.Handler(params, payload)
-		if err != nil {
-			status := http.StatusInternalServerError
-			if errors.Is(err, RecordNotFoundError) {
-				status = http.StatusNotFound
-			}
+		err = route.Handler(
+			params,
+			payload,
+			func(err error) error {
+				status := http.StatusInternalServerError
+				if errors.Is(err, RecordNotFoundError) {
+					status = http.StatusNotFound
+				}
 
-			service.sendErrorResponse(response, status, err)
-			return
+				return service.sendErrorResponse(response, status, err)
+			},
+			func() io.Writer {
+				response.Header().Set("Content-Type", route.ResponseType+"; charset=UTF-8")
+				response.WriteHeader(http.StatusOK)
+				return io.Writer(response)
+			},
+		)
+		if err != nil {
+			service.config.Logger.Errorf("Unhandled error while handling the route: %v", err)
 		}
 
-		response.Header().Set("Content-Type", route.ResponseType+"; charset=UTF-8")
-		response.WriteHeader(http.StatusOK)
-		response.Write(data)
 		return
 	}
 }
@@ -111,7 +126,7 @@ func (service *Http) sendErrorResponse(
 	response http.ResponseWriter,
 	status int,
 	err error,
-) {
+) error {
 	var data []byte
 	var outputType string = service.config.ErrorsType
 	switch outputType {
@@ -120,17 +135,27 @@ func (service *Http) sendErrorResponse(
 			"error": err.Error(),
 		})
 		if err != nil {
-			service.config.Logger.Errorf("Error while encoding the error response: %v", err)
+			return err
 		}
 	default:
-		service.config.Logger.Errorf("ErrorResponse type '%v' is not supported by the HTTP service", service.config.ErrorsType)
-		data = []byte(err.Error())
-		outputType = "text/plain"
+		response.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+		response.WriteHeader(status)
+		_, err = response.Write([]byte(err.Error()))
+		if err != nil {
+			return err
+		}
+
+		return fmt.Errorf("ErrorResponse type '%v' is not supported by the HTTP service", service.config.ErrorsType)
 	}
 
 	response.Header().Set("Content-Type", outputType+"; charset=UTF-8")
 	response.WriteHeader(status)
-	response.Write(data)
+	_, err = response.Write(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (service *Http) getMatchingRoute(request *http.Request) *Route {

@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+	"github.com/sirupsen/logrus"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -15,6 +17,7 @@ func TestHttp(t *testing.T) {
 	config := &config.HttpService{
 		Listen:     ":0", // Auto-assign port
 		ErrorsType: "application/json",
+		Logger:     logrus.NewEntry(logrus.StandardLogger()),
 	}
 	server, err := NewHttp(config)
 	if err != nil {
@@ -29,8 +32,11 @@ func TestHttp(t *testing.T) {
 		Handler: func(
 			params map[string]string,
 			payload []byte,
-		) ([]byte, error) {
-			return []byte("Hello " + params["name"] + "!"), nil
+			sendError func(err error) error,
+			sendSucces func() io.Writer,
+		) error {
+			_, err := sendSucces().Write([]byte("Hello " + params["name"] + "!"))
+			return err
 		},
 	}
 
@@ -40,8 +46,11 @@ func TestHttp(t *testing.T) {
 		route.Handler = func(
 			params map[string]string,
 			payload []byte,
-		) ([]byte, error) {
-			return []byte("Hello " + params["name"] + "!"), nil
+			sendError func(err error) error,
+			sendSucces func() io.Writer,
+		) error {
+			_, err := sendSucces().Write([]byte("Hello " + params["name"] + "!"))
+			return err
 		}
 
 		response, err := http.Get(server.Address() + "/foo?name=Universe")
@@ -69,8 +78,10 @@ func TestHttp(t *testing.T) {
 		route.Handler = func(
 			params map[string]string,
 			payload []byte,
-		) ([]byte, error) {
-			return nil, RecordNotFoundError
+			sendError func(err error) error,
+			sendSucces func() io.Writer,
+		) error {
+			return sendError(RecordNotFoundError)
 		}
 
 		response, err := http.Get(server.Address() + "/foo")

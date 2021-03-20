@@ -94,7 +94,7 @@ outputs:
           index: defaultIndex
         name:
           index: defaultIndex
-        # TODO sorting
+      # TODO sorting
   defaultJsonObjectOutput:
     jsonObject:
       input: defaultInput
@@ -113,7 +113,6 @@ outputs:
           relationships:
             mySubSubProperty:
               input: defaultInput
-              # TODO should the index be per-child-match? Will it work unless multiple?
               index: defaultIndex
               isArray: true
               match:

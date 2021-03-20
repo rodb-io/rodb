@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
@@ -111,38 +112,43 @@ func (jsonObject *JsonObject) checkRelationshipMatches(
 	return nil
 }
 
-func (jsonObject *JsonObject) getHandler() func(params map[string]string, payload []byte) ([]byte, error) {
-	return func(params map[string]string, payload []byte) ([]byte, error) {
+func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
+	return func(
+		params map[string]string,
+		payload []byte,
+		sendError func(err error) error,
+		sendSucces func() io.Writer,
+	) error {
 		filters, err := jsonObject.getEndpointFilters(params)
 		if err != nil {
-			return nil, err
+			return sendError(err)
 		}
 
 		index, indexExists := jsonObject.indexes[jsonObject.config.Index]
 		if !indexExists {
-			return nil, fmt.Errorf("Index '%v' not found in indexes list.", jsonObject.config.Index)
+			return sendError(fmt.Errorf("Index '%v' not found in indexes list.", jsonObject.config.Index))
 		}
 
 		records, err := index.GetRecords(jsonObject.config.Input, filters, 1)
 		if err != nil {
-			return nil, err
+			return sendError(err)
 		}
 
 		if len(records) == 0 {
-			return nil, serviceModule.RecordNotFoundError
+			return sendError(serviceModule.RecordNotFoundError)
 		}
 
 		data, err := records[0].All()
 		if err != nil {
-			return nil, err
+			return sendError(err)
 		}
 
 		data, err = jsonObject.loadRelationships(data, jsonObject.config.Relationships)
 		if err != nil {
-			return nil, err
+			return sendError(err)
 		}
 
-		return json.Marshal(data)
+		return json.NewEncoder(sendSucces()).Encode(data)
 	}
 }
 
