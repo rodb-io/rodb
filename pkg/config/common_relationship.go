@@ -24,8 +24,6 @@ func (config *Relationship) validate(
 	rootConfig *Config,
 	log *logrus.Entry,
 	logPrefix string,
-	parentIndexName string,
-	parentIndex Index,
 ) error {
 	if config.Limit == 0 && config.IsArray {
 		log.Debug(logPrefix + "limit is not set. All relationships will be returned.")

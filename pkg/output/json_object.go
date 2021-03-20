@@ -19,6 +19,7 @@ type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
 	indexes      indexModule.List
+	rootIndex    indexModule.Index
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
 	route        *serviceModule.Route
@@ -50,10 +51,16 @@ func NewJsonObject(
 		outputServices[i] = service
 	}
 
+	index, indexExists := indexes[config.Index]
+	if !indexExists {
+		return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
+	}
+
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
 		indexes:      indexes,
+		rootIndex:    index,
 		services:     outputServices,
 		paramParsers: paramParsers,
 	}
@@ -130,12 +137,7 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			return sendError(err)
 		}
 
-		index, indexExists := jsonObject.indexes[jsonObject.config.Index]
-		if !indexExists {
-			return sendError(fmt.Errorf("Index '%v' not found in indexes list.", jsonObject.config.Index))
-		}
-
-		records, err := index.GetRecords(jsonObject.config.Input, filters, 1)
+		records, err := jsonObject.rootIndex.GetRecords(jsonObject.config.Input, filters, 1)
 		if err != nil {
 			return sendError(err)
 		}

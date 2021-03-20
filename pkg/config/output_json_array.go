@@ -7,12 +7,14 @@ import (
 )
 
 type JsonArrayOutput struct {
-	Services []string                         `yaml:"services"`
-	Endpoint string                           `yaml:"endpoint"`
-	Limit    JsonArrayOutputLimit             `yaml:"limit"`
-	Offset   JsonArrayOutputOffset            `yaml:"offset"`
-	Search   map[string]JsonArrayOutputSearch `yaml:"search"`
-	Logger   *logrus.Entry
+	Input         string                           `yaml:"input"`
+	Services      []string                         `yaml:"services"`
+	Endpoint      string                           `yaml:"endpoint"`
+	Limit         JsonArrayOutputLimit             `yaml:"limit"`
+	Offset        JsonArrayOutputOffset            `yaml:"offset"`
+	Search        map[string]JsonArrayOutputSearch `yaml:"search"`
+	Relationships map[string]*Relationship         `yaml:"relationships"`
+	Logger        *logrus.Entry
 }
 
 type JsonArrayOutputLimit struct {
@@ -31,6 +33,10 @@ type JsonArrayOutputSearch struct {
 
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Input == "" {
+		return errors.New("jsonArray.input is empty. This field is required.")
+	}
 
 	if config.Endpoint == "" {
 		return errors.New("jsonArray.endpoint is not defined. This setting is required")
@@ -66,6 +72,21 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 		err := configSearchParam.validate(rootConfig, log)
 		if err != nil {
 			return fmt.Errorf("jsonArray.search.%v.%w", configSearchParamName, err)
+		}
+
+		if configSearchParamName == config.Limit.Param {
+			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the limit", configSearchParamName, configSearchParamName)
+		}
+		if configSearchParamName == config.Offset.Param {
+			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the offset", configSearchParamName, configSearchParamName)
+		}
+	}
+
+	for relationshipIndex, relationship := range config.Relationships {
+		logPrefix := fmt.Sprintf("jsonArray.relationships.%v.", relationshipIndex)
+		err := relationship.validate(rootConfig, log, logPrefix)
+		if err != nil {
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}
 

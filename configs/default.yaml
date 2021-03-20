@@ -80,6 +80,7 @@ outputs:
       # TODO configuration
   defaultJsonArrayOutput:
     jsonArray:
+      input: defaultInput
       services:
         - defaultService
       endpoint: "/dummies"
@@ -90,10 +91,19 @@ outputs:
       offset:
         param: "offset"
       search:
+        # TODO how to cross indexes?
         id:
           index: defaultIndex
         name:
           index: defaultIndex
+      relationships:
+        mySubProperty:
+          input: defaultInput
+          index: defaultIndex
+          isArray: false
+          match:
+            - parentColumn: id
+              childColumn: id
       # TODO sorting
   defaultJsonObjectOutput:
     jsonObject:

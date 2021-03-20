@@ -46,6 +46,10 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 		return errors.New("jsonObject.services is empty. As least one is required.")
 	}
 
+	if config.Input == "" {
+		return errors.New("jsonObject.input is empty. This field is required.")
+	}
+
 	if config.Index == "" {
 		log.Debugf("jsonObject.index is empty. Assuming 'default'.\n")
 		config.Index = "default"
@@ -68,7 +72,7 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonObject.relationships.%v.", relationshipIndex)
-		err := relationship.validate(rootConfig, log, logPrefix, config.Index, index)
+		err := relationship.validate(rootConfig, log, logPrefix)
 		if err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
