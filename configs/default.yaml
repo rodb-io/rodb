@@ -91,6 +91,7 @@ outputs:
       offset:
         param: "offset"
       search:
+        # TODO way to join multiple positions list
         # TODO how to cross indexes?
         id:
           index: defaultIndex

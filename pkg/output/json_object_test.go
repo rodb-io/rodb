@@ -19,15 +19,15 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 		{Record: record.NewStringColumnsMock(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
-		}, 0)},
+		}, 1)},
 		{Record: record.NewStringColumnsMock(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
-		}, 0)},
+		}, 2)},
 		{Record: record.NewStringColumnsMock(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
-		}, 0)},
+		}, 3)},
 	})
 	mockIndex := index.NewNoop(
 		input.List{"mock": mockInput},
@@ -50,6 +50,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 func TestJsonObject(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		_, mockService, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/test",
 		})
 		if err != nil {
@@ -65,6 +66,7 @@ func TestJsonObject(t *testing.T) {
 func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/foo/?/bar/?",
 			Parameters: []*config.JsonObjectOutputParameter{
 				{
@@ -87,6 +89,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	})
 	t.Run("param count lower than wildcard count", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/foo/?/bar/?",
 			Parameters: []*config.JsonObjectOutputParameter{
 				{
@@ -106,6 +109,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	})
 	t.Run("wildcard count lower than param count", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/foo/?",
 			Parameters: []*config.JsonObjectOutputParameter{
 				{
@@ -131,6 +135,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 func TestJsonObjectGetEndpointFilters(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/foo/?/bar/?",
 			Parameters: []*config.JsonObjectOutputParameter{
 				{
@@ -278,6 +283,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 func TestJsonObjectClose(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, mockService, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
 			Endpoint: "/test",
 		})
 		if err != nil {

@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type memoryMapColumnValueIndex = []record.Position
+type memoryMapColumnValueIndex = record.PositionList
 type memoryMapColumnIndex = map[interface{}]memoryMapColumnValueIndex
 type memoryMapIndex = map[string]memoryMapColumnIndex
 
@@ -107,7 +107,7 @@ func (mm *MemoryMap) Reindex() error {
 			if valueIndexesExists {
 				columnIndex[value] = append(valueIndexes, result.Record.Position())
 			} else {
-				columnIndex[value] = []record.Position{result.Record.Position()}
+				columnIndex[value] = record.PositionList{result.Record.Position()}
 			}
 		}
 	}
@@ -118,9 +118,9 @@ func (mm *MemoryMap) Reindex() error {
 	return nil
 }
 
-// Get the records from the given input (if indexed) and that matches all the given filters
+// Get the record positions (if indexed) that matches all the given filters
 // A limit of 0 means that there is no limit
-func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}, limit uint) (record.List, error) {
+func (mm *MemoryMap) GetRecordPositions(inputName string, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	if !mm.config.DoesHandleInput(inputName) {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", inputName)
 	}
@@ -136,18 +136,18 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 
 		indexedValues, foundIndexedValues := mm.index[columnName]
 		if !foundIndexedValues {
-			return make([]record.Record, 0), nil
+			return make(record.PositionList, 0), nil
 		}
 
 		indexedResults, foundIndexedResults := indexedValues[filter]
 		if !foundIndexedResults {
-			return make([]record.Record, 0), nil
+			return make(record.PositionList, 0), nil
 		}
 
 		individualFiltersResults = append(individualFiltersResults, indexedResults)
 	}
 
-	records := make([]record.Record, 0)
+	records := make(record.PositionList, 0)
 	for i := 0; i < len(individualFiltersResults[0]); i++ {
 		position := individualFiltersResults[0][i]
 
@@ -168,12 +168,7 @@ func (mm *MemoryMap) GetRecords(inputName string, filters map[string]interface{}
 		}
 
 		if matchesAllCriterias {
-			indexedRecord, err := mm.input.Get(position)
-			if err != nil {
-				return nil, fmt.Errorf("Error retrieving indexed record: %w", err)
-			}
-
-			records = append(records, indexedRecord)
+			records = append(records, position)
 			if limit != 0 && len(records) >= int(limit) {
 				break
 			}

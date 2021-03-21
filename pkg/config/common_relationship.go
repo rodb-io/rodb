@@ -83,7 +83,7 @@ func (config *Relationship) validate(
 
 	for relationshipName, relationship := range config.Relationships {
 		newPrefix := fmt.Sprintf("relationships.%v.", relationshipName)
-		err := relationship.validate(rootConfig, log, logPrefix+newPrefix, config.Index, childIndex)
+		err := relationship.validate(rootConfig, log, logPrefix+newPrefix)
 		if err != nil {
 			return fmt.Errorf("%v%w", newPrefix, err)
 		}

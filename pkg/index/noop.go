@@ -21,13 +21,13 @@ func NewNoop(
 	}
 }
 
-func (d *Noop) GetRecords(inputName string, filters map[string]interface{}, limit uint) (record.List, error) {
+func (d *Noop) GetRecordPositions(inputName string, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	input, ok := d.inputs[inputName]
 	if !ok {
 		return nil, fmt.Errorf("There is no input named '%v'", inputName)
 	}
 
-	records := make([]record.Record, 0)
+	records := make(record.PositionList, 0)
 	for result := range input.IterateAll() {
 		if result.Error != nil {
 			return nil, result.Error
@@ -57,7 +57,7 @@ func (d *Noop) GetRecords(inputName string, filters map[string]interface{}, limi
 		}
 
 		if matches {
-			records = append(records, result.Record)
+			records = append(records, result.Record.Position())
 			if limit != 0 && len(records) >= int(limit) {
 				break
 			}

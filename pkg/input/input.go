@@ -12,7 +12,11 @@ type Input interface {
 	HasColumn(columnName string) bool
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)
+
+	// Iterates all the records in the input, ordered
+	// from the smallest to the biggest position
 	IterateAll() <-chan IterateAllResult
+
 	Close() error
 	Watch(watcher *source.Watcher) error
 	CloseWatcher(watcher *source.Watcher) error

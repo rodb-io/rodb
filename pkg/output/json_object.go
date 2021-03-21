@@ -10,6 +10,7 @@ import (
 	indexModule "rods/pkg/index"
 	inputModule "rods/pkg/input"
 	parserModule "rods/pkg/parser"
+	recordModule "rods/pkg/record"
 	serviceModule "rods/pkg/service"
 	"strconv"
 	"strings"
@@ -18,6 +19,7 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
+	rootInput    inputModule.Input
 	indexes      indexModule.List
 	rootIndex    indexModule.Index
 	services     []serviceModule.Service
@@ -56,9 +58,15 @@ func NewJsonObject(
 		return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
 	}
 
+	input, inputExists := inputs[config.Input]
+	if !inputExists {
+		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
+	}
+
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
+		rootInput:    input,
 		indexes:      indexes,
 		rootIndex:    index,
 		services:     outputServices,
@@ -137,16 +145,21 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			return sendError(err)
 		}
 
-		records, err := jsonObject.rootIndex.GetRecords(jsonObject.config.Input, filters, 1)
+		positions, err := jsonObject.rootIndex.GetRecordPositions(jsonObject.config.Input, filters, 1)
 		if err != nil {
 			return sendError(err)
 		}
 
-		if len(records) == 0 {
+		if len(positions) == 0 {
 			return sendError(serviceModule.RecordNotFoundError)
 		}
 
-		data, err := records[0].All()
+		record, err := jsonObject.rootInput.Get(positions[0])
+		if err != nil {
+			return sendError(err)
+		}
+
+		data, err := record.All()
 		if err != nil {
 			return sendError(err)
 		}
@@ -217,18 +230,31 @@ func (jsonObject *JsonObject) loadRelationships(
 			return nil, fmt.Errorf("Index '%v' not found in indexes list.", relationshipConfig.Index)
 		}
 
+		input, inputExists := jsonObject.inputs[relationshipConfig.Input]
+		if !inputExists {
+			return nil, fmt.Errorf("Input '%v' not found in inputs list.", relationshipConfig.Input)
+		}
+
 		var limit uint = 1
 		if relationshipConfig.IsArray {
 			limit = relationshipConfig.Limit
 		}
 
-		relationshipRecords, err := index.GetRecords(
+		relationshipRecordPositions, err := index.GetRecordPositions(
 			relationshipConfig.Input,
 			filters,
 			limit,
 		)
 		if err != nil {
 			return nil, err
+		}
+
+		relationshipRecords := make(recordModule.List, len(relationshipRecordPositions))
+		for i, position := range relationshipRecordPositions {
+			relationshipRecords[i], err = input.Get(position)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		if len(relationshipConfig.Sort) > 0 {
