@@ -1,13 +1,18 @@
 package record
 
-// Returns all the positions that are common to all the given arrays
+// Returns the positions that are common to all the given arrays
 // Expects each given list to be sorted from the smallest to the biggest position
-func JoinPositionLists(lists ...PositionList) PositionList {
+// Returns a maximum of `limit` records, or everything if `limit` = 0
+func JoinPositionLists(limit uint, lists ...PositionList) PositionList {
 	if len(lists) == 0 {
 		return make(PositionList, 0)
 	}
 	if len(lists) == 1 {
-		return lists[0]
+		if limit == 0 {
+			return lists[0]
+		} else {
+			return lists[0][:limit]
+		}
 	}
 
 	currentListIndexes := make([]int, len(lists))
@@ -34,6 +39,9 @@ func JoinPositionLists(lists ...PositionList) PositionList {
 
 		if foundInAllLists {
 			newList = append(newList, lists[0][currentListIndexes[0]])
+			if limit > 0 && len(newList) >= int(limit) {
+				break
+			}
 		}
 	}
 

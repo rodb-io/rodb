@@ -19,7 +19,7 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
-	rootInput    inputModule.Input
+	input        inputModule.Input
 	indexes      indexModule.List
 	rootIndex    indexModule.Index
 	services     []serviceModule.Service
@@ -66,7 +66,7 @@ func NewJsonObject(
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
-		rootInput:    input,
+		input:        input,
 		indexes:      indexes,
 		rootIndex:    index,
 		services:     outputServices,
@@ -154,7 +154,7 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			return sendError(serviceModule.RecordNotFoundError)
 		}
 
-		record, err := jsonObject.rootInput.Get(positions[0])
+		record, err := jsonObject.input.Get(positions[0])
 		if err != nil {
 			return sendError(err)
 		}

@@ -7,11 +7,13 @@ import (
 func TestJoinPositionLists(t *testing.T) {
 	for _, testCase := range []struct {
 		name   string
+		limit  uint
 		lists  []PositionList
 		expect PositionList
 	}{
 		{
-			name: "all elements from the first one",
+			name:  "all elements from the first one",
+			limit: 0,
 			lists: []PositionList{
 				{2},
 				{2, 3},
@@ -20,7 +22,8 @@ func TestJoinPositionLists(t *testing.T) {
 			},
 			expect: PositionList{2},
 		}, {
-			name: "few elements from the first one",
+			name:  "few elements from the first one",
+			limit: 0,
 			lists: []PositionList{
 				{0, 1, 2, 3, 4, 5},
 				{3, 4, 5},
@@ -28,19 +31,36 @@ func TestJoinPositionLists(t *testing.T) {
 			},
 			expect: PositionList{3, 5},
 		}, {
-			name: "single list",
+			name:  "limit",
+			limit: 3,
+			lists: []PositionList{
+				{1, 2, 3, 4, 5},
+				{1, 2, 3, 4, 5},
+			},
+			expect: PositionList{1, 2, 3},
+		}, {
+			name:  "single list",
+			limit: 0,
 			lists: []PositionList{
 				{42, 123},
 			},
 			expect: PositionList{42, 123},
 		}, {
+			name:  "single list with limit",
+			limit: 2,
+			lists: []PositionList{
+				{1, 2, 3, 4},
+			},
+			expect: PositionList{1, 2},
+		}, {
 			name:   "no lists",
+			limit:  0,
 			lists:  []PositionList{},
 			expect: PositionList{},
 		},
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
-			result := JoinPositionLists(testCase.lists...)
+			result := JoinPositionLists(testCase.limit, testCase.lists...)
 
 			if expect, got := len(testCase.expect), len(result); got != expect {
 				t.Errorf("Expected length of '%v', got '%v'", expect, got)
