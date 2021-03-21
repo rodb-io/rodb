@@ -11,7 +11,6 @@ type JsonObjectOutput struct {
 	Services      []string                     `yaml:"services"`
 	Input         string                       `yaml:"input"`
 	Endpoint      string                       `yaml:"endpoint"`
-	Index         string                       `yaml:"index"`
 	Parameters    []*JsonObjectOutputParameter `yaml:"parameters"`
 	Relationships map[string]*Relationship     `yaml:"relationships"`
 	Logger        *logrus.Entry
@@ -20,6 +19,7 @@ type JsonObjectOutput struct {
 type JsonObjectOutputParameter struct {
 	Column string `yaml:"column"`
 	Parser string `yaml:"parser"`
+	Index  string `yaml:"index"`
 }
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -50,21 +50,8 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 		return errors.New("jsonObject.input is empty. This field is required.")
 	}
 
-	if config.Index == "" {
-		log.Debugf("jsonObject.index is empty. Assuming 'default'.\n")
-		config.Index = "default"
-	}
-
-	index, indexExists := rootConfig.Indexes[config.Index]
-	if !indexExists {
-		return fmt.Errorf("jsonObject.index: Index '%v' not found in indexes list.", config.Index)
-	}
-	if !index.DoesHandleInput(config.Input) {
-		return fmt.Errorf("jsonObject.index: Index '%v' does not handle input '%v'.", config.Index, config.Input)
-	}
-
 	for parameterIndex, parameter := range config.Parameters {
-		err := parameter.validate(rootConfig, log, config.Index, index)
+		err := parameter.validate(rootConfig, log, config.Input)
 		if err != nil {
 			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterIndex, err)
 		}
@@ -96,8 +83,7 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 func (config *JsonObjectOutputParameter) validate(
 	rootConfig *Config,
 	log *logrus.Entry,
-	indexName string,
-	index Index,
+	inputName string,
 ) error {
 	if config.Column == "" {
 		return errors.New("column is empty")
@@ -112,8 +98,20 @@ func (config *JsonObjectOutputParameter) validate(
 		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
+	if config.Index == "" {
+		log.Debugf("index is empty. Assuming 'default'.\n")
+		config.Index = "default"
+	}
+
+	index, indexExists := rootConfig.Indexes[config.Index]
+	if !indexExists {
+		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
+	}
+	if !index.DoesHandleInput(inputName) {
+		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, inputName)
+	}
 	if !index.DoesHandleColumn(config.Column) {
-		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", indexName, config.Column)
+		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)
 	}
 
 	return nil

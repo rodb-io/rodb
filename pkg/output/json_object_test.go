@@ -32,14 +32,16 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 	mockIndex := index.NewNoop(
 		input.List{"mock": mockInput},
 	)
+	mockIndex2 := index.NewNoop(
+		input.List{"mock": mockInput},
+	)
 	mockService := service.NewMock()
 	mockParser := parser.NewMock()
-	config.Index = "mock"
 	config.Services = []string{"mock"}
 	jsonObject, err := NewJsonObject(
 		config,
 		input.List{"mock": mockInput},
-		index.List{"mock": mockIndex},
+		index.List{"mock": mockIndex, "mock2": mockIndex2},
 		service.List{"mock": mockService},
 		parser.List{"mock": mockParser},
 	)
@@ -72,9 +74,11 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 				{
 					Column: "foo",
 					Parser: "mock",
+					Index:  "mock",
 				}, {
 					Column: "bar",
 					Parser: "mock",
+					Index:  "mock",
 				},
 			},
 		})
@@ -95,6 +99,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 				{
 					Column: "foo",
 					Parser: "mock",
+					Index:  "mock",
 				},
 			},
 		})
@@ -115,9 +120,11 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 				{
 					Column: "foo",
 					Parser: "mock",
+					Index:  "mock",
 				}, {
 					Column: "bar",
 					Parser: "mock",
+					Index:  "mock",
 				},
 			},
 		})
@@ -132,18 +139,24 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	})
 }
 
-func TestJsonObjectGetEndpointFilters(t *testing.T) {
+func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
-			Endpoint: "/foo/?/bar/?",
+			Endpoint: "/foo/?/bar/?/baz/?",
 			Parameters: []*config.JsonObjectOutputParameter{
 				{
 					Column: "foo",
 					Parser: "mock",
+					Index:  "a",
 				}, {
 					Column: "bar",
 					Parser: "mock",
+					Index:  "b",
+				}, {
+					Column: "baz",
+					Parser: "mock",
+					Index:  "a",
 				},
 			},
 		})
@@ -153,23 +166,82 @@ func TestJsonObjectGetEndpointFilters(t *testing.T) {
 
 		fooParamValue := "fooValue"
 		barParamValue := "barValue"
-		filters, err := jsonObject.getEndpointFilters(map[string]string{
+		bazParamValue := "bazValue"
+		filtersPerIndex, err := jsonObject.getEndpointFiltersPerIndex(map[string]string{
 			jsonObject.endpointRegexpParamName(0): fooParamValue,
 			jsonObject.endpointRegexpParamName(1): barParamValue,
+			jsonObject.endpointRegexpParamName(2): bazParamValue,
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		if got, expect := len(filters), 2; got != expect {
-			t.Errorf("Expected to get '%+v' filters, got '%+v'", expect, got)
+		if got, exists := filtersPerIndex["a"]; !exists {
+			t.Errorf("Expected to get filters for index 'a', got '%+v'", got)
+		}
+		if got, exists := filtersPerIndex["b"]; !exists {
+			t.Errorf("Expected to get filters for index 'b', got '%+v'", got)
 		}
 
-		if got, exists := filters["foo"]; !exists || got != fooParamValue {
+		if got, expect := len(filtersPerIndex["a"]), 2; got != expect {
+			t.Errorf("Expected to get '%+v' filters for index 'a', got '%+v'", expect, got)
+		}
+		if got, expect := len(filtersPerIndex["b"]), 1; got != expect {
+			t.Errorf("Expected to get '%+v' filters for index 'b', got '%+v'", expect, got)
+		}
+
+		if got, exists := filtersPerIndex["a"]["foo"]; !exists || got != fooParamValue {
 			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", fooParamValue, got)
 		}
-		if got, exists := filters["bar"]; !exists || got != barParamValue {
+		if got, exists := filtersPerIndex["a"]["baz"]; !exists || got != bazParamValue {
 			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", barParamValue, got)
+		}
+		if got, exists := filtersPerIndex["b"]["bar"]; !exists || got != barParamValue {
+			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", bazParamValue, got)
+		}
+	})
+}
+
+func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+			Input:    "mock",
+			Endpoint: "/test",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		filtersPerIndex := map[string]map[string]interface{}{
+			"mock": {
+				"id": "2",
+			},
+			"mock2": {
+				"belongs_to": "1",
+			},
+		}
+
+		recordLists, err := jsonObject.getFilteredRecordPositionsPerIndex(filtersPerIndex)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 2, len(recordLists); got != expect {
+			t.Errorf("Expected to get '%+v' entries in the array, got '%+v'", expect, got)
+		}
+
+		if expect, got := 1, len(recordLists[0]); got != expect {
+			t.Errorf("Expected to get '%+v' entries in the first array, got '%+v'", expect, got)
+		}
+		if expect, got := 3, len(recordLists[1]); got != expect {
+			t.Errorf("Expected to get '%+v' entries in the second array, got '%+v'", expect, got)
+		}
+
+		if expect, got := int64(1), recordLists[0][0]; got != expect {
+			t.Errorf("Expected to get position '%+v' for the first result of the first index, got '%+v'", expect, got)
+		}
+		if expect, got := int64(1), recordLists[1][0]; got != expect {
+			t.Errorf("Expected to get position '%+v' for the first result of the second index, got '%+v'", expect, got)
 		}
 	})
 }
@@ -180,7 +252,6 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Endpoint: "/test",
 			Input:    "mock",
-			Index:    "mock",
 			Relationships: map[string]*config.Relationship{
 				"children": {
 					Input:   "mock",

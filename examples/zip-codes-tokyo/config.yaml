@@ -88,13 +88,13 @@ outputs:
   findOnePostalCode:
     jsonObject:
       input: zipCodesTokyo
-      index: zipCode
       services:
         - httpService
       endpoint: "/zip-codes/?"
       parameters:
         - column: zipCode
           parser: string
+          index: zipCode
       relationships:
         updated:
           input: updatedValues

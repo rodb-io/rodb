@@ -21,7 +21,6 @@ type JsonObject struct {
 	inputs       inputModule.List
 	input        inputModule.Input
 	indexes      indexModule.List
-	rootIndex    indexModule.Index
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
 	route        *serviceModule.Route
@@ -53,11 +52,6 @@ func NewJsonObject(
 		outputServices[i] = service
 	}
 
-	index, indexExists := indexes[config.Index]
-	if !indexExists {
-		return nil, fmt.Errorf("Index '%v' not found in indexes list.", config.Index)
-	}
-
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
@@ -68,7 +62,6 @@ func NewJsonObject(
 		inputs:       inputs,
 		input:        input,
 		indexes:      indexes,
-		rootIndex:    index,
 		services:     outputServices,
 		paramParsers: paramParsers,
 	}
@@ -140,16 +133,17 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 		sendError func(err error) error,
 		sendSucces func() io.Writer,
 	) error {
-		filters, err := jsonObject.getEndpointFilters(params)
+		filtersPerIndex, err := jsonObject.getEndpointFiltersPerIndex(params)
 		if err != nil {
 			return sendError(err)
 		}
 
-		positions, err := jsonObject.rootIndex.GetRecordPositions(jsonObject.config.Input, filters, 1)
+		positionsPerIndex, err := jsonObject.getFilteredRecordPositionsPerIndex(filtersPerIndex)
 		if err != nil {
 			return sendError(err)
 		}
 
+		positions := recordModule.JoinPositionLists(1, positionsPerIndex...)
 		if len(positions) == 0 {
 			return sendError(serviceModule.RecordNotFoundError)
 		}
@@ -196,18 +190,50 @@ func (jsonObject *JsonObject) endpointRegexp() *regexp.Regexp {
 	return regexp.MustCompile("^" + endpoint + "$")
 }
 
-func (jsonObject *JsonObject) getEndpointFilters(params map[string]string) (map[string]interface{}, error) {
-	filters := map[string]interface{}{}
+func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {
+	filtersPerIndex := map[string]map[string]interface{}{}
 	for i, param := range jsonObject.config.Parameters {
+		indexFilters, indexFiltersExists := filtersPerIndex[param.Index]
+		if !indexFiltersExists {
+			indexFilters = make(map[string]interface{})
+			filtersPerIndex[param.Index] = indexFilters
+		}
+
 		paramName := jsonObject.endpointRegexpParamName(i)
 		paramValue, err := jsonObject.paramParsers[i].Parse(params[paramName])
 		if err != nil {
 			return nil, err
 		}
-		filters[param.Column] = paramValue
+		indexFilters[param.Column] = paramValue
 	}
 
-	return filters, nil
+	return filtersPerIndex, nil
+}
+
+func (jsonObject *JsonObject) getFilteredRecordPositionsPerIndex(
+	filtersPerIndex map[string]map[string]interface{},
+) ([]recordModule.PositionList, error) {
+	limit := uint(0)
+	if len(filtersPerIndex) == 1 {
+		limit = 1
+	}
+
+	positionsPerIndex := make([]recordModule.PositionList, 0, len(filtersPerIndex))
+	for indexName, filters := range filtersPerIndex {
+		index, indexExists := jsonObject.indexes[indexName]
+		if !indexExists {
+			return nil, fmt.Errorf("Index '%v' not found in indexes list.", indexName)
+		}
+
+		positionsForThisIndex, err := index.GetRecordPositions(jsonObject.config.Input, filters, limit)
+		if err != nil {
+			return nil, err
+		}
+
+		positionsPerIndex = append(positionsPerIndex, positionsForThisIndex)
+	}
+
+	return positionsPerIndex, nil
 }
 
 func (jsonObject *JsonObject) loadRelationships(

@@ -107,7 +107,6 @@ outputs:
   defaultJsonObjectOutput:
     jsonObject:
       input: defaultInput
-      index: defaultIndex
       services:
         - defaultService
       endpoint: "/dummies/?"
@@ -132,6 +131,6 @@ outputs:
                 - column: id
                   ascending: true
       parameters:
-        # TODO add a limit to the join method, use it here (move the index in each param)
         - column: id
           parser: integer
+          index: defaultIndex
