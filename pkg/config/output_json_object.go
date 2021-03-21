@@ -90,7 +90,7 @@ func (config *JsonObjectOutputParameter) validate(
 	}
 
 	if config.Parser == "" {
-		log.Debug("jsonObjet.parameters[].parser not defined. Assuming 'string'")
+		log.Debug("jsonObject.parameters[].parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
 	_, parserExists := rootConfig.Parsers[config.Parser]

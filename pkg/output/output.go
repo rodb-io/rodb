@@ -25,6 +25,9 @@ func NewFromConfig(
 	if config.JsonObject != nil {
 		return NewJsonObject(config.JsonObject, inputs, indexes, services, parsers)
 	}
+	if config.JsonArray != nil {
+		return NewJsonArray(config.JsonArray, inputs, indexes, services, parsers)
+	}
 
 	return nil, errors.New("Failed to initialize output")
 }

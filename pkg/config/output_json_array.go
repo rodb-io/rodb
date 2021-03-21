@@ -18,17 +18,19 @@ type JsonArrayOutput struct {
 }
 
 type JsonArrayOutputLimit struct {
-	Default uint
-	Max     uint
-	Param   string
+	Default uint `yaml:"default"`
+	Max     uint `yaml:"max"`
+	Parameter   string `yaml:"parameter"`
 }
 
 type JsonArrayOutputOffset struct {
-	Param string
+	Parameter string `yaml:"parameter"`
 }
 
 type JsonArrayOutputSearch struct {
-	Index string
+	Column string `yaml:"column"`
+	Index string `yaml:"index"`
+	Parser string `yaml:"parser"`
 }
 
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -69,15 +71,16 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	}
 
 	for configSearchParamName, configSearchParam := range config.Search {
-		err := configSearchParam.validate(rootConfig, log)
+		logPrefix := fmt.Sprintf("jsonArray.search.%v.", configSearchParamName)
+		err := configSearchParam.validate(rootConfig, log, logPrefix)
 		if err != nil {
-			return fmt.Errorf("jsonArray.search.%v.%w", configSearchParamName, err)
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
-		if configSearchParamName == config.Limit.Param {
+		if configSearchParamName == config.Limit.Parameter {
 			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the limit", configSearchParamName, configSearchParamName)
 		}
-		if configSearchParamName == config.Offset.Param {
+		if configSearchParamName == config.Offset.Parameter {
 			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the offset", configSearchParamName, configSearchParamName)
 		}
 	}
@@ -104,31 +107,47 @@ func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Ent
 		config.Max = 1000
 	}
 
-	if config.Param == "" {
-		log.Debug("jsonArray.limit.param not set. Assuming 'limit'")
-		config.Param = "limit"
+	if config.Parameter == "" {
+		log.Debug("jsonArray.limit.parameter not set. Assuming 'limit'")
+		config.Parameter = "limit"
 	}
 
 	return nil
 }
 
 func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.Entry) error {
-	if config.Param == "" {
-		log.Debug("jsonArray.offset.param not set. Assuming 'offset'")
-		config.Param = "offset"
+	if config.Parameter == "" {
+		log.Debug("jsonArray.offset.parameter not set. Assuming 'offset'")
+		config.Parameter = "offset"
 	}
 
 	return nil
 }
 
-func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
+	if config.Column == "" {
+		return errors.New("column is empty")
+	}
+
 	if config.Index == "" {
-		log.Debugf("jsonArray.search[].index is empty. Assuming 'default'.\n")
+		log.Debugf(logPrefix+"index is empty. Assuming 'default'.\n")
 		config.Index = "default"
 	}
-	_, indexExists := rootConfig.Indexes[config.Index]
+	index, indexExists := rootConfig.Indexes[config.Index]
 	if !indexExists {
 		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
+	}
+	if !index.DoesHandleColumn(config.Column) {
+		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)
+	}
+
+	if config.Parser == "" {
+		log.Debug(logPrefix+"parser not defined. Assuming 'string'")
+		config.Parser = "string"
+	}
+	_, parserExists := rootConfig.Parsers[config.Parser]
+	if !parserExists {
+		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
 	return nil

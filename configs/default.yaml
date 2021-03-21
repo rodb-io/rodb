@@ -1,3 +1,6 @@
+# TODO split the jsonArray handler in functions
+# TODO test all the jsonArray output
+# TODO improve error messages send to the services by the outputs
 # TODO data from stdin? Test reading /dev/stdin
 # TODO e2e tests?
 # TODO performance analysis
@@ -84,17 +87,24 @@ outputs:
       services:
         - defaultService
       endpoint: "/dummies"
+      # TODO send the paging values via headers/metadata
       limit:
         default: 100
         max: 1000
-        param: "limit"
+        parameter: "limit"
       offset:
-        param: "offset"
+        # TODO implement the offset
+        parameter: "offset"
       search:
+        # TODO search partial texts
         id:
+          column: id
           index: defaultIndex
+          parser: integer
         name:
+          column: name
           index: defaultIndex
+          parser: string
       relationships:
         mySubProperty:
           input: defaultInput
