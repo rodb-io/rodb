@@ -91,8 +91,6 @@ outputs:
       offset:
         param: "offset"
       search:
-        # TODO way to join multiple positions list
-        # TODO how to cross indexes?
         id:
           index: defaultIndex
         name:
@@ -119,7 +117,7 @@ outputs:
           index: defaultIndex
           isArray: false
           match:
-            # TODO move the index inside each match
+            # TODO move the index inside each match and use record.JoinPositionLists for each of the indexes's results
             - parentColumn: id
               childColumn: id
           relationships:
