@@ -8,7 +8,7 @@ func JoinPositionLists(limit uint, lists ...PositionList) PositionList {
 		return make(PositionList, 0)
 	}
 	if len(lists) == 1 {
-		if limit == 0 {
+		if limit == 0 || int(limit) > len(lists[0]) {
 			return lists[0]
 		} else {
 			return lists[0][:limit]

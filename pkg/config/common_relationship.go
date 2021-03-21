@@ -7,7 +7,6 @@ import (
 
 type Relationship struct {
 	Input         string                   `yaml:"input"`
-	Index         string                   `yaml:"index"`
 	IsArray       bool                     `yaml:"isArray"`
 	Limit         uint                     `yaml:"limit"`
 	Sort          []*Sort                  `yaml:"sort"`
@@ -18,6 +17,7 @@ type Relationship struct {
 type RelationshipMatch struct {
 	ParentColumn string `yaml:"parentColumn"`
 	ChildColumn  string `yaml:"childColumn"`
+	ChildIndex   string `yaml:"childIndex"`
 }
 
 func (config *Relationship) validate(
@@ -27,19 +27,6 @@ func (config *Relationship) validate(
 ) error {
 	if config.Limit == 0 && config.IsArray {
 		log.Debug(logPrefix + "limit is not set. All relationships will be returned.")
-	}
-
-	if config.Index == "" {
-		log.Debugf(logPrefix + "index is empty. Assuming 'default'.\n")
-		config.Index = "default"
-	}
-
-	childIndex, childIndexExists := rootConfig.Indexes[config.Index]
-	if !childIndexExists {
-		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
-	}
-	if !childIndex.DoesHandleInput(config.Input) {
-		return fmt.Errorf("input: Index '%v' does not handle input '%v'.", config.Index, config.Input)
 	}
 
 	if config.Sort == nil {
@@ -65,18 +52,19 @@ func (config *Relationship) validate(
 
 	alreadyExistingChildColumn := make(map[string]bool)
 	for matchIndex, match := range config.Match {
+		logPrefix := fmt.Sprintf("match.%v.", matchIndex)
 		err := match.validate(
 			rootConfig,
 			log,
-			config.Index,
-			childIndex,
+			logPrefix,
+			config.Input,
 		)
 		if err != nil {
-			return fmt.Errorf("match.%v.%w", matchIndex, err)
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
 		if _, alreadyExists := alreadyExistingChildColumn[match.ChildColumn]; alreadyExists {
-			return fmt.Errorf("match.%v.childColumn: Duplicate filter on childColumn %v", matchIndex, match.ChildColumn)
+			return fmt.Errorf("%vchildColumn: Duplicate filter on childColumn %v", logPrefix, match.ChildColumn)
 		}
 		alreadyExistingChildColumn[match.ChildColumn] = true
 	}
@@ -95,13 +83,25 @@ func (config *Relationship) validate(
 func (config *RelationshipMatch) validate(
 	rootConfig *Config,
 	log *logrus.Entry,
-	childIndexName string,
-	childIndex Index,
+	logPrefix string,
+	parentInputName string,
 ) error {
 	// The parentColumn and childColumn will be validated at runtime (must be validated against the input and not the index)
 
+	if config.ChildIndex == "" {
+		log.Debugf(logPrefix + "childIndex is empty. Assuming 'default'.\n")
+		config.ChildIndex = "default"
+	}
+
+	childIndex, childIndexExists := rootConfig.Indexes[config.ChildIndex]
+	if !childIndexExists {
+		return fmt.Errorf("childIndex: Index '%v' not found in indexes list.", config.ChildIndex)
+	}
+	if !childIndex.DoesHandleInput(parentInputName) {
+		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, parentInputName)
+	}
 	if !childIndex.DoesHandleColumn(config.ChildColumn) {
-		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", childIndexName, config.ChildColumn)
+		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", config.ChildIndex, config.ChildColumn)
 	}
 
 	return nil

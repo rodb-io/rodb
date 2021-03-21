@@ -98,11 +98,11 @@ outputs:
       relationships:
         mySubProperty:
           input: defaultInput
-          index: defaultIndex
           isArray: false
           match:
             - parentColumn: id
               childColumn: id
+              childIndex: defaultIndex
       # TODO sorting
   defaultJsonObjectOutput:
     jsonObject:
@@ -113,20 +113,19 @@ outputs:
       relationships:
         mySubProperty:
           input: defaultInput
-          index: defaultIndex
           isArray: false
           match:
-            # TODO move the index inside each match and use record.JoinPositionLists for each of the indexes's results
             - parentColumn: id
               childColumn: id
+              childIndex: defaultIndex
           relationships:
             mySubSubProperty:
               input: defaultInput
-              index: defaultIndex
               isArray: true
               match:
                 - parentColumn: id
                   childColumn: id
+                  childIndex: defaultIndex
               sort:
                 - column: id
                   ascending: true

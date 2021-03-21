@@ -98,13 +98,13 @@ outputs:
       relationships:
         updated:
           input: updatedValues
-          index: default
           match:
             - parentColumn: updatedId
               childColumn: id
+              childIndex: default
         reasonsForUpdate:
           input: reasonsForUpdate
-          index: default
           match:
             - parentColumn: reasonForUpdateId
               childColumn: id
+              childIndex: default

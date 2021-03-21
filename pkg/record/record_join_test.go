@@ -39,6 +39,14 @@ func TestJoinPositionLists(t *testing.T) {
 			},
 			expect: PositionList{1, 2, 3},
 		}, {
+			name:  "limit bigger than data",
+			limit: 99,
+			lists: []PositionList{
+				{1, 2},
+				{1, 2},
+			},
+			expect: PositionList{1, 2},
+		}, {
 			name:  "single list",
 			limit: 0,
 			lists: []PositionList{
