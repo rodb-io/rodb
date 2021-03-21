@@ -119,6 +119,7 @@ outputs:
           index: defaultIndex
           isArray: false
           match:
+            # TODO move the index inside each match
             - parentColumn: id
               childColumn: id
           relationships:
