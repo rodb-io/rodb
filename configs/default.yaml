@@ -1,4 +1,3 @@
-# TODO split the jsonArray handler in functions
 # TODO test all the jsonArray output
 # TODO improve error messages send to the services by the outputs
 # TODO data from stdin? Test reading /dev/stdin

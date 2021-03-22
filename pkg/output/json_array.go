@@ -90,39 +90,14 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 		sendError func(err error) error,
 		sendSucces func() io.Writer,
 	) error {
-		limit := jsonArray.config.Limit.Default
-		if limitParam, limitParamExists := params[jsonArray.config.Limit.Parameter]; limitParamExists {
-			limitAsInt, err := strconv.Atoi(limitParam)
-			if err != nil {
-				return sendError(err)
-			}
-			limit = uint(limitAsInt)
+		limit, err := jsonArray.getLimit(params)
+		if err != nil {
+			return sendError(err)
 		}
 
-		filtersPerIndex := make(map[string]map[string]interface{})
-		for searchName, searchConfig := range jsonArray.config.Search {
-			paramValue, paramExists := params[searchName]
-			if !paramExists {
-				continue
-			}
-
-			parser, parserExists := jsonArray.parsers[searchConfig.Parser]
-			if !parserExists {
-				return sendError(errors.New("Parser '" + searchConfig.Parser + "' does not exist"))
-			}
-
-			parsedParamValue, err := parser.Parse(paramValue)
-			if err != nil {
-				return sendError(err)
-			}
-
-			indexFilters, indexFiltersExists := filtersPerIndex[searchConfig.Index]
-			if !indexFiltersExists {
-				indexFilters = make(map[string]interface{})
-				filtersPerIndex[searchConfig.Index] = indexFilters
-			}
-
-			indexFilters[searchConfig.Column] = parsedParamValue
+		filtersPerIndex, err := jsonArray.getFiltersPerIndex(params)
+		if err != nil {
+			return sendError(err)
 		}
 
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
@@ -153,6 +128,49 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 
 		return json.NewEncoder(sendSucces()).Encode(rowsData)
 	}
+}
+
+func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
+	limit := jsonArray.config.Limit.Default
+	if limitParam, limitParamExists := params[jsonArray.config.Limit.Parameter]; limitParamExists {
+		limitAsInt, err := strconv.Atoi(limitParam)
+		if err != nil {
+			return 0, err
+		}
+		limit = uint(limitAsInt)
+	}
+
+	return limit, nil
+}
+
+func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {
+	filtersPerIndex := make(map[string]map[string]interface{})
+	for searchName, searchConfig := range jsonArray.config.Search {
+		paramValue, paramExists := params[searchName]
+		if !paramExists {
+			continue
+		}
+
+		parser, parserExists := jsonArray.parsers[searchConfig.Parser]
+		if !parserExists {
+			return nil, errors.New("Parser '" + searchConfig.Parser + "' does not exist")
+		}
+
+		parsedParamValue, err := parser.Parse(paramValue)
+		if err != nil {
+			return nil, err
+		}
+
+		indexFilters, indexFiltersExists := filtersPerIndex[searchConfig.Index]
+		if !indexFiltersExists {
+			indexFilters = make(map[string]interface{})
+			filtersPerIndex[searchConfig.Index] = indexFilters
+		}
+
+		indexFilters[searchConfig.Column] = parsedParamValue
+	}
+
+	return filtersPerIndex, nil
 }
 
 func (jsonArray *JsonArray) Close() error {
