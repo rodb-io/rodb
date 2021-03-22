@@ -115,7 +115,7 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			},
 		)
 		if err != nil {
-			service.config.Logger.Errorf("Unhandled error while handling the route: %v", err)
+			service.config.Logger.Errorf("Unhandled error while handling the route '%v': %v", route.Endpoint, err)
 		}
 
 		return
