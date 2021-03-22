@@ -19,7 +19,6 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
-	input        inputModule.Input
 	indexes      indexModule.List
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
@@ -52,22 +51,17 @@ func NewJsonObject(
 		outputServices[i] = service
 	}
 
-	input, inputExists := inputs[config.Input]
-	if !inputExists {
-		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
-	}
-
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
-		input:        input,
 		indexes:      indexes,
 		services:     outputServices,
 		paramParsers: paramParsers,
 	}
 
 	for _, relationship := range jsonObject.config.Relationships {
-		err := jsonObject.checkRelationshipMatches(
+		err := checkRelationshipMatches(
+			jsonObject.inputs,
 			relationship,
 			jsonObject.config.Input,
 		)
@@ -92,40 +86,6 @@ func NewJsonObject(
 	return jsonObject, nil
 }
 
-func (jsonObject *JsonObject) checkRelationshipMatches(
-	relationship *configModule.Relationship,
-	parentInputName string,
-) error {
-	input, inputExists := jsonObject.inputs[parentInputName]
-	if !inputExists {
-		return fmt.Errorf("Input '%v' not found in inputs list.", parentInputName)
-	}
-
-	for _, sort := range relationship.Sort {
-		if !input.HasColumn(sort.Column) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, sort.Column)
-		}
-	}
-
-	for _, match := range relationship.Match {
-		if !input.HasColumn(match.ParentColumn) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, match.ParentColumn)
-		}
-	}
-
-	for _, relationship := range relationship.Relationships {
-		err := jsonObject.checkRelationshipMatches(
-			relationship,
-			relationship.Input,
-		)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 	return func(
 		params map[string]string,
@@ -143,7 +103,12 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			limit = 1
 		}
 
-		positionsPerIndex, err := jsonObject.getFilteredRecordPositionsPerIndex(limit, filtersPerIndex)
+		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+			jsonObject.indexes,
+			jsonObject.config.Input,
+			limit,
+			filtersPerIndex,
+		)
 		if err != nil {
 			return sendError(err)
 		}
@@ -153,17 +118,13 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			return sendError(serviceModule.RecordNotFoundError)
 		}
 
-		record, err := jsonObject.input.Get(positions[0])
-		if err != nil {
-			return sendError(err)
-		}
-
-		data, err := record.All()
-		if err != nil {
-			return sendError(err)
-		}
-
-		data, err = jsonObject.loadRelationships(data, jsonObject.config.Relationships)
+		data, err := getDataFromPosition(
+			positions[0],
+			jsonObject.config.Relationships,
+			jsonObject.indexes,
+			jsonObject.inputs,
+			jsonObject.config.Input,
+		)
 		if err != nil {
 			return sendError(err)
 		}
@@ -213,127 +174,6 @@ func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]strin
 	}
 
 	return filtersPerIndex, nil
-}
-
-func (jsonObject *JsonObject) getRelationshipFiltersPerIndex(
-	data map[string]interface{},
-	matchConfig []*configModule.RelationshipMatch,
-	relationshipName string,
-) (map[string]map[string]interface{}, error) {
-	filtersPerIndex := map[string]map[string]interface{}{}
-	for _, match := range matchConfig {
-		matchData, matchColumnExists := data[match.ParentColumn]
-		if !matchColumnExists {
-			return nil, errors.New("Parent column '" + match.ParentColumn + "' does not exists in relationship '" + relationshipName + "'.")
-		}
-
-		indexFilters, indexFiltersExist := filtersPerIndex[match.ChildIndex]
-		if !indexFiltersExist {
-			indexFilters = make(map[string]interface{})
-			filtersPerIndex[match.ChildIndex] = indexFilters
-		}
-
-		indexFilters[match.ChildColumn] = matchData
-	}
-
-	return filtersPerIndex, nil
-}
-
-func (jsonObject *JsonObject) getFilteredRecordPositionsPerIndex(
-	limit uint,
-	filtersPerIndex map[string]map[string]interface{},
-) ([]recordModule.PositionList, error) {
-	positionsPerIndex := make([]recordModule.PositionList, 0, len(filtersPerIndex))
-	for indexName, filters := range filtersPerIndex {
-		index, indexExists := jsonObject.indexes[indexName]
-		if !indexExists {
-			return nil, fmt.Errorf("Index '%v' not found in indexes list.", indexName)
-		}
-
-		positionsForThisIndex, err := index.GetRecordPositions(jsonObject.config.Input, filters, limit)
-		if err != nil {
-			return nil, err
-		}
-
-		positionsPerIndex = append(positionsPerIndex, positionsForThisIndex)
-	}
-
-	return positionsPerIndex, nil
-}
-
-func (jsonObject *JsonObject) loadRelationships(
-	data map[string]interface{},
-	relationships map[string]*configModule.Relationship,
-) (map[string]interface{}, error) {
-	for relationshipName, relationshipConfig := range relationships {
-		filtersPerIndex, err := jsonObject.getRelationshipFiltersPerIndex(
-			data,
-			relationshipConfig.Match,
-			relationshipName,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		relationshipRecordPositionsPerFilter, err := jsonObject.getFilteredRecordPositionsPerIndex(0, filtersPerIndex)
-		if err != nil {
-			return nil, err
-		}
-
-		var limit uint = 1
-		if relationshipConfig.IsArray {
-			limit = relationshipConfig.Limit
-		}
-
-		input, inputExists := jsonObject.inputs[relationshipConfig.Input]
-		if !inputExists {
-			return nil, fmt.Errorf("Input '%v' not found in inputs list.", relationshipConfig.Input)
-		}
-
-		relationshipRecordPositions := recordModule.JoinPositionLists(limit, relationshipRecordPositionsPerFilter...)
-
-		relationshipRecords := make(recordModule.List, len(relationshipRecordPositions))
-		for i, position := range relationshipRecordPositions {
-			relationshipRecords[i], err = input.Get(position)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		if len(relationshipConfig.Sort) > 0 {
-			relationshipRecords = relationshipRecords.Sort(relationshipConfig.Sort)
-		}
-
-		relationshipItems := make([]map[string]interface{}, 0, len(relationshipRecords))
-		for _, relationshipRecord := range relationshipRecords {
-			relationshipData, err := relationshipRecord.All()
-			if err != nil {
-				return nil, err
-			}
-
-			relationshipData, err = jsonObject.loadRelationships(
-				relationshipData,
-				relationshipConfig.Relationships,
-			)
-			if err != nil {
-				return nil, err
-			}
-
-			relationshipItems = append(relationshipItems, relationshipData)
-		}
-
-		if relationshipConfig.IsArray {
-			data[relationshipName] = relationshipItems
-		} else {
-			if len(relationshipItems) == 0 {
-				data[relationshipName] = nil
-			} else {
-				data[relationshipName] = relationshipItems[0]
-			}
-		}
-	}
-
-	return data, nil
 }
 
 func (jsonObject *JsonObject) Close() error {

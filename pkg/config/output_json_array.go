@@ -18,9 +18,9 @@ type JsonArrayOutput struct {
 }
 
 type JsonArrayOutputLimit struct {
-	Default uint `yaml:"default"`
-	Max     uint `yaml:"max"`
-	Parameter   string `yaml:"parameter"`
+	Default   uint   `yaml:"default"`
+	Max       uint   `yaml:"max"`
+	Parameter string `yaml:"parameter"`
 }
 
 type JsonArrayOutputOffset struct {
@@ -29,7 +29,7 @@ type JsonArrayOutputOffset struct {
 
 type JsonArrayOutputSearch struct {
 	Column string `yaml:"column"`
-	Index string `yaml:"index"`
+	Index  string `yaml:"index"`
 	Parser string `yaml:"parser"`
 }
 
@@ -130,7 +130,7 @@ func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.En
 	}
 
 	if config.Index == "" {
-		log.Debugf(logPrefix+"index is empty. Assuming 'default'.\n")
+		log.Debugf(logPrefix + "index is empty. Assuming 'default'.\n")
 		config.Index = "default"
 	}
 	index, indexExists := rootConfig.Indexes[config.Index]
@@ -142,7 +142,7 @@ func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.En
 	}
 
 	if config.Parser == "" {
-		log.Debug(logPrefix+"parser not defined. Assuming 'string'")
+		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
 	_, parserExists := rootConfig.Parsers[config.Parser]

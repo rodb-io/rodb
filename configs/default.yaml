@@ -2,7 +2,7 @@
 # TODO test all the jsonArray output
 # TODO improve error messages send to the services by the outputs
 # TODO data from stdin? Test reading /dev/stdin
-# TODO e2e tests?
+# TODO e2e tests? (test data + relationships returned by the service from the config)
 # TODO performance analysis
 parsers:
   defaultInteger:

@@ -16,14 +16,13 @@ import (
 )
 
 type JsonArray struct {
-	*JsonObject
-	config       *configModule.JsonArrayOutput
-	inputs       inputModule.List
-	input        inputModule.Input
-	indexes      indexModule.List
-	parsers      parserModule.List
-	services     []serviceModule.Service
-	route        *serviceModule.Route
+	config   *configModule.JsonArrayOutput
+	inputs   inputModule.List
+	input    inputModule.Input
+	indexes  indexModule.List
+	parsers  parserModule.List
+	services []serviceModule.Service
+	route    *serviceModule.Route
 }
 
 func NewJsonArray(
@@ -49,17 +48,17 @@ func NewJsonArray(
 	}
 
 	jsonArray := &JsonArray{
-		JsonObject:   &JsonObject{},
-		config:       config,
-		inputs:       inputs,
-		input:        input,
-		indexes:      indexes,
-		parsers:      parsers,
-		services:     outputServices,
+		config:   config,
+		inputs:   inputs,
+		input:    input,
+		indexes:  indexes,
+		parsers:  parsers,
+		services: outputServices,
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
-		err := jsonArray.checkRelationshipMatches(
+		err := checkRelationshipMatches(
+			jsonArray.inputs,
 			relationship,
 			jsonArray.config.Input,
 		)
@@ -126,25 +125,27 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 			indexFilters[searchConfig.Column] = parsedParamValue
 		}
 
-		positionsPerIndex, err := jsonArray.getFilteredRecordPositionsPerIndex(0, filtersPerIndex)
+		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+			jsonArray.indexes,
+			jsonArray.config.Input,
+			0,
+			filtersPerIndex,
+		)
 		if err != nil {
 			return sendError(err)
 		}
 
 		positions := recordModule.JoinPositionLists(limit, positionsPerIndex...)
+
 		rowsData := make([]interface{}, len(positions))
 		for i, position := range positions {
-			record, err := jsonArray.input.Get(position)
-			if err != nil {
-				return sendError(err)
-			}
-
-			data, err := record.All()
-			if err != nil {
-				return sendError(err)
-			}
-
-			rowsData[i], err = jsonArray.loadRelationships(data, jsonArray.config.Relationships)
+			rowsData[i], err = getDataFromPosition(
+				position,
+				jsonArray.config.Relationships,
+				jsonArray.indexes,
+				jsonArray.inputs,
+				jsonArray.config.Input,
+			)
 			if err != nil {
 				return sendError(err)
 			}
