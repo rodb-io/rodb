@@ -7,30 +7,31 @@ import (
 )
 
 func TestNoopGetRecordPositions(t *testing.T) {
+	mockInput := input.NewMock([]input.IterateAllResult{
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"col":  "col_a",
+			"col2": "col2_b",
+		}, 0)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"col":  "col_a",
+			"col2": "col2_a",
+		}, 1)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"col":  "col_b",
+			"col2": "col2_a",
+		}, 2)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"col":  "col_a",
+			"col2": "col2_a",
+		}, 3)},
+		{Record: record.NewStringColumnsMock(map[string]string{
+			"col":  "col_b",
+			"col2": "col2_b",
+		}, 4)},
+	})
 	index := NewNoop(
 		map[string]input.Input{
-			"input": input.NewMock([]input.IterateAllResult{
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "col_a",
-					"col2": "col2_b",
-				}, 0)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "col_a",
-					"col2": "col2_a",
-				}, 1)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "col_b",
-					"col2": "col2_a",
-				}, 2)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "col_a",
-					"col2": "col2_a",
-				}, 3)},
-				{Record: record.NewStringColumnsMock(map[string]string{
-					"col":  "col_b",
-					"col2": "col2_b",
-				}, 4)},
-			}),
+			"input": mockInput,
 		},
 	)
 
@@ -61,7 +62,7 @@ func TestNoopGetRecordPositions(t *testing.T) {
 				expectedResults: record.PositionList{1, 3},
 			},
 		} {
-			positions, err := index.GetRecordPositions("input", map[string]interface{}{
+			positions, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 				"col":  "col_a",
 				"col2": "col2_a",
 			}, testCase.limit)
@@ -80,16 +81,8 @@ func TestNoopGetRecordPositions(t *testing.T) {
 			}
 		}
 	})
-	t.Run("wrong input", func(t *testing.T) {
-		_, err := index.GetRecordPositions("wrong_input", map[string]interface{}{
-			"col": "",
-		}, 1)
-		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
-		}
-	})
 	t.Run("wrong column", func(t *testing.T) {
-		_, err := index.GetRecordPositions("input", map[string]interface{}{
+		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
 		}, 1)
 		if err == nil {

@@ -72,13 +72,13 @@ func getRelationshipFiltersPerIndex(
 func getFilteredRecordPositionsPerIndex(
 	defaultIndex indexModule.Index,
 	indexes indexModule.List,
-	inputName string,
+	input inputModule.Input,
 	limit uint,
 	filtersPerIndex map[string]map[string]interface{},
 ) ([]recordModule.PositionList, error) {
 	if len(filtersPerIndex) == 0 {
 		records, err := defaultIndex.GetRecordPositions(
-			inputName,
+			input,
 			map[string]interface{}{},
 			limit,
 		)
@@ -96,7 +96,7 @@ func getFilteredRecordPositionsPerIndex(
 			return nil, fmt.Errorf("Index '%v' not found in indexes list.", indexName)
 		}
 
-		positionsForThisIndex, err := index.GetRecordPositions(inputName, filters, limit)
+		positionsForThisIndex, err := index.GetRecordPositions(input, filters, limit)
 		if err != nil {
 			return nil, err
 		}
@@ -125,10 +125,15 @@ func loadRelationships(
 			return nil, err
 		}
 
+		input, ok := inputs[relationshipConfig.Input]
+		if !ok {
+			return nil, fmt.Errorf("There is no input named '%v'", relationshipConfig.Input)
+		}
+
 		relationshipRecordPositionsPerFilter, err := getFilteredRecordPositionsPerIndex(
 			defaultIndex,
 			indexes,
-			relationshipConfig.Input,
+			input,
 			0,
 			filtersPerIndex,
 		)

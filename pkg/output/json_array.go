@@ -106,7 +106,7 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
 			jsonArray.indexes["default"],
 			jsonArray.indexes,
-			jsonArray.config.Input,
+			jsonArray.input,
 			0,
 			filtersPerIndex,
 		)

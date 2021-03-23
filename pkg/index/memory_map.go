@@ -120,10 +120,11 @@ func (mm *MemoryMap) Reindex() error {
 
 // Get the record positions (if indexed) that matches all the given filters
 // A limit of 0 means that there is no limit
-func (mm *MemoryMap) GetRecordPositions(inputName string, filters map[string]interface{}, limit uint) (record.PositionList, error) {
-	if !mm.config.DoesHandleInput(inputName) {
-		return nil, fmt.Errorf("This index does not handle the input '%v'.", inputName)
+func (mm *MemoryMap) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
+	if input != mm.input {
+		return nil, fmt.Errorf("This index does not handle the given input '%+v'.", input)
 	}
+
 	if len(filters) == 0 {
 		return nil, fmt.Errorf("This index requires at least one filter.")
 	}

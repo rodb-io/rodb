@@ -1,4 +1,4 @@
-# TODO index get: dependency-inject the input directly instead of the input name?
+# TODO memoryMap.GetRecordsPosition: first error should know the input name -> add the object names in the configs
 # TODO move the watch and fail logic directly into the source (otherwise we cannot be sure that the IterateAll() works)
 # TODO e2e tests? (jsonArray + jsonObject, data + relationships)
 # TODO performance analysis

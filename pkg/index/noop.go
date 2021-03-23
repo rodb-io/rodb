@@ -1,7 +1,6 @@
 package index
 
 import (
-	"fmt"
 	"reflect"
 	"rods/pkg/input"
 	"rods/pkg/record"
@@ -21,12 +20,7 @@ func NewNoop(
 	}
 }
 
-func (d *Noop) GetRecordPositions(inputName string, filters map[string]interface{}, limit uint) (record.PositionList, error) {
-	input, ok := d.inputs[inputName]
-	if !ok {
-		return nil, fmt.Errorf("There is no input named '%v'", inputName)
-	}
-
+func (d *Noop) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	records := make(record.PositionList, 0)
 	for result := range input.IterateAll() {
 		if result.Error != nil {

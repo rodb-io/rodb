@@ -19,6 +19,7 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
+	input        inputModule.Input
 	defaultIndex indexModule.Index
 	indexes      indexModule.List
 	services     []serviceModule.Service
@@ -53,9 +54,15 @@ func NewJsonObject(
 		outputServices[i] = service
 	}
 
+	input, ok := inputs[config.Input]
+	if !ok {
+		return nil, fmt.Errorf("There is no input named '%v'", config.Input)
+	}
+
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
+		input:        input,
 		defaultIndex: defaultIndex,
 		indexes:      indexes,
 		services:     outputServices,
@@ -109,7 +116,7 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
 			jsonObject.defaultIndex,
 			jsonObject.indexes,
-			jsonObject.config.Input,
+			jsonObject.input,
 			limit,
 			filtersPerIndex,
 		)
