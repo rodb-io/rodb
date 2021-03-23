@@ -11,6 +11,10 @@ func NewMock() *Mock {
 	return mock
 }
 
+func (mock *Mock) Name() string {
+	return "mock"
+}
+
 func (mock *Mock) Close() error {
 	return nil
 }

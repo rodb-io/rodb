@@ -68,6 +68,10 @@ func NewCsv(
 	return csvInput, nil
 }
 
+func (csvInput *Csv) Name() string {
+	return csvInput.config.Name
+}
+
 func (csvInput *Csv) HasColumn(columnName string) bool {
 	for _, column := range csvInput.config.Columns {
 		if column.Name == columnName {

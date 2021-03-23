@@ -11,6 +11,7 @@ import (
 )
 
 type Output interface {
+	Name() string
 	Close() error
 }
 

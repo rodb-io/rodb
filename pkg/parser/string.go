@@ -33,6 +33,10 @@ func NewString(
 	}, nil
 }
 
+func (str *String) Name() string {
+	return str.config.Name
+}
+
 func (str *String) GetRegexpPattern() string {
 	return ".*"
 }

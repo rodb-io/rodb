@@ -19,6 +19,10 @@ func NewInteger(
 	}
 }
 
+func (integer *Integer) Name() string {
+	return integer.config.Name
+}
+
 func (integer *Integer) GetRegexpPattern() string {
 	ignore := regexp.QuoteMeta(integer.config.IgnoreCharacters)
 	ignoreBegin := ""

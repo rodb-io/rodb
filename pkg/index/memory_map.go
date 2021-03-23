@@ -65,6 +65,10 @@ func NewMemoryMap(
 	return memoryMap, nil
 }
 
+func (mm *MemoryMap) Name() string {
+	return mm.config.Name
+}
+
 func (mm *MemoryMap) Reindex() error {
 	index := make(memoryMapIndex)
 	for _, column := range mm.config.Columns {
@@ -122,7 +126,7 @@ func (mm *MemoryMap) Reindex() error {
 // A limit of 0 means that there is no limit
 func (mm *MemoryMap) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	if input != mm.input {
-		return nil, fmt.Errorf("This index does not handle the input '%v'.", input)
+		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
 	}
 
 	if len(filters) == 0 {

@@ -1,5 +1,3 @@
-# TODO add method `Name() string` to all objects (return from the config)
-# TODO memoryMap.GetRecordsPosition: first error should know the input name
 # TODO search for places where the new config name may be useful (avoid names as parameters)
 # TODO move the watch and fail logic directly into the source (otherwise we cannot be sure that the IterateAll() works)
 # TODO e2e tests? (jsonArray + jsonObject, data + relationships)

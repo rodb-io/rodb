@@ -17,6 +17,10 @@ func NewMock(data string) *Mock {
 	}
 }
 
+func (mock *Mock) Name() string {
+	return "mock"
+}
+
 func (mock *Mock) Open(filePath string) (io.ReadSeeker, error) {
 	return strings.NewReader(mock.data), nil
 }

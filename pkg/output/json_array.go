@@ -86,6 +86,10 @@ func NewJsonArray(
 	return jsonArray, nil
 }
 
+func (jsonArray *JsonArray) Name() string {
+	return jsonArray.config.Name
+}
+
 func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 	return func(
 		params map[string]string,

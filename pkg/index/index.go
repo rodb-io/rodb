@@ -8,6 +8,8 @@ import (
 )
 
 type Index interface {
+	Name() string
+
 	// Gets the indexed records matching all the given filters
 	// The returned list is expected to be ordered from the
 	// smallest position to the biggest
@@ -26,7 +28,7 @@ func NewFromConfig(
 		return NewMemoryMap(config.MemoryMap, inputs)
 	}
 	if config.Noop != nil {
-		return NewNoop(inputs), nil
+		return NewNoop(config.Noop, inputs), nil
 	}
 
 	return nil, errors.New("Failed to initialize index")

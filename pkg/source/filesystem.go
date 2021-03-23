@@ -52,6 +52,10 @@ func NewFilesystem(
 	return fs, nil
 }
 
+func (fs *Filesystem) Name() string {
+	return fs.config.Name
+}
+
 func (fs *Filesystem) startWatchProcess() {
 	go func() {
 		for {

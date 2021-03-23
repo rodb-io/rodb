@@ -18,6 +18,10 @@ func NewMock(data []IterateAllResult) *Mock {
 	}
 }
 
+func (mock *Mock) Name() string {
+	return "mock"
+}
+
 func (mock *Mock) HasColumn(columnName string) bool {
 	if len(mock.data) == 0 {
 		return false

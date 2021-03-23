@@ -14,6 +14,10 @@ func NewMockWithPrefix(prefix string) *Mock {
 	}
 }
 
+func (mock *Mock) Name() string {
+	return "mock"
+}
+
 func (mock *Mock) GetRegexpPattern() string {
 	return ".*"
 }

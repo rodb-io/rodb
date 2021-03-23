@@ -1,6 +1,7 @@
 package index
 
 import (
+	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
 	"testing"
@@ -30,6 +31,7 @@ func TestNoopGetRecordPositions(t *testing.T) {
 		}, 4)},
 	})
 	index := NewNoop(
+		&config.NoopIndex{},
 		map[string]input.Input{
 			"input": mockInput,
 		},

@@ -9,6 +9,7 @@ import (
 )
 
 type Input interface {
+	Name() string
 	HasColumn(columnName string) bool
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)

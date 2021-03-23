@@ -12,6 +12,10 @@ func NewMock() *Mock {
 	}
 }
 
+func (mock *Mock) Name() string {
+	return "mock"
+}
+
 func (service *Mock) AddRoute(route *Route) {
 	service.Routes = append(service.Routes, route)
 }

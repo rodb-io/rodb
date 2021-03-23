@@ -2,6 +2,7 @@ package index
 
 import (
 	"reflect"
+	"rods/pkg/config"
 	"rods/pkg/input"
 	"rods/pkg/record"
 )
@@ -9,18 +10,25 @@ import (
 // A noop index is able to search into any data,
 // but very inefficiently. It does not index anything.
 type Noop struct {
+	config *config.NoopIndex
 	inputs input.List
 }
 
 func NewNoop(
+	config *config.NoopIndex,
 	inputs input.List,
 ) *Noop {
 	return &Noop{
+		config: config,
 		inputs: inputs,
 	}
 }
 
-func (d *Noop) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
+func (noop *Noop) Name() string {
+	return noop.config.Name
+}
+
+func (noop *Noop) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	records := make(record.PositionList, 0)
 	for result := range input.IterateAll() {
 		if result.Error != nil {
@@ -61,6 +69,6 @@ func (d *Noop) GetRecordPositions(input input.Input, filters map[string]interfac
 	return records, nil
 }
 
-func (d *Noop) Close() error {
+func (noop *Noop) Close() error {
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 )
 
 type Parser interface {
+	Name() string
 	GetRegexpPattern() string
 	Parse(value string) (interface{}, error)
 }

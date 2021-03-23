@@ -96,6 +96,10 @@ func NewJsonObject(
 	return jsonObject, nil
 }
 
+func (jsonObject *JsonObject) Name() string {
+	return jsonObject.config.Name
+}
+
 func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 	return func(
 		params map[string]string,

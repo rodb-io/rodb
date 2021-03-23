@@ -57,6 +57,10 @@ func NewHttp(
 	return service, nil
 }
 
+func (service *Http) Name() string {
+	return service.config.Name
+}
+
 func (service *Http) AddRoute(route *Route) {
 	service.routes = append(service.routes, route)
 }
