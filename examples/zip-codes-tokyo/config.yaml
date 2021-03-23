@@ -79,6 +79,11 @@ indexes:
       input: zipCodesTokyo
       columns:
         - zipCode
+  municipality:
+    memoryMap:
+      input: zipCodesTokyo
+      columns:
+        - municipality
 services:
   httpService:
     http:
@@ -97,15 +102,11 @@ outputs:
         parameter: "limit"
       offset:
         parameter: "offset"
-      #search:
-      #  id:
-      #    column: id
-      #    index: defaultIndex
-      #    parser: integer
-      #  name:
-      #    column: name
-      #    index: defaultIndex
-      #    parser: string
+      search:
+        municipality:
+          column: municipality
+          index: municipality
+          parser: string
       relationships:
         updated:
           input: updatedValues

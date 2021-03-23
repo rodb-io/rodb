@@ -128,7 +128,7 @@ func loadRelationships(
 			return nil, err
 		}
 
-		relationshipRecordPositionsPerFilter, err := getFilteredRecordPositionsPerIndex(indexes, rootInput, 0, filtersPerIndex)
+		relationshipRecordPositionsPerFilter, err := getFilteredRecordPositionsPerIndex(indexes, relationshipConfig.Input, 0, filtersPerIndex)
 		if err != nil {
 			return nil, err
 		}
