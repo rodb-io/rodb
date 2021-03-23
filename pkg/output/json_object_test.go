@@ -14,6 +14,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *serv
 	jsonObject, err := NewJsonObject(
 		config,
 		dataForTests.inputs,
+		dataForTests.indexes["default"],
 		dataForTests.indexes,
 		services,
 		dataForTests.parsers,

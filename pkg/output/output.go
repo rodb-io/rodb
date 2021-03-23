@@ -2,6 +2,7 @@ package output
 
 import (
 	"errors"
+	"fmt"
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/input"
@@ -22,11 +23,16 @@ func NewFromConfig(
 	services service.List,
 	parsers parser.List,
 ) (Output, error) {
+	defaultIndex, defaultIndexExists := indexes["default"]
+	if !defaultIndexExists {
+		return nil, fmt.Errorf("Index 'default' not found in indexes list.")
+	}
+
 	if config.JsonObject != nil {
-		return NewJsonObject(config.JsonObject, inputs, indexes, services, parsers)
+		return NewJsonObject(config.JsonObject, inputs, defaultIndex, indexes, services, parsers)
 	}
 	if config.JsonArray != nil {
-		return NewJsonArray(config.JsonArray, inputs, indexes, services, parsers)
+		return NewJsonArray(config.JsonArray, inputs, defaultIndex, indexes, services, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize output")

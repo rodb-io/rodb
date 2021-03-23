@@ -16,18 +16,20 @@ import (
 )
 
 type JsonArray struct {
-	config   *configModule.JsonArrayOutput
-	inputs   inputModule.List
-	input    inputModule.Input
-	indexes  indexModule.List
-	parsers  parserModule.List
-	services []serviceModule.Service
-	route    *serviceModule.Route
+	config       *configModule.JsonArrayOutput
+	inputs       inputModule.List
+	input        inputModule.Input
+	defaultIndex indexModule.Index
+	indexes      indexModule.List
+	parsers      parserModule.List
+	services     []serviceModule.Service
+	route        *serviceModule.Route
 }
 
 func NewJsonArray(
 	config *configModule.JsonArrayOutput,
 	inputs inputModule.List,
+	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	services serviceModule.List,
 	parsers parserModule.List,
@@ -48,12 +50,13 @@ func NewJsonArray(
 	}
 
 	jsonArray := &JsonArray{
-		config:   config,
-		inputs:   inputs,
-		input:    input,
-		indexes:  indexes,
-		parsers:  parsers,
-		services: outputServices,
+		config:       config,
+		inputs:       inputs,
+		input:        input,
+		defaultIndex: defaultIndex,
+		indexes:      indexes,
+		parsers:      parsers,
+		services:     outputServices,
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
@@ -101,6 +104,7 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 		}
 
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+			jsonArray.indexes["default"],
 			jsonArray.indexes,
 			jsonArray.config.Input,
 			0,
@@ -117,6 +121,7 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 			rowsData[i], err = getDataFromPosition(
 				position,
 				jsonArray.config.Relationships,
+				jsonArray.defaultIndex,
 				jsonArray.indexes,
 				jsonArray.inputs,
 				jsonArray.config.Input,

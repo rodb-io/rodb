@@ -132,6 +132,7 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 		}
 
 		recordLists, err := getFilteredRecordPositionsPerIndex(
+			jsonDataForTests.indexes["default"],
 			jsonDataForTests.indexes,
 			"mock",
 			0,
@@ -164,6 +165,7 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 		jsonDataForTests := mockJsonDataForTests()
 
 		recordLists, err := getFilteredRecordPositionsPerIndex(
+			jsonDataForTests.indexes["default"],
 			jsonDataForTests.indexes,
 			"mock",
 			0,
@@ -227,6 +229,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 		data, err := loadRelationships(
 			data,
 			relationshipsConfig,
+			jsonDataForTests.indexes["default"],
 			jsonDataForTests.indexes,
 			jsonDataForTests.inputs,
 			"mock",

@@ -19,6 +19,7 @@ import (
 type JsonObject struct {
 	config       *configModule.JsonObjectOutput
 	inputs       inputModule.List
+	defaultIndex indexModule.Index
 	indexes      indexModule.List
 	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
@@ -28,6 +29,7 @@ type JsonObject struct {
 func NewJsonObject(
 	config *configModule.JsonObjectOutput,
 	inputs inputModule.List,
+	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	services serviceModule.List,
 	parsers parserModule.List,
@@ -54,6 +56,7 @@ func NewJsonObject(
 	jsonObject := &JsonObject{
 		config:       config,
 		inputs:       inputs,
+		defaultIndex: defaultIndex,
 		indexes:      indexes,
 		services:     outputServices,
 		paramParsers: paramParsers,
@@ -104,6 +107,7 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 		}
 
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+			jsonObject.defaultIndex,
 			jsonObject.indexes,
 			jsonObject.config.Input,
 			limit,
@@ -121,6 +125,7 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 		data, err := getDataFromPosition(
 			positions[0],
 			jsonObject.config.Relationships,
+			jsonObject.defaultIndex,
 			jsonObject.indexes,
 			jsonObject.inputs,
 			jsonObject.config.Input,

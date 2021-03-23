@@ -14,6 +14,7 @@ func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, *service
 	jsonArray, err := NewJsonArray(
 		config,
 		dataForTests.inputs,
+		dataForTests.indexes["default"],
 		dataForTests.indexes,
 		services,
 		dataForTests.parsers,

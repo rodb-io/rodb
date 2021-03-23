@@ -70,18 +70,14 @@ func getRelationshipFiltersPerIndex(
 }
 
 func getFilteredRecordPositionsPerIndex(
+	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	inputName string,
 	limit uint,
 	filtersPerIndex map[string]map[string]interface{},
 ) ([]recordModule.PositionList, error) {
 	if len(filtersPerIndex) == 0 {
-		index, indexExists := indexes["default"]
-		if !indexExists {
-			return nil, fmt.Errorf("Index 'default' not found in indexes list.")
-		}
-
-		records, err := index.GetRecordPositions(
+		records, err := defaultIndex.GetRecordPositions(
 			inputName,
 			map[string]interface{}{},
 			limit,
@@ -114,6 +110,7 @@ func getFilteredRecordPositionsPerIndex(
 func loadRelationships(
 	data map[string]interface{},
 	relationships map[string]*configModule.Relationship,
+	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	inputs inputModule.List,
 	rootInput string,
@@ -128,7 +125,13 @@ func loadRelationships(
 			return nil, err
 		}
 
-		relationshipRecordPositionsPerFilter, err := getFilteredRecordPositionsPerIndex(indexes, relationshipConfig.Input, 0, filtersPerIndex)
+		relationshipRecordPositionsPerFilter, err := getFilteredRecordPositionsPerIndex(
+			defaultIndex,
+			indexes,
+			relationshipConfig.Input,
+			0,
+			filtersPerIndex,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -167,6 +170,7 @@ func loadRelationships(
 			relationshipData, err = loadRelationships(
 				relationshipData,
 				relationshipConfig.Relationships,
+				defaultIndex,
 				indexes,
 				inputs,
 				relationshipConfig.Input,
@@ -195,6 +199,7 @@ func loadRelationships(
 func getDataFromPosition(
 	position recordModule.Position,
 	relationships map[string]*configModule.Relationship,
+	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	inputs inputModule.List,
 	rootInput string,
@@ -214,7 +219,7 @@ func getDataFromPosition(
 		return nil, err
 	}
 
-	data, err = loadRelationships(data, relationships, indexes, inputs, rootInput)
+	data, err = loadRelationships(data, relationships, defaultIndex, indexes, inputs, rootInput)
 	if err != nil {
 		return nil, err
 	}
