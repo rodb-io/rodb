@@ -13,23 +13,58 @@ type Parser struct {
 }
 
 func (config *Parser) validate(rootConfig *Config, log *logrus.Entry) error {
-	fields := getAllNonNilFields(config)
-
-	if len(fields) == 0 {
-		return errors.New("One of your parsers does not have a definition.")
+	definedFields := 0
+	if config.Integer != nil {
+		definedFields++
+		err := config.Integer.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.Float != nil {
+		definedFields++
+		err := config.Float.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.Boolean != nil {
+		definedFields++
+		err := config.Boolean.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.String != nil {
+		definedFields++
+		err := config.String.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(fields) > 1 {
+	if definedFields == 0 {
+		return errors.New("One of your parsers does not have a definition.")
+	}
+	if definedFields > 1 {
 		return errors.New("One of your parsers has two different definitions.")
 	}
 
-	return fields[0].validate(rootConfig, log)
+	return nil
 }
 
-func (config *Parser) getName() string {
-	fields := getAllNonNilFields(config)
-	if len(fields) > 0 {
-		return fields[0].getName()
+func (config *Parser) Name() string {
+	if config.Integer != nil {
+		return config.Integer.Name
+	}
+	if config.Float != nil {
+		return config.Float.Name
+	}
+	if config.Boolean != nil {
+		return config.Boolean.Name
+	}
+	if config.String != nil {
+		return config.String.Name
 	}
 
 	return ""

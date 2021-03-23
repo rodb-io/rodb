@@ -101,10 +101,6 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	return nil
 }
 
-func (config *JsonArrayOutput) getName() string {
-	return config.Name
-}
-
 func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Entry) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")

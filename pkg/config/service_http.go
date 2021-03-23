@@ -37,7 +37,3 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 
 	return nil
 }
-
-func (config *HttpService) getName() string {
-	return config.Name
-}

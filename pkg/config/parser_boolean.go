@@ -28,7 +28,3 @@ func (config *BooleanParser) validate(rootConfig *Config, log *logrus.Entry) err
 
 	return nil
 }
-
-func (config *BooleanParser) getName() string {
-	return config.Name
-}

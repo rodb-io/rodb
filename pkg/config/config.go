@@ -66,42 +66,42 @@ func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
 	}
 
 	for _, parser := range parsedConfig.Parsers {
-		name := parser.getName()
+		name := parser.Name()
 		if _, exists := config.Parsers[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for parser.", name)
 		}
 		config.Parsers[name] = parser
 	}
 	for _, source := range parsedConfig.Sources {
-		name := source.getName()
+		name := source.Name()
 		if _, exists := config.Sources[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for source.", name)
 		}
 		config.Sources[name] = source
 	}
 	for _, input := range parsedConfig.Inputs {
-		name := input.getName()
+		name := input.Name()
 		if _, exists := config.Inputs[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for input.", name)
 		}
 		config.Inputs[name] = input
 	}
 	for _, index := range parsedConfig.Indexes {
-		name := index.getName()
+		name := index.Name()
 		if _, exists := config.Indexes[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for index.", name)
 		}
 		config.Indexes[name] = index
 	}
 	for _, service := range parsedConfig.Services {
-		name := service.getName()
+		name := service.Name()
 		if _, exists := config.Services[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for service.", name)
 		}
 		config.Services[name] = service
 	}
 	for _, output := range parsedConfig.Outputs {
-		name := output.getName()
+		name := output.Name()
 		if _, exists := config.Outputs[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for output.", name)
 		}
@@ -112,36 +112,34 @@ func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	if _, exists := config.Indexes["default"]; exists {
+	defaultIndex := Index{
+		Noop: &NoopIndex{
+			Name: "default",
+		},
+	}
+	if _, exists := config.Indexes[defaultIndex.Name()]; exists {
 		log.Warnf("You have declared an index named 'default', which will replace the internally used one.\n")
 	} else {
-		config.Indexes["default"] = Index{
-			Noop: &NoopIndex{
-				Name: "default",
-			},
-		}
+		config.Indexes[defaultIndex.Name()] = defaultIndex
 	}
 
-	for parserName, parserConfig := range map[string]Parser{
-		"string": {
+	for _, parserConfig := range []Parser{
+		{
 			String: &StringParser{
 				Name: "string",
 			},
-		},
-		"integer": {
+		}, {
 			Integer: &IntegerParser{
 				Name:             "integer",
 				IgnoreCharacters: "",
 			},
-		},
-		"float": {
+		}, {
 			Float: &FloatParser{
 				Name:             "float",
 				DecimalSeparator: ".",
 				IgnoreCharacters: "",
 			},
-		},
-		"boolean": {
+		}, {
 			Boolean: &BooleanParser{
 				Name:        "boolean",
 				TrueValues:  []string{"true", "1", "TRUE"},
@@ -149,10 +147,10 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 			},
 		},
 	} {
-		if _, exists := config.Parsers[parserName]; exists {
-			log.Warnf("You have declared a parser named '%v', which will replace the default one.\n", parserName)
+		if _, exists := config.Parsers[parserConfig.Name()]; exists {
+			log.Warnf("You have declared a parser named '%v', which will replace the default one.\n", parserConfig.Name())
 		} else {
-			config.Parsers[parserName] = parserConfig
+			config.Parsers[parserConfig.Name()] = parserConfig
 		}
 	}
 }
@@ -194,9 +192,30 @@ func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
 		}
 	}
 
-	err := checkDuplicateEndpointsPerService(config.Outputs)
+	err := config.checkDuplicateEndpointsPerService()
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (config *Config) checkDuplicateEndpointsPerService() error {
+	endpointsPerService := make(map[string]map[string]interface{})
+	for _, outputConfigContainer := range config.Outputs {
+		for _, service := range outputConfigContainer.Services() {
+			serviceEndpoints, serviceExists := endpointsPerService[service]
+			if !serviceExists {
+				serviceEndpoints = make(map[string]interface{})
+				endpointsPerService[service] = serviceEndpoints
+			}
+
+			if _, endpointExists := serviceEndpoints[outputConfigContainer.Endpoint()]; endpointExists {
+				return fmt.Errorf("Duplicate endpoint '%v' in service '%v'", outputConfigContainer.Endpoint(), service)
+			}
+
+			serviceEndpoints[outputConfigContainer.Endpoint()] = nil
+		}
 	}
 
 	return nil

@@ -20,7 +20,3 @@ func (config *IntegerParser) validate(rootConfig *Config, log *logrus.Entry) err
 
 	return nil
 }
-
-func (config *IntegerParser) getName() string {
-	return config.Name
-}

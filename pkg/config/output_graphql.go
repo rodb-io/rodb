@@ -42,7 +42,3 @@ func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Entry) err
 
 	return nil
 }
-
-func (config *GraphQLOutput) getName() string {
-	return config.Name
-}

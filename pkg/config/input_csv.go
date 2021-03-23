@@ -79,10 +79,6 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *CsvInput) getName() string {
-	return config.Name
-}
-
 func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
 	_, parserExists := rootConfig.Parsers[config.Parser]
 	if !parserExists {

@@ -10,23 +10,28 @@ type Source struct {
 }
 
 func (config *Source) validate(rootConfig *Config, log *logrus.Entry) error {
-	fields := getAllNonNilFields(config)
-
-	if len(fields) == 0 {
-		return errors.New("All sources must have a configuration")
+	definedFields := 0
+	if config.Filesystem != nil {
+		definedFields++
+		err := config.Filesystem.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(fields) > 1 {
+	if definedFields == 0 {
+		return errors.New("All sources must have a configuration")
+	}
+	if definedFields > 1 {
 		return errors.New("A source can only have one configuration")
 	}
 
-	return fields[0].validate(rootConfig, log)
+	return nil
 }
 
-func (config *Source) getName() string {
-	fields := getAllNonNilFields(config)
-	if len(fields) > 0 {
-		return fields[0].getName()
+func (config *Source) Name() string {
+	if config.Filesystem != nil {
+		return config.Filesystem.Name
 	}
 
 	return ""

@@ -21,7 +21,3 @@ func (config *FilesystemSource) validate(rootConfig *Config, log *logrus.Entry) 
 	// The path will be validated at runtime
 	return nil
 }
-
-func (config *FilesystemSource) getName() string {
-	return config.Name
-}

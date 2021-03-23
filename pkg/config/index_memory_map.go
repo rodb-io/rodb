@@ -45,10 +45,6 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 	return nil
 }
 
-func (config *MemoryMapIndex) getName() string {
-	return config.Name
-}
-
 func (config *MemoryMapIndex) DoesHandleColumn(column string) bool {
 	isHandled := false
 	for _, handledColumn := range config.Columns {

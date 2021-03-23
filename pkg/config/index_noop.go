@@ -20,10 +20,6 @@ func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *NoopIndex) getName() string {
-	return config.Name
-}
-
 func (config *NoopIndex) DoesHandleColumn(column string) bool {
 	return true
 }

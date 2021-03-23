@@ -22,7 +22,3 @@ func (config *StringParser) validate(rootConfig *Config, log *logrus.Entry) erro
 	// The default value is empty string (= don't convert)
 	return nil
 }
-
-func (config *StringParser) getName() string {
-	return config.Name
-}

@@ -12,23 +12,76 @@ type Output struct {
 }
 
 func (config *Output) validate(rootConfig *Config, log *logrus.Entry) error {
-	fields := getAllNonNilFields(config)
-
-	if len(fields) == 0 {
-		return errors.New("One of your outputs does not have a definition.")
+	definedFields := 0
+	if config.GraphQL != nil {
+		definedFields++
+		err := config.GraphQL.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.JsonArray != nil {
+		definedFields++
+		err := config.JsonArray.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.JsonObject != nil {
+		definedFields++
+		err := config.JsonObject.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(fields) > 1 {
+	if definedFields == 0 {
+		return errors.New("One of your outputs does not have a definition.")
+	}
+	if definedFields > 1 {
 		return errors.New("One of your outputs has two different definitions.")
 	}
 
-	return fields[0].validate(rootConfig, log)
+	return nil
 }
 
-func (config *Output) getName() string {
-	fields := getAllNonNilFields(config)
-	if len(fields) > 0 {
-		return fields[0].getName()
+func (config *Output) Name() string {
+	if config.GraphQL != nil {
+		return config.GraphQL.Name
+	}
+	if config.JsonArray != nil {
+		return config.JsonArray.Name
+	}
+	if config.JsonObject != nil {
+		return config.JsonObject.Name
+	}
+
+	return ""
+}
+
+func (config *Output) Services() []string {
+	if config.GraphQL != nil {
+		return config.GraphQL.Services
+	}
+	if config.JsonArray != nil {
+		return config.JsonArray.Services
+	}
+	if config.JsonObject != nil {
+		return config.JsonObject.Services
+	}
+
+	return []string{}
+}
+
+func (config *Output) Endpoint() string {
+	if config.GraphQL != nil {
+		return config.GraphQL.Endpoint
+	}
+	if config.JsonArray != nil {
+		return config.JsonArray.Endpoint
+	}
+	if config.JsonObject != nil {
+		return config.JsonObject.Endpoint
 	}
 
 	return ""

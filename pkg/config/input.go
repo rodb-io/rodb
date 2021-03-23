@@ -10,23 +10,28 @@ type Input struct {
 }
 
 func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
-	fields := getAllNonNilFields(config)
-
-	if len(fields) == 0 {
-		return errors.New("All inputs must have a configuration")
+	definedFields := 0
+	if config.Csv != nil {
+		definedFields++
+		err := config.Csv.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(fields) > 1 {
+	if definedFields == 0 {
+		return errors.New("All inputs must have a configuration")
+	}
+	if definedFields > 1 {
 		return errors.New("An input can only have one configuration")
 	}
 
-	return fields[0].validate(rootConfig, log)
+	return nil
 }
 
-func (config *Input) getName() string {
-	fields := getAllNonNilFields(config)
-	if len(fields) > 0 {
-		return fields[0].getName()
+func (config *Input) Name() string {
+	if config.Csv != nil {
+		return config.Csv.Name
 	}
 
 	return ""

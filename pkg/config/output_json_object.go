@@ -85,10 +85,6 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	return nil
 }
 
-func (config *JsonObjectOutput) getName() string {
-	return config.Name
-}
-
 func (config *JsonObjectOutputParameter) validate(
 	rootConfig *Config,
 	log *logrus.Entry,

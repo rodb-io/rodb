@@ -1,4 +1,3 @@
-# TODO config.addDefaultConfig: should be done before converting to the new object (-> avoid duplicating names)
 # TODO add method `Name() string` to all objects (return from the config)
 # TODO memoryMap.GetRecordsPosition: first error should know the input name
 # TODO search for places where the new config name may be useful (avoid names as parameters)

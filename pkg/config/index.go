@@ -11,55 +11,60 @@ type Index struct {
 }
 
 func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {
-	fields := getAllNonNilFields(config)
-
-	if len(fields) == 0 {
-		return errors.New("All indexes must have a configuration")
+	definedFields := 0
+	if config.MemoryMap != nil {
+		definedFields++
+		err := config.MemoryMap.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.Noop != nil {
+		definedFields++
+		err := config.Noop.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(fields) > 1 {
+	if definedFields == 0 {
+		return errors.New("All indexes must have a configuration")
+	}
+	if definedFields > 1 {
 		return errors.New("An index can only have one configuration")
 	}
 
-	return fields[0].validate(rootConfig, log)
+	return nil
 }
 
-func (config *Index) getName() string {
-	fields := getAllNonNilFields(config)
-	if len(fields) > 0 {
-		return fields[0].getName()
+func (config *Index) Name() string {
+	if config.MemoryMap != nil {
+		return config.MemoryMap.Name
+	}
+	if config.Noop != nil {
+		return config.Noop.Name
 	}
 
 	return ""
 }
 
 func (config *Index) DoesHandleColumn(column string) bool {
-	fields := getAllNonNilFields(config)
-	if len(fields) == 0 {
-		return false
+	if config.MemoryMap != nil {
+		return config.MemoryMap.DoesHandleColumn(column)
 	}
-
-	switch fields[0].(type) {
-	case *MemoryMapIndex:
-		return fields[0].(*MemoryMapIndex).DoesHandleColumn(column)
-	case *NoopIndex:
-		return fields[0].(*NoopIndex).DoesHandleColumn(column)
+	if config.Noop != nil {
+		return config.Noop.DoesHandleColumn(column)
 	}
 
 	return false
 }
 
 func (config *Index) DoesHandleInput(input string) bool {
-	fields := getAllNonNilFields(config)
-	if len(fields) == 0 {
-		return false
+	if config.MemoryMap != nil {
+		return config.MemoryMap.DoesHandleInput(input)
 	}
-
-	switch fields[0].(type) {
-	case *MemoryMapIndex:
-		return fields[0].(*MemoryMapIndex).DoesHandleInput(input)
-	case *NoopIndex:
-		return fields[0].(*NoopIndex).DoesHandleInput(input)
+	if config.Noop != nil {
+		return config.Noop.DoesHandleInput(input)
 	}
 
 	return false
