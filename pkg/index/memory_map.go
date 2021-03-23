@@ -122,7 +122,7 @@ func (mm *MemoryMap) Reindex() error {
 // A limit of 0 means that there is no limit
 func (mm *MemoryMap) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
 	if input != mm.input {
-		return nil, fmt.Errorf("This index does not handle the given input '%+v'.", input)
+		return nil, fmt.Errorf("This index does not handle the input '%v'.", input)
 	}
 
 	if len(filters) == 0 {

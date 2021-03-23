@@ -8,6 +8,7 @@ import (
 )
 
 type JsonObjectOutput struct {
+	Name          string                       `yaml:"name"`
 	Services      []string                     `yaml:"services"`
 	Input         string                       `yaml:"input"`
 	Endpoint      string                       `yaml:"endpoint"`
@@ -24,6 +25,10 @@ type JsonObjectOutputParameter struct {
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("jsonObject.name is required")
+	}
 
 	alreadyExistingServices := make(map[string]bool)
 	for _, serviceName := range config.Services {
@@ -78,6 +83,10 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	}
 
 	return nil
+}
+
+func (config *JsonObjectOutput) getName() string {
+	return config.Name
 }
 
 func (config *JsonObjectOutputParameter) validate(

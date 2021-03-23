@@ -7,6 +7,7 @@ import (
 )
 
 type JsonArrayOutput struct {
+	Name          string                           `yaml:"name"`
 	Input         string                           `yaml:"input"`
 	Services      []string                         `yaml:"services"`
 	Endpoint      string                           `yaml:"endpoint"`
@@ -35,6 +36,10 @@ type JsonArrayOutputSearch struct {
 
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("jsonArray.name is required")
+	}
 
 	if config.Input == "" {
 		return errors.New("jsonArray.input is empty. This field is required.")
@@ -94,6 +99,10 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	}
 
 	return nil
+}
+
+func (config *JsonArrayOutput) getName() string {
+	return config.Name
 }
 
 func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Entry) error {

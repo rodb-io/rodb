@@ -7,6 +7,7 @@ import (
 )
 
 type validable interface {
+	getName() string
 	validate(rootConfig *Config, log *logrus.Entry) error
 }
 

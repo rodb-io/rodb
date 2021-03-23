@@ -1,21 +1,21 @@
 parsers:
-  booleanZeroOne:
-    boolean:
+  - boolean:
+      name: booleanZeroOne
       falseValues: ["0"]
       trueValues: ["1"]
-  integerWithSpaces:
-    integer:
+  - integer:
+      name: integerWithSpaces
       ignoreCharacters: " "
-  shiftJisString:
-    string:
+  - string:
+      name: shiftJisString
       convertFromCharset: "Shift_JIS"
 sources:
-  filesystem:
-    filesystem:
+  - filesystem:
+      name: filesystem
       path: /examples/zip-codes-tokyo
 inputs:
-  zipCodesTokyo:
-    csv:
+  - csv:
+      name: zipCodesTokyo
       source: filesystem
       path: ./zip-codes.csv
       ignoreFirstRow: false
@@ -51,8 +51,8 @@ inputs:
           parser: integer
         - name: reasonForUpdateId
           parser: integer
-  updatedValues:
-    csv:
+  - csv:
+      name: updatedValues
       source: filesystem
       path: ./updated-values.csv
       ignoreFirstRow: false
@@ -62,8 +62,8 @@ inputs:
           parser: integer
         - name: name
           parser: string
-  reasonsForUpdate:
-    csv:
+  - csv:
+      name: reasonsForUpdate
       source: filesystem
       path: ./reasons-for-updated.csv
       ignoreFirstRow: false
@@ -74,24 +74,24 @@ inputs:
         - name: name
           parser: string
 indexes:
-  zipCode:
-    memoryMap:
+  - memoryMap:
+      name: zipCode
       input: zipCodesTokyo
       columns:
         - zipCode
-  municipality:
-    memoryMap:
+  - memoryMap:
+      name: municipality
       input: zipCodesTokyo
       columns:
         - municipality
 services:
-  httpService:
-    http:
+  - http:
+      name: httpService
       listen: ":80"
       errorsType: application/json
 outputs:
-  listPostalCodes:
-    jsonArray:
+  - jsonArray:
+      name: listPostalCodes
       input: zipCodesTokyo
       services:
         - httpService
@@ -120,8 +120,8 @@ outputs:
             - parentColumn: reasonForUpdateId
               childColumn: id
               childIndex: default
-  findOnePostalCode:
-    jsonObject:
+  - jsonObject:
+      name: findOnePostalCode
       input: zipCodesTokyo
       services:
         - httpService

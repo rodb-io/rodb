@@ -1,11 +1,13 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
 type MemoryMapIndex struct {
+	Name             string   `yaml:"name"`
 	DieOnInputChange *bool    `yaml:"dieOnInputChange"`
 	Input            string   `yaml:"input"`
 	Columns          []string `yaml:"columns"`
@@ -14,6 +16,10 @@ type MemoryMapIndex struct {
 
 func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("memoryMap.name is required")
+	}
 
 	_, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
@@ -37,6 +43,10 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 	// The columns validity will be validated at runtime
 
 	return nil
+}
+
+func (config *MemoryMapIndex) getName() string {
+	return config.Name
 }
 
 func (config *MemoryMapIndex) DoesHandleColumn(column string) bool {

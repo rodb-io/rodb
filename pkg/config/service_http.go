@@ -7,6 +7,7 @@ import (
 )
 
 type HttpService struct {
+	Name       string `yaml:"name"`
 	Listen     string `yaml:"listen"`
 	ErrorsType string `yaml:"errorsType"`
 	Logger     *logrus.Entry
@@ -14,6 +15,10 @@ type HttpService struct {
 
 func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("http.name is required")
+	}
 
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
@@ -31,4 +36,8 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 	}
 
 	return nil
+}
+
+func (config *HttpService) getName() string {
+	return config.Name
 }

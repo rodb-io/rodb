@@ -24,6 +24,15 @@ func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {
 	return fields[0].validate(rootConfig, log)
 }
 
+func (config *Index) getName() string {
+	fields := getAllNonNilFields(config)
+	if len(fields) > 0 {
+		return fields[0].getName()
+	}
+
+	return ""
+}
+
 func (config *Index) DoesHandleColumn(column string) bool {
 	fields := getAllNonNilFields(config)
 	if len(fields) == 0 {

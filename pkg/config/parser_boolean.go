@@ -6,6 +6,7 @@ import (
 )
 
 type BooleanParser struct {
+	Name        string   `yaml:"name"`
 	TrueValues  []string `yaml:"trueValues"`
 	FalseValues []string `yaml:"falseValues"`
 	Logger      *logrus.Entry
@@ -13,6 +14,10 @@ type BooleanParser struct {
 
 func (config *BooleanParser) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("boolean.name is required")
+	}
 
 	if len(config.TrueValues) == 0 {
 		return errors.New("boolean.trueValues is required")
@@ -22,4 +27,8 @@ func (config *BooleanParser) validate(rootConfig *Config, log *logrus.Entry) err
 	}
 
 	return nil
+}
+
+func (config *BooleanParser) getName() string {
+	return config.Name
 }

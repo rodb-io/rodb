@@ -7,6 +7,7 @@ import (
 )
 
 type CsvInput struct {
+	Name              string            `yaml:"name"`
 	Source            string            `yaml:"source"`
 	Path              string            `yaml:"path"`
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
@@ -24,6 +25,10 @@ type CsvInputColumn struct {
 
 func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
+
+	if config.Name == "" {
+		return errors.New("csv.name is required")
+	}
 
 	_, sourceExists := rootConfig.Sources[config.Source]
 	if !sourceExists {
@@ -72,6 +77,10 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	}
 
 	return nil
+}
+
+func (config *CsvInput) getName() string {
+	return config.Name
 }
 
 func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {

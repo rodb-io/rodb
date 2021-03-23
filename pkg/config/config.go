@@ -8,6 +8,15 @@ import (
 	"os"
 )
 
+type ParsedConfig struct {
+	Parsers  []Parser
+	Sources  []Source
+	Inputs   []Input
+	Indexes  []Index
+	Services []Service
+	Outputs  []Output
+}
+
 type Config struct {
 	Parsers  map[string]Parser
 	Sources  map[string]Source
@@ -25,10 +34,15 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 	yamlConfigWithEnv := []byte(os.ExpandEnv(string(configData)))
 
-	config := &Config{}
-	err = yaml.UnmarshalStrict(yamlConfigWithEnv, config)
+	parsedConfig := &ParsedConfig{}
+	err = yaml.UnmarshalStrict(yamlConfigWithEnv, parsedConfig)
 	if err != nil {
 		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
+	}
+
+	config, err := NewConfigFromParsedConfig(parsedConfig)
+	if err != nil {
+		return nil, err
 	}
 
 	config.addDefaultConfigs(log)
@@ -41,30 +55,95 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 	return config, nil
 }
 
+func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
+	config := &Config{
+		Parsers:  map[string]Parser{},
+		Sources:  map[string]Source{},
+		Inputs:   map[string]Input{},
+		Indexes:  map[string]Index{},
+		Services: map[string]Service{},
+		Outputs:  map[string]Output{},
+	}
+
+	for _, parser := range parsedConfig.Parsers {
+		name := parser.getName()
+		if _, exists := config.Parsers[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for parser.", name)
+		}
+		config.Parsers[name] = parser
+	}
+	for _, source := range parsedConfig.Sources {
+		name := source.getName()
+		if _, exists := config.Sources[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for source.", name)
+		}
+		config.Sources[name] = source
+	}
+	for _, input := range parsedConfig.Inputs {
+		name := input.getName()
+		if _, exists := config.Inputs[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for input.", name)
+		}
+		config.Inputs[name] = input
+	}
+	for _, index := range parsedConfig.Indexes {
+		name := index.getName()
+		if _, exists := config.Indexes[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for index.", name)
+		}
+		config.Indexes[name] = index
+	}
+	for _, service := range parsedConfig.Services {
+		name := service.getName()
+		if _, exists := config.Services[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for service.", name)
+		}
+		config.Services[name] = service
+	}
+	for _, output := range parsedConfig.Outputs {
+		name := output.getName()
+		if _, exists := config.Outputs[name]; exists {
+			return nil, fmt.Errorf("Duplicate name '%v' for output.", name)
+		}
+		config.Outputs[name] = output
+	}
+
+	return config, nil
+}
+
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 	if _, exists := config.Indexes["default"]; exists {
 		log.Warnf("You have declared an index named 'default', which will replace the internally used one.\n")
 	} else {
-		config.Indexes["default"] = Index{Noop: &NoopIndex{}}
+		config.Indexes["default"] = Index{
+			Noop: &NoopIndex{
+				Name: "default",
+			},
+		}
 	}
 
 	for parserName, parserConfig := range map[string]Parser{
 		"string": {
-			String: &StringParser{},
+			String: &StringParser{
+				Name: "string",
+			},
 		},
 		"integer": {
 			Integer: &IntegerParser{
+				Name:             "integer",
 				IgnoreCharacters: "",
 			},
 		},
 		"float": {
 			Float: &FloatParser{
+				Name:             "float",
 				DecimalSeparator: ".",
 				IgnoreCharacters: "",
 			},
 		},
 		"boolean": {
 			Boolean: &BooleanParser{
+				Name:        "boolean",
 				TrueValues:  []string{"true", "1", "TRUE"},
 				FalseValues: []string{"false", "0", "FALSE"},
 			},

@@ -22,3 +22,12 @@ func (config *Source) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	return fields[0].validate(rootConfig, log)
 }
+
+func (config *Source) getName() string {
+	fields := getAllNonNilFields(config)
+	if len(fields) > 0 {
+		return fields[0].getName()
+	}
+
+	return ""
+}
