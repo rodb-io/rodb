@@ -139,6 +139,9 @@ func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
 		}
 		limit = uint(limitAsInt)
 	}
+	if limit > jsonArray.config.Limit.Max {
+		limit = jsonArray.config.Limit.Max
+	}
 
 	return limit, nil
 }

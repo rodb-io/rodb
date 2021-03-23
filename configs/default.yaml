@@ -1,5 +1,4 @@
 # TODO manually test the jsonArray output (finish debugging + uncomment and test the search)
-# TODO test jsonArray.getLimit
 # TODO test jsonArray.getFiltersPerIndex
 # TODO index get: dependency-inject the input directly instead of the input name?
 # TODO move the watch and fail logic directly into the source (otherwise we cannot be sure that the IterateAll() works)
