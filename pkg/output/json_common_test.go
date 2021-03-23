@@ -10,14 +10,15 @@ import (
 )
 
 type jsonDataForTests struct {
-	mockResults []input.IterateAllResult
-	mockInput   *input.Mock
-	mockIndex   *index.Noop
-	mockIndex2  *index.Noop
-	mockParser  *parser.Mock
-	inputs      input.List
-	indexes     index.List
-	parsers     parser.List
+	mockResults      []input.IterateAllResult
+	mockInput        *input.Mock
+	mockIndex        *index.Noop
+	mockIndex2       *index.Noop
+	mockParser       *parser.Mock
+	mockParserPrefix *parser.Mock
+	inputs           input.List
+	indexes          index.List
+	parsers          parser.List
 }
 
 func mockJsonDataForTests() jsonDataForTests {
@@ -39,14 +40,16 @@ func mockJsonDataForTests() jsonDataForTests {
 			"belongs_to": "1",
 		}, 3)},
 	}
+
 	mockInput := input.NewMock(mockResults)
 	mockIndex := index.NewNoop(input.List{"mock": mockInput})
 	mockIndex2 := index.NewNoop(input.List{"mock": mockInput})
 	mockParser := parser.NewMock()
+	mockParserPrefix := parser.NewMockWithPrefix("prefix_")
 
 	inputs := input.List{"mock": mockInput}
 	indexes := index.List{"default": mockIndex, "mock": mockIndex, "mock2": mockIndex2}
-	parsers := parser.List{"mock": mockParser}
+	parsers := parser.List{"mock": mockParser, "prefix": mockParserPrefix}
 
 	return jsonDataForTests{
 		mockResults,
@@ -54,6 +57,7 @@ func mockJsonDataForTests() jsonDataForTests {
 		mockIndex,
 		mockIndex2,
 		mockParser,
+		mockParserPrefix,
 		inputs,
 		indexes,
 		parsers,

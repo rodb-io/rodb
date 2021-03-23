@@ -1,15 +1,23 @@
 package parser
 
-type Mock struct{}
+type Mock struct {
+	prefix string
+}
 
 func NewMock() *Mock {
 	return &Mock{}
 }
 
-func (string *Mock) GetRegexpPattern() string {
+func NewMockWithPrefix(prefix string) *Mock {
+	return &Mock{
+		prefix: prefix,
+	}
+}
+
+func (mock *Mock) GetRegexpPattern() string {
 	return ".*"
 }
 
-func (string *Mock) Parse(value string) (interface{}, error) {
-	return value, nil
+func (mock *Mock) Parse(value string) (interface{}, error) {
+	return mock.prefix + value, nil
 }
