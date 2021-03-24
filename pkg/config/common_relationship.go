@@ -37,6 +37,11 @@ func (config *Relationship) validate(
 		return fmt.Errorf("sort: You can only sort a relationship when isArray = 'true'.")
 	}
 
+	input, inputExists := rootConfig.Inputs[config.Input]
+	if !inputExists {
+		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
+	}
+
 	alreadyExistingSortColumns := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
 		err := sort.validate(rootConfig, log, "jsonObject.relationships[].sort.")
@@ -57,7 +62,7 @@ func (config *Relationship) validate(
 			rootConfig,
 			log,
 			logPrefix,
-			config.Input,
+			input,
 		)
 		if err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
@@ -84,7 +89,7 @@ func (config *RelationshipMatch) validate(
 	rootConfig *Config,
 	log *logrus.Entry,
 	logPrefix string,
-	parentInputName string,
+	input Input,
 ) error {
 	// The parentColumn and childColumn will be validated at runtime (must be validated against the input and not the index)
 
@@ -97,8 +102,8 @@ func (config *RelationshipMatch) validate(
 	if !childIndexExists {
 		return fmt.Errorf("childIndex: Index '%v' not found in indexes list.", config.ChildIndex)
 	}
-	if !childIndex.DoesHandleInput(parentInputName) {
-		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, parentInputName)
+	if !childIndex.DoesHandleInput(input) {
+		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, input.Name())
 	}
 	if !childIndex.DoesHandleColumn(config.ChildColumn) {
 		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", config.ChildIndex, config.ChildColumn)

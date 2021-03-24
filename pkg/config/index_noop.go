@@ -24,6 +24,6 @@ func (config *NoopIndex) DoesHandleColumn(column string) bool {
 	return true
 }
 
-func (config *NoopIndex) DoesHandleInput(input string) bool {
+func (config *NoopIndex) DoesHandleInput(input Input) bool {
 	return true
 }

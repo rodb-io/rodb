@@ -12,30 +12,30 @@ import (
 func checkRelationshipMatches(
 	inputs inputModule.List,
 	relationship *configModule.Relationship,
-	parentInputName string,
+	parentInput inputModule.Input,
 ) error {
-	input, inputExists := inputs[parentInputName]
-	if !inputExists {
-		return fmt.Errorf("Input '%v' not found in inputs list.", parentInputName)
-	}
-
 	for _, sort := range relationship.Sort {
-		if !input.HasColumn(sort.Column) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, sort.Column)
+		if !parentInput.HasColumn(sort.Column) {
+			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInput.Name(), sort.Column)
 		}
 	}
 
 	for _, match := range relationship.Match {
-		if !input.HasColumn(match.ParentColumn) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInputName, match.ParentColumn)
+		if !parentInput.HasColumn(match.ParentColumn) {
+			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInput.Name(), match.ParentColumn)
 		}
 	}
 
 	for _, relationship := range relationship.Relationships {
+		relationshipInput, inputExists := inputs[relationship.Input]
+		if !inputExists {
+			return fmt.Errorf("Input '%v' not found in inputs list.", relationship.Input)
+		}
+
 		err := checkRelationshipMatches(
 			inputs,
 			relationship,
-			relationship.Input,
+			relationshipInput,
 		)
 		if err != nil {
 			return err

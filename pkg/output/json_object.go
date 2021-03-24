@@ -73,7 +73,7 @@ func NewJsonObject(
 		err := checkRelationshipMatches(
 			jsonObject.inputs,
 			relationship,
-			jsonObject.config.Input,
+			jsonObject.input,
 		)
 		if err != nil {
 			return nil, err

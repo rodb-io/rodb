@@ -57,6 +57,6 @@ func (config *MemoryMapIndex) DoesHandleColumn(column string) bool {
 	return isHandled
 }
 
-func (config *MemoryMapIndex) DoesHandleInput(input string) bool {
-	return input == config.Input
+func (config *MemoryMapIndex) DoesHandleInput(input Input) bool {
+	return input.Name() == config.Input
 }

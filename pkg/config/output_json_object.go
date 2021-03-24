@@ -54,9 +54,13 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	if config.Input == "" {
 		return errors.New("jsonObject.input is empty. This field is required.")
 	}
+	input, inputExists := rootConfig.Inputs[config.Input]
+	if !inputExists {
+		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
+	}
 
 	for parameterIndex, parameter := range config.Parameters {
-		err := parameter.validate(rootConfig, log, config.Input)
+		err := parameter.validate(rootConfig, log, input)
 		if err != nil {
 			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterIndex, err)
 		}
@@ -88,7 +92,7 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 func (config *JsonObjectOutputParameter) validate(
 	rootConfig *Config,
 	log *logrus.Entry,
-	inputName string,
+	input Input,
 ) error {
 	if config.Column == "" {
 		return errors.New("column is empty")
@@ -112,8 +116,8 @@ func (config *JsonObjectOutputParameter) validate(
 	if !indexExists {
 		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
 	}
-	if !index.DoesHandleInput(inputName) {
-		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, inputName)
+	if !index.DoesHandleInput(input) {
+		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, input.Name())
 	}
 	if !index.DoesHandleColumn(config.Column) {
 		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)

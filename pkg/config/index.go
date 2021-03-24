@@ -59,7 +59,7 @@ func (config *Index) DoesHandleColumn(column string) bool {
 	return false
 }
 
-func (config *Index) DoesHandleInput(input string) bool {
+func (config *Index) DoesHandleInput(input Input) bool {
 	if config.MemoryMap != nil {
 		return config.MemoryMap.DoesHandleInput(input)
 	}

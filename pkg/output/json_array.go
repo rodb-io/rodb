@@ -63,7 +63,7 @@ func NewJsonArray(
 		err := checkRelationshipMatches(
 			jsonArray.inputs,
 			relationship,
-			jsonArray.config.Input,
+			jsonArray.input,
 		)
 		if err != nil {
 			return nil, err
