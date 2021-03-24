@@ -10,17 +10,11 @@ type Source interface {
 	Name() string
 	Open(filePath string) (io.ReadSeeker, error)
 	Size(filePath string) (int64, error)
-	Watch(filePath string, watcher *Watcher) error
 	Close() error
-	CloseWatcher(filePath string, watcher *Watcher) error
 	CloseReader(reader io.ReadSeeker) error
 }
 
 type List = map[string]Source
-
-type Watcher struct {
-	OnChange func()
-}
 
 func NewFromConfig(
 	config config.Source,

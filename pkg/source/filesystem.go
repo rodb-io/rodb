@@ -12,11 +12,11 @@ import (
 )
 
 type Filesystem struct {
-	config       *config.FilesystemSource
-	opened       map[io.ReadSeeker]*os.File
-	watcher      *fsnotify.Watcher
-	watchers     map[string][]*Watcher
-	watchersLock *sync.Mutex
+	config             *config.FilesystemSource
+	opened             map[io.ReadSeeker]*os.File
+	openedWatchCounter map[string]int
+	openedLock         *sync.Mutex
+	watcher            *fsnotify.Watcher
 }
 
 func NewFilesystem(
@@ -40,11 +40,11 @@ func NewFilesystem(
 	}
 
 	fs := &Filesystem{
-		config:       config,
-		opened:       make(map[io.ReadSeeker]*os.File),
-		watcher:      watcher,
-		watchers:     make(map[string][]*Watcher),
-		watchersLock: &sync.Mutex{},
+		config:             config,
+		opened:             make(map[io.ReadSeeker]*os.File),
+		openedWatchCounter: map[string]int{},
+		openedLock:         &sync.Mutex{},
+		watcher:            watcher,
 	}
 
 	fs.startWatchProcess()
@@ -65,18 +65,12 @@ func (fs *Filesystem) startWatchProcess() {
 					return
 				}
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					fs.watchersLock.Lock()
-
-					watchers, watchersArrayExists := fs.watchers[event.Name]
-					if watchersArrayExists {
-						for _, watcher := range watchers {
-							watcher.OnChange()
-						}
+					message := fmt.Sprintf("The file '%v' has been modified by another process", event.Name)
+					if *fs.config.DieOnInputChange {
+						fs.config.Logger.Fatalln(message + ". Quitting because it may have corrupted data and 'dieOnInputChange' is 'true'.")
 					} else {
-						fs.config.Logger.Warnf("Received watch event '%v', but no watcher found.", event.String())
+						fs.config.Logger.Warnln(message + ", but 'dieOnInputChange' is 'false'. This could have unpredictable consequences.")
 					}
-
-					fs.watchersLock.Unlock()
 				}
 			case err, ok := <-fs.watcher.Errors:
 				if !ok {
@@ -93,10 +87,24 @@ func (fs *Filesystem) getFilePath(filePath string) string {
 }
 
 func (fs *Filesystem) Open(filePath string) (io.ReadSeeker, error) {
+	fs.openedLock.Lock()
+	defer fs.openedLock.Unlock()
+
 	path := fs.getFilePath(filePath)
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
+	}
+
+	err = fs.watcher.Add(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if openedWatchCounter, counterExists := fs.openedWatchCounter[path]; counterExists {
+		fs.openedWatchCounter[path] = openedWatchCounter + 1
+	} else {
+		fs.openedWatchCounter[path] = 1
 	}
 
 	reader := io.ReadSeeker(file)
@@ -115,27 +123,6 @@ func (fs *Filesystem) Size(filePath string) (int64, error) {
 	return fileInfo.Size(), nil
 }
 
-func (fs *Filesystem) Watch(filePath string, watcher *Watcher) error {
-	fs.watchersLock.Lock()
-	defer fs.watchersLock.Unlock()
-
-	path := fs.getFilePath(filePath)
-	if watchers, watchersArrayExists := fs.watchers[path]; watchersArrayExists {
-		watchers = append(watchers, watcher)
-		fs.watchers[path] = watchers
-	} else {
-		watchers = []*Watcher{watcher}
-		fs.watchers[path] = watchers
-
-		err := fs.watcher.Add(path)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (fs *Filesystem) Close() error {
 	for _, file := range fs.opened {
 		err := file.Close()
@@ -152,40 +139,28 @@ func (fs *Filesystem) Close() error {
 	return nil
 }
 
-func (fs *Filesystem) CloseWatcher(filePath string, watcher *Watcher) error {
-	fs.watchersLock.Lock()
-	defer fs.watchersLock.Unlock()
-
-	path := fs.getFilePath(filePath)
-	watchers, watchersArrayExists := fs.watchers[path]
-	if !watchersArrayExists {
-		return errors.New("Trying to close a non-opened filesystem watcher.")
-	}
-
-	newWatchers := make([]*Watcher, 0)
-	for _, currentWatcher := range watchers {
-		if currentWatcher != watcher {
-			newWatchers = append(newWatchers, currentWatcher)
-		}
-	}
-
-	if len(newWatchers) == 0 {
-		delete(fs.watchers, path)
-		err := fs.watcher.Remove(path)
-		if err != nil {
-			return err
-		}
-	} else {
-		fs.watchers[path] = newWatchers
-	}
-
-	return nil
-}
-
 func (fs *Filesystem) CloseReader(reader io.ReadSeeker) error {
+	fs.openedLock.Lock()
+	defer fs.openedLock.Unlock()
+
 	file, exists := fs.opened[reader]
 	if !exists {
 		return errors.New("Trying to close a non-opened filesystem source.")
+	}
+
+	path := file.Name()
+	if openedWatchCounter, counterExists := fs.openedWatchCounter[path]; counterExists {
+		if openedWatchCounter <= 1 {
+			delete(fs.openedWatchCounter, path)
+			err := fs.watcher.Remove(file.Name())
+			if err != nil {
+				return err
+			}
+		} else {
+			fs.openedWatchCounter[path] = openedWatchCounter - 1
+		}
+	} else {
+		return errors.New("Trying to remove a non-added filesystem watcher.")
 	}
 
 	delete(fs.opened, reader)

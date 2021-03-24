@@ -19,8 +19,6 @@ type Input interface {
 	IterateAll() <-chan IterateAllResult
 
 	Close() error
-	Watch(watcher *source.Watcher) error
-	CloseWatcher(watcher *source.Watcher) error
 }
 
 type List = map[string]Input

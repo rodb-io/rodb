@@ -1,6 +1,7 @@
 package source
 
 import (
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"rods/pkg/config"
@@ -85,10 +86,11 @@ func TestFilesystemSize(t *testing.T) {
 
 func TestFilesystemWatch(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		path := t.TempDir()
+		dir := t.TempDir()
 		fileName := "testWatch"
+		path := dir + "/" + fileName
 
-		file, err := os.Create(path + "/" + fileName)
+		file, err := os.Create(path)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -99,57 +101,53 @@ func TestFilesystemWatch(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
+		trueValue := true
 		fs, err := NewFilesystem(&config.FilesystemSource{
-			Path: path,
+			Logger:           logrus.NewEntry(logrus.StandardLogger()),
+			Path:             dir,
+			DieOnInputChange: &trueValue,
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		onChangeWaiter := &sync.WaitGroup{}
-		callCount := 0
-		watcher := &Watcher{
-			OnChange: func() {
-				callCount++
-				onChangeWaiter.Done()
-			},
+		dieWaiter := &sync.WaitGroup{}
+		dieCount := 0
+		fs.config.Logger.Logger.ExitFunc = func(exitCode int) {
+			dieCount++
+			dieWaiter.Done()
 		}
-		err = fs.Watch(fileName, watcher)
+
+		reader, err := fs.Open(fileName)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		onChangeWaiter.Add(1)
+		dieWaiter.Add(1)
 		_, err = file.WriteString("changed content")
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		onChangeWaiter.Wait()
-		if callCount != 1 {
-			t.Errorf("Expected the function to be called once, got '%v'", callCount)
+		dieWaiter.Wait()
+		if dieCount <= 0 {
+			t.Errorf("Expected the process to exit, got '%v' calls to Exit", dieCount)
 		}
 
-		err = fs.CloseWatcher(fileName, watcher)
+		err = fs.CloseReader(reader)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		callCount = 0
-		onChangeWaiter.Add(1)
+		dieCount = 0
+		dieWaiter.Add(1)
 		_, err = file.WriteString("changed content again")
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		// Closing to test the gorouting end and delay the next assertion
-		err = fs.Close()
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if callCount != 0 {
-			t.Errorf("Expected the function to not be called, got '%v'", callCount)
+		if dieCount != 0 {
+			t.Errorf("Expected the process not to exit, got '%v' calls to Exit", dieCount)
 		}
 	})
 }

@@ -6,9 +6,10 @@ import (
 )
 
 type FilesystemSource struct {
-	Name   string `yaml:"name"`
-	Path   string `yaml:"path"`
-	Logger *logrus.Entry
+	Name             string `yaml:"name"`
+	DieOnInputChange *bool  `yaml:"dieOnInputChange"`
+	Path             string `yaml:"path"`
+	Logger           *logrus.Entry
 }
 
 func (config *FilesystemSource) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -16,6 +17,12 @@ func (config *FilesystemSource) validate(rootConfig *Config, log *logrus.Entry) 
 
 	if config.Name == "" {
 		return errors.New("filesystem.name is required")
+	}
+
+	if config.DieOnInputChange == nil {
+		defaultValue := true
+		log.Debugf("filesystem.dieOnInputChange is not set. Assuming 'true'.\n")
+		config.DieOnInputChange = &defaultValue
 	}
 
 	// The path will be validated at runtime

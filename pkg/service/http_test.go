@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"rods/pkg/config"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -117,7 +118,8 @@ func TestHttp(t *testing.T) {
 func TestHttpAddRoute(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		server := &Http{
-			routes: make([]*Route, 0),
+			routes:     make([]*Route, 0),
+			routesLock: &sync.Mutex{},
 		}
 
 		route := &Route{ResponseType: "application/test"}
@@ -135,7 +137,8 @@ func TestHttpDeleteRoute(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		route := &Route{ResponseType: "application/test"}
 		server := &Http{
-			routes: make([]*Route, 0),
+			routes:     make([]*Route, 0),
+			routesLock: &sync.Mutex{},
 		}
 		server.routes = append(server.routes, route)
 
@@ -166,6 +169,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			postBarRoute,
 			getBarRoute,
 		},
+		routesLock: &sync.Mutex{},
 	}
 
 	requestUrl, err := url.Parse("/bar")

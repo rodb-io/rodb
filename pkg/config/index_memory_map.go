@@ -7,11 +7,10 @@ import (
 )
 
 type MemoryMapIndex struct {
-	Name             string   `yaml:"name"`
-	DieOnInputChange *bool    `yaml:"dieOnInputChange"`
-	Input            string   `yaml:"input"`
-	Columns          []string `yaml:"columns"`
-	Logger           *logrus.Entry
+	Name    string   `yaml:"name"`
+	Input   string   `yaml:"input"`
+	Columns []string `yaml:"columns"`
+	Logger  *logrus.Entry
 }
 
 func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -24,12 +23,6 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 	_, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
-	}
-
-	if config.DieOnInputChange == nil {
-		defaultValue := true
-		log.Debugf("memoryMap.dieOnInputChange is not set. Assuming 'true'.\n")
-		config.DieOnInputChange = &defaultValue
 	}
 
 	alreadyExistingColumns := make(map[string]bool)

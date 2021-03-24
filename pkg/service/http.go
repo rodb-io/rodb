@@ -19,12 +19,13 @@ import (
 )
 
 type Http struct {
-	config    *config.HttpService
-	listener  net.Listener
-	server    *http.Server
-	waitGroup *sync.WaitGroup
-	routes    []*Route
-	lastError error
+	config     *config.HttpService
+	listener   net.Listener
+	server     *http.Server
+	waitGroup  *sync.WaitGroup
+	routes     []*Route
+	routesLock *sync.Mutex
+	lastError  error
 }
 
 func NewHttp(
@@ -36,11 +37,12 @@ func NewHttp(
 	}
 
 	service := &Http{
-		config:    config,
-		waitGroup: &sync.WaitGroup{},
-		routes:    make([]*Route, 0),
-		listener:  listener,
-		lastError: nil,
+		config:     config,
+		waitGroup:  &sync.WaitGroup{},
+		routes:     make([]*Route, 0),
+		routesLock: &sync.Mutex{},
+		listener:   listener,
+		lastError:  nil,
 		server: &http.Server{
 			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
 		},
@@ -62,10 +64,16 @@ func (service *Http) Name() string {
 }
 
 func (service *Http) AddRoute(route *Route) {
+	service.routesLock.Lock()
+	defer service.routesLock.Unlock()
+
 	service.routes = append(service.routes, route)
 }
 
 func (service *Http) DeleteRoute(route *Route) {
+	service.routesLock.Lock()
+	defer service.routesLock.Unlock()
+
 	routes := service.routes
 	for i, v := range routes {
 		if v == route {

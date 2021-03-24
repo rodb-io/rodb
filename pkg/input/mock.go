@@ -3,18 +3,15 @@ package input
 import (
 	"errors"
 	"rods/pkg/record"
-	"rods/pkg/source"
 )
 
 type Mock struct {
-	data    []IterateAllResult
-	watcher *source.Watcher
+	data []IterateAllResult
 }
 
 func NewMock(data []IterateAllResult) *Mock {
 	return &Mock{
-		data:    data,
-		watcher: nil,
+		data: data,
 	}
 }
 
@@ -61,21 +58,5 @@ func (mock *Mock) IterateAll() <-chan IterateAllResult {
 }
 
 func (mock *Mock) Close() error {
-	return nil
-}
-
-func (mock *Mock) Watch(watcher *source.Watcher) error {
-	mock.watcher = watcher
-	return nil
-}
-
-func (mock *Mock) TriggerWatcher() {
-	if mock.watcher != nil {
-		mock.watcher.OnChange()
-	}
-}
-
-func (mock *Mock) CloseWatcher(watcher *source.Watcher) error {
-	mock.watcher = nil
 	return nil
 }
