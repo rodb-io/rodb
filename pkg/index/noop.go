@@ -28,45 +28,48 @@ func (noop *Noop) Name() string {
 	return noop.config.Name
 }
 
-func (noop *Noop) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
-	records := make(record.PositionList, 0)
-	for result := range input.IterateAll() {
-		if result.Error != nil {
-			return nil, result.Error
-		}
-
-		matches := true
-		for columnName, filter := range filters {
-			value, err := result.Record.Get(columnName)
-			if err != nil {
-				return nil, err
+func (noop *Noop) GetRecordPositions(
+	input input.Input,
+	filters map[string]interface{},
+) (record.PositionIterator, error) {
+	inputIterator := input.IterateAll()
+	return func() (*record.Position, error) {
+		for result := range inputIterator {
+			if result.Error != nil {
+				return nil, result.Error
 			}
 
-			if value == nil {
-				if filter == nil {
-					continue
-				} else {
+			matches := true
+			for columnName, filter := range filters {
+				value, err := result.Record.Get(columnName)
+				if err != nil {
+					return nil, err
+				}
+
+				if value == nil {
+					if filter == nil {
+						continue
+					} else {
+						matches = false
+						break
+					}
+				}
+
+				value = reflect.ValueOf(value).Interface()
+				if value != filter {
 					matches = false
 					break
 				}
 			}
 
-			value = reflect.ValueOf(value).Interface()
-			if value != filter {
-				matches = false
-				break
+			if matches {
+				position := result.Record.Position()
+				return &position, nil
 			}
 		}
 
-		if matches {
-			records = append(records, result.Record.Position())
-			if limit != 0 && len(records) >= int(limit) {
-				break
-			}
-		}
-	}
-
-	return records, nil
+		return nil, nil
+	}, nil
 }
 
 func (noop *Noop) Close() error {

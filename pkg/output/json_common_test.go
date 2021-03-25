@@ -135,7 +135,6 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 			jsonDataForTests.indexes["default"],
 			jsonDataForTests.indexes,
 			jsonDataForTests.mockInput,
-			0,
 			filtersPerIndex,
 		)
 		if err != nil {
@@ -154,31 +153,52 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 		// 	t.Errorf("Expected to get '%+v' entries in the second array, got '%+v'", expect, got)
 		// }
 
-		if expect, got := int64(1), recordLists[0][0]; got != expect {
+		position0, err := recordLists[0]()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := int64(1), *position0; got != expect {
 			t.Errorf("Expected to get position '%+v' for the first result of the first index, got '%+v'", expect, got)
 		}
-		if expect, got := int64(1), recordLists[1][0]; got != expect {
+
+		position1, err := recordLists[1]()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := int64(1), *position1; got != expect {
 			t.Errorf("Expected to get position '%+v' for the first result of the second index, got '%+v'", expect, got)
 		}
 	})
 	t.Run("no filters", func(t *testing.T) {
 		jsonDataForTests := mockJsonDataForTests()
 
-		recordLists, err := getFilteredRecordPositionsPerIndex(
+		recordIterators, err := getFilteredRecordPositionsPerIndex(
 			jsonDataForTests.indexes["default"],
 			jsonDataForTests.indexes,
 			jsonDataForTests.mockInput,
-			0,
 			map[string]map[string]interface{}{},
 		)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		if expect, got := 1, len(recordLists); got != expect {
+		if expect, got := 1, len(recordIterators); got != expect {
 			t.Errorf("Expected to get '%+v' record lists, got '%+v'", expect, got)
 		}
-		if expect, got := len(jsonDataForTests.mockResults), len(recordLists[0]); got != expect {
+
+		recordCount := 0
+		for {
+			position, err := recordIterators[0]()
+			if err != nil {
+				t.Errorf("Unexpected error: '%+v'", err)
+			}
+			if position == nil {
+				break
+			}
+			recordCount++
+		}
+
+		if expect, got := len(jsonDataForTests.mockResults), recordCount; got != expect {
 			t.Errorf("Expected to get '%+v' records in the first list, got '%+v'", expect, got)
 		}
 	})

@@ -112,29 +112,29 @@ func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
 			return sendError(err)
 		}
 
-		limit := uint(0)
-		if len(filtersPerIndex) == 1 {
-			limit = 1
-		}
-
 		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
 			jsonObject.defaultIndex,
 			jsonObject.indexes,
 			jsonObject.input,
-			limit,
 			filtersPerIndex,
 		)
 		if err != nil {
 			return sendError(err)
 		}
 
-		positions := recordModule.JoinPositionLists(1, positionsPerIndex...)
-		if len(positions) == 0 {
+		nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+
+		position, err := nextPosition()
+		if err != nil {
+			return sendError(err)
+		}
+
+		if position == nil {
 			return sendError(serviceModule.RecordNotFoundError)
 		}
 
 		data, err := getDataFromPosition(
-			positions[0],
+			*position,
 			jsonObject.config.Relationships,
 			jsonObject.defaultIndex,
 			jsonObject.indexes,

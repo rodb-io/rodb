@@ -73,38 +73,36 @@ func getFilteredRecordPositionsPerIndex(
 	defaultIndex indexModule.Index,
 	indexes indexModule.List,
 	input inputModule.Input,
-	limit uint,
 	filtersPerIndex map[string]map[string]interface{},
-) ([]recordModule.PositionList, error) {
+) ([]recordModule.PositionIterator, error) {
 	if len(filtersPerIndex) == 0 {
-		records, err := defaultIndex.GetRecordPositions(
+		iterator, err := defaultIndex.GetRecordPositions(
 			input,
 			map[string]interface{}{},
-			limit,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		return []recordModule.PositionList{records}, nil
+		return []recordModule.PositionIterator{iterator}, nil
 	}
 
-	positionsPerIndex := make([]recordModule.PositionList, 0, len(filtersPerIndex))
+	iterators := make([]recordModule.PositionIterator, 0, len(filtersPerIndex))
 	for indexName, filters := range filtersPerIndex {
 		index, indexExists := indexes[indexName]
 		if !indexExists {
 			return nil, fmt.Errorf("Index '%v' not found in indexes list.", indexName)
 		}
 
-		positionsForThisIndex, err := index.GetRecordPositions(input, filters, limit)
+		iteratorForThisIndex, err := index.GetRecordPositions(input, filters)
 		if err != nil {
 			return nil, err
 		}
 
-		positionsPerIndex = append(positionsPerIndex, positionsForThisIndex)
+		iterators = append(iterators, iteratorForThisIndex)
 	}
 
-	return positionsPerIndex, nil
+	return iterators, nil
 }
 
 func loadRelationships(
@@ -134,16 +132,10 @@ func loadRelationships(
 			defaultIndex,
 			indexes,
 			input,
-			0,
 			filtersPerIndex,
 		)
 		if err != nil {
 			return nil, err
-		}
-
-		var limit uint = 1
-		if relationshipConfig.IsArray {
-			limit = relationshipConfig.Limit
 		}
 
 		input, inputExists := inputs[relationshipConfig.Input]
@@ -151,13 +143,32 @@ func loadRelationships(
 			return nil, fmt.Errorf("Input '%v' not found in inputs list.", relationshipConfig.Input)
 		}
 
-		relationshipRecordPositions := recordModule.JoinPositionLists(limit, relationshipRecordPositionsPerFilter...)
+		relationshipRecordPositionsIterator := recordModule.JoinPositionIterators(relationshipRecordPositionsPerFilter...)
 
-		relationshipRecords := make(recordModule.List, len(relationshipRecordPositions))
-		for i, position := range relationshipRecordPositions {
-			relationshipRecords[i], err = input.Get(position)
+		relationshipRecords := make(recordModule.List, 0)
+		for {
+			relationshipRecordPosition, err := relationshipRecordPositionsIterator()
 			if err != nil {
 				return nil, err
+			}
+			if relationshipRecordPosition == nil {
+				break
+			}
+
+			relationshipRecord, err := input.Get(*relationshipRecordPosition)
+			if err != nil {
+				return nil, err
+			}
+
+			relationshipRecords = append(relationshipRecords, relationshipRecord)
+			if relationshipConfig.IsArray {
+				if relationshipConfig.Limit > 0 && len(relationshipRecords) >= int(relationshipConfig.Limit) {
+					break
+				}
+			} else {
+				if len(relationshipRecords) >= 1 {
+					break
+				}
 			}
 		}
 

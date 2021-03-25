@@ -67,7 +67,8 @@ func (mm *MemoryMap) Reindex() error {
 	}
 
 	nextProgress := time.Now()
-	for result := range mm.input.IterateAll() {
+	inputIterator := mm.input.IterateAll()
+	for result := range inputIterator {
 		if result.Error != nil {
 			return result.Error
 		}
@@ -108,7 +109,10 @@ func (mm *MemoryMap) Reindex() error {
 
 // Get the record positions (if indexed) that matches all the given filters
 // A limit of 0 means that there is no limit
-func (mm *MemoryMap) GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error) {
+func (mm *MemoryMap) GetRecordPositions(
+	input input.Input,
+	filters map[string]interface{},
+) (record.PositionIterator, error) {
 	if input != mm.input {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
 	}
@@ -125,46 +129,46 @@ func (mm *MemoryMap) GetRecordPositions(input input.Input, filters map[string]in
 
 		indexedValues, foundIndexedValues := mm.index[columnName]
 		if !foundIndexedValues {
-			return make(record.PositionList, 0), nil
+			return nil, nil
 		}
 
 		indexedResults, foundIndexedResults := indexedValues[filter]
 		if !foundIndexedResults {
-			return make(record.PositionList, 0), nil
+			return nil, nil
 		}
 
 		individualFiltersResults = append(individualFiltersResults, indexedResults)
 	}
 
-	records := make(record.PositionList, 0)
-	for i := 0; i < len(individualFiltersResults[0]); i++ {
-		position := individualFiltersResults[0][i]
+	var i int = 0
+	return func() (*record.Position, error) {
+		for i < len(individualFiltersResults[0]) {
+			position := individualFiltersResults[0][i]
 
-		matchesAllCriterias := true
-		for j := 1; j < len(individualFiltersResults); j++ {
-			matchesCurrentCriteria := false
-			for _, currentPosition := range individualFiltersResults[j] {
-				if currentPosition == position {
-					matchesCurrentCriteria = true
+			matchesAllCriterias := true
+			for j := 1; j < len(individualFiltersResults); j++ {
+				matchesCurrentCriteria := false
+				for _, currentPosition := range individualFiltersResults[j] {
+					if currentPosition == position {
+						matchesCurrentCriteria = true
+						break
+					}
+				}
+
+				if !matchesCurrentCriteria {
+					matchesAllCriterias = false
 					break
 				}
 			}
 
-			if !matchesCurrentCriteria {
-				matchesAllCriterias = false
-				break
+			i++
+			if matchesAllCriterias {
+				return &position, nil
 			}
 		}
 
-		if matchesAllCriterias {
-			records = append(records, position)
-			if limit != 0 && len(records) >= int(limit) {
-				break
-			}
-		}
-	}
-
-	return records, nil
+		return nil, nil
+	}, nil
 }
 
 func (mm *MemoryMap) Close() error {

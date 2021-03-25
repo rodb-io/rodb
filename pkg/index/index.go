@@ -13,7 +13,7 @@ type Index interface {
 	// Gets the indexed records matching all the given filters
 	// The returned list is expected to be ordered from the
 	// smallest position to the biggest
-	GetRecordPositions(input input.Input, filters map[string]interface{}, limit uint) (record.PositionList, error)
+	GetRecordPositions(input input.Input, filters map[string]interface{}) (record.PositionIterator, error)
 
 	Close() error
 }

@@ -1,3 +1,4 @@
+# TODO iterator pattern working -> implement the jsonArray output offset?
 # TODO e2e tests? (jsonArray + jsonObject, data + relationships)
 # TODO performance analysis
 parsers:

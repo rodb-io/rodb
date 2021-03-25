@@ -1,49 +1,62 @@
 package record
 
-// Returns the positions that are common to all the given arrays
-// Expects each given list to be sorted from the smallest to the biggest position
-// Returns a maximum of `limit` records, or everything if `limit` = 0
-func JoinPositionLists(limit uint, lists ...PositionList) PositionList {
-	if len(lists) == 0 {
-		return make(PositionList, 0)
-	}
-	if len(lists) == 1 {
-		if limit == 0 || int(limit) > len(lists[0]) {
-			return lists[0]
-		} else {
-			return lists[0][:limit]
+// Returns the positions that are common to all the given iterators
+// Expects each given iterator to be sorted from the smallest to the biggest position
+func JoinPositionIterators(iterators ...PositionIterator) PositionIterator {
+	if len(iterators) == 0 {
+		return func() (*Position, error) {
+			return nil, nil
 		}
 	}
-
-	currentListIndexes := make([]int, len(lists))
-	for i := range currentListIndexes {
-		currentListIndexes[i] = 0
+	if len(iterators) == 1 {
+		return iterators[0]
 	}
 
-	newList := make(PositionList, 0)
-	for ; currentListIndexes[0] < len(lists[0]); currentListIndexes[0]++ {
-		firstListPosition := lists[0][currentListIndexes[0]]
-
-		foundInAllLists := true
-		for listIndex := 1; listIndex < len(lists); listIndex++ {
-			// Advancing the list up to the right position
-			for lists[listIndex][currentListIndexes[listIndex]] < firstListPosition {
-				currentListIndexes[listIndex]++
+	return func() (*Position, error) {
+		currentListValues := make([]Position, len(iterators))
+		for i := 1; i < len(currentListValues); i++ {
+			position, err := iterators[i]()
+			if err != nil {
+				return nil, err
 			}
-
-			if lists[listIndex][currentListIndexes[listIndex]] != firstListPosition {
-				foundInAllLists = false
-				break
+			if position == nil {
+				return nil, nil
 			}
+			currentListValues[i] = *position
 		}
 
-		if foundInAllLists {
-			newList = append(newList, lists[0][currentListIndexes[0]])
-			if limit > 0 && len(newList) >= int(limit) {
-				break
+		for {
+			firstListPosition, err := iterators[0]()
+			if err != nil {
+				return nil, err
+			}
+			if firstListPosition == nil {
+				return nil, nil
+			}
+
+			foundInAllLists := true
+			for listIndex := 1; listIndex < len(iterators); listIndex++ {
+				// Advancing the list up to the right position
+				for currentListValues[listIndex] < *firstListPosition {
+					currentListValue, err := iterators[listIndex]()
+					if err != nil {
+						return nil, err
+					}
+					if currentListValue == nil {
+						return nil, nil
+					}
+					currentListValues[listIndex] = *currentListValue
+				}
+
+				if currentListValues[listIndex] != *firstListPosition {
+					foundInAllLists = false
+					break
+				}
+			}
+
+			if foundInAllLists {
+				return firstListPosition, nil
 			}
 		}
 	}
-
-	return newList
 }

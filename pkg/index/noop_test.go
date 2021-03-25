@@ -39,37 +39,38 @@ func TestNoopGetRecordPositions(t *testing.T) {
 
 	t.Run("normal", func(t *testing.T) {
 		for _, testCase := range []struct {
-			limit           uint
 			expectedLength  int
 			expectedResults record.PositionList
 		}{
 			{
-				limit:           0,
 				expectedLength:  2,
 				expectedResults: record.PositionList{1, 3},
-			},
-			{
-				limit:           1,
-				expectedLength:  1,
-				expectedResults: record.PositionList{1},
-			},
-			{
-				limit:           2,
+			}, {
 				expectedLength:  2,
 				expectedResults: record.PositionList{1, 3},
-			},
-			{
-				limit:           10,
+			}, {
 				expectedLength:  2,
 				expectedResults: record.PositionList{1, 3},
 			},
 		} {
-			positions, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 				"col":  "col_a",
 				"col2": "col2_a",
-			}, testCase.limit)
+			})
 			if err != nil {
 				t.Errorf("Expected no error, got %v", err)
+			}
+
+			positions := make([]record.Position, 0)
+			for {
+				pos, err := iterator()
+				if err != nil {
+					t.Errorf("Expected no error, got %v", err)
+				}
+				if pos == nil {
+					break
+				}
+				positions = append(positions, *pos)
 			}
 
 			if got, expect := len(positions), testCase.expectedLength; got != expect {
@@ -84,9 +85,14 @@ func TestNoopGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("wrong column", func(t *testing.T) {
-		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
-		}, 1)
+		})
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		_, err = iterator()
 		if err == nil {
 			t.Errorf("Expected an error, got %v", err)
 		}

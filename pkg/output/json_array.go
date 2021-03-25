@@ -111,19 +111,26 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 			jsonArray.indexes["default"],
 			jsonArray.indexes,
 			jsonArray.input,
-			0,
 			filtersPerIndex,
 		)
 		if err != nil {
 			return sendError(err)
 		}
 
-		positions := recordModule.JoinPositionLists(limit, positionsPerIndex...)
+		nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
 
-		rowsData := make([]interface{}, len(positions))
-		for i, position := range positions {
-			rowsData[i], err = getDataFromPosition(
-				position,
+		rowsData := make([]interface{}, 0)
+		for len(rowsData) < int(limit) {
+			position, err := nextPosition()
+			if err != nil {
+				return sendError(err)
+			}
+			if position == nil {
+				break
+			}
+
+			rowData, err := getDataFromPosition(
+				*position,
 				jsonArray.config.Relationships,
 				jsonArray.defaultIndex,
 				jsonArray.indexes,
@@ -133,6 +140,8 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 			if err != nil {
 				return sendError(err)
 			}
+
+			rowsData = append(rowsData, rowData)
 		}
 
 		return json.NewEncoder(sendSucces()).Encode(rowsData)
