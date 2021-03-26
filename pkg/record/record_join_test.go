@@ -58,11 +58,11 @@ func TestJoinPositionIterators(t *testing.T) {
 				lists = append(lists, list)
 			}
 
-			resultIterator := JoinPositionIterators(lists...)
+			nextPosition := JoinPositionIterators(lists...)
 
 			result := make([]Position, 0)
 			for {
-				position, err := resultIterator()
+				position, err := nextPosition()
 				if err != nil {
 					t.Errorf("Unexpected error: '%+v'", err)
 				}

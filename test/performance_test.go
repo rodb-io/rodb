@@ -4,12 +4,12 @@ import (
 	"testing"
 )
 
-const iteratorTestIterations = 1000000
+const iteratorBenchmarkIterations = 1000000
 
-func iteratorGeneratorFunctionForTests() func() (int, bool) {
+func generatorFunctionForTests() func() (int, bool) {
 	i := 0
 	return func() (int, bool) {
-		for i < iteratorTestIterations {
+		for i < iteratorBenchmarkIterations {
 			value := i
 			i++
 			return value, false
@@ -18,18 +18,18 @@ func iteratorGeneratorFunctionForTests() func() (int, bool) {
 		return 0, true
 	}
 }
-func iteratorCallbackForTests(callback func(value int) bool) {
-	for i := 0; i < iteratorTestIterations; i++ {
+func callbackIteratorForTests(callback func(value int) bool) {
+	for i := 0; i < iteratorBenchmarkIterations; i++ {
 		shouldContinue := callback(i)
 		if !shouldContinue {
 			break
 		}
 	}
 }
-func iteratorChannelForTests() chan int {
+func channelIteratorForTests() chan int {
 	channel := make(chan int)
 	go (func() {
-		for i := 0; i < iteratorTestIterations; i++ {
+		for i := 0; i < iteratorBenchmarkIterations; i++ {
 			channel <- i
 		}
 
@@ -38,21 +38,13 @@ func iteratorChannelForTests() chan int {
 
 	return channel
 }
-func iteratorArrayForTests() []int {
-	array := make([]int, iteratorTestIterations)
-	for i := 0; i < iteratorTestIterations; i++ {
-		array[i] = i
-	}
-
-	return array
-}
 
 func BenchmarkIteratorMethods(b *testing.B) {
 	b.Run("generator", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			iterator := iteratorGeneratorFunctionForTests()
+			next := generatorFunctionForTests()
 			for {
-				value, end := iterator()
+				value, end := next()
 				if end {
 					break
 				}
@@ -62,7 +54,7 @@ func BenchmarkIteratorMethods(b *testing.B) {
 	})
 	b.Run("callback", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			iteratorCallbackForTests(func(value int) bool {
+			callbackIteratorForTests(func(value int) bool {
 				_ = value
 				return true
 			})
@@ -70,14 +62,7 @@ func BenchmarkIteratorMethods(b *testing.B) {
 	})
 	b.Run("channel", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			for value := range iteratorChannelForTests() {
-				_ = value
-			}
-		}
-	})
-	b.Run("array", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			for value := range iteratorArrayForTests() {
+			for value := range channelIteratorForTests() {
 				_ = value
 			}
 		}

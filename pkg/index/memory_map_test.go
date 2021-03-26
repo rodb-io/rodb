@@ -126,7 +126,7 @@ func TestMemoryMapGetRecordPositions(t *testing.T) {
 				expectedResults: record.PositionList{1, 3},
 			},
 		} {
-			iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			nextPosition, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 				"col":  "col_a",
 				"col2": "col2_a",
 			})
@@ -136,14 +136,14 @@ func TestMemoryMapGetRecordPositions(t *testing.T) {
 
 			positions := make([]record.Position, 0)
 			for {
-				pos, err := iterator()
+				position, err := nextPosition()
 				if err != nil {
 					t.Errorf("Expected no error, got %v", err)
 				}
-				if pos == nil {
+				if position == nil {
 					break
 				}
-				positions = append(positions, *pos)
+				positions = append(positions, *position)
 			}
 
 			if got, expect := len(positions), testCase.expectedLength; got != expect {

@@ -13,8 +13,8 @@ func JoinPositionIterators(iterators ...PositionIterator) PositionIterator {
 	}
 
 	return func() (*Position, error) {
-		currentListValues := make([]Position, len(iterators))
-		for i := 1; i < len(currentListValues); i++ {
+		currentIteratorsValues := make([]Position, len(iterators))
+		for i := 1; i < len(currentIteratorsValues); i++ {
 			position, err := iterators[i]()
 			if err != nil {
 				return nil, err
@@ -22,7 +22,7 @@ func JoinPositionIterators(iterators ...PositionIterator) PositionIterator {
 			if position == nil {
 				return nil, nil
 			}
-			currentListValues[i] = *position
+			currentIteratorsValues[i] = *position
 		}
 
 		for {
@@ -37,7 +37,7 @@ func JoinPositionIterators(iterators ...PositionIterator) PositionIterator {
 			foundInAllLists := true
 			for listIndex := 1; listIndex < len(iterators); listIndex++ {
 				// Advancing the list up to the right position
-				for currentListValues[listIndex] < *firstListPosition {
+				for currentIteratorsValues[listIndex] < *firstListPosition {
 					currentListValue, err := iterators[listIndex]()
 					if err != nil {
 						return nil, err
@@ -45,10 +45,10 @@ func JoinPositionIterators(iterators ...PositionIterator) PositionIterator {
 					if currentListValue == nil {
 						return nil, nil
 					}
-					currentListValues[listIndex] = *currentListValue
+					currentIteratorsValues[listIndex] = *currentListValue
 				}
 
-				if currentListValues[listIndex] != *firstListPosition {
+				if currentIteratorsValues[listIndex] != *firstListPosition {
 					foundInAllLists = false
 					break
 				}
