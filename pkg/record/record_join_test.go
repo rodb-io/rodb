@@ -46,10 +46,9 @@ func TestJoinPositionIterators(t *testing.T) {
 					i := 0
 					return func() (*Position, error) {
 						for i < len(values) {
-							defer (func() {
-								i++
-							})()
-							return &values[i], nil
+							currentIndex := i
+							i++
+							return &values[currentIndex], nil
 						}
 
 						return nil, nil
