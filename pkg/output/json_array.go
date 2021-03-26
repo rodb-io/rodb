@@ -102,6 +102,11 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 			return sendError(err)
 		}
 
+		offset, err := jsonArray.getOffset(params)
+		if err != nil {
+			return sendError(err)
+		}
+
 		filtersPerIndex, err := jsonArray.getFiltersPerIndex(params)
 		if err != nil {
 			return sendError(err)
@@ -118,6 +123,17 @@ func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 		}
 
 		nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+
+		// Skipping rows depending on the offset
+		for i := uint(0); i < offset; i++ {
+			value, err := nextPosition()
+			if err != nil {
+				return sendError(err)
+			}
+			if value == nil {
+				break
+			}
+		}
 
 		rowsData := make([]interface{}, 0)
 		for len(rowsData) < int(limit) {
@@ -155,6 +171,9 @@ func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
 		if err != nil {
 			return 0, err
 		}
+		if limitAsInt < 0 {
+			return 0, errors.New("The '" + jsonArray.config.Limit.Parameter + "' parameter must be a positive and non-zero number.")
+		}
 		limit = uint(limitAsInt)
 	}
 	if limit > jsonArray.config.Limit.Max {
@@ -162,6 +181,22 @@ func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
 	}
 
 	return limit, nil
+}
+
+func (jsonArray *JsonArray) getOffset(params map[string]string) (uint, error) {
+	offset := uint(0)
+	if offsetParam, offsetParamExists := params[jsonArray.config.Offset.Parameter]; offsetParamExists {
+		offsetAsInt, err := strconv.Atoi(offsetParam)
+		if err != nil {
+			return 0, err
+		}
+		if offsetAsInt < 0 {
+			return 0, errors.New("The '" + jsonArray.config.Offset.Parameter + "' parameter cannot be negative.")
+		}
+		offset = uint(offsetAsInt)
+	}
+
+	return offset, nil
 }
 
 func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {

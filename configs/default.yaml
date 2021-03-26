@@ -1,5 +1,4 @@
-# TODO iterator pattern working -> implement the jsonArray output offset?
-# TODO e2e tests? (jsonArray + jsonObject, data + relationships)
+# TODO e2e tests? (jsonArray + jsonObject, data + relationships + offset + limit)
 # TODO performance analysis
 parsers:
   - integer:
@@ -91,7 +90,6 @@ outputs:
         max: 1000
         parameter: "limit"
       offset:
-        # TODO implement the offset
         parameter: "offset"
       search:
         # TODO search partial texts

@@ -113,6 +113,72 @@ func TestJsonArrayGetLimit(t *testing.T) {
 			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
+	t.Run("negative", func(t *testing.T) {
+		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+			Input:    "mock",
+			Endpoint: "/test",
+			Limit: config.JsonArrayOutputLimit{
+				Default:   10,
+				Max:       50,
+				Parameter: "testlimit",
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		_, err = jsonArray.getLimit(map[string]string{
+			"testlimit": "-42",
+		})
+		if err == nil {
+			t.Errorf("Expected error, got nil.")
+		}
+	})
+}
+
+func TestJsonArrayGetOffset(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+			Input:    "mock",
+			Endpoint: "/test",
+			Offset: config.JsonArrayOutputOffset{
+				Parameter: "testoffset",
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		offset, err := jsonArray.getOffset(map[string]string{
+			"testoffset": "123",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if got, expect := offset, uint(123); got != expect {
+			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+		}
+	})
+	t.Run("negative", func(t *testing.T) {
+		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+			Input:    "mock",
+			Endpoint: "/test",
+			Offset: config.JsonArrayOutputOffset{
+				Parameter: "testoffset",
+			},
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		_, err = jsonArray.getOffset(map[string]string{
+			"testoffset": "-42",
+		})
+		if err == nil {
+			t.Errorf("Expected error, got nil.")
+		}
+	})
 }
 
 func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
