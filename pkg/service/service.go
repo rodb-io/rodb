@@ -27,7 +27,7 @@ type RouteHandler = func(
 	params map[string]string,
 	payload []byte,
 	sendError func(err error) error,
-	sendSucces func() io.Writer,
+	sendSuccess func() io.Writer,
 ) error
 
 type Route struct {

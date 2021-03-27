@@ -216,7 +216,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		regexp := jsonObject.endpointRegexp()
+		regexp := jsonObject.Endpoint()
 		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)/bar/(?P<param_1>.*)$"; got != expect {
 			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
 		}
@@ -237,7 +237,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		regexp := jsonObject.endpointRegexp()
+		regexp := jsonObject.Endpoint()
 		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)/bar/(.*)$"; got != expect {
 			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
 		}
@@ -262,7 +262,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		regexp := jsonObject.endpointRegexp()
+		regexp := jsonObject.Endpoint()
 		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)$"; got != expect {
 			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
 		}

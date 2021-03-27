@@ -3,6 +3,7 @@ package output
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/input"
@@ -12,6 +13,9 @@ import (
 
 type Output interface {
 	Name() string
+	Endpoint() *regexp.Regexp
+	ExpectedPayloadType() *string
+	ResponseType() string
 	Close() error
 }
 

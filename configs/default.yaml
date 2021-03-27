@@ -1,3 +1,5 @@
+# TODO remove the source layer?
+# TODO inverse the output/service relationship (use interface instead of a route struct)
 # TODO performance analysis
 parsers:
   - integer:
@@ -83,7 +85,6 @@ outputs:
       services:
         - defaultService
       endpoint: "/dummies"
-      # TODO send the paging values via headers/metadata
       limit:
         default: 100
         max: 1000

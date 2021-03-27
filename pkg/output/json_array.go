@@ -90,6 +90,18 @@ func (jsonArray *JsonArray) Name() string {
 	return jsonArray.config.Name
 }
 
+func (jsonArray *JsonArray) Endpoint() *regexp.Regexp {
+	return regexp.MustCompile("^" + regexp.QuoteMeta(jsonArray.config.Endpoint) + "$")
+}
+
+func (jsonArray *JsonArray) ExpectedPayloadType() *string {
+	return nil
+}
+
+func (jsonArray *JsonArray) ResponseType() string {
+	return "application/json"
+}
+
 func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
 	return func(
 		params map[string]string,
