@@ -6,8 +6,8 @@ import (
 )
 
 type GraphQLOutput struct {
-	Name     string   `yaml:"name"`
-	Endpoint string   `yaml:"endpoint"`
+	Name     string `yaml:"name"`
+	Endpoint string `yaml:"endpoint"`
 	Logger   *logrus.Entry
 }
 

@@ -6,8 +6,7 @@ type Mock struct {
 }
 
 func NewMock() *Mock {
-	return &Mock{
-	}
+	return &Mock{}
 }
 
 func (mock *Mock) Name() string {

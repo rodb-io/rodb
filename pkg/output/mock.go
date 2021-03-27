@@ -6,16 +6,19 @@ import (
 )
 
 type Mock struct {
+	endpoint *regexp.Regexp
 }
 
 func NewMock() *Mock {
-	mock := &Mock{}
+	mock := &Mock{
+		endpoint: regexp.MustCompile("^/mock$"),
+	}
 
 	return mock
 }
 
 func (mock *Mock) Endpoint() *regexp.Regexp {
-	return regexp.MustCompile("^/mock$")
+	return mock.endpoint
 }
 
 func (mock *Mock) ExpectedPayloadType() *string {

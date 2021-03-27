@@ -21,6 +21,7 @@ type JsonArray struct {
 	defaultIndex indexModule.Index
 	indexes      indexModule.List
 	parsers      parserModule.List
+	endpoint     *regexp.Regexp
 }
 
 func NewJsonArray(
@@ -42,6 +43,9 @@ func NewJsonArray(
 		defaultIndex: defaultIndex,
 		indexes:      indexes,
 		parsers:      parsers,
+		endpoint: regexp.MustCompile(
+			"^" + regexp.QuoteMeta(config.Endpoint) + "$",
+		),
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
@@ -63,7 +67,7 @@ func (jsonArray *JsonArray) Name() string {
 }
 
 func (jsonArray *JsonArray) Endpoint() *regexp.Regexp {
-	return regexp.MustCompile("^" + regexp.QuoteMeta(jsonArray.config.Endpoint) + "$")
+	return jsonArray.endpoint
 }
 
 func (jsonArray *JsonArray) ExpectedPayloadType() *string {
