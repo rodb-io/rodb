@@ -56,7 +56,7 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	}
 	input, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
-		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
+		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	for parameterIndex, parameter := range config.Parameters {

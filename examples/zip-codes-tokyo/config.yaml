@@ -84,11 +84,6 @@ indexes:
       input: zipCodesTokyo
       columns:
         - municipality
-services:
-  - http:
-      name: httpService
-      listen: ":80"
-      errorsType: application/json
 outputs:
   - jsonArray:
       name: listPostalCodes
@@ -143,3 +138,11 @@ outputs:
             - parentColumn: reasonForUpdateId
               childColumn: id
               childIndex: default
+services:
+  - http:
+      name: httpService
+      listen: ":80"
+      errorsType: application/json
+      outputs:
+        - listPostalCodes
+        - findOnePostalCode
