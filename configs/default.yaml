@@ -1,4 +1,4 @@
-# TODO e2e tests? (jsonArray + jsonObject, data + relationships + offset + limit)
+# TODO e2e tests for the jsonArray handler (data + relationships + offset + limit)
 # TODO performance analysis
 parsers:
   - integer:

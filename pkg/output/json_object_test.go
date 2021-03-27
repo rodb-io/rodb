@@ -1,6 +1,10 @@
 package output
 
 import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"io/ioutil"
 	"rods/pkg/config"
 	"rods/pkg/service"
 	"testing"
@@ -35,6 +39,158 @@ func TestJsonObject(t *testing.T) {
 
 		if len(mockService.Routes) != 1 {
 			t.Errorf("Expected the output to add a route")
+		}
+	})
+}
+
+func TestJsonObjectHandler(t *testing.T) {
+	trueValue := true
+	jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		Input:    "mock",
+		Endpoint: "/foo/?",
+		Parameters: []*config.JsonObjectOutputParameter{
+			{
+				Column: "id",
+				Parser: "mock",
+				Index:  "mock",
+			},
+		},
+		Relationships: map[string]*config.Relationship{
+			"child": {
+				Input:   "mock",
+				IsArray: false,
+				Match: []*config.RelationshipMatch{
+					{
+						ParentColumn: "belongs_to",
+						ChildColumn:  "id",
+						ChildIndex:   "mock",
+					},
+				},
+				Relationships: map[string]*config.Relationship{
+					"subchild": {
+						Input:   "mock",
+						IsArray: true,
+						Limit:   2,
+						Sort: []*config.Sort{
+							{
+								Column:    "id",
+								Ascending: &trueValue,
+							},
+						},
+						Match: []*config.RelationshipMatch{
+							{
+								ParentColumn: "id",
+								ChildColumn:  "belongs_to",
+								ChildIndex:   "mock",
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	handler := jsonObject.getHandler()
+
+	getResult := func(id string) (map[string]interface{}, error) {
+		buffer := bytes.NewBufferString("")
+		err := handler(
+			map[string]string{
+				jsonObject.endpointRegexpParamName(0): id,
+			},
+			[]byte{},
+			func(err error) error {
+				return err
+			},
+			func() io.Writer {
+				return buffer
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		bytesOutput, err := ioutil.ReadAll(buffer)
+		if err != nil {
+			return nil, err
+		}
+
+		data := map[string]interface{}{}
+		err = json.Unmarshal(bytesOutput, &data)
+		if err != nil {
+			return nil, err
+		}
+
+		return data, nil
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		data, err := getResult("2")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := "2", data["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if expect, got := "1", data["belongs_to"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if _, exists := data["child"]; !exists {
+			t.Errorf("Expected to get a 'child' property, got none.")
+		}
+
+		child := data["child"].(map[string]interface{})
+		if expect, got := "1", child["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if expect, got := "0", child["belongs_to"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if _, exists := child["subchild"]; !exists {
+			t.Errorf("Expected to get a 'subchild' property, got none.")
+		}
+
+		subchild := child["subchild"].([]interface{})
+		if expect, got := 2, len(subchild); expect != got {
+			t.Errorf("Expected to get '%+v' subchilds, got '%+v'.", expect, got)
+		}
+
+		subchild0 := subchild[0].(map[string]interface{})
+		if expect, got := "2", subchild0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		subchild1 := subchild[1].(map[string]interface{})
+		if expect, got := "3", subchild1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+	})
+	t.Run("no child", func(t *testing.T) {
+		data, err := getResult("1")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := "1", data["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if expect, got := "0", data["belongs_to"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if _, exists := data["child"]; !exists {
+			t.Errorf("Expected to get a 'child' property, got none.")
+		}
+		if child := data["child"]; child != nil {
+			t.Errorf("Expected to get a 'child' property equal to nil.")
+		}
+	})
+	t.Run("no child", func(t *testing.T) {
+		_, err := getResult("99")
+		if err != service.RecordNotFoundError {
+			t.Errorf("Expected to get a 404 error, got: '%+v'", err)
 		}
 	})
 }

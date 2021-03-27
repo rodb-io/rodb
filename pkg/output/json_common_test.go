@@ -208,7 +208,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonDataForTests := mockJsonDataForTests()
 
-		ascendingSort := false
+		falseValue := false
 		relationshipsConfig := map[string]*config.Relationship{
 			"children": {
 				Input:   "mock",
@@ -217,7 +217,7 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 				Sort: []*config.Sort{
 					{
 						Column:    "id",
-						Ascending: &ascendingSort,
+						Ascending: &falseValue,
 					},
 				},
 				Match: []*config.RelationshipMatch{
@@ -275,10 +275,10 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 		}
 
 		// The sort result is only quickly tested, because record.List.Sort is already tested
-		if expect, got := "3", children[0]["id"]; expect != got {
+		if expect, got := "4", children[0]["id"]; expect != got {
 			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
-		if expect, got := "2", children[1]["id"]; expect != got {
+		if expect, got := "3", children[1]["id"]; expect != got {
 			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 

@@ -161,22 +161,25 @@ func loadRelationships(
 			}
 
 			relationshipRecords = append(relationshipRecords, relationshipRecord)
-			if relationshipConfig.IsArray {
-				if relationshipConfig.Limit > 0 && len(relationshipRecords) >= int(relationshipConfig.Limit) {
-					break
-				}
-			} else {
-				if len(relationshipRecords) >= 1 {
-					break
-				}
-			}
 		}
 
 		if len(relationshipConfig.Sort) > 0 {
 			relationshipRecords = relationshipRecords.Sort(relationshipConfig.Sort)
 		}
 
-		relationshipItems := make([]map[string]interface{}, 0, len(relationshipRecords))
+		count := 0
+		if relationshipConfig.IsArray {
+			count = int(relationshipConfig.Limit)
+		} else {
+			count = 1
+		}
+		if count == 0 {
+			count = len(relationshipRecords)
+		} else if len(relationshipRecords) < count {
+			count = len(relationshipRecords)
+		}
+
+		relationshipItems := make([]map[string]interface{}, 0, count)
 		for _, relationshipRecord := range relationshipRecords {
 			relationshipData, err := relationshipRecord.All()
 			if err != nil {
@@ -196,6 +199,9 @@ func loadRelationships(
 			}
 
 			relationshipItems = append(relationshipItems, relationshipData)
+			if len(relationshipItems) >= count {
+				break
+			}
 		}
 
 		if relationshipConfig.IsArray {
