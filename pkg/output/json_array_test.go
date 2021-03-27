@@ -1,6 +1,10 @@
 package output
 
 import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"io/ioutil"
 	"rods/pkg/config"
 	"rods/pkg/service"
 	"testing"
@@ -35,6 +39,207 @@ func TestJsonArray(t *testing.T) {
 
 		if len(mockService.Routes) != 1 {
 			t.Errorf("Expected the output to add a route")
+		}
+	})
+}
+
+func TestJsonArrayHandler(t *testing.T) {
+	jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		Input:    "mock",
+		Endpoint: "/foo",
+		Limit: *&config.JsonArrayOutputLimit{
+			Max:       100,
+			Default:   10,
+			Parameter: "limit",
+		},
+		Offset: *&config.JsonArrayOutputOffset{
+			Parameter: "offset",
+		},
+		Search: map[string]config.JsonArrayOutputSearch{
+			"belongs_to_search": {
+				Column: "belongs_to",
+				Parser: "mock",
+				Index:  "mock",
+			},
+		},
+		Relationships: map[string]*config.Relationship{
+			"child": {
+				Input:   "mock",
+				IsArray: false,
+				Match: []*config.RelationshipMatch{
+					{
+						ParentColumn: "belongs_to",
+						ChildColumn:  "id",
+						ChildIndex:   "mock",
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	handler := jsonArray.getHandler()
+
+	getResult := func(params map[string]string) ([]interface{}, error) {
+		buffer := bytes.NewBufferString("")
+		err := handler(
+			params,
+			[]byte{},
+			func(err error) error {
+				return err
+			},
+			func() io.Writer {
+				return buffer
+			},
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		bytesOutput, err := ioutil.ReadAll(buffer)
+		if err != nil {
+			return nil, err
+		}
+
+		data := []interface{}{}
+		err = json.Unmarshal(bytesOutput, &data)
+		if err != nil {
+			return nil, err
+		}
+
+		return data, nil
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		data, err := getResult(map[string]string{})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := 4, len(data); expect != got {
+			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+		}
+
+		row0 := data[0].(map[string]interface{})
+		if expect, got := "1", row0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row1 := data[1].(map[string]interface{})
+		if expect, got := "2", row1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row2 := data[2].(map[string]interface{})
+		if expect, got := "3", row2["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row3 := data[3].(map[string]interface{})
+		if expect, got := "4", row3["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if _, exists := row3["child"]; !exists {
+			t.Errorf("Expected to get a 'child' property, got none.")
+		}
+
+		row3Child := row3["child"].(map[string]interface{})
+		if expect, got := "1", row3Child["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+		if expect, got := "0", row3Child["belongs_to"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+	})
+	t.Run("filter", func(t *testing.T) {
+		data, err := getResult(map[string]string{
+			"belongs_to_search": "1",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := 3, len(data); expect != got {
+			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+		}
+
+		row0 := data[0].(map[string]interface{})
+		if expect, got := "2", row0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row1 := data[1].(map[string]interface{})
+		if expect, got := "3", row1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row2 := data[2].(map[string]interface{})
+		if expect, got := "4", row2["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+	})
+	t.Run("limit", func(t *testing.T) {
+		data, err := getResult(map[string]string{
+			"limit": "2",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := 2, len(data); expect != got {
+			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+		}
+
+		row0 := data[0].(map[string]interface{})
+		if expect, got := "1", row0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row1 := data[1].(map[string]interface{})
+		if expect, got := "2", row1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+	})
+	t.Run("offset", func(t *testing.T) {
+		data, err := getResult(map[string]string{
+			"offset": "2",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := 2, len(data); expect != got {
+			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+		}
+
+		row0 := data[0].(map[string]interface{})
+		if expect, got := "3", row0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row1 := data[1].(map[string]interface{})
+		if expect, got := "4", row1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+	})
+	t.Run("filter+offset+limit", func(t *testing.T) {
+		data, err := getResult(map[string]string{
+			"belongs_to_search": "1",
+			"offset":            "1",
+			"limit":             "2",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := 2, len(data); expect != got {
+			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+		}
+
+		row0 := data[0].(map[string]interface{})
+		if expect, got := "3", row0["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+		}
+
+		row1 := data[1].(map[string]interface{})
+		if expect, got := "4", row1["id"]; expect != got {
+			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 }
