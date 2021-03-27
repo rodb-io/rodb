@@ -1,6 +1,7 @@
 package output
 
 import (
+	"io"
 	"regexp"
 )
 
@@ -23,6 +24,15 @@ func (mock *Mock) ExpectedPayloadType() *string {
 
 func (mock *Mock) ResponseType() string {
 	return "text/plain"
+}
+
+func (mock *Mock) Handle(
+	params map[string]string,
+	payload []byte,
+	sendError func(err error) error,
+	sendSucces func() io.Writer,
+) error {
+	return nil
 }
 
 func (mock *Mock) Name() string {

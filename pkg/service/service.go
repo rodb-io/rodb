@@ -7,12 +7,11 @@ import (
 	"io"
 	"regexp"
 	"rods/pkg/config"
+	"rods/pkg/output"
 )
 
 type Service interface {
 	Name() string
-	AddRoute(route *Route)
-	DeleteRoute(route *Route)
 	Address() string
 	Wait() error
 	Close() error
@@ -37,13 +36,12 @@ type Route struct {
 	Handler             RouteHandler
 }
 
-var RecordNotFoundError = errors.New("Record not found")
-
 func NewFromConfig(
 	config config.Service,
+	outputs map[string]output.Output,
 ) (Service, error) {
 	if config.Http != nil {
-		return NewHttp(config.Http)
+		return NewHttp(config.Http, outputs)
 	}
 
 	return nil, errors.New("Failed to initialize source")
@@ -51,11 +49,12 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Service,
+	outputs map[string]output.Output,
 	log *logrus.Logger,
 ) (List, error) {
 	services := make(List)
 	for serviceName, serviceConfig := range configs {
-		service, err := NewFromConfig(serviceConfig)
+		service, err := NewFromConfig(serviceConfig, outputs)
 		if err != nil {
 			return nil, err
 		}

@@ -3,12 +3,12 @@ package output
 import (
 	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/index"
 	"rods/pkg/input"
 	"rods/pkg/parser"
-	"rods/pkg/service"
 )
 
 type Output interface {
@@ -16,6 +16,12 @@ type Output interface {
 	Endpoint() *regexp.Regexp
 	ExpectedPayloadType() *string
 	ResponseType() string
+	Handle(
+		params map[string]string,
+		payload []byte,
+		sendError func(err error) error,
+		sendSucces func() io.Writer,
+	) error
 	Close() error
 }
 
@@ -25,7 +31,6 @@ func NewFromConfig(
 	config config.Output,
 	inputs input.List,
 	indexes index.List,
-	services service.List,
 	parsers parser.List,
 ) (Output, error) {
 	defaultIndex, defaultIndexExists := indexes["default"]
@@ -34,10 +39,10 @@ func NewFromConfig(
 	}
 
 	if config.JsonObject != nil {
-		return NewJsonObject(config.JsonObject, inputs, defaultIndex, indexes, services, parsers)
+		return NewJsonObject(config.JsonObject, inputs, defaultIndex, indexes, parsers)
 	}
 	if config.JsonArray != nil {
-		return NewJsonArray(config.JsonArray, inputs, defaultIndex, indexes, services, parsers)
+		return NewJsonArray(config.JsonArray, inputs, defaultIndex, indexes, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize output")
@@ -47,12 +52,11 @@ func NewFromConfigs(
 	configs map[string]config.Output,
 	inputs input.List,
 	indexes index.List,
-	services service.List,
 	parsers parser.List,
 ) (List, error) {
 	outputs := make(List)
 	for outputName, outputConfig := range configs {
-		output, err := NewFromConfig(outputConfig, inputs, indexes, services, parsers)
+		output, err := NewFromConfig(outputConfig, inputs, indexes, parsers)
 		if err != nil {
 			return nil, err
 		}

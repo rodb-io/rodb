@@ -1,5 +1,9 @@
 package record
 
+import (
+	"errors"
+)
+
 type Position = int64
 
 type PositionList []Position
@@ -11,6 +15,8 @@ type PositionList []Position
 type PositionIterator func() (*Position, error)
 
 type List []Record
+
+var RecordNotFoundError = errors.New("Record not found")
 
 type Record interface {
 	All() (map[string]interface{}, error)

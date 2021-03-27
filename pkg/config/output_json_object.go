@@ -9,7 +9,6 @@ import (
 
 type JsonObjectOutput struct {
 	Name          string                       `yaml:"name"`
-	Services      []string                     `yaml:"services"`
 	Input         string                       `yaml:"input"`
 	Endpoint      string                       `yaml:"endpoint"`
 	Parameters    []*JsonObjectOutputParameter `yaml:"parameters"`
@@ -30,25 +29,8 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 		return errors.New("jsonObject.name is required")
 	}
 
-	alreadyExistingServices := make(map[string]bool)
-	for _, serviceName := range config.Services {
-		_, serviceExists := rootConfig.Services[serviceName]
-		if !serviceExists {
-			return fmt.Errorf("jsonObject.services: Service '%v' not found in services list.", serviceName)
-		}
-
-		if _, alreadyExists := alreadyExistingServices[serviceName]; alreadyExists {
-			return fmt.Errorf("jsonObject.services: Duplicate service '%v' in array.", serviceName)
-		}
-		alreadyExistingServices[serviceName] = true
-	}
-
 	if len(config.Parameters) == 0 {
 		return errors.New("jsonObject.parameters is empty. As least one is required.")
-	}
-
-	if len(config.Services) == 0 {
-		return errors.New("jsonObject.services is empty. As least one is required.")
 	}
 
 	if config.Input == "" {

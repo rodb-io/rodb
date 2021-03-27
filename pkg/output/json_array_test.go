@@ -6,45 +6,24 @@ import (
 	"io"
 	"io/ioutil"
 	"rods/pkg/config"
-	"rods/pkg/service"
 	"testing"
 )
 
-func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, *service.Mock, error) {
+func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, error) {
 	dataForTests := mockJsonDataForTests()
-	config.Services = []string{"mock"}
-	mockService := service.NewMock()
-	services := service.List{"mock": mockService}
 	jsonArray, err := NewJsonArray(
 		config,
 		dataForTests.inputs,
 		dataForTests.indexes["default"],
 		dataForTests.indexes,
-		services,
 		dataForTests.parsers,
 	)
 
-	return jsonArray, mockService, err
-}
-
-func TestJsonArray(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		_, mockService, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
-		})
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if len(mockService.Routes) != 1 {
-			t.Errorf("Expected the output to add a route")
-		}
-	})
+	return jsonArray, err
 }
 
 func TestJsonArrayHandler(t *testing.T) {
-	jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+	jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 		Input:    "mock",
 		Endpoint: "/foo",
 		Limit: *&config.JsonArrayOutputLimit{
@@ -79,11 +58,10 @@ func TestJsonArrayHandler(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}
-	handler := jsonArray.getHandler()
 
 	getResult := func(params map[string]string) ([]interface{}, error) {
 		buffer := bytes.NewBufferString("")
-		err := handler(
+		err := jsonArray.Handle(
 			params,
 			[]byte{},
 			func(err error) error {
@@ -246,7 +224,7 @@ func TestJsonArrayHandler(t *testing.T) {
 
 func TestJsonArrayGetLimit(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Limit: config.JsonArrayOutputLimit{
@@ -271,7 +249,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("max", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Limit: config.JsonArrayOutputLimit{
@@ -296,7 +274,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("default", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Limit: config.JsonArrayOutputLimit{
@@ -319,7 +297,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Limit: config.JsonArrayOutputLimit{
@@ -343,7 +321,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 
 func TestJsonArrayGetOffset(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Offset: config.JsonArrayOutputOffset{
@@ -366,7 +344,7 @@ func TestJsonArrayGetOffset(t *testing.T) {
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Offset: config.JsonArrayOutputOffset{
@@ -388,7 +366,7 @@ func TestJsonArrayGetOffset(t *testing.T) {
 
 func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, _, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
 			Search: map[string]config.JsonArrayOutputSearch{

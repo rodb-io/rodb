@@ -31,15 +31,20 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		config.ErrorsType = "application/json"
 	}
 
-	for i, output := range config.Outputs {
-		if output == "" {
+	alreadyExistingOutputs := make(map[string]bool)
+	for i, outputName := range config.Outputs {
+		if outputName == "" {
 			return fmt.Errorf("http.output[%v]: is empty. This field is required", i)
 		}
-		_, outputExists := rootConfig.Outputs[output]
+		_, outputExists := rootConfig.Outputs[outputName]
 		if !outputExists {
-			return fmt.Errorf("http.output[%v]: Output '%v' not found in outputs list.", i, output)
+			return fmt.Errorf("http.output[%v]: Output '%v' not found in outputs list.", i, outputName)
 		}
 
+		if _, alreadyExists := alreadyExistingOutputs[outputName]; alreadyExists {
+			return fmt.Errorf("http.output[%v]: Duplicate output '%v' in array.", i, outputName)
+		}
+		alreadyExistingOutputs[outputName] = true
 	}
 
 	if !util.IsInArray(config.ErrorsType, []string{

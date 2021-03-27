@@ -6,46 +6,26 @@ import (
 	"io"
 	"io/ioutil"
 	"rods/pkg/config"
-	"rods/pkg/service"
+	"rods/pkg/record"
 	"testing"
 )
 
-func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, *service.Mock, error) {
+func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error) {
 	dataForTests := mockJsonDataForTests()
-	config.Services = []string{"mock"}
-	mockService := service.NewMock()
-	services := service.List{"mock": mockService}
 	jsonObject, err := NewJsonObject(
 		config,
 		dataForTests.inputs,
 		dataForTests.indexes["default"],
 		dataForTests.indexes,
-		services,
 		dataForTests.parsers,
 	)
 
-	return jsonObject, mockService, err
-}
-
-func TestJsonObject(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		_, mockService, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/test",
-		})
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if len(mockService.Routes) != 1 {
-			t.Errorf("Expected the output to add a route")
-		}
-	})
+	return jsonObject, err
 }
 
 func TestJsonObjectHandler(t *testing.T) {
 	trueValue := true
-	jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+	jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 		Input:    "mock",
 		Endpoint: "/foo/?",
 		Parameters: []*config.JsonObjectOutputParameter{
@@ -92,11 +72,10 @@ func TestJsonObjectHandler(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}
-	handler := jsonObject.getHandler()
 
 	getResult := func(id string) (map[string]interface{}, error) {
 		buffer := bytes.NewBufferString("")
-		err := handler(
+		err := jsonObject.Handle(
 			map[string]string{
 				jsonObject.endpointRegexpParamName(0): id,
 			},
@@ -189,7 +168,7 @@ func TestJsonObjectHandler(t *testing.T) {
 	})
 	t.Run("no child", func(t *testing.T) {
 		_, err := getResult("99")
-		if err != service.RecordNotFoundError {
+		if err != record.RecordNotFoundError {
 			t.Errorf("Expected to get a 404 error, got: '%+v'", err)
 		}
 	})
@@ -197,7 +176,7 @@ func TestJsonObjectHandler(t *testing.T) {
 
 func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/?/bar/?",
 			Parameters: []*config.JsonObjectOutputParameter{
@@ -222,7 +201,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 		}
 	})
 	t.Run("param count lower than wildcard count", func(t *testing.T) {
-		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/?/bar/?",
 			Parameters: []*config.JsonObjectOutputParameter{
@@ -243,7 +222,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 		}
 	})
 	t.Run("wildcard count lower than param count", func(t *testing.T) {
-		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/?",
 			Parameters: []*config.JsonObjectOutputParameter{
@@ -271,7 +250,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 
 func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonObject, _, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/?/bar/?/baz/?",
 			Parameters: []*config.JsonObjectOutputParameter{
@@ -328,31 +307,6 @@ func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 		}
 		if got, exists := filtersPerIndex["b"]["bar"]; !exists || got != barParamValue {
 			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", bazParamValue, got)
-		}
-	})
-}
-
-func TestJsonObjectClose(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		jsonObject, mockService, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/test",
-		})
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if len(mockService.Routes) != 1 {
-			t.Errorf("Expected the output to add a route")
-		}
-
-		err = jsonObject.Close()
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if len(mockService.Routes) != 0 {
-			t.Errorf("Expected the .Close call to remove the route from the service")
 		}
 	})
 }

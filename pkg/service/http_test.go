@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"regexp"
 	"rods/pkg/config"
+	"rods/pkg/record"
 	"strings"
 	"sync"
 	"testing"
@@ -82,7 +83,7 @@ func TestHttp(t *testing.T) {
 			sendError func(err error) error,
 			sendSucces func() io.Writer,
 		) error {
-			return sendError(RecordNotFoundError)
+			return sendError(record.RecordNotFoundError)
 		}
 
 		response, err := http.Get(server.Address() + "/foo")
@@ -179,7 +180,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 
 	t.Run("get", func(t *testing.T) {
 		except := getBarRoute
-		got := server.getMatchingRoute(&http.Request{
+		got := server.getMatchingOutput(&http.Request{
 			Method: "GET",
 			URL:    requestUrl,
 		})
@@ -191,7 +192,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 		except := postBarRoute
 		requestHeader := http.Header(map[string][]string{})
 		requestHeader.Set("Content-Type", payloadType)
-		got := server.getMatchingRoute(&http.Request{
+		got := server.getMatchingOutput(&http.Request{
 			Method: "POST",
 			URL:    requestUrl,
 			Header: requestHeader,
@@ -204,7 +205,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 		var except *Route = nil
 		requestHeader := http.Header(map[string][]string{})
 		requestHeader.Set("Content-Type", "application/xml")
-		got := server.getMatchingRoute(&http.Request{
+		got := server.getMatchingOutput(&http.Request{
 			Method: "POST",
 			URL:    requestUrl,
 			Header: requestHeader,

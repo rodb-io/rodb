@@ -11,7 +11,6 @@ import (
 	inputModule "rods/pkg/input"
 	parserModule "rods/pkg/parser"
 	recordModule "rods/pkg/record"
-	serviceModule "rods/pkg/service"
 	"strconv"
 )
 
@@ -22,8 +21,6 @@ type JsonArray struct {
 	defaultIndex indexModule.Index
 	indexes      indexModule.List
 	parsers      parserModule.List
-	services     []serviceModule.Service
-	route        *serviceModule.Route
 }
 
 func NewJsonArray(
@@ -31,19 +28,8 @@ func NewJsonArray(
 	inputs inputModule.List,
 	defaultIndex indexModule.Index,
 	indexes indexModule.List,
-	services serviceModule.List,
 	parsers parserModule.List,
 ) (*JsonArray, error) {
-	outputServices := make([]serviceModule.Service, len(config.Services))
-	for i, serviceName := range config.Services {
-		service, serviceExists := services[serviceName]
-		if !serviceExists {
-			return nil, fmt.Errorf("Service '%v' not found in services list.", serviceName)
-		}
-
-		outputServices[i] = service
-	}
-
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
@@ -56,7 +42,6 @@ func NewJsonArray(
 		defaultIndex: defaultIndex,
 		indexes:      indexes,
 		parsers:      parsers,
-		services:     outputServices,
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
@@ -68,19 +53,6 @@ func NewJsonArray(
 		if err != nil {
 			return nil, err
 		}
-	}
-
-	route := &serviceModule.Route{
-		Endpoint:            regexp.MustCompile("^" + regexp.QuoteMeta(config.Endpoint) + "$"),
-		ExpectedPayloadType: nil,
-		ResponseType:        "application/json",
-		Handler:             jsonArray.getHandler(),
-	}
-
-	jsonArray.route = route
-
-	for _, service := range jsonArray.services {
-		service.AddRoute(route)
 	}
 
 	return jsonArray, nil
@@ -102,78 +74,76 @@ func (jsonArray *JsonArray) ResponseType() string {
 	return "application/json"
 }
 
-func (jsonArray *JsonArray) getHandler() serviceModule.RouteHandler {
-	return func(
-		params map[string]string,
-		payload []byte,
-		sendError func(err error) error,
-		sendSucces func() io.Writer,
-	) error {
-		limit, err := jsonArray.getLimit(params)
+func (jsonArray *JsonArray) Handle(
+	params map[string]string,
+	payload []byte,
+	sendError func(err error) error,
+	sendSucces func() io.Writer,
+) error {
+	limit, err := jsonArray.getLimit(params)
+	if err != nil {
+		return sendError(err)
+	}
+
+	offset, err := jsonArray.getOffset(params)
+	if err != nil {
+		return sendError(err)
+	}
+
+	filtersPerIndex, err := jsonArray.getFiltersPerIndex(params)
+	if err != nil {
+		return sendError(err)
+	}
+
+	positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+		jsonArray.indexes["default"],
+		jsonArray.indexes,
+		jsonArray.input,
+		filtersPerIndex,
+	)
+	if err != nil {
+		return sendError(err)
+	}
+
+	nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+
+	// Skipping rows depending on the offset
+	for i := uint(0); i < offset; i++ {
+		value, err := nextPosition()
 		if err != nil {
 			return sendError(err)
 		}
+		if value == nil {
+			break
+		}
+	}
 
-		offset, err := jsonArray.getOffset(params)
+	rowsData := make([]interface{}, 0)
+	for len(rowsData) < int(limit) {
+		position, err := nextPosition()
 		if err != nil {
 			return sendError(err)
 		}
-
-		filtersPerIndex, err := jsonArray.getFiltersPerIndex(params)
-		if err != nil {
-			return sendError(err)
+		if position == nil {
+			break
 		}
 
-		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
-			jsonArray.indexes["default"],
+		rowData, err := getDataFromPosition(
+			*position,
+			jsonArray.config.Relationships,
+			jsonArray.defaultIndex,
 			jsonArray.indexes,
-			jsonArray.input,
-			filtersPerIndex,
+			jsonArray.inputs,
+			jsonArray.config.Input,
 		)
 		if err != nil {
 			return sendError(err)
 		}
 
-		nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
-
-		// Skipping rows depending on the offset
-		for i := uint(0); i < offset; i++ {
-			value, err := nextPosition()
-			if err != nil {
-				return sendError(err)
-			}
-			if value == nil {
-				break
-			}
-		}
-
-		rowsData := make([]interface{}, 0)
-		for len(rowsData) < int(limit) {
-			position, err := nextPosition()
-			if err != nil {
-				return sendError(err)
-			}
-			if position == nil {
-				break
-			}
-
-			rowData, err := getDataFromPosition(
-				*position,
-				jsonArray.config.Relationships,
-				jsonArray.defaultIndex,
-				jsonArray.indexes,
-				jsonArray.inputs,
-				jsonArray.config.Input,
-			)
-			if err != nil {
-				return sendError(err)
-			}
-
-			rowsData = append(rowsData, rowData)
-		}
-
-		return json.NewEncoder(sendSucces()).Encode(rowsData)
+		rowsData = append(rowsData, rowData)
 	}
+
+	return json.NewEncoder(sendSucces()).Encode(rowsData)
 }
 
 func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
@@ -242,9 +212,5 @@ func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[st
 }
 
 func (jsonArray *JsonArray) Close() error {
-	for _, service := range jsonArray.services {
-		service.DeleteRoute(jsonArray.route)
-	}
-
 	return nil
 }

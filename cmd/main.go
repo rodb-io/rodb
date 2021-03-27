@@ -83,7 +83,19 @@ func main() {
 		}
 	})()
 
-	services, err := service.NewFromConfigs(config.Services, log)
+	outputs, err := output.NewFromConfigs(config.Outputs, inputs, indexes, parsers)
+	if err != nil {
+		log.Errorf("Error initializing outputs: %v", err)
+		return
+	}
+	defer (func() {
+		err := output.Close(outputs)
+		if err != nil {
+			log.Errorf("Error closing outputs: %v", err)
+		}
+	})()
+
+	services, err := service.NewFromConfigs(config.Services, outputs, log)
 	if err != nil {
 		log.Errorf("Error initializing services: %v", err)
 		return
@@ -97,18 +109,6 @@ func main() {
 		err := service.Close(services)
 		if err != nil {
 			log.Errorf("Error closing services: %v", err)
-		}
-	})()
-
-	outputs, err := output.NewFromConfigs(config.Outputs, inputs, indexes, services, parsers)
-	if err != nil {
-		log.Errorf("Error initializing outputs: %v", err)
-		return
-	}
-	defer (func() {
-		err := output.Close(outputs)
-		if err != nil {
-			log.Errorf("Error closing outputs: %v", err)
 		}
 	})()
 

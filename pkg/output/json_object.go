@@ -11,7 +11,6 @@ import (
 	inputModule "rods/pkg/input"
 	parserModule "rods/pkg/parser"
 	recordModule "rods/pkg/record"
-	serviceModule "rods/pkg/service"
 	"strconv"
 	"strings"
 )
@@ -22,9 +21,7 @@ type JsonObject struct {
 	input        inputModule.Input
 	defaultIndex indexModule.Index
 	indexes      indexModule.List
-	services     []serviceModule.Service
 	paramParsers []parserModule.Parser
-	route        *serviceModule.Route
 }
 
 func NewJsonObject(
@@ -32,7 +29,6 @@ func NewJsonObject(
 	inputs inputModule.List,
 	defaultIndex indexModule.Index,
 	indexes indexModule.List,
-	services serviceModule.List,
 	parsers parserModule.List,
 ) (*JsonObject, error) {
 	paramParsers := make([]parserModule.Parser, len(config.Parameters))
@@ -42,16 +38,6 @@ func NewJsonObject(
 			return nil, errors.New("Parser '" + param.Parser + "' does not exist")
 		}
 		paramParsers[i] = parser
-	}
-
-	outputServices := make([]serviceModule.Service, len(config.Services))
-	for i, serviceName := range config.Services {
-		service, serviceExists := services[serviceName]
-		if !serviceExists {
-			return nil, fmt.Errorf("Service '%v' not found in services list.", serviceName)
-		}
-
-		outputServices[i] = service
 	}
 
 	input, ok := inputs[config.Input]
@@ -65,7 +51,6 @@ func NewJsonObject(
 		input:        input,
 		defaultIndex: defaultIndex,
 		indexes:      indexes,
-		services:     outputServices,
 		paramParsers: paramParsers,
 	}
 
@@ -78,19 +63,6 @@ func NewJsonObject(
 		if err != nil {
 			return nil, err
 		}
-	}
-
-	route := &serviceModule.Route{
-		Endpoint:            jsonObject.Endpoint(),
-		ExpectedPayloadType: nil,
-		ResponseType:        "application/json",
-		Handler:             jsonObject.getHandler(),
-	}
-
-	jsonObject.route = route
-
-	for _, service := range jsonObject.services {
-		service.AddRoute(route)
 	}
 
 	return jsonObject, nil
@@ -127,53 +99,51 @@ func (jsonObject *JsonObject) ResponseType() string {
 	return "application/json"
 }
 
-func (jsonObject *JsonObject) getHandler() serviceModule.RouteHandler {
-	return func(
-		params map[string]string,
-		payload []byte,
-		sendError func(err error) error,
-		sendSucces func() io.Writer,
-	) error {
-		filtersPerIndex, err := jsonObject.getEndpointFiltersPerIndex(params)
-		if err != nil {
-			return sendError(err)
-		}
-
-		positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
-			jsonObject.defaultIndex,
-			jsonObject.indexes,
-			jsonObject.input,
-			filtersPerIndex,
-		)
-		if err != nil {
-			return sendError(err)
-		}
-
-		nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
-
-		position, err := nextPosition()
-		if err != nil {
-			return sendError(err)
-		}
-
-		if position == nil {
-			return sendError(serviceModule.RecordNotFoundError)
-		}
-
-		data, err := getDataFromPosition(
-			*position,
-			jsonObject.config.Relationships,
-			jsonObject.defaultIndex,
-			jsonObject.indexes,
-			jsonObject.inputs,
-			jsonObject.config.Input,
-		)
-		if err != nil {
-			return sendError(err)
-		}
-
-		return json.NewEncoder(sendSucces()).Encode(data)
+func (jsonObject *JsonObject) Handle(
+	params map[string]string,
+	payload []byte,
+	sendError func(err error) error,
+	sendSucces func() io.Writer,
+) error {
+	filtersPerIndex, err := jsonObject.getEndpointFiltersPerIndex(params)
+	if err != nil {
+		return sendError(err)
 	}
+
+	positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
+		jsonObject.defaultIndex,
+		jsonObject.indexes,
+		jsonObject.input,
+		filtersPerIndex,
+	)
+	if err != nil {
+		return sendError(err)
+	}
+
+	nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+
+	position, err := nextPosition()
+	if err != nil {
+		return sendError(err)
+	}
+
+	if position == nil {
+		return sendError(recordModule.RecordNotFoundError)
+	}
+
+	data, err := getDataFromPosition(
+		*position,
+		jsonObject.config.Relationships,
+		jsonObject.defaultIndex,
+		jsonObject.indexes,
+		jsonObject.inputs,
+		jsonObject.config.Input,
+	)
+	if err != nil {
+		return sendError(err)
+	}
+
+	return json.NewEncoder(sendSucces()).Encode(data)
 }
 
 func (jsonObject *JsonObject) endpointRegexpParamName(index int) string {
@@ -201,9 +171,5 @@ func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]strin
 }
 
 func (jsonObject *JsonObject) Close() error {
-	for _, service := range jsonObject.services {
-		service.DeleteRoute(jsonObject.route)
-	}
-
 	return nil
 }

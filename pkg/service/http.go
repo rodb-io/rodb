@@ -14,35 +14,46 @@ import (
 	"net/url"
 	"regexp"
 	"rods/pkg/config"
+	"rods/pkg/output"
+	"rods/pkg/record"
 	"rods/pkg/util"
 	"sync"
 )
 
 type Http struct {
-	config     *config.HttpService
-	listener   net.Listener
-	server     *http.Server
-	waitGroup  *sync.WaitGroup
-	routes     []*Route
-	routesLock *sync.Mutex
-	lastError  error
+	config    *config.HttpService
+	listener  net.Listener
+	server    *http.Server
+	waitGroup *sync.WaitGroup
+	outputs   []output.Output
+	lastError error
 }
 
 func NewHttp(
 	config *config.HttpService,
+	outputs map[string]output.Output,
 ) (*Http, error) {
 	listener, err := net.Listen("tcp", config.Listen)
 	if err != nil {
 		return nil, err
 	}
 
+	boundOutputs := make([]output.Output, 0, len(config.Outputs))
+	for _, outputName := range config.Outputs {
+		output, outputExists := outputs[outputName]
+		if !outputExists {
+			return nil, fmt.Errorf("Output '%v' not found in outputs list.", outputName)
+		}
+
+		boundOutputs = append(boundOutputs, output)
+	}
+
 	service := &Http{
-		config:     config,
-		waitGroup:  &sync.WaitGroup{},
-		routes:     make([]*Route, 0),
-		routesLock: &sync.Mutex{},
-		listener:   listener,
-		lastError:  nil,
+		config:    config,
+		waitGroup: &sync.WaitGroup{},
+		outputs:   boundOutputs,
+		listener:  listener,
+		lastError: nil,
 		server: &http.Server{
 			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
 		},
@@ -63,35 +74,15 @@ func (service *Http) Name() string {
 	return service.config.Name
 }
 
-func (service *Http) AddRoute(route *Route) {
-	service.routesLock.Lock()
-	defer service.routesLock.Unlock()
-
-	service.routes = append(service.routes, route)
-}
-
-func (service *Http) DeleteRoute(route *Route) {
-	service.routesLock.Lock()
-	defer service.routesLock.Unlock()
-
-	routes := service.routes
-	for i, v := range routes {
-		if v == route {
-			service.routes = append(routes[:i], routes[i+1:]...)
-			return
-		}
-	}
-}
-
 func (service *Http) Address() string {
 	return "http://" + util.GetAddress(service.listener.Addr())
 }
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
-		route := service.getMatchingRoute(request)
-		if route == nil {
-			errToSend := errors.New("No matching route was found")
+		output := service.getMatchingOutput(request)
+		if output == nil {
+			errToSend := errors.New("No matching output was found")
 			err2 := service.sendErrorResponse(response, http.StatusNotFound, errToSend)
 			if err2 != nil {
 				service.config.Logger.Errorf("Error '%+v' while sending the error '%+v'", errToSend, err2)
@@ -99,7 +90,7 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		payload, err := service.getPayload(route, request.Body)
+		payload, err := service.getPayload(output, request.Body)
 		if err != nil {
 			err2 := service.sendErrorResponse(response, http.StatusInternalServerError, err)
 			if err2 != nil {
@@ -108,26 +99,26 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		params := service.getParams(route.Endpoint, request.URL)
-		err = route.Handler(
+		params := service.getParams(output.Endpoint(), request.URL)
+		err = output.Handle(
 			params,
 			payload,
 			func(err error) error {
 				status := http.StatusInternalServerError
-				if errors.Is(err, RecordNotFoundError) {
+				if errors.Is(err, record.RecordNotFoundError) {
 					status = http.StatusNotFound
 				}
 
 				return service.sendErrorResponse(response, status, err)
 			},
 			func() io.Writer {
-				response.Header().Set("Content-Type", route.ResponseType+"; charset=UTF-8")
+				response.Header().Set("Content-Type", output.ResponseType()+"; charset=UTF-8")
 				response.WriteHeader(http.StatusOK)
 				return io.Writer(response)
 			},
 		)
 		if err != nil {
-			service.config.Logger.Errorf("Unhandled error while handling the route '%v': %v", route.Endpoint, err)
+			service.config.Logger.Errorf("Unhandled error while handling the output '%v': %v", output.Endpoint, err)
 		}
 
 		return
@@ -170,14 +161,15 @@ func (service *Http) sendErrorResponse(
 	return nil
 }
 
-func (service *Http) getMatchingRoute(request *http.Request) *Route {
-	for _, route := range service.routes {
-		isValidGet := (request.Method == http.MethodGet && route.ExpectedPayloadType == nil)
+func (service *Http) getMatchingOutput(request *http.Request) output.Output {
+	for _, output := range service.outputs {
+		expectedPayloadType := output.ExpectedPayloadType()
+		isValidGet := (request.Method == http.MethodGet && expectedPayloadType == nil)
 		isValidPost := request.Method == http.MethodPost &&
-			route.ExpectedPayloadType != nil &&
-			request.Header.Get("Content-Type") == *route.ExpectedPayloadType
-		if (isValidGet || isValidPost) && route.Endpoint.MatchString(request.URL.Path) {
-			return route
+			expectedPayloadType != nil &&
+			request.Header.Get("Content-Type") == *expectedPayloadType
+		if (isValidGet || isValidPost) && output.Endpoint().MatchString(request.URL.Path) {
+			return output
 		}
 	}
 
@@ -193,16 +185,16 @@ func (service *Http) getParams(endpoint *regexp.Regexp, url *url.URL) map[string
 
 	// Adding params from the path's regex
 	endpointSubexps := endpoint.SubexpNames()
-	routeMatches := endpoint.FindStringSubmatch(url.Path)
-	for i := 1; i < len(routeMatches) && i < len(endpointSubexps); i++ {
-		params[endpointSubexps[i]] = routeMatches[i]
+	outputMatches := endpoint.FindStringSubmatch(url.Path)
+	for i := 1; i < len(outputMatches) && i < len(endpointSubexps); i++ {
+		params[endpointSubexps[i]] = outputMatches[i]
 	}
 
 	return params
 }
 
-func (service *Http) getPayload(route *Route, body io.Reader) ([]byte, error) {
-	if route.ExpectedPayloadType != nil {
+func (service *Http) getPayload(output output.Output, body io.Reader) ([]byte, error) {
+	if output.ExpectedPayloadType() != nil {
 		return ioutil.ReadAll(body)
 	}
 

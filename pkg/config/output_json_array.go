@@ -9,7 +9,6 @@ import (
 type JsonArrayOutput struct {
 	Name          string                           `yaml:"name"`
 	Input         string                           `yaml:"input"`
-	Services      []string                         `yaml:"services"`
 	Endpoint      string                           `yaml:"endpoint"`
 	Limit         JsonArrayOutputLimit             `yaml:"limit"`
 	Offset        JsonArrayOutputOffset            `yaml:"offset"`
@@ -47,22 +46,6 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 
 	if config.Endpoint == "" {
 		return errors.New("jsonArray.endpoint is not defined. This setting is required")
-	}
-
-	if len(config.Services) == 0 {
-		return errors.New("jsonArray.services is empty. As least one is required.")
-	}
-	alreadyExistingServices := make(map[string]bool)
-	for _, serviceName := range config.Services {
-		_, serviceExists := rootConfig.Services[serviceName]
-		if !serviceExists {
-			return fmt.Errorf("jsonArray.services: Service '%v' not found in services list.", serviceName)
-		}
-
-		if _, alreadyExists := alreadyExistingServices[serviceName]; alreadyExists {
-			return fmt.Errorf("jsonArray.services: Duplicate service '%v' in array.", serviceName)
-		}
-		alreadyExistingServices[serviceName] = true
 	}
 
 	err := config.Limit.validate(rootConfig, log)

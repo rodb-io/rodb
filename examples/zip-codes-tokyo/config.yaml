@@ -88,8 +88,6 @@ outputs:
   - jsonArray:
       name: listPostalCodes
       input: zipCodesTokyo
-      services:
-        - httpService
       endpoint: "/zip-codes"
       limit:
         default: 100
@@ -118,8 +116,6 @@ outputs:
   - jsonObject:
       name: findOnePostalCode
       input: zipCodesTokyo
-      services:
-        - httpService
       endpoint: "/zip-codes/?"
       parameters:
         - column: zipCode
