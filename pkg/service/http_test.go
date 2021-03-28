@@ -92,6 +92,39 @@ func TestHttp(t *testing.T) {
 	})
 }
 
+func TestHttpOutputList(t *testing.T) {
+	config := &config.HttpService{
+		Listen:     ":0", // Auto-assign port
+		ErrorsType: "application/json",
+		Logger:     logrus.NewEntry(logrus.StandardLogger()),
+		Outputs:    []string{"foo", "baz"},
+	}
+
+	outputFoo := outputModule.NewMock("/foo")
+	outputBar := outputModule.NewMock("/bar")
+	outputBaz := outputModule.NewMock("/baz")
+
+	server, err := NewHttp(config, outputModule.List{
+		"foo": outputFoo,
+		"bar": outputBar,
+		"baz": outputBaz,
+	})
+	defer server.Close()
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	if expect, got := 2, len(server.outputs); got != expect {
+		t.Errorf("Expected the server to hande %v routes, got %v", expect, got)
+	}
+	if expect, got := outputFoo, server.outputs[0]; got != expect {
+		t.Errorf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
+	}
+	if expect, got := outputBaz, server.outputs[1]; got != expect {
+		t.Errorf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
+	}
+}
+
 func TestHttpGetMatchingRoute(t *testing.T) {
 	payloadType := "application/json"
 
