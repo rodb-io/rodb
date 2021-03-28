@@ -192,31 +192,5 @@ func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
 		}
 	}
 
-	err := config.checkDuplicateEndpointsPerService()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (config *Config) checkDuplicateEndpointsPerService() error {
-	endpointsPerService := make(map[string]map[string]interface{})
-	for _, outputConfigContainer := range config.Outputs {
-		for _, service := range outputConfigContainer.Services() {
-			serviceEndpoints, serviceExists := endpointsPerService[service]
-			if !serviceExists {
-				serviceEndpoints = make(map[string]interface{})
-				endpointsPerService[service] = serviceEndpoints
-			}
-
-			if _, endpointExists := serviceEndpoints[outputConfigContainer.Endpoint()]; endpointExists {
-				return fmt.Errorf("Duplicate endpoint '%v' in service '%v'", outputConfigContainer.Endpoint(), service)
-			}
-
-			serviceEndpoints[outputConfigContainer.Endpoint()] = nil
-		}
-	}
-
 	return nil
 }

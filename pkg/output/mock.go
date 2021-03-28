@@ -6,15 +6,17 @@ import (
 )
 
 type Mock struct {
-	endpoint *regexp.Regexp
+	endpoint        *regexp.Regexp
+	MockOutput      func(params map[string]string) ([]byte, error)
+	MockPayloadType *string
 }
 
-func NewMock() *Mock {
-	mock := &Mock{
-		endpoint: regexp.MustCompile("^/mock$"),
+func NewMock(
+	endpoint string,
+) *Mock {
+	return &Mock{
+		endpoint: regexp.MustCompile("^" + regexp.QuoteMeta(endpoint) + "$"),
 	}
-
-	return mock
 }
 
 func (mock *Mock) Endpoint() *regexp.Regexp {
@@ -22,7 +24,7 @@ func (mock *Mock) Endpoint() *regexp.Regexp {
 }
 
 func (mock *Mock) ExpectedPayloadType() *string {
-	return nil
+	return mock.MockPayloadType
 }
 
 func (mock *Mock) ResponseType() string {
@@ -35,7 +37,13 @@ func (mock *Mock) Handle(
 	sendError func(err error) error,
 	sendSucces func() io.Writer,
 ) error {
-	return nil
+	data, err := mock.MockOutput(params)
+	if err != nil {
+		return sendError(err)
+	}
+
+	_, err = sendSucces().Write(data)
+	return err
 }
 
 func (mock *Mock) Name() string {

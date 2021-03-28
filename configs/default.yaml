@@ -1,4 +1,4 @@
-# TODO service -> test the output lists and new methods, fix the tests
+# TODO service -> test the output lists and new methods
 # TODO should the urls be defined in the service layer rather than the output?
 # TODO remove the source layer?
 # TODO performance analysis

@@ -3,15 +3,14 @@ package service
 import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
 	"rods/pkg/config"
+	outputModule "rods/pkg/output"
 	"rods/pkg/record"
 	"strings"
-	"sync"
 	"testing"
 )
 
@@ -20,39 +19,21 @@ func TestHttp(t *testing.T) {
 		Listen:     ":0", // Auto-assign port
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
+		Outputs:    []string{"mock"},
 	}
-	server, err := NewHttp(config)
+	output := outputModule.NewMock("/foo")
+	outputs := outputModule.List{
+		"mock": output,
+	}
+	server, err := NewHttp(config, outputs)
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}
 	defer server.Close()
 
-	route := &Route{
-		Endpoint:            regexp.MustCompile("/foo"),
-		ExpectedPayloadType: nil,
-		ResponseType:        "text/plain",
-		Handler: func(
-			params map[string]string,
-			payload []byte,
-			sendError func(err error) error,
-			sendSucces func() io.Writer,
-		) error {
-			_, err := sendSucces().Write([]byte("Hello " + params["name"] + "!"))
-			return err
-		},
-	}
-
-	server.AddRoute(route)
-
 	t.Run("normal", func(t *testing.T) {
-		route.Handler = func(
-			params map[string]string,
-			payload []byte,
-			sendError func(err error) error,
-			sendSucces func() io.Writer,
-		) error {
-			_, err := sendSucces().Write([]byte("Hello " + params["name"] + "!"))
-			return err
+		output.MockOutput = func(params map[string]string) ([]byte, error) {
+			return []byte("Hello " + params["name"] + "!"), nil
 		}
 
 		response, err := http.Get(server.Address() + "/foo?name=Universe")
@@ -77,13 +58,8 @@ func TestHttp(t *testing.T) {
 		}
 	})
 	t.Run("404", func(t *testing.T) {
-		route.Handler = func(
-			params map[string]string,
-			payload []byte,
-			sendError func(err error) error,
-			sendSucces func() io.Writer,
-		) error {
-			return sendError(record.RecordNotFoundError)
+		output.MockOutput = func(params map[string]string) ([]byte, error) {
+			return nil, record.RecordNotFoundError
 		}
 
 		response, err := http.Get(server.Address() + "/foo")
@@ -116,61 +92,24 @@ func TestHttp(t *testing.T) {
 	})
 }
 
-func TestHttpAddRoute(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		server := &Http{
-			routes:     make([]*Route, 0),
-			routesLock: &sync.Mutex{},
-		}
-
-		route := &Route{ResponseType: "application/test"}
-		server.AddRoute(route)
-
-		if got, expect := len(server.routes), 1; got != expect {
-			t.Errorf("Expected the server to contain '%v' routes, got '%+v'", expect, got)
-		} else if server.routes[0] != route {
-			t.Errorf("Expected the server routes to contain '%+v', got '%+v'", route, server.routes)
-		}
-	})
-}
-
-func TestHttpDeleteRoute(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		route := &Route{ResponseType: "application/test"}
-		server := &Http{
-			routes:     make([]*Route, 0),
-			routesLock: &sync.Mutex{},
-		}
-		server.routes = append(server.routes, route)
-
-		server.DeleteRoute(route)
-		if got, expect := len(server.routes), 0; got != expect {
-			t.Errorf("Expected the server to contain '%v' routes, got '%+v'", expect, got)
-		}
-	})
-}
-
 func TestHttpGetMatchingRoute(t *testing.T) {
 	payloadType := "application/json"
-	getFooRoute := &Route{
-		Endpoint:            regexp.MustCompile("/foo"),
-		ExpectedPayloadType: nil,
-	}
-	postBarRoute := &Route{
-		Endpoint:            regexp.MustCompile("/bar"),
-		ExpectedPayloadType: &payloadType,
-	}
-	getBarRoute := &Route{
-		Endpoint:            regexp.MustCompile("/bar"),
-		ExpectedPayloadType: nil,
-	}
+
+	getFooOutput := outputModule.NewMock("/foo")
+	getFooOutput.MockPayloadType = nil
+
+	postBarOutput := outputModule.NewMock("/bar")
+	postBarOutput.MockPayloadType = &payloadType
+
+	getBarOutput := outputModule.NewMock("/bar")
+	getBarOutput.MockPayloadType = nil
+
 	server := &Http{
-		routes: []*Route{
-			getFooRoute,
-			postBarRoute,
-			getBarRoute,
+		outputs: []outputModule.Output{
+			getFooOutput,
+			postBarOutput,
+			getBarOutput,
 		},
-		routesLock: &sync.Mutex{},
 	}
 
 	requestUrl, err := url.Parse("/bar")
@@ -179,17 +118,17 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 	}
 
 	t.Run("get", func(t *testing.T) {
-		except := getBarRoute
+		expect := getBarOutput
 		got := server.getMatchingOutput(&http.Request{
 			Method: "GET",
 			URL:    requestUrl,
 		})
-		if got != except {
-			t.Errorf("Expected to get route '%+v', got '%+v'", except, got)
+		if got != expect {
+			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("post", func(t *testing.T) {
-		except := postBarRoute
+		expect := postBarOutput
 		requestHeader := http.Header(map[string][]string{})
 		requestHeader.Set("Content-Type", payloadType)
 		got := server.getMatchingOutput(&http.Request{
@@ -197,12 +136,12 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			URL:    requestUrl,
 			Header: requestHeader,
 		})
-		if got != except {
-			t.Errorf("Expected to get route '%+v', got '%+v'", except, got)
+		if got != expect {
+			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("wrong", func(t *testing.T) {
-		var except *Route = nil
+		var expect outputModule.Output = nil
 		requestHeader := http.Header(map[string][]string{})
 		requestHeader.Set("Content-Type", "application/xml")
 		got := server.getMatchingOutput(&http.Request{
@@ -210,8 +149,8 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			URL:    requestUrl,
 			Header: requestHeader,
 		})
-		if got != except {
-			t.Errorf("Expected to get route '%+v', got '%+v'", except, got)
+		if got != expect {
+			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 }
@@ -242,16 +181,16 @@ func TestHttpGetParams(t *testing.T) {
 
 func TestHttpGetPayload(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		server := &Http{}
 		payloadType := "text/plain"
-		route := &Route{
-			ExpectedPayloadType: &payloadType,
-		}
+		output := outputModule.NewMock("/foo")
+		output.MockPayloadType = &payloadType
+
+		server := &Http{}
 
 		data := "Hello World!"
 		body := strings.NewReader(data)
 
-		payload, err := server.getPayload(route, body)
+		payload, err := server.getPayload(output, body)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -260,12 +199,12 @@ func TestHttpGetPayload(t *testing.T) {
 		}
 	})
 	t.Run("no expected payload", func(t *testing.T) {
-		server := &Http{}
-		route := &Route{
-			ExpectedPayloadType: nil,
-		}
+		output := outputModule.NewMock("/foo")
+		output.MockPayloadType = nil
 
-		payload, err := server.getPayload(route, nil)
+		server := &Http{}
+
+		payload, err := server.getPayload(output, nil)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

@@ -59,20 +59,6 @@ func (config *Output) Name() string {
 	return ""
 }
 
-func (config *Output) Services() []string {
-	if config.GraphQL != nil {
-		return config.GraphQL.Services
-	}
-	if config.JsonArray != nil {
-		return config.JsonArray.Services
-	}
-	if config.JsonObject != nil {
-		return config.JsonObject.Services
-	}
-
-	return []string{}
-}
-
 func (config *Output) Endpoint() string {
 	if config.GraphQL != nil {
 		return config.GraphQL.Endpoint
