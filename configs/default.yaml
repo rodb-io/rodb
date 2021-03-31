@@ -1,7 +1,6 @@
 # TODO should the urls be defined in the service layer rather than the output?
-#      -> have the params indexed by name instead of array
-#      -> retrieve the params by name instead of index
-#      -> have the params and search use the same format
+#      -> have the params and search use the same format and merge the configurations
+#      -> add common output methods to get and check the params from the URL
 # TODO remove the source layer?
 # TODO performance analysis
 parsers:
@@ -123,7 +122,8 @@ outputs:
                 - column: id
                   ascending: true
       parameters:
-        - column: id
+        id:
+          column: id
           parser: integer
           index: defaultIndex
 services:

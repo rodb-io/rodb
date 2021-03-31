@@ -7,11 +7,11 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Name          string                       `yaml:"name"`
-	Input         string                       `yaml:"input"`
-	Endpoint      string                       `yaml:"endpoint"`
-	Parameters    []*JsonObjectOutputParameter `yaml:"parameters"`
-	Relationships map[string]*Relationship     `yaml:"relationships"`
+	Name          string                                `yaml:"name"`
+	Input         string                                `yaml:"input"`
+	Endpoint      string                                `yaml:"endpoint"`
+	Parameters    map[string]*JsonObjectOutputParameter `yaml:"parameters"`
+	Relationships map[string]*Relationship              `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
@@ -40,10 +40,10 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	for parameterIndex, parameter := range config.Parameters {
+	for parameterName, parameter := range config.Parameters {
 		err := parameter.validate(rootConfig, log, input)
 		if err != nil {
-			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterIndex, err)
+			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterName, err)
 		}
 	}
 

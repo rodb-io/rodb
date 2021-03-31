@@ -28,8 +28,8 @@ func TestJsonObjectHandler(t *testing.T) {
 	jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 		Input:    "mock",
 		Endpoint: "/foo/{foo_id}",
-		Parameters: []*config.JsonObjectOutputParameter{
-			{
+		Parameters: map[string]*config.JsonObjectOutputParameter{
+			"foo_id": {
 				Column: "id",
 				Parser: "mock",
 				Index:  "mock",
@@ -179,12 +179,13 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/{foo_id}/bar/{bar_id}",
-			Parameters: []*config.JsonObjectOutputParameter{
-				{
+			Parameters: map[string]*config.JsonObjectOutputParameter{
+				"foo_id": {
 					Column: "foo",
 					Parser: "mock",
 					Index:  "mock",
-				}, {
+				},
+				"bar_id": {
 					Column: "bar",
 					Parser: "mock",
 					Index:  "mock",
@@ -211,37 +212,33 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			t.Errorf("Expected the second endpoint param to be '%+v', got '%+v'", expect, got)
 		}
 	})
-	t.Run("param count lower than wildcard count", func(t *testing.T) {
-		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+	t.Run("param in the endpoint does not exists", func(t *testing.T) {
+		_, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/{foo_id}/bar/{bar_id}",
-			Parameters: []*config.JsonObjectOutputParameter{
-				{
+			Parameters: map[string]*config.JsonObjectOutputParameter{
+				"foo_id": {
 					Column: "foo",
 					Parser: "mock",
 					Index:  "mock",
 				},
 			},
 		})
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		regexp := jsonObject.Endpoint()
-		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)/bar/(.*)$"; got != expect {
-			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
+		if err == nil {
+			t.Errorf("Expected error, got '%+v'", err)
 		}
 	})
 	t.Run("wildcard count lower than param count", func(t *testing.T) {
 		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/{foo_id}",
-			Parameters: []*config.JsonObjectOutputParameter{
-				{
+			Parameters: map[string]*config.JsonObjectOutputParameter{
+				"foo_id": {
 					Column: "foo",
 					Parser: "mock",
 					Index:  "mock",
-				}, {
+				},
+				"bar_id": {
 					Column: "bar",
 					Parser: "mock",
 					Index:  "mock",
@@ -264,16 +261,18 @@ func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
 			Input:    "mock",
 			Endpoint: "/foo/{foo_id}/bar/{bar_id}/baz/{baz_id}",
-			Parameters: []*config.JsonObjectOutputParameter{
-				{
+			Parameters: map[string]*config.JsonObjectOutputParameter{
+				"foo_id": {
 					Column: "foo",
 					Parser: "mock",
 					Index:  "a",
-				}, {
+				},
+				"bar_id": {
 					Column: "bar",
 					Parser: "mock",
 					Index:  "b",
-				}, {
+				},
+				"baz_id": {
 					Column: "baz",
 					Parser: "mock",
 					Index:  "a",

@@ -20,7 +20,7 @@ type JsonObject struct {
 	input          inputModule.Input
 	defaultIndex   indexModule.Index
 	indexes        indexModule.List
-	paramParsers   []parserModule.Parser
+	paramParsers   map[string]parserModule.Parser
 	endpoint       *regexp.Regexp
 	endpointParams []string
 }
@@ -32,13 +32,13 @@ func NewJsonObject(
 	indexes indexModule.List,
 	parsers parserModule.List,
 ) (*JsonObject, error) {
-	paramParsers := make([]parserModule.Parser, len(config.Parameters))
-	for i, param := range config.Parameters {
+	paramParsers := make(map[string]parserModule.Parser)
+	for paramName, param := range config.Parameters {
 		parser, parserExists := parsers[param.Parser]
 		if !parserExists {
 			return nil, errors.New("Parser '" + param.Parser + "' does not exist")
 		}
-		paramParsers[i] = parser
+		paramParsers[paramName] = parser
 	}
 
 	input, ok := inputs[config.Input]
@@ -56,6 +56,13 @@ func NewJsonObject(
 	}
 
 	jsonObject.endpoint, jsonObject.endpointParams = jsonObject.createEndpointRegexp()
+
+	for _, endpointParam := range jsonObject.endpointParams {
+		_, endpointParamExists := jsonObject.config.Parameters[endpointParam]
+		if !endpointParamExists {
+			return nil, fmt.Errorf("The parameter '%v' set in the endpoint does not exists in the parameters list.", endpointParam)
+		}
+	}
 
 	for _, relationship := range jsonObject.config.Relationships {
 		err := checkRelationshipMatches(
@@ -153,13 +160,14 @@ func (jsonObject *JsonObject) createEndpointRegexp() (*regexp.Regexp, []string) 
 	endpoint := parts[0]
 	for partIndex := 1; partIndex < len(parts); partIndex++ {
 		paramIndex := partIndex - 1
+		paramName := params[paramIndex]
 
 		if paramIndex >= len(jsonObject.paramParsers) {
 			endpoint = endpoint + "(.*)" + parts[partIndex]
 		} else {
-			paramPattern := jsonObject.paramParsers[paramIndex].GetRegexpPattern()
-			paramName := jsonObject.endpointRegexpParamName(paramIndex)
-			endpoint = endpoint + "(?P<" + paramName + ">" + paramPattern + ")" + parts[partIndex]
+			paramPattern := jsonObject.paramParsers[paramName].GetRegexpPattern()
+			regexpParamName := jsonObject.endpointRegexpParamName(paramIndex)
+			endpoint = endpoint + "(?P<" + regexpParamName + ">" + paramPattern + ")" + parts[partIndex]
 		}
 	}
 
@@ -168,15 +176,17 @@ func (jsonObject *JsonObject) createEndpointRegexp() (*regexp.Regexp, []string) 
 
 func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {
 	filtersPerIndex := map[string]map[string]interface{}{}
-	for i, param := range jsonObject.config.Parameters {
+	for paramIndex, paramName := range jsonObject.endpointParams {
+		param := jsonObject.config.Parameters[paramName]
+
 		indexFilters, indexFiltersExists := filtersPerIndex[param.Index]
 		if !indexFiltersExists {
 			indexFilters = make(map[string]interface{})
 			filtersPerIndex[param.Index] = indexFilters
 		}
 
-		paramName := jsonObject.endpointRegexpParamName(i)
-		paramValue, err := jsonObject.paramParsers[i].Parse(params[paramName])
+		regexpParamName := jsonObject.endpointRegexpParamName(paramIndex)
+		paramValue, err := jsonObject.paramParsers[paramName].Parse(params[regexpParamName])
 		if err != nil {
 			return nil, err
 		}

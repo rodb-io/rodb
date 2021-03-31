@@ -118,7 +118,8 @@ outputs:
       input: zipCodesTokyo
       endpoint: "/zip-codes/{zipCode}"
       parameters:
-        - column: zipCode
+        zipCode:
+          column: zipCode
           parser: string
           index: zipCode
       relationships:
