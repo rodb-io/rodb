@@ -7,13 +7,13 @@ import (
 )
 
 type JsonArrayOutput struct {
-	Name          string                              `yaml:"name"`
-	Input         string                              `yaml:"input"`
-	Endpoint      string                              `yaml:"endpoint"`
-	Limit         JsonArrayOutputLimit                `yaml:"limit"`
-	Offset        JsonArrayOutputOffset               `yaml:"offset"`
-	Parameters    map[string]JsonArrayOutputParameter `yaml:"parameters"`
-	Relationships map[string]*Relationship            `yaml:"relationships"`
+	Name          string                   `yaml:"name"`
+	Input         string                   `yaml:"input"`
+	Endpoint      string                   `yaml:"endpoint"`
+	Limit         JsonArrayOutputLimit     `yaml:"limit"`
+	Offset        JsonArrayOutputOffset    `yaml:"offset"`
+	Parameters    map[string]Parameter     `yaml:"parameters"`
+	Relationships map[string]*Relationship `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
@@ -27,12 +27,6 @@ type JsonArrayOutputOffset struct {
 	Parameter string `yaml:"parameter"`
 }
 
-type JsonArrayOutputParameter struct {
-	Column string `yaml:"column"`
-	Index  string `yaml:"index"`
-	Parser string `yaml:"parser"`
-}
-
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
@@ -42,6 +36,10 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 
 	if config.Input == "" {
 		return errors.New("jsonArray.input is empty. This field is required.")
+	}
+	input, inputExists := rootConfig.Inputs[config.Input]
+	if !inputExists {
+		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	if config.Endpoint == "" {
@@ -60,7 +58,7 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 
 	for configParamName, configParam := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonArray.parameters.%v.", configParamName)
-		err := configParam.validate(rootConfig, log, logPrefix)
+		err := configParam.validate(rootConfig, log, logPrefix, input)
 		if err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
@@ -107,35 +105,6 @@ func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.En
 	if config.Parameter == "" {
 		log.Debug("jsonArray.offset.parameter not set. Assuming 'offset'")
 		config.Parameter = "offset"
-	}
-
-	return nil
-}
-
-func (config *JsonArrayOutputParameter) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
-	if config.Column == "" {
-		return errors.New("column is empty")
-	}
-
-	if config.Index == "" {
-		log.Debugf(logPrefix + "index is empty. Assuming 'default'.\n")
-		config.Index = "default"
-	}
-	index, indexExists := rootConfig.Indexes[config.Index]
-	if !indexExists {
-		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
-	}
-	if !index.DoesHandleColumn(config.Column) {
-		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)
-	}
-
-	if config.Parser == "" {
-		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
-		config.Parser = "string"
-	}
-	_, parserExists := rootConfig.Parsers[config.Parser]
-	if !parserExists {
-		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
 	return nil

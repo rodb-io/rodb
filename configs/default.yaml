@@ -1,5 +1,4 @@
 # TODO should the urls be defined in the service layer rather than the output?
-#      -> merge the parameters list in the config of jsonArray and jsonObject
 #      -> add common output methods to get and check the params from the URL
 #      -> move the urls in the service rather than in the outputs
 # TODO remove the source layer?
@@ -125,8 +124,8 @@ outputs:
       parameters:
         id:
           column: id
-          parser: integer
           index: defaultIndex
+          parser: integer
 services:
   - http:
       name: defaultService

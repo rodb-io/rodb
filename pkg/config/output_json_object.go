@@ -7,18 +7,12 @@ import (
 )
 
 type JsonObjectOutput struct {
-	Name          string                                `yaml:"name"`
-	Input         string                                `yaml:"input"`
-	Endpoint      string                                `yaml:"endpoint"`
-	Parameters    map[string]*JsonObjectOutputParameter `yaml:"parameters"`
-	Relationships map[string]*Relationship              `yaml:"relationships"`
+	Name          string                   `yaml:"name"`
+	Input         string                   `yaml:"input"`
+	Endpoint      string                   `yaml:"endpoint"`
+	Parameters    map[string]*Parameter    `yaml:"parameters"`
+	Relationships map[string]*Relationship `yaml:"relationships"`
 	Logger        *logrus.Entry
-}
-
-type JsonObjectOutputParameter struct {
-	Column string `yaml:"column"`
-	Parser string `yaml:"parser"`
-	Index  string `yaml:"index"`
 }
 
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -41,7 +35,8 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 	}
 
 	for parameterName, parameter := range config.Parameters {
-		err := parameter.validate(rootConfig, log, input)
+		logPrefix := fmt.Sprintf("jsonObject.parameters.%v.", parameterName)
+		err := parameter.validate(rootConfig, log, logPrefix, input)
 		if err != nil {
 			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterName, err)
 		}
@@ -57,43 +52,6 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 
 	if config.Endpoint == "" {
 		return errors.New("jsonObject.endpoint is not defined. This setting is required")
-	}
-
-	return nil
-}
-
-func (config *JsonObjectOutputParameter) validate(
-	rootConfig *Config,
-	log *logrus.Entry,
-	input Input,
-) error {
-	if config.Column == "" {
-		return errors.New("column is empty")
-	}
-
-	if config.Parser == "" {
-		log.Debug("jsonObject.parameters[].parser not defined. Assuming 'string'")
-		config.Parser = "string"
-	}
-	_, parserExists := rootConfig.Parsers[config.Parser]
-	if !parserExists {
-		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
-	}
-
-	if config.Index == "" {
-		log.Debugf("index is empty. Assuming 'default'.\n")
-		config.Index = "default"
-	}
-
-	index, indexExists := rootConfig.Indexes[config.Index]
-	if !indexExists {
-		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
-	}
-	if !index.DoesHandleInput(input) {
-		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, input.Name())
-	}
-	if !index.DoesHandleColumn(config.Column) {
-		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)
 	}
 
 	return nil

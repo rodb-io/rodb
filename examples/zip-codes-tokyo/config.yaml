@@ -120,8 +120,8 @@ outputs:
       parameters:
         zipCode:
           column: zipCode
-          parser: string
           index: zipCode
+          parser: string
       relationships:
         updated:
           input: updatedValues
