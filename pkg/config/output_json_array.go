@@ -7,13 +7,13 @@ import (
 )
 
 type JsonArrayOutput struct {
-	Name          string                           `yaml:"name"`
-	Input         string                           `yaml:"input"`
-	Endpoint      string                           `yaml:"endpoint"`
-	Limit         JsonArrayOutputLimit             `yaml:"limit"`
-	Offset        JsonArrayOutputOffset            `yaml:"offset"`
-	Search        map[string]JsonArrayOutputSearch `yaml:"search"`
-	Relationships map[string]*Relationship         `yaml:"relationships"`
+	Name          string                              `yaml:"name"`
+	Input         string                              `yaml:"input"`
+	Endpoint      string                              `yaml:"endpoint"`
+	Limit         JsonArrayOutputLimit                `yaml:"limit"`
+	Offset        JsonArrayOutputOffset               `yaml:"offset"`
+	Parameters    map[string]JsonArrayOutputParameter `yaml:"parameters"`
+	Relationships map[string]*Relationship            `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
@@ -27,7 +27,7 @@ type JsonArrayOutputOffset struct {
 	Parameter string `yaml:"parameter"`
 }
 
-type JsonArrayOutputSearch struct {
+type JsonArrayOutputParameter struct {
 	Column string `yaml:"column"`
 	Index  string `yaml:"index"`
 	Parser string `yaml:"parser"`
@@ -58,18 +58,18 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 		return err
 	}
 
-	for configSearchParamName, configSearchParam := range config.Search {
-		logPrefix := fmt.Sprintf("jsonArray.search.%v.", configSearchParamName)
-		err := configSearchParam.validate(rootConfig, log, logPrefix)
+	for configParamName, configParam := range config.Parameters {
+		logPrefix := fmt.Sprintf("jsonArray.parameters.%v.", configParamName)
+		err := configParam.validate(rootConfig, log, logPrefix)
 		if err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
-		if configSearchParamName == config.Limit.Parameter {
-			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the limit", configSearchParamName, configSearchParamName)
+		if configParamName == config.Limit.Parameter {
+			return fmt.Errorf("jsonArray.parameters.%v: Parameter '%v' is already used for the limit", configParamName, configParamName)
 		}
-		if configSearchParamName == config.Offset.Parameter {
-			return fmt.Errorf("jsonArray.search.%v: Parameter '%v' is already used for the offset", configSearchParamName, configSearchParamName)
+		if configParamName == config.Offset.Parameter {
+			return fmt.Errorf("jsonArray.parameters.%v: Parameter '%v' is already used for the offset", configParamName, configParamName)
 		}
 	}
 
@@ -112,7 +112,7 @@ func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.En
 	return nil
 }
 
-func (config *JsonArrayOutputSearch) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
+func (config *JsonArrayOutputParameter) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
 	if config.Column == "" {
 		return errors.New("column is empty")
 	}

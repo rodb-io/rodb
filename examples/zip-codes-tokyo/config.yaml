@@ -95,7 +95,7 @@ outputs:
         parameter: "limit"
       offset:
         parameter: "offset"
-      search:
+      parameters:
         municipality:
           column: municipality
           index: municipality

@@ -187,15 +187,15 @@ func (jsonArray *JsonArray) getOffset(params map[string]string) (uint, error) {
 
 func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {
 	filtersPerIndex := make(map[string]map[string]interface{})
-	for searchName, searchConfig := range jsonArray.config.Search {
-		paramValue, paramExists := params[searchName]
+	for paramName, paramConfig := range jsonArray.config.Parameters {
+		paramValue, paramExists := params[paramName]
 		if !paramExists {
 			continue
 		}
 
-		parser, parserExists := jsonArray.parsers[searchConfig.Parser]
+		parser, parserExists := jsonArray.parsers[paramConfig.Parser]
 		if !parserExists {
-			return nil, errors.New("Parser '" + searchConfig.Parser + "' does not exist")
+			return nil, errors.New("Parser '" + paramConfig.Parser + "' does not exist")
 		}
 
 		parsedParamValue, err := parser.Parse(paramValue)
@@ -203,13 +203,13 @@ func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[st
 			return nil, err
 		}
 
-		indexFilters, indexFiltersExists := filtersPerIndex[searchConfig.Index]
+		indexFilters, indexFiltersExists := filtersPerIndex[paramConfig.Index]
 		if !indexFiltersExists {
 			indexFilters = make(map[string]interface{})
-			filtersPerIndex[searchConfig.Index] = indexFilters
+			filtersPerIndex[paramConfig.Index] = indexFilters
 		}
 
-		indexFilters[searchConfig.Column] = parsedParamValue
+		indexFilters[paramConfig.Column] = parsedParamValue
 	}
 
 	return filtersPerIndex, nil

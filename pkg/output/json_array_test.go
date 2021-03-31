@@ -34,8 +34,8 @@ func TestJsonArrayHandler(t *testing.T) {
 		Offset: *&config.JsonArrayOutputOffset{
 			Parameter: "offset",
 		},
-		Search: map[string]config.JsonArrayOutputSearch{
-			"belongs_to_search": {
+		Parameters: map[string]config.JsonArrayOutputParameter{
+			"belongs_to_param": {
 				Column: "belongs_to",
 				Parser: "mock",
 				Index:  "mock",
@@ -131,7 +131,7 @@ func TestJsonArrayHandler(t *testing.T) {
 	})
 	t.Run("filter", func(t *testing.T) {
 		data, err := getResult(map[string]string{
-			"belongs_to_search": "1",
+			"belongs_to_param": "1",
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
@@ -199,9 +199,9 @@ func TestJsonArrayHandler(t *testing.T) {
 	})
 	t.Run("filter+offset+limit", func(t *testing.T) {
 		data, err := getResult(map[string]string{
-			"belongs_to_search": "1",
-			"offset":            "1",
-			"limit":             "2",
+			"belongs_to_param": "1",
+			"offset":           "1",
+			"limit":            "2",
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
@@ -369,7 +369,7 @@ func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
 			Input:    "mock",
 			Endpoint: "/test",
-			Search: map[string]config.JsonArrayOutputSearch{
+			Parameters: map[string]config.JsonArrayOutputParameter{
 				"a": {
 					Column: "a",
 					Index:  "a",

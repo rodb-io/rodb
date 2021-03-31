@@ -1,6 +1,7 @@
 # TODO should the urls be defined in the service layer rather than the output?
-#      -> have the params and search use the same format and merge the configurations
+#      -> merge the parameters list in the config of jsonArray and jsonObject
 #      -> add common output methods to get and check the params from the URL
+#      -> move the urls in the service rather than in the outputs
 # TODO remove the source layer?
 # TODO performance analysis
 parsers:
@@ -79,7 +80,7 @@ outputs:
         parameter: "limit"
       offset:
         parameter: "offset"
-      search:
+      parameters:
         # TODO search partial texts
         id:
           column: id
