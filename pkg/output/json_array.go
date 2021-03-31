@@ -100,7 +100,7 @@ func (jsonArray *JsonArray) Handle(
 	}
 
 	positionsPerIndex, err := getFilteredRecordPositionsPerIndex(
-		jsonArray.indexes["default"],
+		jsonArray.defaultIndex,
 		jsonArray.indexes,
 		jsonArray.input,
 		filtersPerIndex,
