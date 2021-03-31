@@ -196,6 +196,20 @@ func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]strin
 	return filtersPerIndex, nil
 }
 
+func (jsonObject *JsonObject) HasParameter(paramName string) bool {
+	_, paramExists := jsonObject.config.Parameters[paramName]
+	return paramExists
+}
+
+func (jsonObject *JsonObject) GetParameterParser(paramName string) (parserModule.Parser, error) {
+	parser, parserExists := jsonObject.paramParsers[paramName]
+	if !parserExists {
+		return nil, errors.New("Parameter '" + paramName + "' does not exist")
+	}
+
+	return parser, nil
+}
+
 func (jsonObject *JsonObject) Close() error {
 	return nil
 }

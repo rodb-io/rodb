@@ -22,6 +22,8 @@ type Output interface {
 		sendError func(err error) error,
 		sendSucces func() io.Writer,
 	) error
+	HasParameter(paramName string) bool
+	GetParameterParser(paramName string) (parser.Parser, error)
 	Close() error
 }
 

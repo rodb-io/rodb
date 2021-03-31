@@ -1,6 +1,6 @@
 # TODO should the urls be defined in the service layer rather than the output?
-#      -> add common output methods to get and check the params from the URL
 #      -> move the urls in the service rather than in the outputs
+# TODO the outputs should not store the raw list, but build private structures from it
 # TODO remove the source layer?
 # TODO performance analysis
 parsers:

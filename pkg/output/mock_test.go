@@ -5,19 +5,22 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"rods/pkg/parser"
 	"testing"
 )
 
 func TestMock(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		mock := NewMock("/mock")
+		parser := parser.NewMock()
+		mock := NewMock("/mock", parser)
 		_ = mock
 	})
 }
 
 func TestMockEndpoint(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		mock := NewMock("/hello")
+		parser := parser.NewMock()
+		mock := NewMock("/hello", parser)
 
 		if got, expect := mock.Endpoint().String(), "^/hello$"; got != expect {
 			t.Errorf("Expected to get the endpoint '%+v', got: '%+v'", expect, got)
@@ -28,7 +31,8 @@ func TestMockEndpoint(t *testing.T) {
 func TestMockExpectedPayloadType(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		expectedPayloadType := "image/png"
-		mock := NewMock("/mock")
+		parser := parser.NewMock()
+		mock := NewMock("/mock", parser)
 		mock.MockPayloadType = &expectedPayloadType
 
 		if got := mock.ExpectedPayloadType(); *got != expectedPayloadType {
@@ -40,7 +44,8 @@ func TestMockExpectedPayloadType(t *testing.T) {
 func TestMockHandle(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := "output test"
-		mock := NewMock("/mock")
+		parser := parser.NewMock()
+		mock := NewMock("/mock", parser)
 		mock.MockOutput = func(params map[string]string) ([]byte, error) {
 			return []byte(data), nil
 		}
@@ -77,7 +82,8 @@ func TestMockHandle(t *testing.T) {
 	})
 	t.Run("error", func(t *testing.T) {
 		data := errors.New("test error")
-		mock := NewMock("/mock")
+		parser := parser.NewMock()
+		mock := NewMock("/mock", parser)
 		mock.MockOutput = func(params map[string]string) ([]byte, error) {
 			return nil, data
 		}
@@ -107,7 +113,8 @@ func TestMockHandle(t *testing.T) {
 
 func TestMockClose(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		mock := NewMock("/mock")
+		parser := parser.NewMock()
+		mock := NewMock("/mock", parser)
 
 		err := mock.Close()
 		if err != nil {

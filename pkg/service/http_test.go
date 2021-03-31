@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"rods/pkg/config"
 	outputModule "rods/pkg/output"
+	"rods/pkg/parser"
 	"rods/pkg/record"
 	"strings"
 	"testing"
@@ -21,7 +22,8 @@ func TestHttp(t *testing.T) {
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
 		Outputs:    []string{"mock"},
 	}
-	output := outputModule.NewMock("/foo")
+	parser := parser.NewMock()
+	output := outputModule.NewMock("/foo", parser)
 	outputs := outputModule.List{
 		"mock": output,
 	}
@@ -100,9 +102,10 @@ func TestHttpOutputList(t *testing.T) {
 		Outputs:    []string{"foo", "baz"},
 	}
 
-	outputFoo := outputModule.NewMock("/foo")
-	outputBar := outputModule.NewMock("/bar")
-	outputBaz := outputModule.NewMock("/baz")
+	parser := parser.NewMock()
+	outputFoo := outputModule.NewMock("/foo", parser)
+	outputBar := outputModule.NewMock("/bar", parser)
+	outputBaz := outputModule.NewMock("/baz", parser)
 
 	server, err := NewHttp(config, outputModule.List{
 		"foo": outputFoo,
@@ -127,14 +130,15 @@ func TestHttpOutputList(t *testing.T) {
 
 func TestHttpGetMatchingRoute(t *testing.T) {
 	payloadType := "application/json"
+	parser := parser.NewMock()
 
-	getFooOutput := outputModule.NewMock("/foo")
+	getFooOutput := outputModule.NewMock("/foo", parser)
 	getFooOutput.MockPayloadType = nil
 
-	postBarOutput := outputModule.NewMock("/bar")
+	postBarOutput := outputModule.NewMock("/bar", parser)
 	postBarOutput.MockPayloadType = &payloadType
 
-	getBarOutput := outputModule.NewMock("/bar")
+	getBarOutput := outputModule.NewMock("/bar", parser)
 	getBarOutput.MockPayloadType = nil
 
 	server := &Http{
@@ -215,7 +219,8 @@ func TestHttpGetParams(t *testing.T) {
 func TestHttpGetPayload(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		payloadType := "text/plain"
-		output := outputModule.NewMock("/foo")
+		parser := parser.NewMock()
+		output := outputModule.NewMock("/foo", parser)
 		output.MockPayloadType = &payloadType
 
 		server := &Http{}
@@ -232,7 +237,8 @@ func TestHttpGetPayload(t *testing.T) {
 		}
 	})
 	t.Run("no expected payload", func(t *testing.T) {
-		output := outputModule.NewMock("/foo")
+		parser := parser.NewMock()
+		output := outputModule.NewMock("/foo", parser)
 		output.MockPayloadType = nil
 
 		server := &Http{}

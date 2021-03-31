@@ -215,6 +215,25 @@ func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[st
 	return filtersPerIndex, nil
 }
 
+func (jsonArray *JsonArray) HasParameter(paramName string) bool {
+	_, paramExists := jsonArray.config.Parameters[paramName]
+	return paramExists
+}
+
+func (jsonArray *JsonArray) GetParameterParser(paramName string) (parserModule.Parser, error) {
+	parameter, parameterExists := jsonArray.config.Parameters[paramName]
+	if !parameterExists {
+		return nil, errors.New("Parameter '" + paramName + "' does not exist")
+	}
+
+	parser, parserExists := jsonArray.parsers[parameter.Parser]
+	if !parserExists {
+		return nil, errors.New("Parser '" + parameter.Parser + "' does not exist")
+	}
+
+	return parser, nil
+}
+
 func (jsonArray *JsonArray) Close() error {
 	return nil
 }
