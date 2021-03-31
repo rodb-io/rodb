@@ -12,17 +12,17 @@ import (
 	parserModule "rods/pkg/parser"
 	recordModule "rods/pkg/record"
 	"strconv"
-	"strings"
 )
 
 type JsonObject struct {
-	config       *configModule.JsonObjectOutput
-	inputs       inputModule.List
-	input        inputModule.Input
-	defaultIndex indexModule.Index
-	indexes      indexModule.List
-	paramParsers []parserModule.Parser
-	endpoint     *regexp.Regexp
+	config         *configModule.JsonObjectOutput
+	inputs         inputModule.List
+	input          inputModule.Input
+	defaultIndex   indexModule.Index
+	indexes        indexModule.List
+	paramParsers   []parserModule.Parser
+	endpoint       *regexp.Regexp
+	endpointParams []string
 }
 
 func NewJsonObject(
@@ -55,7 +55,7 @@ func NewJsonObject(
 		paramParsers: paramParsers,
 	}
 
-	jsonObject.endpoint = jsonObject.createEndpointRegexp()
+	jsonObject.endpoint, jsonObject.endpointParams = jsonObject.createEndpointRegexp()
 
 	for _, relationship := range jsonObject.config.Relationships {
 		err := checkRelationshipMatches(
@@ -138,9 +138,18 @@ func (jsonObject *JsonObject) endpointRegexpParamName(index int) string {
 	return "param_" + strconv.Itoa(index)
 }
 
-func (jsonObject *JsonObject) createEndpointRegexp() *regexp.Regexp {
-	parts := strings.Split(jsonObject.config.Endpoint, "?")
+// Returns a regular expression to match a string, and the list of param names
+// (matching the sub-expressions of the regexp)
+func (jsonObject *JsonObject) createEndpointRegexp() (*regexp.Regexp, []string) {
+	paramRegexp := regexp.MustCompile("{([^}]+)}")
 
+	paramMatches := paramRegexp.FindAllStringSubmatch(jsonObject.config.Endpoint, -1)
+	params := make([]string, len(paramMatches))
+	for i, paramMatch := range paramMatches {
+		params[i] = paramMatch[1]
+	}
+
+	parts := paramRegexp.Split(jsonObject.config.Endpoint, -1)
 	endpoint := parts[0]
 	for partIndex := 1; partIndex < len(parts); partIndex++ {
 		paramIndex := partIndex - 1
@@ -154,7 +163,7 @@ func (jsonObject *JsonObject) createEndpointRegexp() *regexp.Regexp {
 		}
 	}
 
-	return regexp.MustCompile("^" + endpoint + "$")
+	return regexp.MustCompile("^" + endpoint + "$"), params
 }
 
 func (jsonObject *JsonObject) getEndpointFiltersPerIndex(params map[string]string) (map[string]map[string]interface{}, error) {

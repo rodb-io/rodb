@@ -116,7 +116,7 @@ outputs:
   - jsonObject:
       name: findOnePostalCode
       input: zipCodesTokyo
-      endpoint: "/zip-codes/?"
+      endpoint: "/zip-codes/{zipCode}"
       parameters:
         - column: zipCode
           parser: string

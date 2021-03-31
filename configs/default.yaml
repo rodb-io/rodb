@@ -1,4 +1,7 @@
 # TODO should the urls be defined in the service layer rather than the output?
+#      -> have the params indexed by name instead of array
+#      -> retrieve the params by name instead of index
+#      -> have the params and search use the same format
 # TODO remove the source layer?
 # TODO performance analysis
 parsers:
@@ -99,7 +102,7 @@ outputs:
   - jsonObject:
       name: defaultJsonObjectOutput
       input: defaultInput
-      endpoint: "/dummies/?"
+      endpoint: "/dummies/{id}"
       relationships:
         mySubProperty:
           input: defaultInput

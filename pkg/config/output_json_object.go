@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"strings"
 )
 
 type JsonObjectOutput struct {
@@ -58,14 +57,6 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 
 	if config.Endpoint == "" {
 		return errors.New("jsonObject.endpoint is not defined. This setting is required")
-	}
-
-	if !strings.Contains(config.Endpoint, "?") {
-		return errors.New("jsonObject.endpoint must specify the identifier's location with '?'. For example \"/product/?\".")
-	}
-
-	if strings.Count(config.Endpoint, "?") != len(config.Parameters) {
-		return errors.New("jsonObject.parameters: The same number of parameters than occurences of '?' in the endpoint is required")
 	}
 
 	return nil
