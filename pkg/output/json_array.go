@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"regexp"
 	configModule "rods/pkg/config"
 	indexModule "rods/pkg/index"
 	inputModule "rods/pkg/input"
@@ -21,7 +20,6 @@ type JsonArray struct {
 	defaultIndex indexModule.Index
 	indexes      indexModule.List
 	parsers      parserModule.List
-	endpoint     *regexp.Regexp
 }
 
 func NewJsonArray(
@@ -43,9 +41,6 @@ func NewJsonArray(
 		defaultIndex: defaultIndex,
 		indexes:      indexes,
 		parsers:      parsers,
-		endpoint: regexp.MustCompile(
-			"^" + regexp.QuoteMeta(config.Endpoint) + "$",
-		),
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
@@ -64,10 +59,6 @@ func NewJsonArray(
 
 func (jsonArray *JsonArray) Name() string {
 	return jsonArray.config.Name
-}
-
-func (jsonArray *JsonArray) Endpoint() *regexp.Regexp {
-	return jsonArray.endpoint
 }
 
 func (jsonArray *JsonArray) ExpectedPayloadType() *string {

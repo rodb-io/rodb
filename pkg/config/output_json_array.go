@@ -9,7 +9,6 @@ import (
 type JsonArrayOutput struct {
 	Name          string                   `yaml:"name"`
 	Input         string                   `yaml:"input"`
-	Endpoint      string                   `yaml:"endpoint"`
 	Limit         JsonArrayOutputLimit     `yaml:"limit"`
 	Offset        JsonArrayOutputOffset    `yaml:"offset"`
 	Parameters    map[string]Parameter     `yaml:"parameters"`
@@ -40,10 +39,6 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	input, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
-	}
-
-	if config.Endpoint == "" {
-		return errors.New("jsonArray.endpoint is not defined. This setting is required")
 	}
 
 	err := config.Limit.validate(rootConfig, log)

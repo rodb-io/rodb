@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"io"
-	"regexp"
 	"rods/pkg/config"
 	"rods/pkg/output"
 )
@@ -18,23 +16,6 @@ type Service interface {
 }
 
 type List = map[string]Service
-
-// Handles the route and sends a response
-// sendError should be used for all errors unless impossible
-// (error during sending an error for example)
-type RouteHandler = func(
-	params map[string]string,
-	payload []byte,
-	sendError func(err error) error,
-	sendSuccess func() io.Writer,
-) error
-
-type Route struct {
-	Endpoint            *regexp.Regexp
-	ExpectedPayloadType *string
-	ResponseType        string
-	Handler             RouteHandler
-}
 
 func NewFromConfig(
 	config config.Service,

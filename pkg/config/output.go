@@ -58,17 +58,3 @@ func (config *Output) Name() string {
 
 	return ""
 }
-
-func (config *Output) Endpoint() string {
-	if config.GraphQL != nil {
-		return config.GraphQL.Endpoint
-	}
-	if config.JsonArray != nil {
-		return config.JsonArray.Endpoint
-	}
-	if config.JsonObject != nil {
-		return config.JsonObject.Endpoint
-	}
-
-	return ""
-}

@@ -17,6 +17,7 @@ type HttpService struct {
 
 type HttpServiceRoute struct {
 	Output string `yaml:"output"`
+	Path   string `yaml:"path"`
 }
 
 func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -35,17 +36,17 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		config.ErrorsType = "application/json"
 	}
 
-	alreadyExistingOutputs := make(map[string]bool)
+	alreadyExistingPaths := make(map[string]bool)
 	for i, routeConfig := range config.Routes {
 		err := routeConfig.validate(rootConfig, log)
 		if err != nil {
 			return fmt.Errorf("http.route[%v].%w", i, err)
 		}
 
-		if _, alreadyExists := alreadyExistingOutputs[routeConfig.Output]; alreadyExists {
-			return fmt.Errorf("http.output[%v]: Duplicate output '%v' in array.", i, routeConfig.Output)
+		if _, alreadyExists := alreadyExistingPaths[routeConfig.Path]; alreadyExists {
+			return fmt.Errorf("http.output[%v]: Duplicate path '%v' in array.", i, routeConfig.Path)
 		}
-		alreadyExistingOutputs[routeConfig.Output] = true
+		alreadyExistingPaths[routeConfig.Path] = true
 	}
 
 	if !util.IsInArray(config.ErrorsType, []string{
@@ -60,6 +61,10 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 func (config *HttpServiceRoute) validate(rootConfig *Config, log *logrus.Entry) error {
 	if config.Output == "" {
 		return fmt.Errorf("output is empty. This field is required")
+	}
+
+	if config.Path == "" {
+		return fmt.Errorf("path is empty. This field is required")
 	}
 
 	_, outputExists := rootConfig.Outputs[config.Output]

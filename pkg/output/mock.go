@@ -2,29 +2,21 @@ package output
 
 import (
 	"io"
-	"regexp"
 	"rods/pkg/parser"
 )
 
 type Mock struct {
-	endpoint        *regexp.Regexp
 	MockOutput      func(params map[string]string) ([]byte, error)
 	MockPayloadType *string
 	parser          parser.Parser
 }
 
 func NewMock(
-	endpoint string,
 	parser parser.Parser,
 ) *Mock {
 	return &Mock{
-		endpoint: regexp.MustCompile("^" + regexp.QuoteMeta(endpoint) + "$"),
-		parser:   parser,
+		parser: parser,
 	}
-}
-
-func (mock *Mock) Endpoint() *regexp.Regexp {
-	return mock.endpoint
 }
 
 func (mock *Mock) ExpectedPayloadType() *string {

@@ -9,7 +9,6 @@ import (
 type JsonObjectOutput struct {
 	Name          string                   `yaml:"name"`
 	Input         string                   `yaml:"input"`
-	Endpoint      string                   `yaml:"endpoint"`
 	Parameters    map[string]*Parameter    `yaml:"parameters"`
 	Relationships map[string]*Relationship `yaml:"relationships"`
 	Logger        *logrus.Entry
@@ -48,10 +47,6 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 		if err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
-	}
-
-	if config.Endpoint == "" {
-		return errors.New("jsonObject.endpoint is not defined. This setting is required")
 	}
 
 	return nil

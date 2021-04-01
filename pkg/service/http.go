@@ -25,8 +25,15 @@ type Http struct {
 	listener  net.Listener
 	server    *http.Server
 	waitGroup *sync.WaitGroup
-	outputs   []output.Output
+	routes    []*httpRoute
 	lastError error
+}
+
+type httpRoute struct {
+	config     config.HttpServiceRoute
+	path       *regexp.Regexp
+	parameters []string
+	output     output.Output
 }
 
 func NewHttp(
@@ -38,25 +45,40 @@ func NewHttp(
 		return nil, err
 	}
 
-	boundOutputs := make([]output.Output, 0, len(config.Routes))
+	service := &Http{
+		config:    config,
+		waitGroup: &sync.WaitGroup{},
+		listener:  listener,
+		lastError: nil,
+		server: &http.Server{
+			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
+		},
+	}
+
+	service.routes = make([]*httpRoute, 0, len(config.Routes))
 	for _, route := range config.Routes {
 		output, outputExists := outputs[route.Output]
 		if !outputExists {
 			return nil, fmt.Errorf("Output '%v' not found in outputs list.", route.Output)
 		}
 
-		boundOutputs = append(boundOutputs, output)
-	}
+		routePath, parameters, err := service.createPathRegexp(route, output)
+		if err != nil {
+			return nil, fmt.Errorf("Cannot build regexp from route path '%v': %w", route.Path, err)
+		}
 
-	service := &Http{
-		config:    config,
-		waitGroup: &sync.WaitGroup{},
-		outputs:   boundOutputs,
-		listener:  listener,
-		lastError: nil,
-		server: &http.Server{
-			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
-		},
+		for _, paramName := range parameters {
+			if !output.HasParameter(paramName) {
+				return nil, fmt.Errorf("Output '%v' does not have a parameter called '%v'.", route.Output, paramName)
+			}
+		}
+
+		service.routes = append(service.routes, &httpRoute{
+			config:     route,
+			path:       routePath,
+			parameters: parameters,
+			output:     output,
+		})
 	}
 
 	service.server.Handler = service.getHandlerFunc()
@@ -78,11 +100,43 @@ func (service *Http) Address() string {
 	return "http://" + util.GetAddress(service.listener.Addr())
 }
 
+// Returns a regular expression to match a string, and the list of param names
+// (matching the sub-expressions of the regexp)
+func (service *Http) createPathRegexp(
+	routeConfig config.HttpServiceRoute,
+	output output.Output,
+) (*regexp.Regexp, []string, error) {
+	paramRegexp := regexp.MustCompile("{([^}]+)}")
+
+	paramMatches := paramRegexp.FindAllStringSubmatch(routeConfig.Path, -1)
+	params := make([]string, len(paramMatches))
+	for i, paramMatch := range paramMatches {
+		params[i] = paramMatch[1]
+	}
+
+	parts := paramRegexp.Split(routeConfig.Path, -1)
+	path := parts[0]
+	for partIndex := 1; partIndex < len(parts); partIndex++ {
+		paramIndex := partIndex - 1
+		paramName := params[paramIndex]
+
+		parser, err := output.GetParameterParser(paramName)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		paramPattern := parser.GetRegexpPattern()
+		path = path + "(" + paramPattern + ")" + parts[partIndex]
+	}
+
+	return regexp.MustCompile("^" + path + "$"), params, nil
+}
+
 func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
-		output := service.getMatchingOutput(request)
-		if output == nil {
-			errToSend := errors.New("No matching output was found")
+		route := service.getMatchingRoute(request)
+		if route == nil {
+			errToSend := errors.New("No matching route was found")
 			err2 := service.sendErrorResponse(response, http.StatusNotFound, errToSend)
 			if err2 != nil {
 				service.config.Logger.Errorf("Error '%+v' while sending the error '%+v'", errToSend, err2)
@@ -90,7 +144,7 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		payload, err := service.getPayload(output, request.Body)
+		payload, err := service.getPayload(route, request.Body)
 		if err != nil {
 			err2 := service.sendErrorResponse(response, http.StatusInternalServerError, err)
 			if err2 != nil {
@@ -99,8 +153,8 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 			return
 		}
 
-		params := service.getParams(output.Endpoint(), request.URL)
-		err = output.Handle(
+		params := service.getParams(route, request.URL)
+		err = route.output.Handle(
 			params,
 			payload,
 			func(err error) error {
@@ -112,13 +166,13 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 				return service.sendErrorResponse(response, status, err)
 			},
 			func() io.Writer {
-				response.Header().Set("Content-Type", output.ResponseType()+"; charset=UTF-8")
+				response.Header().Set("Content-Type", route.output.ResponseType()+"; charset=UTF-8")
 				response.WriteHeader(http.StatusOK)
 				return io.Writer(response)
 			},
 		)
 		if err != nil {
-			service.config.Logger.Errorf("Unhandled error while handling the output '%v': %v", output.Endpoint(), err)
+			service.config.Logger.Errorf("Unhandled error while handling the route '%v': %v", route.config.Path, err)
 		}
 
 		return
@@ -161,22 +215,22 @@ func (service *Http) sendErrorResponse(
 	return nil
 }
 
-func (service *Http) getMatchingOutput(request *http.Request) output.Output {
-	for _, output := range service.outputs {
-		expectedPayloadType := output.ExpectedPayloadType()
+func (service *Http) getMatchingRoute(request *http.Request) *httpRoute {
+	for _, route := range service.routes {
+		expectedPayloadType := route.output.ExpectedPayloadType()
 		isValidGet := (request.Method == http.MethodGet && expectedPayloadType == nil)
 		isValidPost := request.Method == http.MethodPost &&
 			expectedPayloadType != nil &&
 			request.Header.Get("Content-Type") == *expectedPayloadType
-		if (isValidGet || isValidPost) && output.Endpoint().MatchString(request.URL.Path) {
-			return output
+		if (isValidGet || isValidPost) && route.path.MatchString(request.URL.Path) {
+			return route
 		}
 	}
 
 	return nil
 }
 
-func (service *Http) getParams(endpoint *regexp.Regexp, url *url.URL) map[string]string {
+func (service *Http) getParams(route *httpRoute, url *url.URL) map[string]string {
 	// Getting params from the query string
 	params := make(map[string]string)
 	for k, v := range url.Query() {
@@ -184,17 +238,16 @@ func (service *Http) getParams(endpoint *regexp.Regexp, url *url.URL) map[string
 	}
 
 	// Adding params from the path's regex
-	endpointSubexps := endpoint.SubexpNames()
-	outputMatches := endpoint.FindStringSubmatch(url.Path)
-	for i := 1; i < len(outputMatches) && i < len(endpointSubexps); i++ {
-		params[endpointSubexps[i]] = outputMatches[i]
+	outputMatches := route.path.FindStringSubmatch(url.Path)
+	for i, paramName := range route.parameters {
+		params[paramName] = outputMatches[i+1]
 	}
 
 	return params
 }
 
-func (service *Http) getPayload(output output.Output, body io.Reader) ([]byte, error) {
-	if output.ExpectedPayloadType() != nil {
+func (service *Http) getPayload(route *httpRoute, body io.Reader) ([]byte, error) {
+	if route.output.ExpectedPayloadType() != nil {
 		return ioutil.ReadAll(body)
 	}
 

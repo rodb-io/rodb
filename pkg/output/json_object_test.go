@@ -26,8 +26,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error
 func TestJsonObjectHandler(t *testing.T) {
 	trueValue := true
 	jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-		Input:    "mock",
-		Endpoint: "/foo/{foo_id}",
+		Input: "mock",
 		Parameters: map[string]*config.Parameter{
 			"foo_id": {
 				Column: "id",
@@ -77,7 +76,7 @@ func TestJsonObjectHandler(t *testing.T) {
 		buffer := bytes.NewBufferString("")
 		err := jsonObject.Handle(
 			map[string]string{
-				jsonObject.endpointRegexpParamName(0): id,
+				"foo_id": id,
 			},
 			[]byte{},
 			func(err error) error {
@@ -176,62 +175,8 @@ func TestJsonObjectHandler(t *testing.T) {
 
 func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/foo/{foo_id}/bar/{bar_id}",
-			Parameters: map[string]*config.Parameter{
-				"foo_id": {
-					Column: "foo",
-					Parser: "mock",
-					Index:  "mock",
-				},
-				"bar_id": {
-					Column: "bar",
-					Parser: "mock",
-					Index:  "mock",
-				},
-			},
-		})
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		regexp := jsonObject.Endpoint()
-		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)/bar/(?P<param_1>.*)$"; got != expect {
-			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
-		}
-
-		if got, expect := len(jsonObject.endpointParams), 2; got != expect {
-			t.Errorf("Expected '%+v' endpoint params, got '%+v'", expect, got)
-		}
-
-		if got, expect := jsonObject.endpointParams[0], "foo_id"; got != expect {
-			t.Errorf("Expected the first endpoint param to be '%+v', got '%+v'", expect, got)
-		}
-		if got, expect := jsonObject.endpointParams[1], "bar_id"; got != expect {
-			t.Errorf("Expected the second endpoint param to be '%+v', got '%+v'", expect, got)
-		}
-	})
-	t.Run("param in the endpoint does not exists", func(t *testing.T) {
 		_, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/foo/{foo_id}/bar/{bar_id}",
-			Parameters: map[string]*config.Parameter{
-				"foo_id": {
-					Column: "foo",
-					Parser: "mock",
-					Index:  "mock",
-				},
-			},
-		})
-		if err == nil {
-			t.Errorf("Expected error, got '%+v'", err)
-		}
-	})
-	t.Run("wildcard count lower than param count", func(t *testing.T) {
-		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/foo/{foo_id}",
+			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {
 					Column: "foo",
@@ -247,11 +192,6 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		regexp := jsonObject.Endpoint()
-		if got, expect := regexp.String(), "^/foo/(?P<param_0>.*)$"; got != expect {
-			t.Errorf("Expected regular expression '%+v', got '%+v'", expect, got)
 		}
 	})
 }
@@ -259,8 +199,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
-			Input:    "mock",
-			Endpoint: "/foo/{foo_id}/bar/{bar_id}/baz/{baz_id}",
+			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {
 					Column: "foo",
@@ -286,10 +225,10 @@ func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 		fooParamValue := "fooValue"
 		barParamValue := "barValue"
 		bazParamValue := "bazValue"
-		filtersPerIndex, err := jsonObject.getEndpointFiltersPerIndex(map[string]string{
-			jsonObject.endpointRegexpParamName(0): fooParamValue,
-			jsonObject.endpointRegexpParamName(1): barParamValue,
-			jsonObject.endpointRegexpParamName(2): bazParamValue,
+		filtersPerIndex, err := jsonObject.getRouteFiltersPerIndex(map[string]string{
+			"foo_id": fooParamValue,
+			"bar_id": barParamValue,
+			"baz_id": bazParamValue,
 		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)

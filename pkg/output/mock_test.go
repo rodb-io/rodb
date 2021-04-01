@@ -12,19 +12,8 @@ import (
 func TestMock(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		parser := parser.NewMock()
-		mock := NewMock("/mock", parser)
+		mock := NewMock(parser)
 		_ = mock
-	})
-}
-
-func TestMockEndpoint(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		parser := parser.NewMock()
-		mock := NewMock("/hello", parser)
-
-		if got, expect := mock.Endpoint().String(), "^/hello$"; got != expect {
-			t.Errorf("Expected to get the endpoint '%+v', got: '%+v'", expect, got)
-		}
 	})
 }
 
@@ -32,11 +21,11 @@ func TestMockExpectedPayloadType(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		expectedPayloadType := "image/png"
 		parser := parser.NewMock()
-		mock := NewMock("/mock", parser)
+		mock := NewMock(parser)
 		mock.MockPayloadType = &expectedPayloadType
 
 		if got := mock.ExpectedPayloadType(); *got != expectedPayloadType {
-			t.Errorf("Expected to get the endpoint '%+v', got: '%+v'", expectedPayloadType, got)
+			t.Errorf("Expected to get the payload type '%+v', got: '%+v'", expectedPayloadType, got)
 		}
 	})
 }
@@ -45,7 +34,7 @@ func TestMockHandle(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := "output test"
 		parser := parser.NewMock()
-		mock := NewMock("/mock", parser)
+		mock := NewMock(parser)
 		mock.MockOutput = func(params map[string]string) ([]byte, error) {
 			return []byte(data), nil
 		}
@@ -83,7 +72,7 @@ func TestMockHandle(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		data := errors.New("test error")
 		parser := parser.NewMock()
-		mock := NewMock("/mock", parser)
+		mock := NewMock(parser)
 		mock.MockOutput = func(params map[string]string) ([]byte, error) {
 			return nil, data
 		}
@@ -114,7 +103,7 @@ func TestMockHandle(t *testing.T) {
 func TestMockClose(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		parser := parser.NewMock()
-		mock := NewMock("/mock", parser)
+		mock := NewMock(parser)
 
 		err := mock.Close()
 		if err != nil {

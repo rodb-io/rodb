@@ -24,8 +24,7 @@ func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, error) {
 
 func TestJsonArrayHandler(t *testing.T) {
 	jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-		Input:    "mock",
-		Endpoint: "/foo",
+		Input: "mock",
 		Limit: *&config.JsonArrayOutputLimit{
 			Max:       100,
 			Default:   10,
@@ -225,8 +224,7 @@ func TestJsonArrayHandler(t *testing.T) {
 func TestJsonArrayGetLimit(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Limit: config.JsonArrayOutputLimit{
 				Default:   10,
 				Max:       150,
@@ -250,8 +248,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 	})
 	t.Run("max", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Limit: config.JsonArrayOutputLimit{
 				Default:   10,
 				Max:       50,
@@ -275,8 +272,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 	})
 	t.Run("default", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Limit: config.JsonArrayOutputLimit{
 				Default:   12,
 				Max:       50,
@@ -298,8 +294,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 	})
 	t.Run("negative", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Limit: config.JsonArrayOutputLimit{
 				Default:   10,
 				Max:       50,
@@ -322,8 +317,7 @@ func TestJsonArrayGetLimit(t *testing.T) {
 func TestJsonArrayGetOffset(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Offset: config.JsonArrayOutputOffset{
 				Parameter: "testoffset",
 			},
@@ -345,8 +339,7 @@ func TestJsonArrayGetOffset(t *testing.T) {
 	})
 	t.Run("negative", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Offset: config.JsonArrayOutputOffset{
 				Parameter: "testoffset",
 			},
@@ -367,8 +360,7 @@ func TestJsonArrayGetOffset(t *testing.T) {
 func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
-			Input:    "mock",
-			Endpoint: "/test",
+			Input: "mock",
 			Parameters: map[string]config.Parameter{
 				"a": {
 					Column: "a",
