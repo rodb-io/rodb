@@ -8,11 +8,15 @@ import (
 )
 
 type HttpService struct {
-	Name       string   `yaml:"name"`
-	Listen     string   `yaml:"listen"`
-	ErrorsType string   `yaml:"errorsType"`
-	Outputs    []string `yaml:"outputs"`
+	Name       string             `yaml:"name"`
+	Listen     string             `yaml:"listen"`
+	ErrorsType string             `yaml:"errorsType"`
+	Routes     []HttpServiceRoute `yaml:"routes"`
 	Logger     *logrus.Entry
+}
+
+type HttpServiceRoute struct {
+	Output string `yaml:"output"`
 }
 
 func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -32,25 +36,35 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 	}
 
 	alreadyExistingOutputs := make(map[string]bool)
-	for i, outputName := range config.Outputs {
-		if outputName == "" {
-			return fmt.Errorf("http.output[%v]: is empty. This field is required", i)
-		}
-		_, outputExists := rootConfig.Outputs[outputName]
-		if !outputExists {
-			return fmt.Errorf("http.output[%v]: Output '%v' not found in outputs list.", i, outputName)
+	for i, routeConfig := range config.Routes {
+		err := routeConfig.validate(rootConfig, log)
+		if err != nil {
+			return fmt.Errorf("http.route[%v].%w", i, err)
 		}
 
-		if _, alreadyExists := alreadyExistingOutputs[outputName]; alreadyExists {
-			return fmt.Errorf("http.output[%v]: Duplicate output '%v' in array.", i, outputName)
+		if _, alreadyExists := alreadyExistingOutputs[routeConfig.Output]; alreadyExists {
+			return fmt.Errorf("http.output[%v]: Duplicate output '%v' in array.", i, routeConfig.Output)
 		}
-		alreadyExistingOutputs[outputName] = true
+		alreadyExistingOutputs[routeConfig.Output] = true
 	}
 
 	if !util.IsInArray(config.ErrorsType, []string{
 		"application/json",
 	}) {
 		return errors.New("http.errorsType: type '" + config.ErrorsType + "' is not supported.")
+	}
+
+	return nil
+}
+
+func (config *HttpServiceRoute) validate(rootConfig *Config, log *logrus.Entry) error {
+	if config.Output == "" {
+		return fmt.Errorf("output is empty. This field is required")
+	}
+
+	_, outputExists := rootConfig.Outputs[config.Output]
+	if !outputExists {
+		return fmt.Errorf("output '%v' not found in outputs list.", config.Output)
 	}
 
 	return nil

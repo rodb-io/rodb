@@ -132,9 +132,9 @@ services:
       # TODO add health-checks
       listen: ":80"
       errorsType: application/json
-      outputs:
-        - defaultJsonArrayOutput
-        - defaultJsonObjectOutput
+      routes:
+        - output: defaultJsonArrayOutput
+        - output: defaultJsonObjectOutput
   # TODO https service
   # TODO authentication
   # TODO websocket service

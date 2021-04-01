@@ -38,11 +38,11 @@ func NewHttp(
 		return nil, err
 	}
 
-	boundOutputs := make([]output.Output, 0, len(config.Outputs))
-	for _, outputName := range config.Outputs {
-		output, outputExists := outputs[outputName]
+	boundOutputs := make([]output.Output, 0, len(config.Routes))
+	for _, route := range config.Routes {
+		output, outputExists := outputs[route.Output]
 		if !outputExists {
-			return nil, fmt.Errorf("Output '%v' not found in outputs list.", outputName)
+			return nil, fmt.Errorf("Output '%v' not found in outputs list.", route.Output)
 		}
 
 		boundOutputs = append(boundOutputs, output)

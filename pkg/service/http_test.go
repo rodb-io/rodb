@@ -20,7 +20,11 @@ func TestHttp(t *testing.T) {
 		Listen:     ":0", // Auto-assign port
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Outputs:    []string{"mock"},
+		Routes: []config.HttpServiceRoute{
+			{
+				Output: "mock",
+			},
+		},
 	}
 	parser := parser.NewMock()
 	output := outputModule.NewMock("/foo", parser)
@@ -99,7 +103,14 @@ func TestHttpOutputList(t *testing.T) {
 		Listen:     ":0", // Auto-assign port
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Outputs:    []string{"foo", "baz"},
+		Routes: []config.HttpServiceRoute{
+			{
+				Output: "foo",
+			},
+			{
+				Output: "baz",
+			},
+		},
 	}
 
 	parser := parser.NewMock()

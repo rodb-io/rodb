@@ -140,6 +140,6 @@ services:
       name: httpService
       listen: ":80"
       errorsType: application/json
-      outputs:
-        - listPostalCodes
-        - findOnePostalCode
+      routes:
+        - output: listPostalCodes
+        - output: findOnePostalCode
