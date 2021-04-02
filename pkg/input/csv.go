@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"io"
 	"reflect"
 	configModule "rods/pkg/config"
@@ -23,6 +24,7 @@ type Csv struct {
 	csvReader        *csv.Reader
 	csvReaderBuffer  *bufio.Reader
 	columnParsers    []parser.Parser
+	watcher          *fsnotify.Watcher
 }
 
 func NewCsv(
@@ -35,11 +37,19 @@ func NewCsv(
 		return nil, fmt.Errorf("Source '%v' not found in sources list.", config.Source)
 	}
 
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return nil, err
+	}
+
 	csvInput := &Csv{
 		config:           config,
 		source:           source,
 		sourceReaderLock: sync.Mutex{},
+		watcher:          watcher,
 	}
+
+	csvInput.startWatchProcess()
 
 	sourceReader, csvReader, err := csvInput.openSource()
 	if err != nil {
@@ -48,6 +58,11 @@ func NewCsv(
 	csvInput.sourceReader = sourceReader
 	csvInput.csvReader = csvReader
 	csvInput.csvReaderBuffer = getCsvReaderBuffer(csvReader)
+
+	err = csvInput.watcher.Add(config.Path)
+	if err != nil {
+		return nil, err
+	}
 
 	if config.AutodetectColumns {
 		err := csvInput.autodetectColumns()
@@ -140,6 +155,32 @@ func (csvInput *Csv) autodetectColumns() error {
 	return nil
 }
 
+func (csvInput *Csv) startWatchProcess() {
+	go func() {
+		for {
+			select {
+			case event, ok := <-csvInput.watcher.Events:
+				if !ok {
+					return
+				}
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					message := fmt.Sprintf("The file '%v' has been modified by another process", event.Name)
+					if *csvInput.config.DieOnInputChange {
+						csvInput.config.Logger.Fatalln(message + ". Quitting because it may have corrupted data and 'dieOnInputChange' is 'true'.")
+					} else {
+						csvInput.config.Logger.Warnln(message + ", but 'dieOnInputChange' is 'false'. This could have unpredictable consequences.")
+					}
+				}
+			case err, ok := <-csvInput.watcher.Errors:
+				if !ok {
+					return
+				}
+				csvInput.config.Logger.Errorf("Error while watching file: %v", err)
+			}
+		}
+	}()
+}
+
 func (csvInput *Csv) openSource() (io.ReadSeeker, *csv.Reader, error) {
 	sourceReader, err := csvInput.source.Open(csvInput.config.Path)
 	if err != nil {
@@ -205,6 +246,16 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 }
 
 func (csvInput *Csv) Close() error {
+	err := csvInput.watcher.Remove(csvInput.config.Path)
+	if err != nil {
+		return err
+	}
+
+	err = csvInput.watcher.Close()
+	if err != nil {
+		return err
+	}
+
 	return csvInput.source.CloseReader(csvInput.sourceReader)
 }
 

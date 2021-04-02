@@ -18,12 +18,12 @@ parsers:
 sources:
   - filesystem:
       name: defaultSource
-      dieOnInputChange: true
 inputs:
   - csv:
       name: defaultInput
       source: defaultSource
       path: ./dummy.csv
+      dieOnInputChange: true
       ignoreFirstRow: true
       delimiter: ","
       columns:
@@ -39,6 +39,7 @@ inputs:
       name: defaultInput2
       source: defaultSource
       path: ./dummy2.csv
+      dieOnInputChange: true
       ignoreFirstRow: true
       autodetectColumns: true
       delimiter: ","

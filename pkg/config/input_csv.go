@@ -10,6 +10,7 @@ type CsvInput struct {
 	Name              string            `yaml:"name"`
 	Source            string            `yaml:"source"`
 	Path              string            `yaml:"path"`
+	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
 	AutodetectColumns bool              `yaml:"autodetectColumns"`
 	Delimiter         string            `yaml:"delimiter"`
@@ -28,6 +29,12 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	if config.Name == "" {
 		return errors.New("csv.name is required")
+	}
+
+	if config.DieOnInputChange == nil {
+		defaultValue := true
+		log.Debugf("csv.dieOnInputChange is not set. Assuming 'true'.\n")
+		config.DieOnInputChange = &defaultValue
 	}
 
 	_, sourceExists := rootConfig.Sources[config.Source]
