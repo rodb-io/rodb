@@ -12,12 +12,11 @@ parsers:
 sources:
   - filesystem:
       name: filesystem
-      path: /examples/zip-codes-tokyo
 inputs:
   - csv:
       name: zipCodesTokyo
       source: filesystem
-      path: ./zip-codes.csv
+      path: /examples/zip-codes-tokyo/zip-codes.csv
       ignoreFirstRow: false
       delimiter: ","
       columns:

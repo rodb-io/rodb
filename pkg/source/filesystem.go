@@ -6,7 +6,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	"path/filepath"
 	"rods/pkg/config"
 	"sync"
 )
@@ -22,18 +21,6 @@ type Filesystem struct {
 func NewFilesystem(
 	config *config.FilesystemSource,
 ) (*Filesystem, error) {
-	pathStat, err := os.Stat(config.Path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, fmt.Errorf("The base path '%v' of the filesystem object does not exist.", config.Path)
-		} else {
-			return nil, err
-		}
-	}
-	if !pathStat.IsDir() {
-		return nil, fmt.Errorf("The base path '%v' of the filesystem object is not a directory.", config.Path)
-	}
-
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, err
@@ -82,29 +69,24 @@ func (fs *Filesystem) startWatchProcess() {
 	}()
 }
 
-func (fs *Filesystem) getFilePath(filePath string) string {
-	return filepath.Join(fs.config.Path, filePath)
-}
-
 func (fs *Filesystem) Open(filePath string) (io.ReadSeeker, error) {
 	fs.openedLock.Lock()
 	defer fs.openedLock.Unlock()
 
-	path := fs.getFilePath(filePath)
-	file, err := os.Open(path)
+	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	err = fs.watcher.Add(path)
+	err = fs.watcher.Add(filePath)
 	if err != nil {
 		return nil, err
 	}
 
-	if openedWatchCounter, counterExists := fs.openedWatchCounter[path]; counterExists {
-		fs.openedWatchCounter[path] = openedWatchCounter + 1
+	if openedWatchCounter, counterExists := fs.openedWatchCounter[filePath]; counterExists {
+		fs.openedWatchCounter[filePath] = openedWatchCounter + 1
 	} else {
-		fs.openedWatchCounter[path] = 1
+		fs.openedWatchCounter[filePath] = 1
 	}
 
 	reader := io.ReadSeeker(file)
@@ -114,8 +96,7 @@ func (fs *Filesystem) Open(filePath string) (io.ReadSeeker, error) {
 }
 
 func (fs *Filesystem) Size(filePath string) (int64, error) {
-	path := fs.getFilePath(filePath)
-	fileInfo, err := os.Stat(path)
+	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		return 0, err
 	}

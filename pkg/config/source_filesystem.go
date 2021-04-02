@@ -8,7 +8,6 @@ import (
 type FilesystemSource struct {
 	Name             string `yaml:"name"`
 	DieOnInputChange *bool  `yaml:"dieOnInputChange"`
-	Path             string `yaml:"path"`
 	Logger           *logrus.Entry
 }
 
@@ -25,6 +24,5 @@ func (config *FilesystemSource) validate(rootConfig *Config, log *logrus.Entry) 
 		config.DieOnInputChange = &defaultValue
 	}
 
-	// The path will be validated at runtime
 	return nil
 }

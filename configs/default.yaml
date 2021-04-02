@@ -1,4 +1,4 @@
-# TODO remove the source layer?
+# TODO remove the source layer
 # TODO performance analysis
 parsers:
   - integer:
@@ -19,10 +19,6 @@ sources:
   - filesystem:
       name: defaultSource
       dieOnInputChange: true
-      # TODO data from stdin? Test reading /dev/stdin
-      path: ./
-  # TODO S3 source
-  # TODO http source
 inputs:
   - csv:
       name: defaultInput
