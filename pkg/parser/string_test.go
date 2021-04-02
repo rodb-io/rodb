@@ -70,7 +70,7 @@ func TestStringGetRegexpPattern(t *testing.T) {
 	for value, expectedResult := range map[string]interface{}{
 		"abc": true,
 		"123": true,
-		"":    true,
+		"":    false,
 	} {
 		t.Run(value, func(t *testing.T) {
 			got := pattern.MatchString(value)

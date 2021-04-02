@@ -38,7 +38,7 @@ func (str *String) Name() string {
 }
 
 func (str *String) GetRegexpPattern() string {
-	return ".*"
+	return ".+"
 }
 
 func (str *String) Parse(value string) (interface{}, error) {

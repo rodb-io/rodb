@@ -1,5 +1,3 @@
-# TODO test the createPathRegexp method (http output)
-# TODO the outputs should not store the raw lists, but build private structures from it
 # TODO remove the source layer?
 # TODO performance analysis
 parsers:

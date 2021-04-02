@@ -276,3 +276,64 @@ func TestHttpGetPayload(t *testing.T) {
 		}
 	})
 }
+
+func TestHttpCreatePathRegexp(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		parser := parser.NewMock()
+		output := outputModule.NewMock(parser)
+		server := &Http{}
+
+		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
+			Path: "/foo/{foo_id}/bar-{bar}-id",
+		}, output)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 2, len(params); got != expect {
+			t.Errorf("Expected to get %v parameters, got %+v", expect, got)
+		}
+		if expect, got := "foo_id", params[0]; got != expect {
+			t.Errorf("Expected to get '%v' as a first parameter, got '%+v'", expect, got)
+		}
+		if expect, got := "bar", params[1]; got != expect {
+			t.Errorf("Expected to get '%+v' as a second parameter, got '%+v'", expect, got)
+		}
+
+		testPath := "/foo/42/bar-test-id"
+		if !regexp.MatchString(testPath) {
+			t.Errorf("Expected the regexp to match the path '%+v'", testPath)
+		}
+		matches := regexp.FindStringSubmatch(testPath)
+		if expect, got := 3, len(matches); got != expect {
+			t.Errorf("Expected to get %v match results, got %+v", expect, got)
+		}
+		if expect, got := "42", matches[1]; got != expect {
+			t.Errorf("Expected to get '%v' as a second match, got '%+v'", expect, got)
+		}
+		if expect, got := "test", matches[2]; got != expect {
+			t.Errorf("Expected to get '%+v' as a third match, got '%+v'", expect, got)
+		}
+	})
+	t.Run("no params", func(t *testing.T) {
+		parser := parser.NewMock()
+		output := outputModule.NewMock(parser)
+		server := &Http{}
+
+		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
+			Path: "/foo",
+		}, output)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 0, len(params); got != expect {
+			t.Errorf("Expected to get %v parameters, got %+v", expect, got)
+		}
+
+		testPath := "/foo"
+		if !regexp.MatchString(testPath) {
+			t.Errorf("Expected the regexp to match the path '%+v'", testPath)
+		}
+	})
+}
