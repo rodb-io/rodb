@@ -10,7 +10,6 @@ import (
 
 type ParsedConfig struct {
 	Parsers  []Parser
-	Sources  []Source
 	Inputs   []Input
 	Indexes  []Index
 	Services []Service
@@ -19,7 +18,6 @@ type ParsedConfig struct {
 
 type Config struct {
 	Parsers  map[string]Parser
-	Sources  map[string]Source
 	Inputs   map[string]Input
 	Indexes  map[string]Index
 	Services map[string]Service
@@ -58,7 +56,6 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
 	config := &Config{
 		Parsers:  map[string]Parser{},
-		Sources:  map[string]Source{},
 		Inputs:   map[string]Input{},
 		Indexes:  map[string]Index{},
 		Services: map[string]Service{},
@@ -71,13 +68,6 @@ func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
 			return nil, fmt.Errorf("Duplicate name '%v' for parser.", name)
 		}
 		config.Parsers[name] = parser
-	}
-	for _, source := range parsedConfig.Sources {
-		name := source.Name()
-		if _, exists := config.Sources[name]; exists {
-			return nil, fmt.Errorf("Duplicate name '%v' for source.", name)
-		}
-		config.Sources[name] = source
 	}
 	for _, input := range parsedConfig.Inputs {
 		name := input.Name()
@@ -159,12 +149,6 @@ func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Parsers {
 		if err := subConfig.validate(rootConfig, log.WithField("object", "parsers."+subConfigName)); err != nil {
 			return fmt.Errorf("parsers.%v: %w", subConfigName, err)
-		}
-	}
-
-	for subConfigName, subConfig := range config.Sources {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "sources."+subConfigName)); err != nil {
-			return fmt.Errorf("sources.%v: %w", subConfigName, err)
 		}
 	}
 

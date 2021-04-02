@@ -50,8 +50,8 @@ func NewFromConfigs(
 	return indexes, nil
 }
 
-func Close(sources List) error {
-	for _, index := range sources {
+func Close(indexes List) error {
+	for _, index := range indexes {
 		err := index.Close()
 		if err != nil {
 			return err

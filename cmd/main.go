@@ -11,7 +11,6 @@ import (
 	"rods/pkg/output"
 	"rods/pkg/parser"
 	"rods/pkg/service"
-	"rods/pkg/source"
 )
 
 func main() {
@@ -47,19 +46,7 @@ func main() {
 		}
 	})()
 
-	sources, err := source.NewFromConfigs(config.Sources)
-	if err != nil {
-		log.Errorf("Error initializing sources: %v", err)
-		return
-	}
-	defer (func() {
-		err := source.Close(sources)
-		if err != nil {
-			log.Errorf("Error closing sources: %v", err)
-		}
-	})()
-
-	inputs, err := input.NewFromConfigs(config.Inputs, sources, parsers)
+	inputs, err := input.NewFromConfigs(config.Inputs, parsers)
 	if err != nil {
 		log.Errorf("Error initializing inputs: %v", err)
 		return

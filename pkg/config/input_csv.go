@@ -8,7 +8,6 @@ import (
 
 type CsvInput struct {
 	Name              string            `yaml:"name"`
-	Source            string            `yaml:"source"`
 	Path              string            `yaml:"path"`
 	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
@@ -35,11 +34,6 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		defaultValue := true
 		log.Debugf("csv.dieOnInputChange is not set. Assuming 'true'.\n")
 		config.DieOnInputChange = &defaultValue
-	}
-
-	_, sourceExists := rootConfig.Sources[config.Source]
-	if !sourceExists {
-		return fmt.Errorf("csv.source: Source '%v' not found in sources list.", config.Source)
 	}
 
 	if config.AutodetectColumns {

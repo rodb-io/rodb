@@ -25,7 +25,7 @@ func NewFromConfig(
 		return NewHttp(config.Http, outputs)
 	}
 
-	return nil, errors.New("Failed to initialize source")
+	return nil, errors.New("Failed to initialize service")
 }
 
 func NewFromConfigs(

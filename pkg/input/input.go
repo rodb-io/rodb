@@ -5,7 +5,6 @@ import (
 	"rods/pkg/config"
 	"rods/pkg/parser"
 	"rods/pkg/record"
-	"rods/pkg/source"
 )
 
 type Input interface {
@@ -30,11 +29,10 @@ type IterateAllResult struct {
 
 func NewFromConfig(
 	config config.Input,
-	sources source.List,
 	parsers parser.List,
 ) (Input, error) {
 	if config.Csv != nil {
-		return NewCsv(config.Csv, sources, parsers)
+		return NewCsv(config.Csv, parsers)
 	}
 
 	return nil, errors.New("Failed to initialize input")
@@ -42,12 +40,11 @@ func NewFromConfig(
 
 func NewFromConfigs(
 	configs map[string]config.Input,
-	sources source.List,
 	parsers parser.List,
 ) (List, error) {
 	inputs := make(List)
 	for inputName, inputConfig := range configs {
-		input, err := NewFromConfig(inputConfig, sources, parsers)
+		input, err := NewFromConfig(inputConfig, parsers)
 		if err != nil {
 			return nil, err
 		}

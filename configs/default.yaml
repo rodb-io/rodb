@@ -1,4 +1,7 @@
-# TODO remove the source layer
+# TODO move the tests from source input
+# TODO fix the tests
+# TODO remove the source package
+# TODO have functions in common for future inputs?
 # TODO performance analysis
 parsers:
   - integer:
@@ -15,13 +18,9 @@ parsers:
   - string:
       name: defaultString
       convertFromCharset: ""
-sources:
-  - filesystem:
-      name: defaultSource
 inputs:
   - csv:
       name: defaultInput
-      source: defaultSource
       path: ./dummy.csv
       dieOnInputChange: true
       ignoreFirstRow: true
@@ -37,7 +36,6 @@ inputs:
           parser: defaultBoolean
   - csv:
       name: defaultInput2
-      source: defaultSource
       path: ./dummy2.csv
       dieOnInputChange: true
       ignoreFirstRow: true
@@ -46,7 +44,7 @@ inputs:
   # TODO xml input
   # TODO json input
   # TODO json rows input
-  # TODO database source/input?
+  # TODO database input?
 indexes:
   - memoryMap:
       name: defaultIndex

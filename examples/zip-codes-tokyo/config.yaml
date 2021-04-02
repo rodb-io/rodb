@@ -9,13 +9,9 @@ parsers:
   - string:
       name: shiftJisString
       convertFromCharset: "Shift_JIS"
-sources:
-  - filesystem:
-      name: filesystem
 inputs:
   - csv:
       name: zipCodesTokyo
-      source: filesystem
       path: /examples/zip-codes-tokyo/zip-codes.csv
       ignoreFirstRow: false
       delimiter: ","
@@ -52,7 +48,6 @@ inputs:
           parser: integer
   - csv:
       name: updatedValues
-      source: filesystem
       path: ./updated-values.csv
       ignoreFirstRow: false
       delimiter: ","
@@ -63,7 +58,6 @@ inputs:
           parser: string
   - csv:
       name: reasonsForUpdate
-      source: filesystem
       path: ./reasons-for-updated.csv
       ignoreFirstRow: false
       delimiter: ","
