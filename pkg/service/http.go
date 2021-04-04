@@ -106,7 +106,10 @@ func (service *Http) createPathRegexp(
 	routeConfig config.HttpServiceRoute,
 	output output.Output,
 ) (*regexp.Regexp, []string, error) {
-	paramRegexp := regexp.MustCompile("{([^}]+)}")
+	paramRegexp, err := regexp.Compile("{([^}]+)}")
+	if err != nil {
+		return nil, nil, err
+	}
 
 	paramMatches := paramRegexp.FindAllStringSubmatch(routeConfig.Path, -1)
 	params := make([]string, len(paramMatches))
@@ -129,7 +132,12 @@ func (service *Http) createPathRegexp(
 		path = path + "(" + paramPattern + ")" + parts[partIndex]
 	}
 
-	return regexp.MustCompile("^" + path + "$"), params, nil
+	regexp, err := regexp.Compile("^" + path + "$")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return regexp, params, nil
 }
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {

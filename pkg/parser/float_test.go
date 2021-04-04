@@ -45,7 +45,10 @@ func TestFloatGetRegexpPattern(t *testing.T) {
 		IgnoreCharacters: "$ ,",
 	}
 	float := NewFloat(config)
-	pattern := regexp.MustCompile("^" + float.GetRegexpPattern() + "$")
+	pattern, err := regexp.Compile("^" + float.GetRegexpPattern() + "$")
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"1":             true,

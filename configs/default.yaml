@@ -1,3 +1,4 @@
+# TODO allow indexing and searching everything if no columns list?
 # TODO performance analysis
 parsers:
   - integer:

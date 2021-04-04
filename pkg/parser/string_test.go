@@ -65,7 +65,10 @@ func TestStringGetRegexpPattern(t *testing.T) {
 		t.Errorf("Expected no error, got '%v'", err)
 	}
 
-	pattern := regexp.MustCompile("^" + stringParser.GetRegexpPattern() + "$")
+	pattern, err := regexp.Compile("^" + stringParser.GetRegexpPattern() + "$")
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"abc": true,

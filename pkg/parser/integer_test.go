@@ -42,7 +42,10 @@ func TestIntegerGetRegexpPattern(t *testing.T) {
 		IgnoreCharacters: "$ ,",
 	}
 	integer := NewInteger(config)
-	pattern := regexp.MustCompile("^" + integer.GetRegexpPattern() + "$")
+	pattern, err := regexp.Compile("^" + integer.GetRegexpPattern() + "$")
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"1":         true,

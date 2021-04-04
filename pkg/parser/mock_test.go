@@ -33,7 +33,10 @@ func TestMockParse(t *testing.T) {
 
 func TestMockGetRegexpPattern(t *testing.T) {
 	mock := NewMock()
-	pattern := regexp.MustCompile("^" + mock.GetRegexpPattern() + "$")
+	pattern, err := regexp.Compile("^" + mock.GetRegexpPattern() + "$")
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"abc": true,

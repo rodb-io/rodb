@@ -146,25 +146,37 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 
 	getFooOutput := outputModule.NewMock(parser)
 	getFooOutput.MockPayloadType = nil
+	getFooRegexp, err := regexp.Compile("^/foo$")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
 
 	postBarOutput := outputModule.NewMock(parser)
 	postBarOutput.MockPayloadType = &payloadType
+	postBarRegexp, err := regexp.Compile("^/bar$")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
 
 	getBarOutput := outputModule.NewMock(parser)
 	getBarOutput.MockPayloadType = nil
+	getBarRegexp, err := regexp.Compile("^/bar$")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
 
 	server := &Http{
 		routes: []*httpRoute{
 			{
-				path:   regexp.MustCompile("^/foo$"),
+				path:   getFooRegexp,
 				output: getFooOutput,
 			},
 			{
-				path:   regexp.MustCompile("^/bar$"),
+				path:   postBarRegexp,
 				output: postBarOutput,
 			},
 			{
-				path:   regexp.MustCompile("^/bar$"),
+				path:   getBarRegexp,
 				output: getBarOutput,
 			},
 		},
@@ -220,8 +232,13 @@ func TestHttpGetParams(t *testing.T) {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
+		regexp, err := regexp.Compile("/foo/(?P<id>[0-9]+)/bar")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
 		route := &httpRoute{
-			path:       regexp.MustCompile("/foo/(?P<id>[0-9]+)/bar"),
+			path:       regexp,
 			parameters: []string{"id"},
 		}
 

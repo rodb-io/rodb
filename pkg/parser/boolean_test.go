@@ -47,7 +47,10 @@ func TestBooleanGetRegexpPattern(t *testing.T) {
 		FalseValues: []string{"false", "no"},
 	}
 	boolean := NewBoolean(config)
-	pattern := regexp.MustCompile("^" + boolean.GetRegexpPattern() + "$")
+	pattern, err := regexp.Compile("^" + boolean.GetRegexpPattern() + "$")
+	if err != nil {
+		t.Errorf("Expected no error, got '%v'", err)
+	}
 
 	for value, expectedResult := range map[string]interface{}{
 		"true":  true,
