@@ -10,7 +10,7 @@ services:
   zip-codes-tokyo:
     tty: true
     image: rods
-    command: --config=examples/zip-codes-tokyo/config.yaml --verbose
+    command: --config=/examples/zip-codes-tokyo/config.yaml --verbose
     volumes:
       - $PWD/examples:/examples
     ports:

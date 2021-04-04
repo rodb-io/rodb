@@ -13,6 +13,7 @@ inputs:
   - csv:
       name: zipCodesTokyo
       path: /examples/zip-codes-tokyo/zip-codes.csv
+      dieOnInputChange: true
       ignoreFirstRow: false
       delimiter: ","
       columns:
@@ -48,7 +49,8 @@ inputs:
           parser: integer
   - csv:
       name: updatedValues
-      path: ./updated-values.csv
+      path: /examples/zip-codes-tokyo/updated-values.csv
+      dieOnInputChange: true
       ignoreFirstRow: false
       delimiter: ","
       columns:
@@ -58,7 +60,8 @@ inputs:
           parser: string
   - csv:
       name: reasonsForUpdate
-      path: ./reasons-for-updated.csv
+      path: /examples/zip-codes-tokyo/reasons-for-updated.csv
+      dieOnInputChange: true
       ignoreFirstRow: false
       delimiter: ","
       columns:

@@ -3,20 +3,42 @@ package input
 import (
 	"github.com/sirupsen/logrus"
 	"io"
+	"io/ioutil"
+	"os"
 	"rods/pkg/config"
 	"rods/pkg/parser"
-	"rods/pkg/source"
 	"sync"
 	"testing"
 )
 
+func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
+	path := t.TempDir()
+	fileName := "testOpen"
+
+	file, err := os.Create(path + "/" + fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = file.WriteString(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
 func TestCsvHasColumn(t *testing.T) {
+	file, err := createCsvTestFile(t, "")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	defer file.Close()
+
 	parsers := parser.List{"mock": parser.NewMock()}
-	sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3")}
 
 	config := &config.CsvInput{
-		Path:           "test",
-		Source:         "mock",
+		Path:           file.Name(),
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
 		Logger:         logrus.NewEntry(logrus.StandardLogger()),
@@ -30,7 +52,7 @@ func TestCsvHasColumn(t *testing.T) {
 		},
 	}
 
-	csv, err := NewCsv(config, sources, parsers)
+	csv, err := NewCsv(config, parsers)
 	if err != nil {
 		t.Error(err)
 	}
@@ -51,12 +73,16 @@ func TestCsvHasColumn(t *testing.T) {
 }
 
 func TestCsvGet(t *testing.T) {
+	file, err := createCsvTestFile(t, "test1,test2\n\ntest3")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	defer file.Close()
+
 	parsers := parser.List{"mock": parser.NewMock()}
-	sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3")}
 
 	config := &config.CsvInput{
-		Path:           "test",
-		Source:         "mock",
+		Path:           file.Name(),
 		IgnoreFirstRow: false,
 		Delimiter:      ",",
 		Logger:         logrus.NewEntry(logrus.StandardLogger()),
@@ -70,7 +96,7 @@ func TestCsvGet(t *testing.T) {
 		},
 	}
 
-	csv, err := NewCsv(config, sources, parsers)
+	csv, err := NewCsv(config, parsers)
 	if err != nil {
 		t.Error(err)
 	}
@@ -129,14 +155,17 @@ func TestCsvGet(t *testing.T) {
 
 func TestCsvSize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
+		data := "Hello World!"
+		file, err := createCsvTestFile(t, data)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
 		parsers := parser.List{"mock": parser.NewMock()}
-		data := "Hello World !"
-		mockSource := source.NewMock(data)
-		sources := source.List{"mock": mockSource}
 
 		config := &config.CsvInput{
-			Path:           "test",
-			Source:         "mock",
+			Path:           file.Name(),
 			IgnoreFirstRow: false,
 			Delimiter:      ",",
 			Logger:         logrus.NewEntry(logrus.StandardLogger()),
@@ -148,7 +177,7 @@ func TestCsvSize(t *testing.T) {
 			},
 		}
 
-		csv, err := NewCsv(config, sources, parsers)
+		csv, err := NewCsv(config, parsers)
 		if err != nil {
 			t.Error(err)
 		}
@@ -205,12 +234,16 @@ func TestCsvIterateAll(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
+			file, err := createCsvTestFile(t, testCase.file)
+			if err != nil {
+				t.Errorf("Unexpected error: '%+v'", err)
+			}
+			defer file.Close()
+
 			parsers := parser.List{"mock": parser.NewMock()}
-			sources := source.List{"mock": source.NewMock(testCase.file)}
 
 			config := &config.CsvInput{
-				Path:           "test",
-				Source:         "mock",
+				Path:           file.Name(),
 				IgnoreFirstRow: false,
 				Delimiter:      ",",
 				Logger:         logrus.NewEntry(logrus.StandardLogger()),
@@ -223,7 +256,7 @@ func TestCsvIterateAll(t *testing.T) {
 					"b": 1,
 				},
 			}
-			csv, err := NewCsv(config, sources, parsers)
+			csv, err := NewCsv(config, parsers)
 			if err != nil {
 				t.Error(err)
 			}
@@ -252,7 +285,7 @@ func TestCsvIterateAll(t *testing.T) {
 				}
 
 				// Asserts that IterateAll does not fail with concurrent accesses
-				csv.sourceReader.Seek(0, io.SeekStart)
+				csv.reader.Seek(0, io.SeekStart)
 			}
 		})
 	}
@@ -261,8 +294,6 @@ func TestCsvIterateAll(t *testing.T) {
 func TestCsvAutodetectColumns(t *testing.T) {
 	parsers := parser.List{"string": parser.NewMock()}
 	config := &config.CsvInput{
-		Path:              "test",
-		Source:            "mock",
 		IgnoreFirstRow:    true,
 		AutodetectColumns: true,
 		Delimiter:         ",",
@@ -270,8 +301,14 @@ func TestCsvAutodetectColumns(t *testing.T) {
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		sources := source.List{"mock": source.NewMock("test1,test2\n\ntest3,test4")}
-		csv, err := NewCsv(config, sources, parsers)
+		file, err := createCsvTestFile(t, "test1,test2\n\ntest3,test4")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		config.Path = file.Name()
+		csv, err := NewCsv(config, parsers)
 		if err != nil {
 			t.Error(err)
 		}
@@ -302,17 +339,145 @@ func TestCsvAutodetectColumns(t *testing.T) {
 		}
 	})
 	t.Run("empty", func(t *testing.T) {
-		sources := source.List{"mock": source.NewMock("test1,,test2\n\ntest3,test4")}
-		_, err := NewCsv(config, sources, parsers)
+		file, err := createCsvTestFile(t, "test1,,test2\n\ntest3,test4")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		config.Path = file.Name()
+		_, err = NewCsv(config, parsers)
 		if err == nil {
 			t.Errorf("Expected to get an error, got '%v'", err)
 		}
 	})
 	t.Run("duplicate", func(t *testing.T) {
-		sources := source.List{"mock": source.NewMock("test1,test1\n\ntest3,test4")}
-		_, err := NewCsv(config, sources, parsers)
+		file, err := createCsvTestFile(t, "test1,test1\n\ntest3,test4")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		config.Path = file.Name()
+		_, err = NewCsv(config, parsers)
 		if err == nil {
 			t.Errorf("Expected to get an error, got '%v'", err)
+		}
+	})
+}
+
+func TestCsvOpen(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		data := "Hello World!"
+		file, err := createCsvTestFile(t, data)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		parsers := parser.List{"mock": parser.NewMock()}
+
+		config := &config.CsvInput{
+			Path:           file.Name(),
+			IgnoreFirstRow: false,
+			Delimiter:      ",",
+			Logger:         logrus.NewEntry(logrus.StandardLogger()),
+			Columns: []*config.CsvInputColumn{
+				{Name: "a", Parser: "mock"},
+			},
+			ColumnIndexByName: map[string]int{
+				"a": 0,
+			},
+		}
+
+		csv, err := NewCsv(config, parsers)
+		if err != nil {
+			t.Error(err)
+		}
+
+		reader, _, file, err := csv.open()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		content, err := ioutil.ReadAll(reader)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if string(content) != data {
+			t.Errorf("Expected to receive '%v', got '%+v'", data, string(content))
+		}
+
+		err = file.Close()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+	})
+}
+
+func TestCsvWatch(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		file, err := createCsvTestFile(t, "initial content")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		defer file.Close()
+
+		parsers := parser.List{"mock": parser.NewMock()}
+
+		trueValue := true
+		config := &config.CsvInput{
+			Path:             file.Name(),
+			IgnoreFirstRow:   false,
+			DieOnInputChange: &trueValue,
+			Delimiter:        ",",
+			Logger:           logrus.NewEntry(logrus.StandardLogger()),
+			Columns: []*config.CsvInputColumn{
+				{Name: "a", Parser: "mock"},
+			},
+			ColumnIndexByName: map[string]int{
+				"a": 0,
+			},
+		}
+
+		csv, err := NewCsv(config, parsers)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		dieWaiter := &sync.WaitGroup{}
+		dieCount := 0
+		csv.config.Logger.Logger.ExitFunc = func(exitCode int) {
+			dieCount++
+			dieWaiter.Done()
+		}
+
+		dieWaiter.Add(1)
+		_, err = file.WriteString("changed content")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		dieWaiter.Wait()
+		if dieCount <= 0 {
+			t.Errorf("Expected the process to exit, got '%v' calls to Exit", dieCount)
+		}
+
+		err = csv.Close()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		dieCount = 0
+		dieWaiter.Add(1)
+		_, err = file.WriteString("changed content again")
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if dieCount != 0 {
+			t.Errorf("Expected the process not to exit, got '%v' calls to Exit", dieCount)
 		}
 	})
 }

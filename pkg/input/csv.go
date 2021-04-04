@@ -17,14 +17,14 @@ import (
 )
 
 type Csv struct {
-	config           *configModule.CsvInput
-	reader     io.ReadSeeker
-	readerLock sync.Mutex
-	csvFile          *os.File
-	csvReader        *csv.Reader
-	csvReaderBuffer  *bufio.Reader
-	columnParsers    []parser.Parser
-	watcher          *fsnotify.Watcher
+	config          *configModule.CsvInput
+	reader          io.ReadSeeker
+	readerLock      sync.Mutex
+	csvFile         *os.File
+	csvReader       *csv.Reader
+	csvReaderBuffer *bufio.Reader
+	columnParsers   []parser.Parser
+	watcher         *fsnotify.Watcher
 }
 
 func NewCsv(
@@ -37,9 +37,9 @@ func NewCsv(
 	}
 
 	csvInput := &Csv{
-		config:           config,
+		config:     config,
 		readerLock: sync.Mutex{},
-		watcher:          watcher,
+		watcher:    watcher,
 	}
 
 	csvInput.startWatchProcess()
