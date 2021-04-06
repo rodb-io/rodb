@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"os"
 )
 
 type CsvInput struct {
@@ -53,7 +54,13 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		}
 	}
 
-	// The path will be validated at runtime
+	fileInfo, err := os.Stat(config.Path)
+	if os.IsNotExist(err) {
+		return errors.New("The csv file '"+config.Path+"' does not exist")
+	}
+	if fileInfo.IsDir() {
+		return errors.New("The path '"+config.Path+"' is not a file")
+	}
 
 	if config.Delimiter == "" {
 		log.Debug("csv.delimiter not defined. Assuming ','")
