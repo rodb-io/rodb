@@ -12,6 +12,7 @@ import (
 	configModule "rods/pkg/config"
 	"rods/pkg/parser"
 	"rods/pkg/record"
+	"rods/pkg/util"
 	"sync"
 	"unsafe"
 )
@@ -42,7 +43,11 @@ func NewCsv(
 		watcher:    watcher,
 	}
 
-	csvInput.startWatchProcess()
+	util.StartFilesystemWatchProcess(
+		csvInput.watcher,
+		*csvInput.config.DieOnInputChange,
+		csvInput.config.Logger,
+	)
 
 	reader, csvReader, file, err := csvInput.open()
 	if err != nil {
@@ -152,32 +157,6 @@ func (csvInput *Csv) autodetectColumns() error {
 	}
 
 	return nil
-}
-
-func (csvInput *Csv) startWatchProcess() {
-	go func() {
-		for {
-			select {
-			case event, ok := <-csvInput.watcher.Events:
-				if !ok {
-					return
-				}
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					message := fmt.Sprintf("The file '%v' has been modified by another process", event.Name)
-					if *csvInput.config.DieOnInputChange {
-						csvInput.config.Logger.Fatalln(message + ". Quitting because it may have corrupted data and 'dieOnInputChange' is 'true'.")
-					} else {
-						csvInput.config.Logger.Warnln(message + ", but 'dieOnInputChange' is 'false'. This could have unpredictable consequences.")
-					}
-				}
-			case err, ok := <-csvInput.watcher.Errors:
-				if !ok {
-					return
-				}
-				csvInput.config.Logger.Errorf("Error while watching file: %v", err)
-			}
-		}
-	}()
 }
 
 func (csvInput *Csv) open() (io.ReadSeeker, *csv.Reader, *os.File, error) {
