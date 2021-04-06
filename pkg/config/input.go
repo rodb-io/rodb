@@ -7,6 +7,7 @@ import (
 
 type Input struct {
 	Csv *CsvInput `yaml:"csv"`
+	Xml *XmlInput `yaml:"xml"`
 }
 
 func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -14,6 +15,13 @@ func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
 	if config.Csv != nil {
 		definedFields++
 		err := config.Csv.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.Xml != nil {
+		definedFields++
+		err := config.Xml.validate(rootConfig, log)
 		if err != nil {
 			return err
 		}
@@ -32,6 +40,9 @@ func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
 func (config *Input) Name() string {
 	if config.Csv != nil {
 		return config.Csv.Name
+	}
+	if config.Xml != nil {
+		return config.Xml.Name
 	}
 
 	return ""

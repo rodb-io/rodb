@@ -3,6 +3,7 @@ module rods
 go 1.15
 
 require (
+	github.com/antchfx/xpath v1.1.11
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/pflag v1.0.5

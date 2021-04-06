@@ -1,3 +1,4 @@
+# TODO add an example configuration for the xml input
 # TODO allow indexing and searching everything if no columns list?
 # TODO performance analysis
 parsers:
@@ -38,6 +39,24 @@ inputs:
       ignoreFirstRow: true
       autodetectColumns: true
       delimiter: ","
+  - xml:
+      name: defaultInput3
+      path: ./dummy.xml
+      dieOnInputChange: true
+      elementNodeName: item
+      columns:
+        - name: id
+          parser: defaultInteger
+          xpath: "/id"
+        - name: name
+          parser: defaultString
+          xpath: "/name"
+        - name: number
+          parser: defaultFloat
+          xpath: "/number"
+        - name: bool
+          parser: defaultBoolean
+          xpath: "/bool"
   # TODO xml input
   # TODO json input
   # TODO json rows input
