@@ -9,20 +9,21 @@ import (
 )
 
 type XmlInput struct {
-	Name              string            `yaml:"name"`
-	Path              string            `yaml:"path"`
-	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
-	Columns           []*XmlInputColumn `yaml:"columns"`
-	ElementNodeName   string            `yaml:"elementNodeName"`
-	ColumnIndexByName map[string]int
-	Logger            *logrus.Entry
+	Name                string            `yaml:"name"`
+	Path                string            `yaml:"path"`
+	DieOnInputChange    *bool             `yaml:"dieOnInputChange"`
+	Columns             []*XmlInputColumn `yaml:"columns"`
+	ElementNodeName     string            `yaml:"elementNodeName"`
+	CompiledRecordXPath *xpath.Expr
+	ColumnIndexByName   map[string]int
+	Logger              *logrus.Entry
 }
 
 type XmlInputColumn struct {
-	Name   string `yaml:"name"`
-	Parser string `yaml:"parser"`
-	XPath  string `yaml:"xpath"`
-	CompiledXPath  *xpath.Expr
+	Name          string `yaml:"name"`
+	Parser        string `yaml:"parser"`
+	XPath         string `yaml:"xpath"`
+	CompiledXPath *xpath.Expr
 }
 
 func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -32,8 +33,10 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		return errors.New("xml.name is required")
 	}
 
-	if config.ElementNodeName == "" {
-		return errors.New("xml.elementNodeName is required")
+	var err error
+	config.CompiledRecordXPath, err = xpath.Compile(config.RecordXPath)
+	if err != nil {
+		return fmt.Errorf("xml.recordXpath: Invalid xpath expression: %w", err)
 	}
 
 	if config.DieOnInputChange == nil {
@@ -48,10 +51,10 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	fileInfo, err := os.Stat(config.Path)
 	if os.IsNotExist(err) {
-		return errors.New("The xml file '"+config.Path+"' does not exist")
+		return errors.New("The xml file '" + config.Path + "' does not exist")
 	}
 	if fileInfo.IsDir() {
-		return errors.New("The path '"+config.Path+"' is not a file")
+		return errors.New("The path '" + config.Path + "' is not a file")
 	}
 
 	config.ColumnIndexByName = make(map[string]int)
@@ -83,7 +86,7 @@ func (config *XmlInputColumn) validate(rootConfig *Config, log *logrus.Entry) er
 	var err error
 	config.CompiledXPath, err = xpath.Compile(config.XPath)
 	if err != nil {
-		return fmt.Errorf("Invalid xpath expression: %w", err)
+		return fmt.Errorf("xpath: Invalid xpath expression: %w", err)
 	}
 
 	if config.Parser == "" {

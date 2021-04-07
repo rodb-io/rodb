@@ -56,10 +56,10 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	fileInfo, err := os.Stat(config.Path)
 	if os.IsNotExist(err) {
-		return errors.New("The csv file '"+config.Path+"' does not exist")
+		return errors.New("The csv file '" + config.Path + "' does not exist")
 	}
 	if fileInfo.IsDir() {
-		return errors.New("The path '"+config.Path+"' is not a file")
+		return errors.New("The path '" + config.Path + "' is not a file")
 	}
 
 	if config.Delimiter == "" {

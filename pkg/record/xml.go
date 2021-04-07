@@ -94,7 +94,7 @@ func (record *Xml) Get(field string) (interface{}, error) {
 		if _, isFloatParser := parser.(*parserModule.Float); isFloatParser {
 			return result, nil
 		} else if _, isIntegerParser := parser.(*parserModule.Integer); isIntegerParser {
-			return result, nil
+			return int(result.(float64)), nil
 		} else {
 			return nil, fmt.Errorf(
 				"The xpath '%v' for column '%v' returned a numeric value, but the column does not have a numeric type.",
