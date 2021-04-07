@@ -1,20 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"encoding/xml"
 	"fmt"
-	"github.com/antchfx/xmlquery"
 	"io"
-	"reflect"
+	"log"
 	"strings"
-	"unsafe"
 )
 
 func main() {
 	reader := strings.NewReader(`
 		<list>
-			<item><x><a>a0</a><b>b0</b></x></item>
+			<item test="42"><x><a>a0</a><b>b0</b></x></item>
 			<item><x><a>a1</a><b>b1</b></x></item>
 			<item><x><a>a2</a><b>b2</b></x></item>
 			<item><x><a>a3</a><b>b3</b></x></item>
@@ -26,72 +23,47 @@ func main() {
 			<item><x><a>a9</a><b>b9</b></x></item>
 		</list>
 	`)
+	d := xml.NewDecoder(reader)
 
-	stream, err := xmlquery.CreateStreamParser(reader, "/list/item")
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
+	// _, err := reader.Seek(387, io.SeekStart)
+	// if err != nil {
+	// 	log.Fatalf("Error: %s", err)
+	// }
 
-	decoder := getDecoder(stream)
-	buffer := getBuffer(stream)
-
+	position := int64(0)
 	for {
-		fmt.Printf("Position: %v\n", decoder.InputOffset())
-
-		_, err := reader.Seek(387, io.SeekStart)
-		if err != nil {
-			fmt.Printf("Error: %v", err)
-			return
-		}
-		buffer.Reset(reader)
-		resetCache(stream)
-
-		node, err := stream.Read()
-		if err == io.EOF {
+		token, err := d.Token()
+		if token == nil || err == io.EOF {
 			break
-		}
-		if err != nil {
-			fmt.Printf("Error: %v", err)
-			return
+		} else if err != nil {
+			log.Fatalf("Error decoding token: %s", err)
 		}
 
-		fmt.Printf("Node: %#v\n", node)
+		element, isStartElement := token.(xml.StartElement)
+		if isStartElement {
+			if element.Name.Local == "item" {
+				result := struct {
+					XMLName xml.Name
+					Attr []xml.Attr  `xml:",any,attr"`
+					InnerXML []byte `xml:",innerxml"`
+				}{}
+				err := d.DecodeElement(&result, &element)
+				if err != nil {
+					log.Fatalf("Error: %s", err)
+				}
+
+				test, err := xml.Marshal(result)
+				if err != nil {
+					log.Fatalf("Error: %s", err)
+				}
+
+				fmt.Printf("Position %v, item: %v\n", position, string(test))
+
+				// The position must be updated here, because the one that allows
+				// retrieving an item is the one after the closing tag of the
+				// previous item
+				position = d.InputOffset()
+			}
+		}
 	}
-}
-
-func getDecoder(parser *xmlquery.StreamParser) *xml.Decoder {
-	p := reflect.ValueOf(parser).Elem().FieldByName("p")
-	decoder := p.Elem().FieldByName("decoder")
-	decoderInterface := reflect.NewAt(
-		decoder.Type(),
-		unsafe.Pointer(decoder.UnsafeAddr()),
-	).Elem().Interface()
-
-	return decoderInterface.(*xml.Decoder)
-}
-
-func getBuffer(parser *xmlquery.StreamParser) *bufio.Reader {
-	p := reflect.ValueOf(parser).Elem().FieldByName("p")
-	reader := p.Elem().FieldByName("reader")
-	buffer := reader.Elem().FieldByName("buffer")
-
-	bufferInterface := reflect.NewAt(
-		buffer.Type(),
-		unsafe.Pointer(buffer.UnsafeAddr()),
-	).Elem().Interface()
-
-	return bufferInterface.(*bufio.Reader)
-}
-
-func resetCache(parser *xmlquery.StreamParser) {
-	p := reflect.ValueOf(parser).Elem().FieldByName("p")
-	decoder := p.Elem().FieldByName("reader")
-
-	cacheLen := decoder.Elem().FieldByName("cacheLen")
-
-	reflect.NewAt(
-		cacheLen.Type(),
-		unsafe.Pointer(cacheLen.UnsafeAddr()),
-	).Elem().Set(reflect.ValueOf(0))
 }
