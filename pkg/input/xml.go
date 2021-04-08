@@ -27,9 +27,9 @@ type Xml struct {
 }
 
 type xmlTempRecordNode struct {
-	XMLName xml.Name
-	Attr []xml.Attr  `xml:",any,attr"`
-	InnerXML []byte `xml:",innerxml"`
+	XMLName  xml.Name
+	Attr     []xml.Attr `xml:",any,attr"`
+	InnerXML []byte     `xml:",innerxml"`
 }
 
 func NewXml(

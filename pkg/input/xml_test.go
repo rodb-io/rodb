@@ -1,9 +1,10 @@
 package input
 
 import (
+	"encoding/xml"
+	"github.com/antchfx/xpath"
 	"github.com/sirupsen/logrus"
 	"io"
-	"io/ioutil"
 	"os"
 	"rods/pkg/config"
 	"rods/pkg/parser"
@@ -11,7 +12,7 @@ import (
 	"testing"
 )
 
-func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
+func createXmlTestFile(t *testing.T, data string) (*os.File, error) {
 	path := t.TempDir()
 	fileName := "testOpen"
 
@@ -28,8 +29,8 @@ func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
 	return file, nil
 }
 
-func TestCsvHasColumn(t *testing.T) {
-	file, err := createCsvTestFile(t, "")
+func TestXmlHasColumn(t *testing.T) {
+	file, err := createXmlTestFile(t, "")
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}
@@ -38,13 +39,11 @@ func TestCsvHasColumn(t *testing.T) {
 	parsers := parser.List{"mock": parser.NewMock()}
 
 	falseValue := false
-	config := &config.CsvInput{
+	config := &config.XmlInput{
 		Path:             file.Name(),
-		IgnoreFirstRow:   false,
 		DieOnInputChange: &falseValue,
-		Delimiter:        ",",
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		Columns: []*config.CsvInputColumn{
+		Columns: []*config.XmlInputColumn{
 			{Name: "a", Parser: "mock"},
 			{Name: "b", Parser: "mock"},
 		},
@@ -54,28 +53,34 @@ func TestCsvHasColumn(t *testing.T) {
 		},
 	}
 
-	csv, err := NewCsv(config, parsers)
+	xml, err := NewXml(config, parsers)
 	if err != nil {
 		t.Error(err)
 	}
 
 	t.Run("true", func(t *testing.T) {
-		if !csv.HasColumn("a") {
+		if !xml.HasColumn("a") {
 			t.Errorf("Expected to have column 'a', got false")
 		}
-		if !csv.HasColumn("b") {
+		if !xml.HasColumn("b") {
 			t.Errorf("Expected to have column 'b', got false")
 		}
 	})
 	t.Run("false", func(t *testing.T) {
-		if csv.HasColumn("wrong") {
+		if xml.HasColumn("wrong") {
 			t.Errorf("Expected to not have column 'wrong', got true")
 		}
 	})
 }
 
-func TestCsvGet(t *testing.T) {
-	file, err := createCsvTestFile(t, "test1,test2\n\ntest3")
+func TestXmlGet(t *testing.T) {
+	file, err := createXmlTestFile(t, `
+		<root>
+			<item a="a0"><b>b0</b></item>
+			<item a="a1"><b>b1</b></item>
+			<item a="a2"><b>b2</b></item>
+		</root>
+	`)
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
 	}
@@ -84,15 +89,20 @@ func TestCsvGet(t *testing.T) {
 	parsers := parser.List{"mock": parser.NewMock()}
 
 	falseValue := false
-	config := &config.CsvInput{
+	config := &config.XmlInput{
 		Path:             file.Name(),
-		IgnoreFirstRow:   false,
 		DieOnInputChange: &falseValue,
-		Delimiter:        ",",
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		Columns: []*config.CsvInputColumn{
-			{Name: "a", Parser: "mock"},
-			{Name: "b", Parser: "mock"},
+		Columns: []*config.XmlInputColumn{
+			{
+				Name:          "a",
+				Parser:        "mock",
+				CompiledXPath: xpath.MustCompile("string(/item/@a)"),
+			}, {
+				Name:          "b",
+				Parser:        "mock",
+				CompiledXPath: xpath.MustCompile("string(/item/b)"),
+			},
 		},
 		ColumnIndexByName: map[string]int{
 			"a": 0,
@@ -100,30 +110,38 @@ func TestCsvGet(t *testing.T) {
 		},
 	}
 
-	csv, err := NewCsv(config, parsers)
+	xml, err := NewXml(config, parsers)
 	if err != nil {
 		t.Error(err)
 	}
 
 	t.Run("normal", func(t *testing.T) {
 		// Testing a normal read
-		expect := "test1"
-		row, err := csv.Get(0)
+		row, err := xml.Get(13)
 		if err != nil {
 			t.Errorf("Expected no error, got '%v'", err)
 		}
+		expect := "a0"
 		if result, _ := row.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+		expect = "b0"
+		if result, _ := row.Get("b"); result != expect {
 			t.Errorf("Expected '%v', got '%v'", expect, result)
 		}
 
 		// Testing if the position in the file and buffer are properly set
 		// when it has already been used once
-		expect = "test3"
-		row, err = csv.Get(12)
+		row, err = xml.Get(46)
 		if err != nil {
 			t.Errorf("Expected no error, got '%v'", err)
 		}
+		expect = "a1"
 		if result, _ := row.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+		expect = "b1"
+		if result, _ := row.Get("b"); result != expect {
 			t.Errorf("Expected '%v', got '%v'", expect, result)
 		}
 	})
@@ -133,7 +151,7 @@ func TestCsvGet(t *testing.T) {
 		wait.Add(2)
 		go (func() {
 			expect := "test3"
-			row, err := csv.Get(12)
+			row, err := xml.Get(46)
 			if err != nil {
 				t.Errorf("Expected no error, got '%v'", err)
 			}
@@ -143,8 +161,8 @@ func TestCsvGet(t *testing.T) {
 			wait.Done()
 		})()
 		go (func() {
-			expect := "test1"
-			row, err := csv.Get(0)
+			expect := "a0"
+			row, err := xml.Get(13)
 			if err != nil {
 				t.Errorf("Expected no error, got '%v'", err)
 			}
@@ -157,10 +175,10 @@ func TestCsvGet(t *testing.T) {
 	})
 }
 
-func TestCsvSize(t *testing.T) {
+func TestXmlSize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := "Hello World!"
-		file, err := createCsvTestFile(t, data)
+		file, err := createXmlTestFile(t, data)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -169,20 +187,20 @@ func TestCsvSize(t *testing.T) {
 		parsers := parser.List{"mock": parser.NewMock()}
 
 		falseValue := false
-		config := &config.CsvInput{
+		config := &config.XmlInput{
 			Path:              file.Name(),
 			DieOnInputChange:  &falseValue,
 			Logger:            logrus.NewEntry(logrus.StandardLogger()),
-			Columns:           []*config.CsvInputColumn{},
+			Columns:           []*config.XmlInputColumn{},
 			ColumnIndexByName: map[string]int{},
 		}
 
-		csv, err := NewCsv(config, parsers)
+		xml, err := NewXml(config, parsers)
 		if err != nil {
 			t.Error(err)
 		}
 
-		size, err := csv.Size()
+		size, err := xml.Size()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -193,7 +211,7 @@ func TestCsvSize(t *testing.T) {
 	})
 }
 
-func TestCsvIterateAll(t *testing.T) {
+func TestXmlIterateAll(t *testing.T) {
 	testCases := []struct {
 		name              string
 		file              string
@@ -202,39 +220,40 @@ func TestCsvIterateAll(t *testing.T) {
 	}{
 		{
 			name:              "normal",
-			file:              "test1,\"test2\"\n\"test\"\"3\",test 4",
-			expectedRows:      [][]interface{}{{"test1", "test2"}, {"test\"3", "test 4"}},
-			expectedPositions: []int64{0, 14},
+			file:              `<root><item a="a0"><b>b0</b></item><item a="a1"><b>b1</b></item></root>`,
+			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
+			expectedPositions: []int64{6, 35},
 		}, {
 			name:              "empty",
-			file:              "",
+			file:              `<root></root>`,
 			expectedRows:      [][]interface{}{},
 			expectedPositions: []int64{},
 		}, {
-			name:              "empty row",
-			file:              "test1,test2\n\ntest3,test4",
-			expectedRows:      [][]interface{}{{"test1", "test2"}, {"test3", "test4"}},
+			name: "wrong tag",
+			file: `
+				<root>
+					<item a="a0"><b>b0</b></item>
+					<non-item><foo>bar</foo></non-item>
+					<item a="a1"><b>b1</b></item>
+				</root>
+			`,
+			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
 			expectedPositions: []int64{0, 12},
 		}, {
 			name:              "end after one row",
-			file:              "test1,test2",
-			expectedRows:      [][]interface{}{{"test1", "test2"}},
-			expectedPositions: []int64{0},
+			file:              `<root><item a="a0"><b>b0</b></item></root>`,
+			expectedRows:      [][]interface{}{{"a0", "b0"}},
+			expectedPositions: []int64{6},
 		}, {
-			name:              "too many columns",
-			file:              "test1,test2\ntest3,test4,test5",
-			expectedRows:      [][]interface{}{{"test1", "test2"}, {"test3", "test4", "test5"}},
-			expectedPositions: []int64{0, 12},
-		}, {
-			name:              "not enough columns",
-			file:              "test1,test2\ntest3",
-			expectedRows:      [][]interface{}{{"test1", "test2"}, {"test3", nil}},
-			expectedPositions: []int64{0, 12},
+			name:              "no match for the xpath",
+			file:              `<root><item a="a0"><c>c0</c></item></root>`,
+			expectedRows:      [][]interface{}{{"a0", nil}},
+			expectedPositions: []int64{6},
 		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			file, err := createCsvTestFile(t, testCase.file)
+			file, err := createXmlTestFile(t, testCase.file)
 			if err != nil {
 				t.Errorf("Unexpected error: '%+v'", err)
 			}
@@ -243,27 +262,32 @@ func TestCsvIterateAll(t *testing.T) {
 			parsers := parser.List{"mock": parser.NewMock()}
 
 			falseValue := false
-			config := &config.CsvInput{
+			config := &config.XmlInput{
 				Path:             file.Name(),
-				IgnoreFirstRow:   false,
 				DieOnInputChange: &falseValue,
-				Delimiter:        ",",
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
-				Columns: []*config.CsvInputColumn{
-					{Name: "a", Parser: "mock"},
-					{Name: "b", Parser: "mock"},
+				Columns: []*config.XmlInputColumn{
+					{
+						Name:          "a",
+						Parser:        "mock",
+						CompiledXPath: xpath.MustCompile("string(/item/@a)"),
+					}, {
+						Name:          "b",
+						Parser:        "mock",
+						CompiledXPath: xpath.MustCompile("string(/item/b)"),
+					},
 				},
 				ColumnIndexByName: map[string]int{
 					"a": 0,
 					"b": 1,
 				},
 			}
-			csv, err := NewCsv(config, parsers)
+			xml, err := NewXml(config, parsers)
 			if err != nil {
 				t.Error(err)
 			}
 
-			resultsChannel := csv.IterateAll()
+			resultsChannel := xml.IterateAll()
 			for i := 0; i < len(testCase.expectedRows); i++ {
 				if result := <-resultsChannel; result.Error != nil {
 					t.Error(err)
@@ -287,137 +311,45 @@ func TestCsvIterateAll(t *testing.T) {
 				}
 
 				// Asserts that IterateAll does not fail with concurrent accesses
-				csv.reader.Seek(0, io.SeekStart)
+				xml.reader.Seek(0, io.SeekStart)
 			}
 		})
 	}
 }
 
-func TestCsvAutodetectColumns(t *testing.T) {
+func TestXmlGetOuterXml(t *testing.T) {
 	parsers := parser.List{"string": parser.NewMock()}
 	falseValue := false
-	config := &config.CsvInput{
-		IgnoreFirstRow:    true,
-		DieOnInputChange:  &falseValue,
-		AutodetectColumns: true,
-		Delimiter:         ",",
-		Logger:            logrus.NewEntry(logrus.StandardLogger()),
+	config := &config.XmlInput{
+		DieOnInputChange: &falseValue,
+		Logger:           logrus.NewEntry(logrus.StandardLogger()),
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		file, err := createCsvTestFile(t, "test1,test2\n\ntest3,test4")
+		xmlData := "<root attribute=\"42\"><a>a</a><b>b</b></root>"
+		file, err := createXmlTestFile(t, xmlData)
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
 		config.Path = file.Name()
-		csv, err := NewCsv(config, parsers)
+		xmlInput, err := NewXml(config, parsers)
 		if err != nil {
 			t.Error(err)
 		}
 
-		for index, name := range map[int]string{
-			0: "test1",
-			1: "test2",
-		} {
-			if index >= len(csv.config.Columns) {
-				t.Errorf("Expected to have a column indexed at '%v', got nothing", index)
-			}
-
-			column := csv.config.Columns[index]
-			if column.Name != name {
-				t.Errorf("Expected to have a column named '%v' indexed at '%v', got '%v'", name, index, column.Name)
-			}
-			if column.Parser != "string" {
-				t.Errorf("Expected the column indexed at '%v' to have parser '%v', got '%v'", index, "string", column.Parser)
-			}
-
-			columnIndex, columnIndexExists := csv.config.ColumnIndexByName[name]
-			if !columnIndexExists {
-				t.Errorf("Expected to have a column indexed under the name '%v', got nothing", name)
-			}
-			if columnIndex != index {
-				t.Errorf("Expected to have index '%v' for column '%v', got '%v'", index, name, columnIndex)
-			}
-		}
-	})
-	t.Run("empty", func(t *testing.T) {
-		file, err := createCsvTestFile(t, "test1,,test2\n\ntest3,test4")
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-		defer file.Close()
-
-		config.Path = file.Name()
-		_, err = NewCsv(config, parsers)
-		if err == nil {
-			t.Errorf("Expected to get an error, got '%v'", err)
-		}
-	})
-	t.Run("duplicate", func(t *testing.T) {
-		file, err := createCsvTestFile(t, "test1,test1\n\ntest3,test4")
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-		defer file.Close()
-
-		config.Path = file.Name()
-		_, err = NewCsv(config, parsers)
-		if err == nil {
-			t.Errorf("Expected to get an error, got '%v'", err)
-		}
-	})
-}
-
-func TestCsvOpen(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
-		data := "Hello World!"
-		file, err := createCsvTestFile(t, data)
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-		defer file.Close()
-
-		parsers := parser.List{"mock": parser.NewMock()}
-
-		falseValue := false
-		config := &config.CsvInput{
-			Path:             file.Name(),
-			IgnoreFirstRow:   false,
-			DieOnInputChange: &falseValue,
-			Delimiter:        ",",
-			Logger:           logrus.NewEntry(logrus.StandardLogger()),
-			Columns: []*config.CsvInputColumn{
-				{Name: "a", Parser: "mock"},
-			},
-			ColumnIndexByName: map[string]int{
-				"a": 0,
-			},
-		}
-
-		csv, err := NewCsv(config, parsers)
+		token, err := xmlInput.xmlDecoder.Token()
 		if err != nil {
 			t.Error(err)
 		}
 
-		reader, _, file, err := csv.open()
+		got, err := xmlInput.getOuterXml(xmlInput.xmlDecoder, token.(xml.StartElement))
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Error(err)
 		}
-
-		content, err := ioutil.ReadAll(reader)
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-
-		if string(content) != data {
-			t.Errorf("Expected to receive '%v', got '%+v'", data, string(content))
-		}
-
-		err = file.Close()
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+		if string(got) != xmlData {
+			t.Errorf("Expected to get xml '%v', got '%v'", xmlData, got)
 		}
 	})
 }
