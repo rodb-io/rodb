@@ -1,5 +1,7 @@
+# TODO test the xml input
 # TODO add an example configuration for the xml input
 # TODO allow indexing and searching everything if no columns list?
+# TODO add an X-Powered-By header
 # TODO performance analysis
 parsers:
   - integer:
@@ -57,7 +59,6 @@ inputs:
         - name: bool
           parser: defaultBoolean
           xpath: "/bool"
-  # TODO xml input
   # TODO json input
   # TODO json rows input
   # TODO database input?

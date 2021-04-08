@@ -20,7 +20,7 @@ func TestXmlGet(t *testing.T) {
 
 	colName := "col_a"
 	createRecord := func(
-		xml string,
+		xml []byte,
 		xPath string,
 		parser parserModule.Parser,
 	) *Xml {
@@ -41,7 +41,7 @@ func TestXmlGet(t *testing.T) {
 
 	t.Run("string xpath", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>Hello World!</a></root>",
+			[]byte("<root><a>Hello World!</a></root>"),
 			"string(/root/a)",
 			mockParser,
 		)
@@ -56,7 +56,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("string xpath on integer column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>42</a></root>",
+			[]byte("<root><a>42</a></root>"),
 			"string(/root/a)",
 			integerParser,
 		)
@@ -71,7 +71,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("string xpath on float column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>42.1</a></root>",
+			[]byte("<root><a>42.1</a></root>"),
 			"string(/root/a)",
 			floatParser,
 		)
@@ -86,7 +86,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("string xpath on boolean column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>true</a></root>",
+			[]byte("<root><a>true</a></root>"),
 			"string(/root/a)",
 			booleanParser,
 		)
@@ -101,7 +101,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("number xpath on integer column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>42</a></root>",
+			[]byte("<root><a>42</a></root>"),
 			"number(/root/a)",
 			integerParser,
 		)
@@ -116,7 +116,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("number xpath on float column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>42.1</a></root>",
+			[]byte("<root><a>42.1</a></root>"),
 			"number(/root/a)",
 			floatParser,
 		)
@@ -131,7 +131,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("number xpath on string column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>42</a></root>",
+			[]byte("<root><a>42</a></root>"),
 			"number(/root/a)",
 			mockParser,
 		)
@@ -143,7 +143,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("boolean xpath", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>a</a></root>",
+			[]byte("<root><a>a</a></root>"),
 			"boolean(/root/a[text()='a'])",
 			booleanParser,
 		)
@@ -158,7 +158,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("boolean xpath on integer column", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>a</a></root>",
+			[]byte("<root><a>a</a></root>"),
 			"/root/a[text()='a']",
 			integerParser,
 		)
@@ -170,7 +170,7 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("node xpath", func(t *testing.T) {
 		record := createRecord(
-			"<root><a>a</a></root>",
+			[]byte("<root><a>a</a></root>"),
 			"/root/a",
 			mockParser,
 		)

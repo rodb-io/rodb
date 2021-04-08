@@ -1,17 +1,17 @@
 package record
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"rods/pkg/config"
 	parserModule "rods/pkg/parser"
-	"strings"
 )
 
 type Xml struct {
 	config        *config.XmlInput
 	columnParsers []parserModule.Parser
-	data          string
+	data          []byte
 	node          *xmlquery.Node
 	nodeNavigator *xmlquery.NodeNavigator
 	position      Position
@@ -20,7 +20,7 @@ type Xml struct {
 func NewXml(
 	config *config.XmlInput,
 	columnParsers []parserModule.Parser,
-	data string,
+	data []byte,
 	position Position,
 ) *Xml {
 	return &Xml{
@@ -49,7 +49,7 @@ func (record *Xml) All() (map[string]interface{}, error) {
 
 func (record *Xml) parseData() error {
 	var err error
-	reader := strings.NewReader(record.data)
+	reader := bytes.NewReader(record.data)
 	record.node, err = xmlquery.Parse(reader)
 	if err != nil {
 		return err

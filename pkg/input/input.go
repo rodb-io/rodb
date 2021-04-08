@@ -34,6 +34,9 @@ func NewFromConfig(
 	if config.Csv != nil {
 		return NewCsv(config.Csv, parsers)
 	}
+	if config.Xml != nil {
+		return NewXml(config.Xml, parsers)
+	}
 
 	return nil, errors.New("Failed to initialize input")
 }
