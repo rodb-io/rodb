@@ -93,6 +93,7 @@ func TestXmlGet(t *testing.T) {
 		Path:             file.Name(),
 		DieOnInputChange: &falseValue,
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
+		ElementNodeName:  "item",
 		Columns: []*config.XmlInputColumn{
 			{
 				Name:          "a",
@@ -150,7 +151,7 @@ func TestXmlGet(t *testing.T) {
 		wait := sync.WaitGroup{}
 		wait.Add(2)
 		go (func() {
-			expect := "test3"
+			expect := "a1"
 			row, err := xml.Get(46)
 			if err != nil {
 				t.Errorf("Expected no error, got '%v'", err)
@@ -229,16 +230,10 @@ func TestXmlIterateAll(t *testing.T) {
 			expectedRows:      [][]interface{}{},
 			expectedPositions: []int64{},
 		}, {
-			name: "wrong tag",
-			file: `
-				<root>
-					<item a="a0"><b>b0</b></item>
-					<non-item><foo>bar</foo></non-item>
-					<item a="a1"><b>b1</b></item>
-				</root>
-			`,
+			name:              "wrong tag",
+			file:              `<root><item a="a0"><b>b0</b></item><non-item><foo>bar</foo></non-item><item a="a1"><b>b1</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
-			expectedPositions: []int64{0, 12},
+			expectedPositions: []int64{6, 70},
 		}, {
 			name:              "end after one row",
 			file:              `<root><item a="a0"><b>b0</b></item></root>`,
@@ -247,7 +242,7 @@ func TestXmlIterateAll(t *testing.T) {
 		}, {
 			name:              "no match for the xpath",
 			file:              `<root><item a="a0"><c>c0</c></item></root>`,
-			expectedRows:      [][]interface{}{{"a0", nil}},
+			expectedRows:      [][]interface{}{{"a0", ""}}, // Xpath does not return nil, but empty string
 			expectedPositions: []int64{6},
 		},
 	}
@@ -265,6 +260,7 @@ func TestXmlIterateAll(t *testing.T) {
 			config := &config.XmlInput{
 				Path:             file.Name(),
 				DieOnInputChange: &falseValue,
+				ElementNodeName:  "item",
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
 				Columns: []*config.XmlInputColumn{
 					{

@@ -8,13 +8,11 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	"reflect"
 	configModule "rods/pkg/config"
 	"rods/pkg/parser"
 	"rods/pkg/record"
 	"rods/pkg/util"
 	"sync"
-	"unsafe"
 )
 
 type Csv struct {
@@ -56,7 +54,7 @@ func NewCsv(
 	csvInput.reader = reader
 	csvInput.csvFile = file
 	csvInput.csvReader = csvReader
-	csvInput.csvReaderBuffer = getCsvReaderBuffer(csvReader)
+	csvInput.csvReaderBuffer = util.GetInternalBufferReader(csvReader, "r")
 
 	err = csvInput.watcher.Add(config.Path)
 	if err != nil {
@@ -100,8 +98,11 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	csvInput.readerLock.Lock()
 	defer csvInput.readerLock.Unlock()
 
-	csvInput.reader.Seek(position, io.SeekStart)
-	csvInput.csvReaderBuffer.Reset(csvInput.reader)
+	util.SetBufferedReaderOffset(
+		csvInput.reader,
+		csvInput.csvReaderBuffer,
+		position,
+	)
 
 	row, err := csvInput.csvReader.Read()
 	if err != nil {
@@ -188,15 +189,17 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 		}
 		defer file.Close()
 
-		reader.Seek(0, io.SeekStart)
 		if csvInput.config.IgnoreFirstRow {
 			_, _ = csvReader.Read()
 		}
 
-		csvReaderBuffer := getCsvReaderBuffer(csvReader)
+		csvReaderBuffer := util.GetInternalBufferReader(csvReader, "r")
 
 		for {
-			position, err := getCsvReaderOffset(reader, csvReaderBuffer)
+			position, err := util.GetBufferedReaderOffset(
+				reader,
+				csvReaderBuffer,
+			)
 			if err != nil {
 				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %w", err)}
 			}
@@ -242,24 +245,4 @@ func (csvInput *Csv) Close() error {
 	}
 
 	return nil
-}
-
-func getCsvReaderBuffer(csvReader *csv.Reader) *bufio.Reader {
-	bufferedReaderField := reflect.ValueOf(csvReader).Elem().FieldByName("r")
-	bufferedReaderInterface := reflect.NewAt(
-		bufferedReaderField.Type(),
-		unsafe.Pointer(bufferedReaderField.UnsafeAddr()),
-	).Elem().Interface()
-	return bufferedReaderInterface.(*bufio.Reader)
-}
-
-func getCsvReaderOffset(reader io.ReadSeeker, csvReaderBuffer *bufio.Reader) (int64, error) {
-	offset, err := reader.Seek(0, io.SeekCurrent)
-	if err != nil {
-		return 0, err
-	}
-
-	bufferSize := int64(csvReaderBuffer.Buffered())
-
-	return offset - bufferSize, nil
 }

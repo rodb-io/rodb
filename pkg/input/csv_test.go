@@ -170,11 +170,17 @@ func TestCsvSize(t *testing.T) {
 
 		falseValue := false
 		config := &config.CsvInput{
-			Path:              file.Name(),
-			DieOnInputChange:  &falseValue,
-			Logger:            logrus.NewEntry(logrus.StandardLogger()),
-			Columns:           []*config.CsvInputColumn{},
-			ColumnIndexByName: map[string]int{},
+			Path:             file.Name(),
+			IgnoreFirstRow:   false,
+			DieOnInputChange: &falseValue,
+			Delimiter:        ",",
+			Logger:           logrus.NewEntry(logrus.StandardLogger()),
+			Columns: []*config.CsvInputColumn{
+				{Name: "a", Parser: "mock"},
+			},
+			ColumnIndexByName: map[string]int{
+				"a": 0,
+			},
 		}
 
 		csv, err := NewCsv(config, parsers)

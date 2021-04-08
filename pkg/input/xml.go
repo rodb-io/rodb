@@ -16,14 +16,14 @@ import (
 )
 
 type Xml struct {
-	config          *configModule.XmlInput
-	reader          io.ReadSeeker
-	readerLock      sync.Mutex
-	xmlFile         *os.File
-	xmlDecoder      *xml.Decoder
-	xmlReaderBuffer *bufio.Reader
-	columnParsers   []parser.Parser
-	watcher         *fsnotify.Watcher
+	config           *configModule.XmlInput
+	reader           io.ReadSeeker
+	readerLock       sync.Mutex
+	xmlFile          *os.File
+	xmlDecoder       *xml.Decoder
+	xmlDecoderBuffer *bufio.Reader
+	columnParsers    []parser.Parser
+	watcher          *fsnotify.Watcher
 }
 
 type xmlTempRecordNode struct {
@@ -61,6 +61,7 @@ func NewXml(
 	xmlInput.xmlFile = file
 	xmlInput.reader = io.ReadSeeker(file)
 	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.reader)
+	xmlInput.xmlDecoderBuffer = util.GetInternalBufferReader(xmlInput.xmlDecoder, "r")
 
 	err = xmlInput.watcher.Add(config.Path)
 	if err != nil {
@@ -97,7 +98,11 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 	xmlInput.readerLock.Lock()
 	defer xmlInput.readerLock.Unlock()
 
-	xmlInput.reader.Seek(position, io.SeekStart)
+	util.SetBufferedReaderOffset(
+		xmlInput.reader,
+		xmlInput.xmlDecoderBuffer,
+		position,
+	)
 
 	token, err := xmlInput.xmlDecoder.Token()
 	if token == nil || err == io.EOF {
@@ -147,6 +152,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 
 		reader := io.ReadSeeker(file)
 		xmlDecoder := xml.NewDecoder(reader)
+		xmlDecoderBuffer := util.GetInternalBufferReader(xmlDecoder, "r")
 
 		position := int64(0)
 		for {
@@ -163,7 +169,9 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 				if element.Name.Local == xmlInput.config.ElementNodeName {
 					result, err := xmlInput.getOuterXml(xmlDecoder, element)
 					if err != nil {
-						xmlInput.config.Logger.Warnf("Error when reading xml record after position %v: %v", position, err)
+						channel <- IterateAllResult{
+							Error: fmt.Errorf("Error when reading xml record after position %v: %v", position, err),
+						}
 						return
 					}
 
@@ -176,7 +184,16 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 			// The position must be updated here, because the one that allows
 			// retrieving an item in one operation is the one after the end
 			// of the previous item
-			position = xmlDecoder.InputOffset()
+			position, err = util.GetBufferedReaderOffset(
+				reader,
+				xmlDecoderBuffer,
+			)
+			if err != nil {
+				channel <- IterateAllResult{
+					Error: fmt.Errorf("Error when getting xml offset: %v", err),
+				}
+				return
+			}
 		}
 	}()
 

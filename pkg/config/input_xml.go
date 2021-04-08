@@ -9,14 +9,13 @@ import (
 )
 
 type XmlInput struct {
-	Name                string            `yaml:"name"`
-	Path                string            `yaml:"path"`
-	DieOnInputChange    *bool             `yaml:"dieOnInputChange"`
-	Columns             []*XmlInputColumn `yaml:"columns"`
-	ElementNodeName     string            `yaml:"elementNodeName"`
-	CompiledRecordXPath *xpath.Expr
-	ColumnIndexByName   map[string]int
-	Logger              *logrus.Entry
+	Name              string            `yaml:"name"`
+	Path              string            `yaml:"path"`
+	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
+	Columns           []*XmlInputColumn `yaml:"columns"`
+	ElementNodeName   string            `yaml:"elementNodeName"`
+	ColumnIndexByName map[string]int
+	Logger            *logrus.Entry
 }
 
 type XmlInputColumn struct {
@@ -31,12 +30,6 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	if config.Name == "" {
 		return errors.New("xml.name is required")
-	}
-
-	var err error
-	config.CompiledRecordXPath, err = xpath.Compile(config.RecordXPath)
-	if err != nil {
-		return fmt.Errorf("xml.recordXpath: Invalid xpath expression: %w", err)
 	}
 
 	if config.DieOnInputChange == nil {
