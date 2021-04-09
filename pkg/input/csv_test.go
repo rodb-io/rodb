@@ -437,7 +437,7 @@ func TestCsvOpen(t *testing.T) {
 			t.Error(err)
 		}
 
-		reader, _, file, err := csv.open()
+		reader, _, _, file, err := csv.open()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

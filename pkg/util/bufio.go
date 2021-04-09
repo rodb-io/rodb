@@ -3,21 +3,7 @@ package util
 import (
 	"bufio"
 	"io"
-	"reflect"
-	"unsafe"
 )
-
-func GetInternalBufferReader(
-	object interface{},
-	property string,
-) *bufio.Reader {
-	bufferedReaderField := reflect.ValueOf(object).Elem().FieldByName("r")
-	bufferedReaderInterface := reflect.NewAt(
-		bufferedReaderField.Type(),
-		unsafe.Pointer(bufferedReaderField.UnsafeAddr()),
-	).Elem().Interface()
-	return bufferedReaderInterface.(*bufio.Reader)
-}
 
 func GetBufferedReaderOffset(
 	reader io.ReadSeeker,

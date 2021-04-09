@@ -16,14 +16,14 @@ import (
 )
 
 type Csv struct {
-	config          *configModule.CsvInput
-	reader          io.ReadSeeker
-	readerLock      sync.Mutex
-	csvFile         *os.File
-	csvReader       *csv.Reader
-	csvReaderBuffer *bufio.Reader
-	columnParsers   []parser.Parser
-	watcher         *fsnotify.Watcher
+	config        *configModule.CsvInput
+	reader        io.ReadSeeker
+	readerLock    sync.Mutex
+	csvFile       *os.File
+	csvReader     *csv.Reader
+	readerBuffer  *bufio.Reader
+	columnParsers []parser.Parser
+	watcher       *fsnotify.Watcher
 }
 
 func NewCsv(
@@ -47,14 +47,14 @@ func NewCsv(
 		csvInput.config.Logger,
 	)
 
-	reader, csvReader, file, err := csvInput.open()
+	reader, readerBuffer, csvReader, file, err := csvInput.open()
 	if err != nil {
 		return nil, err
 	}
 	csvInput.reader = reader
+	csvInput.readerBuffer = readerBuffer
 	csvInput.csvFile = file
 	csvInput.csvReader = csvReader
-	csvInput.csvReaderBuffer = util.GetInternalBufferReader(csvReader, "r")
 
 	err = csvInput.watcher.Add(config.Path)
 	if err != nil {
@@ -100,7 +100,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 
 	util.SetBufferedReaderOffset(
 		csvInput.reader,
-		csvInput.csvReaderBuffer,
+		csvInput.readerBuffer,
 		position,
 	)
 
@@ -160,20 +160,25 @@ func (csvInput *Csv) autodetectColumns() error {
 	return nil
 }
 
-func (csvInput *Csv) open() (io.ReadSeeker, *csv.Reader, *os.File, error) {
+func (csvInput *Csv) open() (io.ReadSeeker, *bufio.Reader, *csv.Reader, *os.File, error) {
 	file, err := os.Open(csvInput.config.Path)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	reader := io.ReadSeeker(file)
 
-	csvReader := csv.NewReader(reader)
+	// Giving a buffer to the csv reader will prevent it from creating
+	// it's own buffer, since we need to control it when seeking
+	// the positions (this condition is managed by bufio's constructor)
+	readerBuffer := bufio.NewReader(reader)
+
+	csvReader := csv.NewReader(readerBuffer)
 	csvReader.Comma = []rune(csvInput.config.Delimiter)[0]
 	csvReader.FieldsPerRecord = len(csvInput.config.Columns)
 	csvReader.ReuseRecord = false
 
-	return reader, csvReader, file, nil
+	return reader, readerBuffer, csvReader, file, nil
 }
 
 func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
@@ -182,7 +187,7 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 	go func() {
 		defer close(channel)
 
-		reader, csvReader, file, err := csvInput.open()
+		reader, readerBuffer, csvReader, file, err := csvInput.open()
 		if err != nil {
 			channel <- IterateAllResult{Error: err}
 			return
@@ -193,13 +198,8 @@ func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
 			_, _ = csvReader.Read()
 		}
 
-		csvReaderBuffer := util.GetInternalBufferReader(csvReader, "r")
-
 		for {
-			position, err := util.GetBufferedReaderOffset(
-				reader,
-				csvReaderBuffer,
-			)
+			position, err := util.GetBufferedReaderOffset(reader, readerBuffer)
 			if err != nil {
 				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %w", err)}
 			}

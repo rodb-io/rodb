@@ -16,14 +16,14 @@ import (
 )
 
 type Xml struct {
-	config           *configModule.XmlInput
-	reader           io.ReadSeeker
-	readerLock       sync.Mutex
-	xmlFile          *os.File
-	xmlDecoder       *xml.Decoder
-	xmlDecoderBuffer *bufio.Reader
-	columnParsers    []parser.Parser
-	watcher          *fsnotify.Watcher
+	config        *configModule.XmlInput
+	reader        io.ReadSeeker
+	readerBuffer  *bufio.Reader
+	readerLock    sync.Mutex
+	xmlFile       *os.File
+	xmlDecoder    *xml.Decoder
+	columnParsers []parser.Parser
+	watcher       *fsnotify.Watcher
 }
 
 type xmlTempRecordNode struct {
@@ -60,8 +60,12 @@ func NewXml(
 
 	xmlInput.xmlFile = file
 	xmlInput.reader = io.ReadSeeker(file)
-	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.reader)
-	xmlInput.xmlDecoderBuffer = util.GetInternalBufferReader(xmlInput.xmlDecoder, "r")
+	xmlInput.readerBuffer = bufio.NewReader(xmlInput.reader)
+
+	// Giving a buffer to the csv reader will prevent it from creating
+	// it's own buffer, since we need to control it when seeking
+	// the positions (this condition is managed by bufio's constructor)
+	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.readerBuffer)
 
 	err = xmlInput.watcher.Add(config.Path)
 	if err != nil {
@@ -100,7 +104,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 
 	util.SetBufferedReaderOffset(
 		xmlInput.reader,
-		xmlInput.xmlDecoderBuffer,
+		xmlInput.readerBuffer,
 		position,
 	)
 
@@ -151,8 +155,12 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 		defer file.Close()
 
 		reader := io.ReadSeeker(file)
-		xmlDecoder := xml.NewDecoder(reader)
-		xmlDecoderBuffer := util.GetInternalBufferReader(xmlDecoder, "r")
+		readerBuffer := bufio.NewReader(reader)
+
+		// Giving a buffer to the csv reader will prevent it from creating
+		// it's own buffer, since we need to control it when seeking
+		// the positions (this condition is managed by bufio's constructor)
+		xmlDecoder := xml.NewDecoder(readerBuffer)
 
 		position := int64(0)
 		for {
@@ -186,7 +194,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 			// of the previous item.
 			position, err = util.GetBufferedReaderOffset(
 				reader,
-				xmlDecoderBuffer,
+				readerBuffer,
 			)
 			if err != nil {
 				channel <- IterateAllResult{
