@@ -8,6 +8,7 @@ import (
 	"os"
 	"rods/pkg/config"
 	"rods/pkg/parser"
+	"rods/pkg/record"
 	"sync"
 	"testing"
 )
@@ -174,6 +175,35 @@ func TestXmlGet(t *testing.T) {
 		})()
 		wait.Wait()
 	})
+	t.Run("from IterateAll", func(t *testing.T) {
+		index := 0
+		var secondRow record.Record = nil
+		for result := range xml.IterateAll() {
+			if result.Error != nil {
+				t.Errorf("Expected no error, got '%v'", result.Error)
+			}
+			if index == 1 {
+				secondRow = result.Record
+			}
+			index++
+		}
+		if secondRow == nil {
+			t.Errorf("Expected a record, got '%v'", secondRow)
+		}
+
+		record, err := xml.Get(secondRow.Position())
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+
+		expect := "a1"
+		if result, _ := secondRow.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+		if result, _ := record.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+	})
 }
 
 func TestXmlSize(t *testing.T) {
@@ -223,7 +253,7 @@ func TestXmlIterateAll(t *testing.T) {
 			name:              "normal",
 			file:              `<root><item a="a0"><b>b0</b></item><item a="a1"><b>b1</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
-			expectedPositions: []int64{6, 35},
+			expectedPositions: []int64{5, 34},
 		}, {
 			name:              "empty",
 			file:              `<root></root>`,
@@ -233,17 +263,17 @@ func TestXmlIterateAll(t *testing.T) {
 			name:              "wrong tag",
 			file:              `<root><item a="a0"><b>b0</b></item><non-item><foo>bar</foo></non-item><item a="a1"><b>b1</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
-			expectedPositions: []int64{6, 70},
+			expectedPositions: []int64{5, 69},
 		}, {
 			name:              "end after one row",
 			file:              `<root><item a="a0"><b>b0</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}},
-			expectedPositions: []int64{6},
+			expectedPositions: []int64{5},
 		}, {
 			name:              "no match for the xpath",
 			file:              `<root><item a="a0"><c>c0</c></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", ""}}, // Xpath does not return nil, but empty string
-			expectedPositions: []int64{6},
+			expectedPositions: []int64{5},
 		},
 	}
 	for _, testCase := range testCases {

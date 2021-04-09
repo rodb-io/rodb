@@ -183,7 +183,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 
 			// The position must be updated here, because the one that allows
 			// retrieving an item in one operation is the one after the end
-			// of the previous item
+			// of the previous item.
 			position, err = util.GetBufferedReaderOffset(
 				reader,
 				xmlDecoderBuffer,
@@ -193,6 +193,12 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 					Error: fmt.Errorf("Error when getting xml offset: %v", err),
 				}
 				return
+			}
+
+			if position > 0 {
+				// The cursor must be placed one byte earlier
+				// any future read operation to work as expected.
+				position--
 			}
 		}
 	}()

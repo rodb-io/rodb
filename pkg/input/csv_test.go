@@ -7,6 +7,7 @@ import (
 	"os"
 	"rods/pkg/config"
 	"rods/pkg/parser"
+	"rods/pkg/record"
 	"sync"
 	"testing"
 )
@@ -154,6 +155,35 @@ func TestCsvGet(t *testing.T) {
 			wait.Done()
 		})()
 		wait.Wait()
+	})
+	t.Run("from IterateAll", func(t *testing.T) {
+		index := 0
+		var secondRow record.Record = nil
+		for result := range csv.IterateAll() {
+			if result.Error != nil {
+				t.Errorf("Expected no error, got '%v'", result.Error)
+			}
+			if index == 1 {
+				secondRow = result.Record
+			}
+			index++
+		}
+		if secondRow == nil {
+			t.Errorf("Expected a record, got '%v'", secondRow)
+		}
+
+		record, err := csv.Get(secondRow.Position())
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+
+		expect := "test3"
+		if result, _ := secondRow.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
+		if result, _ := record.Get("a"); result != expect {
+			t.Errorf("Expected '%v', got '%v'", expect, result)
+		}
 	})
 }
 
