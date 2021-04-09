@@ -1,4 +1,3 @@
-# TODO test the new util/bufio.go functions
 # TODO add an example configuration for the xml input
 # TODO allow indexing and searching everything if no columns list?
 # TODO add an X-Powered-By header
