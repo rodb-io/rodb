@@ -1,6 +1,8 @@
 package record
 
 import (
+	"bytes"
+	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
 	"rods/pkg/config"
 	parserModule "rods/pkg/parser"
@@ -20,7 +22,7 @@ func TestXmlGet(t *testing.T) {
 
 	colName := "col_a"
 	createRecord := func(
-		xml []byte,
+		data []byte,
 		xPath string,
 		parser parserModule.Parser,
 	) *Xml {
@@ -36,7 +38,17 @@ func TestXmlGet(t *testing.T) {
 			},
 		}
 
-		return NewXml(testConfig, []parserModule.Parser{parser}, xml, 0)
+		node, err := xmlquery.Parse(bytes.NewReader(data))
+		if err != nil {
+			t.Errorf("Unexpected error: '%v'", err)
+		}
+
+		record, err := NewXml(testConfig, []parserModule.Parser{parser}, node, 0)
+		if err != nil {
+			t.Errorf("Unexpected error: '%v'", err)
+		}
+
+		return record
 	}
 
 	t.Run("string xpath", func(t *testing.T) {

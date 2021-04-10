@@ -44,7 +44,7 @@ inputs:
       name: defaultInput3
       path: ./dummy.xml
       dieOnInputChange: true
-      elementNodeName: item
+      recordXpath: "//item"
       columns:
         - name: id
           parser: defaultInteger

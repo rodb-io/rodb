@@ -13,7 +13,7 @@ type XmlInput struct {
 	Path              string            `yaml:"path"`
 	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
 	Columns           []*XmlInputColumn `yaml:"columns"`
-	ElementNodeName   string            `yaml:"elementNodeName"`
+	RecordXPath       string            `yaml:"recordXpath"`
 	ColumnIndexByName map[string]int
 	Logger            *logrus.Entry
 }
@@ -36,6 +36,11 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		defaultValue := true
 		log.Debugf("xml.dieOnInputChange is not set. Assuming 'true'.\n")
 		config.DieOnInputChange = &defaultValue
+	}
+
+	_, err := xpath.Compile(config.RecordXPath)
+	if err != nil {
+		return fmt.Errorf("recordXpath: Invalid xpath expression: %w", err)
 	}
 
 	if len(config.Columns) == 0 {
