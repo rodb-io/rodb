@@ -1,4 +1,3 @@
-# TODO use xpath in the root streamer
 # TODO allow indexing and searching everything if no columns list in the index?
 # TODO add an X-Powered-By header (after buying domain and choosing name)
 # TODO performance analysis
@@ -44,7 +43,7 @@ inputs:
       name: defaultInput3
       path: ./dummy.xml
       dieOnInputChange: true
-      elementNodeName: item
+      recordXpath: "//item"
       columns:
         - name: id
           parser: defaultInteger

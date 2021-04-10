@@ -43,6 +43,7 @@ func TestXmlHasColumn(t *testing.T) {
 	config := &config.XmlInput{
 		Path:             file.Name(),
 		DieOnInputChange: &falseValue,
+		RecordXPath:      "test",
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
 		Columns: []*config.XmlInputColumn{
 			{Name: "a", Parser: "mock"},
@@ -94,16 +95,16 @@ func TestXmlGet(t *testing.T) {
 		Path:             file.Name(),
 		DieOnInputChange: &falseValue,
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		ElementNodeName:  "item",
+		RecordXPath:      "//item",
 		Columns: []*config.XmlInputColumn{
 			{
 				Name:          "a",
 				Parser:        "mock",
-				CompiledXPath: xpath.MustCompile("string(/item/@a)"),
+				CompiledXPath: xpath.MustCompile("string(/@a)"),
 			}, {
 				Name:          "b",
 				Parser:        "mock",
-				CompiledXPath: xpath.MustCompile("string(/item/b)"),
+				CompiledXPath: xpath.MustCompile("string(/b)"),
 			},
 		},
 		ColumnIndexByName: map[string]int{
@@ -221,6 +222,7 @@ func TestXmlSize(t *testing.T) {
 		config := &config.XmlInput{
 			Path:              file.Name(),
 			DieOnInputChange:  &falseValue,
+			RecordXPath:       "test",
 			Logger:            logrus.NewEntry(logrus.StandardLogger()),
 			Columns:           []*config.XmlInputColumn{},
 			ColumnIndexByName: map[string]int{},
@@ -253,7 +255,7 @@ func TestXmlIterateAll(t *testing.T) {
 			name:              "normal",
 			file:              `<root><item a="a0"><b>b0</b></item><item a="a1"><b>b1</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
-			expectedPositions: []int64{5, 34},
+			expectedPositions: []int64{0, 35},
 		}, {
 			name:              "empty",
 			file:              `<root></root>`,
@@ -263,17 +265,17 @@ func TestXmlIterateAll(t *testing.T) {
 			name:              "wrong tag",
 			file:              `<root><item a="a0"><b>b0</b></item><non-item><foo>bar</foo></non-item><item a="a1"><b>b1</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}, {"a1", "b1"}},
-			expectedPositions: []int64{5, 69},
+			expectedPositions: []int64{0, 35},
 		}, {
 			name:              "end after one row",
 			file:              `<root><item a="a0"><b>b0</b></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", "b0"}},
-			expectedPositions: []int64{5},
+			expectedPositions: []int64{0},
 		}, {
 			name:              "no match for the xpath",
 			file:              `<root><item a="a0"><c>c0</c></item></root>`,
 			expectedRows:      [][]interface{}{{"a0", ""}}, // Xpath does not return nil, but empty string
-			expectedPositions: []int64{5},
+			expectedPositions: []int64{0},
 		},
 	}
 	for _, testCase := range testCases {
@@ -290,17 +292,17 @@ func TestXmlIterateAll(t *testing.T) {
 			config := &config.XmlInput{
 				Path:             file.Name(),
 				DieOnInputChange: &falseValue,
-				ElementNodeName:  "item",
+				RecordXPath:      "//item",
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
 				Columns: []*config.XmlInputColumn{
 					{
 						Name:          "a",
 						Parser:        "mock",
-						CompiledXPath: xpath.MustCompile("string(/item/@a)"),
+						CompiledXPath: xpath.MustCompile("string(/@a)"),
 					}, {
 						Name:          "b",
 						Parser:        "mock",
-						CompiledXPath: xpath.MustCompile("string(/item/b)"),
+						CompiledXPath: xpath.MustCompile("string(/b)"),
 					},
 				},
 				ColumnIndexByName: map[string]int{
@@ -321,18 +323,18 @@ func TestXmlIterateAll(t *testing.T) {
 					for j, k := range []string{"a", "b"} {
 						result, err := result.Record.Get(k)
 						if err != nil {
-							t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
+							t.Errorf("Got error '%v', expected '%v' for record %v, column number %v", err, testCase.expectedRows[i][j], i, j)
 							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
 						if !(result == nil && expected == nil) && result != expected {
-							t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
+							t.Errorf("Received '%v', expected '%v' for record %v, column number %v", result, testCase.expectedRows[i][j], i, j)
 						}
 					}
 
 					if got, expect := result.Record.Position(), testCase.expectedPositions[i]; got != expect {
-						t.Errorf("Got position '%v', expected '%v' for row [%v]", got, expect, i)
+						t.Errorf("Got position '%v', expected '%v' for record %v", got, expect, i)
 					}
 				}
 
@@ -348,6 +350,7 @@ func TestXmlGetOuterXml(t *testing.T) {
 	falseValue := false
 	config := &config.XmlInput{
 		DieOnInputChange: &falseValue,
+		RecordXPath:      "test",
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
 	}
 
