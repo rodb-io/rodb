@@ -1,0 +1,27 @@
+inputs:
+  - xml:
+      name: dictionary
+      path: ./JMdict.xml
+      elementNodeName: entry
+      columns:
+        - name: writing
+          parser: string
+          xpath: "string(//keb[1])"
+        - name: reading
+          parser: string
+          xpath: "string(//reb[1])"
+        - name: translation
+          parser: string
+          xpath: "string(//gloss[not(@xml:lang)][1])"
+outputs:
+  - jsonArray:
+      name: output
+      input: dictionary
+services:
+  - http:
+      name: service
+      listen: ":80"
+      errorsType: application/json
+      routes:
+        - path: "/"
+          output: output

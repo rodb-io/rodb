@@ -1,3 +1,5 @@
+github.com/Seb-C/xmlquery v1.3.6-0.20210410061207-32180d786cbd h1:xQfrg7dnm0AwzNVvl+/aMm4tVGWEFHwXJ7tYKCR4qdk=
+github.com/Seb-C/xmlquery v1.3.6-0.20210410061207-32180d786cbd/go.mod h1:64w0Xesg2sTaawIdNqMB+7qaW/bSqkQm+ssPaCMWNnc=
 github.com/antchfx/xmlquery v1.3.5 h1:I7TuBRqsnfFuL11ruavGm911Awx9IqSdiU6W/ztSmVw=
 github.com/antchfx/xmlquery v1.3.5/go.mod h1:64w0Xesg2sTaawIdNqMB+7qaW/bSqkQm+ssPaCMWNnc=
 github.com/antchfx/xpath v1.1.10/go.mod h1:Yee4kTMuNiPYJ7nSNorELQMr1J33uOpXDMByNYhvtNk=

@@ -1,7 +1,9 @@
 package record
 
 import (
+	"bufio"
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"rods/pkg/config"
@@ -49,8 +51,15 @@ func (record *Xml) All() (map[string]interface{}, error) {
 
 func (record *Xml) parseData() error {
 	var err error
+
 	reader := bytes.NewReader(record.data)
-	record.node, err = xmlquery.Parse(reader)
+	readerBuffer := bufio.NewReader(reader)
+	cachedReader := xmlquery.NewCachedReader(readerBuffer)
+
+	decoder := xml.NewDecoder(cachedReader)
+	decoder.Strict = false
+
+	record.node, err = xmlquery.ParseWithDecoder(cachedReader, decoder)
 	if err != nil {
 		return err
 	}

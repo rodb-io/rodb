@@ -66,6 +66,7 @@ func NewXml(
 	// it's own buffer, since we need to control it when seeking
 	// the positions (this condition is managed by bufio's constructor)
 	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.readerBuffer)
+	xmlInput.xmlDecoder.Strict = false
 
 	err = xmlInput.watcher.Add(config.Path)
 	if err != nil {
@@ -161,6 +162,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 		// it's own buffer, since we need to control it when seeking
 		// the positions (this condition is managed by bufio's constructor)
 		xmlDecoder := xml.NewDecoder(readerBuffer)
+		xmlDecoder.Strict = false
 
 		position := int64(0)
 		for {
