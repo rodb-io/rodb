@@ -2,9 +2,11 @@ package input
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/antchfx/xmlquery"
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
@@ -130,7 +132,12 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		return nil, err
 	}
 
-	return record.NewXml(xmlInput.config, xmlInput.columnParsers, xmlData, position), nil
+	node, err := xmlInput.newNodeFromString(xmlData)
+	if err != nil {
+		return nil, err
+	}
+
+	return record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -185,9 +192,23 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 						return
 					}
 
-					channel <- IterateAllResult{
-						Record: record.NewXml(xmlInput.config, xmlInput.columnParsers, result, position),
+					node, err := xmlInput.newNodeFromString(result)
+					if err != nil {
+						channel <- IterateAllResult{
+							Error: fmt.Errorf("Error when creating xml node after position %v: %v", position, err),
+						}
+						return
 					}
+
+					record, err := record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
+					if err != nil {
+						channel <- IterateAllResult{
+							Error: fmt.Errorf("Error when creating record after position %v: %v", position, err),
+						}
+						return
+					}
+
+					channel <- IterateAllResult{Record: record}
 				}
 			}
 
@@ -214,6 +235,17 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 	}()
 
 	return channel
+}
+
+func (xmlInput *Xml) newNodeFromString(data []byte) (*xmlquery.Node, error) {
+	reader := bytes.NewReader(data)
+	readerBuffer := bufio.NewReader(reader)
+	cachedReader := xmlquery.NewCachedReader(readerBuffer)
+
+	decoder := xml.NewDecoder(cachedReader)
+	decoder.Strict = false
+
+	return xmlquery.ParseWithDecoder(cachedReader, decoder)
 }
 
 func (xmlInput *Xml) Close() error {
