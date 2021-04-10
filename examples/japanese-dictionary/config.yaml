@@ -2,7 +2,7 @@ inputs:
   - xml:
       name: dictionary
       path: ./JMdict.xml
-      recordXpath: "//entry"
+      elementNodeName: entry
       columns:
         - name: writing
           parser: string

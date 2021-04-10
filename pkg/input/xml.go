@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"github.com/antchfx/xmlquery"
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
@@ -20,11 +19,9 @@ type Xml struct {
 	config        *configModule.XmlInput
 	reader        io.ReadSeeker
 	readerBuffer  *bufio.Reader
-	cachedReader  *xmlquery.CachedReader
 	readerLock    sync.Mutex
 	xmlFile       *os.File
 	xmlDecoder    *xml.Decoder
-	xmlParser     *xmlquery.StreamParser
 	columnParsers []parser.Parser
 	watcher       *fsnotify.Watcher
 }
@@ -64,22 +61,12 @@ func NewXml(
 	xmlInput.xmlFile = file
 	xmlInput.reader = io.ReadSeeker(file)
 	xmlInput.readerBuffer = bufio.NewReader(xmlInput.reader)
-	xmlInput.cachedReader = xmlquery.NewCachedReader(xmlInput.readerBuffer)
 
 	// Giving a buffer to the csv reader will prevent it from creating
 	// it's own buffer, since we need to control it when seeking
 	// the positions (this condition is managed by bufio's constructor)
 	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.readerBuffer)
 	xmlInput.xmlDecoder.Strict = false
-
-	xmlInput.xmlParser, err = xmlquery.CreateStreamParserWithDecoder(
-		xmlInput.cachedReader,
-		xmlInput.xmlDecoder,
-		xmlInput.config.RecordXPath,
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	err = xmlInput.watcher.Add(config.Path)
 	if err != nil {
@@ -121,17 +108,29 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		xmlInput.readerBuffer,
 		position,
 	)
-	xmlInput.cachedReader.StopCaching()
-	xmlInput.cachedReader.StartCaching()
 
-	node, err := xmlInput.xmlParser.Read()
-	if err == io.EOF {
+	token, err := xmlInput.xmlDecoder.Token()
+	if token == nil || err == io.EOF {
 		return nil, fmt.Errorf("Did not find an XML record at position %v", position)
 	} else if err != nil {
 		return nil, fmt.Errorf("Cannot read xml data: %w", err)
 	}
 
-	return record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
+	element, isStartElement := token.(xml.StartElement)
+	if !isStartElement {
+		return nil, fmt.Errorf("Did not find an XML opening tag at position %v", position)
+	}
+
+	if element.Name.Local != xmlInput.config.ElementNodeName {
+		return nil, fmt.Errorf("The tag at position %v is not a '%v'.", position, xmlInput.config.ElementNodeName)
+	}
+
+	xmlData, err := xmlInput.getOuterXml(xmlInput.xmlDecoder, element)
+	if err != nil {
+		return nil, err
+	}
+
+	return record.NewXml(xmlInput.config, xmlInput.columnParsers, xmlData, position), nil
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -158,30 +157,47 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 
 		reader := io.ReadSeeker(file)
 		readerBuffer := bufio.NewReader(reader)
-		cachedReader := xmlquery.NewCachedReader(readerBuffer)
 
 		// Giving a buffer to the csv reader will prevent it from creating
 		// it's own buffer, since we need to control it when seeking
 		// the positions (this condition is managed by bufio's constructor)
-		xmlDecoder := xml.NewDecoder(cachedReader)
+		xmlDecoder := xml.NewDecoder(readerBuffer)
 		xmlDecoder.Strict = false
-
-		xmlParser, err := xmlquery.CreateStreamParserWithDecoder(
-			cachedReader,
-			xmlDecoder,
-			xmlInput.config.RecordXPath,
-		)
-		if err != nil {
-			channel <- IterateAllResult{Error: err}
-			return
-		}
 
 		position := int64(0)
 		for {
-			// The returned position is actually the end of the opening tag of the previous element
-			// We cannot easily get a more precise position, but since we can get the next record
-			// reliably from this position, it works
-			position, err = util.GetBufferedReaderOffset(reader, readerBuffer)
+			token, err := xmlDecoder.Token()
+			if token == nil || err == io.EOF {
+				break
+			} else if err != nil {
+				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read xml data: %w", err)}
+				return
+			}
+
+			element, isStartElement := token.(xml.StartElement)
+			if isStartElement {
+				if element.Name.Local == xmlInput.config.ElementNodeName {
+					result, err := xmlInput.getOuterXml(xmlDecoder, element)
+					if err != nil {
+						channel <- IterateAllResult{
+							Error: fmt.Errorf("Error when reading xml record after position %v: %v", position, err),
+						}
+						return
+					}
+
+					channel <- IterateAllResult{
+						Record: record.NewXml(xmlInput.config, xmlInput.columnParsers, result, position),
+					}
+				}
+			}
+
+			// The position must be updated here, because the one that allows
+			// retrieving an item in one operation is the one after the end
+			// of the previous item.
+			position, err = util.GetBufferedReaderOffset(
+				reader,
+				readerBuffer,
+			)
 			if err != nil {
 				channel <- IterateAllResult{
 					Error: fmt.Errorf("Error when getting xml offset: %v", err),
@@ -189,24 +205,11 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 				return
 			}
 
-			node, err := xmlParser.Read()
-			if err == io.EOF {
-				break
+			if position > 0 {
+				// The cursor must be placed one byte earlier
+				// any future read operation to work as expected.
+				position--
 			}
-			if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read xml data: %w", err)}
-				return
-			}
-
-			record, err := record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
-			if err != nil {
-				channel <- IterateAllResult{
-					Error: fmt.Errorf("Error when creating record after position %v: %v", position, err),
-				}
-				return
-			}
-
-			channel <- IterateAllResult{Record: record}
 		}
 	}()
 

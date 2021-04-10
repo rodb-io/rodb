@@ -1,6 +1,9 @@
 package record
 
 import (
+	"bufio"
+	"bytes"
+	"encoding/xml"
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"rods/pkg/config"
@@ -10,6 +13,7 @@ import (
 type Xml struct {
 	config        *config.XmlInput
 	columnParsers []parserModule.Parser
+	data          []byte
 	node          *xmlquery.Node
 	nodeNavigator *xmlquery.NodeNavigator
 	position      Position
@@ -18,16 +22,17 @@ type Xml struct {
 func NewXml(
 	config *config.XmlInput,
 	columnParsers []parserModule.Parser,
-	node *xmlquery.Node,
+	data []byte,
 	position Position,
-) (*Xml, error) {
+) *Xml {
 	return &Xml{
 		config:        config,
 		columnParsers: columnParsers,
-		node:          node,
-		nodeNavigator: xmlquery.CreateXPathNavigator(node),
+		data:          data,
+		node:          nil, // Dynamically loaded
+		nodeNavigator: nil, // Dynamically loaded
 		position:      position,
-	}, nil
+	}
 }
 
 func (record *Xml) All() (map[string]interface{}, error) {
@@ -44,7 +49,35 @@ func (record *Xml) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
+func (record *Xml) parseData() error {
+	var err error
+
+	reader := bytes.NewReader(record.data)
+	readerBuffer := bufio.NewReader(reader)
+	cachedReader := xmlquery.NewCachedReader(readerBuffer)
+
+	decoder := xml.NewDecoder(cachedReader)
+	decoder.Strict = false
+
+	record.node, err = xmlquery.ParseWithDecoder(cachedReader, decoder)
+	if err != nil {
+		return err
+	}
+
+	record.nodeNavigator = xmlquery.CreateXPathNavigator(record.node)
+
+	return nil
+}
+
 func (record *Xml) Get(field string) (interface{}, error) {
+	// Initializing the document only when actually needed
+	if record.node == nil {
+		err := record.parseData()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	fieldIndex, exists := record.config.ColumnIndexByName[field]
 	if !exists {
 		return nil, fmt.Errorf("The column '%v' does not exist.", field)
