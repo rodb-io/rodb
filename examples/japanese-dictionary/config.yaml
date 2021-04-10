@@ -13,10 +13,22 @@ inputs:
         - name: translation
           parser: string
           xpath: "string(//gloss[not(@xml:lang)][1])"
+indexes:
+  - memoryMap:
+      name: index
+      input: dictionary
+      columns:
+        - writing
+        - reading
 outputs:
   - jsonArray:
       name: output
       input: dictionary
+      parameters:
+        word:
+          column: writing
+          index: index
+          parser: string
 services:
   - http:
       name: service
