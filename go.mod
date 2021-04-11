@@ -2,7 +2,7 @@ module rods
 
 go 1.15
 
-replace github.com/antchfx/xmlquery => github.com/Seb-C/xmlquery v1.3.6-0.20210410061207-32180d786cbd
+replace github.com/antchfx/xmlquery => github.com/Seb-C/xmlquery v1.3.6-custom
 
 require (
 	github.com/antchfx/xmlquery v1.3.5

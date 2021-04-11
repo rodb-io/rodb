@@ -72,6 +72,7 @@ func NewXml(
 	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.readerBuffer)
 	xmlInput.xmlDecoder.Strict = false
 
+	xmlquery.DisableSelectorCache = true
 	xmlInput.xmlParser, err = xmlquery.CreateStreamParserWithDecoder(
 		xmlInput.cachedReader,
 		xmlInput.xmlDecoder,
@@ -166,6 +167,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 		xmlDecoder := xml.NewDecoder(cachedReader)
 		xmlDecoder.Strict = false
 
+		xmlquery.DisableSelectorCache = true
 		xmlParser, err := xmlquery.CreateStreamParserWithDecoder(
 			cachedReader,
 			xmlDecoder,
