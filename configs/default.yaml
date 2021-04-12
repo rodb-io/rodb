@@ -1,5 +1,4 @@
 # TODO url search on multiple columns
-# TODO custom unmarshal functions in config to avoid pointers?
 # TODO allow indexing and searching everything if no columns list in the index?
 # TODO add an X-Powered-By header (after buying domain and choosing name)
 # TODO performance analysis

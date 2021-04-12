@@ -16,14 +16,18 @@ import (
 	"sync"
 )
 
+var xmlParserOptions = xmlquery.ParserOptions{
+	Decoder: &xmlquery.DecoderOptions{
+		Strict: false,
+	},
+}
+
 type Xml struct {
 	config        *configModule.XmlInput
 	reader        io.ReadSeeker
 	readerBuffer  *bufio.Reader
-	cachedReader  *xmlquery.CachedReader
 	readerLock    sync.Mutex
 	xmlFile       *os.File
-	xmlDecoder    *xml.Decoder
 	xmlParser     *xmlquery.StreamParser
 	columnParsers []parser.Parser
 	watcher       *fsnotify.Watcher
@@ -64,18 +68,10 @@ func NewXml(
 	xmlInput.xmlFile = file
 	xmlInput.reader = io.ReadSeeker(file)
 	xmlInput.readerBuffer = bufio.NewReader(xmlInput.reader)
-	xmlInput.cachedReader = xmlquery.NewCachedReader(xmlInput.readerBuffer)
 
-	// Giving a buffer to the csv reader will prevent it from creating
-	// it's own buffer, since we need to control it when seeking
-	// the positions (this condition is managed by bufio's constructor)
-	xmlInput.xmlDecoder = xml.NewDecoder(xmlInput.readerBuffer)
-	xmlInput.xmlDecoder.Strict = false
-
-	xmlquery.DisableSelectorCache = true
-	xmlInput.xmlParser, err = xmlquery.CreateStreamParserWithDecoder(
-		xmlInput.cachedReader,
-		xmlInput.xmlDecoder,
+	xmlInput.xmlParser, err = xmlquery.CreateStreamParserWithOptions(
+		xmlInput.readerBuffer,
+		xmlParserOptions,
 		xmlInput.config.RecordXPath,
 	)
 	if err != nil {
@@ -122,8 +118,6 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		xmlInput.readerBuffer,
 		position,
 	)
-	xmlInput.cachedReader.StopCaching()
-	xmlInput.cachedReader.StartCaching()
 
 	node, err := xmlInput.xmlParser.Read()
 	if err == io.EOF {
@@ -159,18 +153,10 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 
 		reader := io.ReadSeeker(file)
 		readerBuffer := bufio.NewReader(reader)
-		cachedReader := xmlquery.NewCachedReader(readerBuffer)
 
-		// Giving a buffer to the csv reader will prevent it from creating
-		// it's own buffer, since we need to control it when seeking
-		// the positions (this condition is managed by bufio's constructor)
-		xmlDecoder := xml.NewDecoder(cachedReader)
-		xmlDecoder.Strict = false
-
-		xmlquery.DisableSelectorCache = true
-		xmlParser, err := xmlquery.CreateStreamParserWithDecoder(
-			cachedReader,
-			xmlDecoder,
+		xmlParser, err := xmlquery.CreateStreamParserWithOptions(
+			readerBuffer,
+			xmlParserOptions,
 			xmlInput.config.RecordXPath,
 		)
 		if err != nil {
@@ -232,22 +218,4 @@ func (xmlInput *Xml) Close() error {
 	}
 
 	return nil
-}
-
-func (xmlInput *Xml) getOuterXml(
-	decoder *xml.Decoder,
-	element xml.StartElement,
-) ([]byte, error) {
-	result := xmlTempRecordNode{}
-	err := decoder.DecodeElement(&result, &element)
-	if err != nil {
-		return nil, err
-	}
-
-	outerXml, err := xml.Marshal(result)
-	if err != nil {
-		return nil, err
-	}
-
-	return outerXml, nil
 }

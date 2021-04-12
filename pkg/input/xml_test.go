@@ -1,7 +1,6 @@
 package input
 
 import (
-	"encoding/xml"
 	"github.com/antchfx/xpath"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -343,42 +342,4 @@ func TestXmlIterateAll(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestXmlGetOuterXml(t *testing.T) {
-	parsers := parser.List{"string": parser.NewMock()}
-	falseValue := false
-	config := &config.XmlInput{
-		DieOnInputChange: &falseValue,
-		RecordXPath:      "test",
-		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-	}
-
-	t.Run("normal", func(t *testing.T) {
-		xmlData := "<root attribute=\"42\"><a>a</a><b>b</b></root>"
-		file, err := createXmlTestFile(t, xmlData)
-		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
-		}
-		defer file.Close()
-
-		config.Path = file.Name()
-		xmlInput, err := NewXml(config, parsers)
-		if err != nil {
-			t.Error(err)
-		}
-
-		token, err := xmlInput.xmlDecoder.Token()
-		if err != nil {
-			t.Error(err)
-		}
-
-		got, err := xmlInput.getOuterXml(xmlInput.xmlDecoder, token.(xml.StartElement))
-		if err != nil {
-			t.Error(err)
-		}
-		if string(got) != xmlData {
-			t.Errorf("Expected to get xml '%v', got '%v'", xmlData, got)
-		}
-	})
 }
