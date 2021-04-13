@@ -8,10 +8,10 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configModule "rods/pkg/config"
-	"rods/pkg/parser"
-	"rods/pkg/record"
-	"rods/pkg/util"
+	configModule "rodb.io/pkg/config"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/record"
+	"rodb.io/pkg/util"
 	"sync"
 )
 

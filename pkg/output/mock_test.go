@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
-	"rods/pkg/parser"
+	"rodb.io/pkg/parser"
 	"testing"
 )
 

@@ -1,11 +1,11 @@
 package output
 
 import (
-	"rods/pkg/config"
-	"rods/pkg/index"
-	"rods/pkg/input"
-	"rods/pkg/parser"
-	"rods/pkg/record"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/record"
 	"testing"
 )
 

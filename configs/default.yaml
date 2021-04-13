@@ -1,3 +1,4 @@
+# TODO sub-objects/arrays in records (from xml for example)
 # TODO url search on multiple columns
 # TODO allow indexing and searching everything if no columns list in the index?
 # TODO add an X-Powered-By header (after buying domain and choosing name)

@@ -1,6 +1,6 @@
-FROM localhost/rods:latest
+FROM localhost/rodb:latest
 
 COPY ./config.yaml /
 COPY ./*.csv /
 
-ENTRYPOINT ["/rods", "--config=/config.yaml", "--verbose"]
+ENTRYPOINT ["/rodb", "--config=/config.yaml", "--verbose"]

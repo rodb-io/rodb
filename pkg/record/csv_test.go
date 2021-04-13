@@ -2,8 +2,8 @@ package record
 
 import (
 	"fmt"
-	"rods/pkg/config"
-	"rods/pkg/parser"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/parser"
 	"testing"
 )
 

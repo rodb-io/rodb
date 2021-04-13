@@ -6,9 +6,9 @@ WORKDIR /
 RUN apk add gzip
 RUN gzip -d JMdict.gz
 
-FROM localhost/rods:latest
+FROM localhost/rodb:latest
 
 COPY ./config.yaml /
 COPY --from=data /JMdict /JMdict.xml
 
-ENTRYPOINT ["/rods", "--config=/config.yaml", "--verbose"]
+ENTRYPOINT ["/rodb", "--config=/config.yaml", "--verbose"]

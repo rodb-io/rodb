@@ -1,3 +1,3 @@
 # Introduction
 
-RODS stands for Read-Only Data Service.
+RODB stands for Read-Only DataBase.

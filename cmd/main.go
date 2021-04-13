@@ -5,17 +5,17 @@ import (
 	flag "github.com/spf13/pflag"
 	"os"
 	"os/signal"
-	"rods/pkg/config"
-	"rods/pkg/index"
-	"rods/pkg/input"
-	"rods/pkg/output"
-	"rods/pkg/parser"
-	"rods/pkg/service"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/output"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/service"
 )
 
 func main() {
 	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
-	configPath := flag.StringP("config", "c", "rods.yaml", "Path to the configuration file")
+	configPath := flag.StringP("config", "c", "rodb.yaml", "Path to the configuration file")
 	flag.Parse()
 
 	log := logrus.New()

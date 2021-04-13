@@ -1,8 +1,8 @@
 package record
 
 import (
-	"rods/pkg/config"
-	"rods/pkg/parser"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/parser"
 	"sort"
 )
 

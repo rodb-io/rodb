@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"rods/pkg/config"
+	"rodb.io/pkg/config"
 	"testing"
 )
 

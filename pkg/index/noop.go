@@ -2,9 +2,9 @@ package index
 
 import (
 	"reflect"
-	"rods/pkg/config"
-	"rods/pkg/input"
-	"rods/pkg/record"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/record"
 )
 
 // A noop index is able to search into any data,

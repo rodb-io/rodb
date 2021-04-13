@@ -1,11 +1,9 @@
-module rods
+module rodb.io
 
 go 1.15
 
-replace github.com/antchfx/xmlquery => github.com/Seb-C/xmlquery v1.3.6-custom-2
-
 require (
-	github.com/antchfx/xmlquery v1.3.5
+	github.com/antchfx/xmlquery v1.3.6
 	github.com/antchfx/xpath v1.1.11
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/sirupsen/logrus v1.7.0

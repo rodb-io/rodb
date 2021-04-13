@@ -2,9 +2,9 @@ package input
 
 import (
 	"errors"
-	"rods/pkg/config"
-	"rods/pkg/parser"
-	"rods/pkg/record"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/record"
 )
 
 type Input interface {

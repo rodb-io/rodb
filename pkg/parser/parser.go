@@ -3,7 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
-	"rods/pkg/config"
+	"rodb.io/pkg/config"
 )
 
 type Parser interface {

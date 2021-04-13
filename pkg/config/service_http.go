@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rods/pkg/util"
+	"rodb.io/pkg/util"
 )
 
 type HttpService struct {

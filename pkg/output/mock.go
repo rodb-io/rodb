@@ -2,7 +2,7 @@ package output
 
 import (
 	"io"
-	"rods/pkg/parser"
+	"rodb.io/pkg/parser"
 )
 
 type Mock struct {

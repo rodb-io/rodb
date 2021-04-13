@@ -2,7 +2,7 @@ package input
 
 import (
 	"errors"
-	"rods/pkg/record"
+	"rodb.io/pkg/record"
 	"testing"
 )
 

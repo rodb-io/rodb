@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rods/pkg/config"
-	"rods/pkg/output"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/output"
 )
 
 type Service interface {

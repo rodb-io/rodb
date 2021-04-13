@@ -5,7 +5,7 @@ import (
 	"golang.org/x/text/encoding/ianaindex"
 	"golang.org/x/text/transform"
 	"io/ioutil"
-	"rods/pkg/config"
+	"rodb.io/pkg/config"
 	"strings"
 )
 

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"rods/pkg/config"
-	"rods/pkg/index"
-	"rods/pkg/input"
-	"rods/pkg/parser"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
 )
 
 type Output interface {

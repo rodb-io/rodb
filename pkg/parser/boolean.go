@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 	"regexp"
-	"rods/pkg/config"
-	"rods/pkg/util"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/util"
 	"strings"
 )
 

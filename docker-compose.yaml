@@ -3,7 +3,7 @@ version: '3.8'
 services:
   tests:
     tty: true
-    image: localhost/rods:latest
+    image: localhost/rodb:latest
     build:
       context: .
       dockerfile: ./build/docker/service.Dockerfile

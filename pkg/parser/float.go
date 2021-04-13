@@ -2,8 +2,8 @@ package parser
 
 import (
 	"regexp"
-	"rods/pkg/config"
-	"rods/pkg/util"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/util"
 	"strconv"
 	"strings"
 )

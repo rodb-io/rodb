@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
-	"rods/pkg/config"
-	parserModule "rods/pkg/parser"
+	"rodb.io/pkg/config"
+	parserModule "rodb.io/pkg/parser"
 	"testing"
 )
 

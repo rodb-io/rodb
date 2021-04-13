@@ -2,9 +2,9 @@ package index
 
 import (
 	"github.com/sirupsen/logrus"
-	"rods/pkg/config"
-	"rods/pkg/input"
-	"rods/pkg/record"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/record"
 	"testing"
 )
 

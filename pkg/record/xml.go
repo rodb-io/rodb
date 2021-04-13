@@ -3,8 +3,8 @@ package record
 import (
 	"fmt"
 	"github.com/antchfx/xmlquery"
-	"rods/pkg/config"
-	parserModule "rods/pkg/parser"
+	"rodb.io/pkg/config"
+	parserModule "rodb.io/pkg/parser"
 )
 
 type Xml struct {

@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	configModule "rods/pkg/config"
-	indexModule "rods/pkg/index"
-	inputModule "rods/pkg/input"
-	parserModule "rods/pkg/parser"
-	recordModule "rods/pkg/record"
+	configModule "rodb.io/pkg/config"
+	indexModule "rodb.io/pkg/index"
+	inputModule "rodb.io/pkg/input"
+	parserModule "rodb.io/pkg/parser"
+	recordModule "rodb.io/pkg/record"
 	"strconv"
 )
 

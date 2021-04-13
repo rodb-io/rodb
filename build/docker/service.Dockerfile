@@ -5,24 +5,24 @@ ENV GOPATH=/go
 ENV GOCACHE=/gocache
 ENV GOROOT=/usr/local/go
 ENV CGO_ENABLED=0
-ENV RODS_PACKAGE_NAME=rods
-ENV RODS_PATH=$GOROOT/src/${RODS_PACKAGE_NAME}
+ENV RODB_PACKAGE_NAME=rodb
+ENV RODB_PATH=$GOROOT/src/${RODB_PACKAGE_NAME}
 
-COPY ./go.mod ${RODS_PATH}/go.mod
-COPY ./go.sum ${RODS_PATH}/go.sum
+COPY ./go.mod ${RODB_PATH}/go.mod
+COPY ./go.sum ${RODB_PATH}/go.sum
 
-WORKDIR ${RODS_PATH}
+WORKDIR ${RODB_PATH}
 
 RUN go mod download
 
-COPY ./scripts ${RODS_PATH}/scripts
-COPY ./cmd ${RODS_PATH}/cmd
-COPY ./pkg ${RODS_PATH}/pkg
+COPY ./scripts ${RODB_PATH}/scripts
+COPY ./cmd ${RODB_PATH}/cmd
+COPY ./pkg ${RODB_PATH}/pkg
 
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/gocache \
     go mod vendor \
-    && go build -v -o /rods ./cmd/main.go
+    && go build -v -o /rodb ./cmd/main.go
 
 RUN if [ "$(go fmt ./... | wc -l)" -gt 0 ]; then echo "Invalid code-style. Please run 'go fmt ./...'" && exit 1; fi
 
@@ -32,9 +32,9 @@ FROM scratch
 
 WORKDIR /
 
-COPY --from=builder /rods /rods
-COPY ./configs/default.yaml /rods.yaml
+COPY --from=builder /rodb /rodb
+COPY ./configs/default.yaml /rodb.yaml
 
 STOPSIGNAL SIGINT
 
-ENTRYPOINT ["/rods"]
+ENTRYPOINT ["/rodb"]

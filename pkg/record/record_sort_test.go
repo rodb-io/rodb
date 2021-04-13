@@ -1,7 +1,7 @@
 package record
 
 import (
-	"rods/pkg/config"
+	"rodb.io/pkg/config"
 	"testing"
 )
 

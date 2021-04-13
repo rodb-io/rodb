@@ -1,9 +1,9 @@
 package index
 
 import (
-	"rods/pkg/config"
-	"rods/pkg/input"
-	"rods/pkg/record"
+	"rodb.io/pkg/config"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/record"
 	"testing"
 )
 
