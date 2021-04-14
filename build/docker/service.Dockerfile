@@ -5,7 +5,7 @@ ENV GOPATH=/go
 ENV GOCACHE=/gocache
 ENV GOROOT=/usr/local/go
 ENV CGO_ENABLED=0
-ENV RODB_PACKAGE_NAME=rodb
+ENV RODB_PACKAGE_NAME=rodb.io
 ENV RODB_PATH=$GOROOT/src/${RODB_PACKAGE_NAME}
 
 COPY ./go.mod ${RODB_PATH}/go.mod
@@ -15,7 +15,6 @@ WORKDIR ${RODB_PATH}
 
 RUN go mod download
 
-COPY ./scripts ${RODB_PATH}/scripts
 COPY ./cmd ${RODB_PATH}/cmd
 COPY ./pkg ${RODB_PATH}/pkg
 
