@@ -44,7 +44,7 @@ func (config *Relationship) validate(
 
 	alreadyExistingSortColumns := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
-		err := sort.validate(rootConfig, log, "jsonObject.relationships[].sort.")
+		err := sort.validate(rootConfig, input, log, "jsonObject.relationships[].sort.")
 		if err != nil {
 			return fmt.Errorf("sort.%v.%w", sortIndex, err)
 		}

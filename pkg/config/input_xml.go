@@ -71,6 +71,16 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
+func (config *XmlInput) ColumnParser(columnName string) *string {
+	for _, column := range config.Columns {
+		if column.Name == columnName {
+			return &column.Parser
+		}
+	}
+
+	return nil
+}
+
 func (config *XmlInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
 	_, parserExists := rootConfig.Parsers[config.Parser]
 	if !parserExists {

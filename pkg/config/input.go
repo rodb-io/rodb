@@ -47,3 +47,14 @@ func (config *Input) Name() string {
 
 	return ""
 }
+
+func (config *Input) ColumnParser(columnName string) *string {
+	if config.Csv != nil {
+		return config.Csv.ColumnParser(columnName)
+	}
+	if config.Xml != nil {
+		return config.Xml.ColumnParser(columnName)
+	}
+
+	return nil
+}
