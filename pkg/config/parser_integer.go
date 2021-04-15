@@ -20,3 +20,7 @@ func (config *IntegerParser) validate(rootConfig *Config, log *logrus.Entry) err
 
 	return nil
 }
+
+func (config *IntegerParser) Primitive() bool {
+	return true
+}

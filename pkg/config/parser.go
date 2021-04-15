@@ -69,3 +69,20 @@ func (config *Parser) Name() string {
 
 	return ""
 }
+
+func (config *Parser) Primitive() bool {
+	if config.Integer != nil {
+		return config.Integer.Primitive()
+	}
+	if config.Float != nil {
+		return config.Float.Primitive()
+	}
+	if config.Boolean != nil {
+		return config.Boolean.Primitive()
+	}
+	if config.String != nil {
+		return config.String.Primitive()
+	}
+
+	return false
+}

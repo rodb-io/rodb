@@ -41,9 +41,13 @@ func (config *Parameter) validate(
 		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
-	_, parserExists := rootConfig.Parsers[config.Parser]
+	parser, parserExists := rootConfig.Parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
+	}
+
+	if !parser.Primitive() {
+		return fmt.Errorf("parser: The parser '%v' is not a primitive type and cannot be used as a parameter.", config.Parser)
 	}
 
 	return nil
