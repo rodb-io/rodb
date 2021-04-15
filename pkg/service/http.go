@@ -142,6 +142,8 @@ func (service *Http) createPathRegexp(
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("X-Powered-By", "RODB (rodb.io)")
+
 		route := service.getMatchingRoute(request)
 		if route == nil {
 			errToSend := errors.New("No matching route was found")
