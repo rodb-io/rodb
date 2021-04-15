@@ -24,6 +24,10 @@ func (float *Float) Name() string {
 	return float.config.Name
 }
 
+func (float *Float) Primitive() bool {
+	return float.config.Primitive()
+}
+
 func (float *Float) GetRegexpPattern() string {
 	separator := regexp.QuoteMeta(float.config.DecimalSeparator)
 	ignore := regexp.QuoteMeta(float.config.IgnoreCharacters)

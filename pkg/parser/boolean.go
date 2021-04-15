@@ -24,6 +24,10 @@ func (boolean *Boolean) Name() string {
 	return boolean.config.Name
 }
 
+func (boolean *Boolean) Primitive() bool {
+	return boolean.config.Primitive()
+}
+
 func (boolean *Boolean) GetRegexpPattern() string {
 	values := make([]string, 0, len(boolean.config.TrueValues)+len(boolean.config.FalseValues))
 	for _, value := range boolean.config.TrueValues {

@@ -18,6 +18,10 @@ func (mock *Mock) Name() string {
 	return "mock"
 }
 
+func (mock *Mock) Primitive() bool {
+	return true
+}
+
 func (mock *Mock) GetRegexpPattern() string {
 	return ".*"
 }

@@ -37,6 +37,10 @@ func (str *String) Name() string {
 	return str.config.Name
 }
 
+func (str *String) Primitive() bool {
+	return str.config.Primitive()
+}
+
 func (str *String) GetRegexpPattern() string {
 	return ".+"
 }

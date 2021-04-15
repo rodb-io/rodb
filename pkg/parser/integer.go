@@ -23,6 +23,10 @@ func (integer *Integer) Name() string {
 	return integer.config.Name
 }
 
+func (integer *Integer) Primitive() bool {
+	return integer.config.Primitive()
+}
+
 func (integer *Integer) GetRegexpPattern() string {
 	ignore := regexp.QuoteMeta(integer.config.IgnoreCharacters)
 	ignoreBegin := ""

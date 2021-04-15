@@ -9,6 +9,7 @@ import (
 type Parser interface {
 	Name() string
 	GetRegexpPattern() string
+	Primitive() bool
 	Parse(value string) (interface{}, error)
 }
 

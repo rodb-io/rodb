@@ -128,6 +128,10 @@ func (service *Http) createPathRegexp(
 			return nil, nil, err
 		}
 
+		if !parser.Primitive() {
+			return nil, nil, fmt.Errorf("Cannot use the parser '%v' as route parameter because it's not a primitive.", parser.Name())
+		}
+
 		paramPattern := parser.GetRegexpPattern()
 		path = path + "(" + paramPattern + ")" + parts[partIndex]
 	}
