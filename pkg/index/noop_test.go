@@ -3,12 +3,13 @@ package index
 import (
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"testing"
 )
 
 func TestNoopGetRecordPositions(t *testing.T) {
-	mockInput := input.NewMock([]input.IterateAllResult{
+	mockInput := input.NewMock(parser.NewMock(), []input.IterateAllResult{
 		{Record: record.NewStringColumnsMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",

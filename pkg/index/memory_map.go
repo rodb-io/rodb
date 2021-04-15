@@ -39,6 +39,10 @@ func NewMemoryMap(
 		if !memoryMap.input.HasColumn(columnName) {
 			return nil, errors.New("Input '" + memoryMap.config.Input + "' does not have a column named '" + columnName + "'.")
 		}
+		parser := memoryMap.input.GetColumnParser(columnName)
+		if !parser.Primitive() {
+			return nil, errors.New("Column '" + columnName + "' defined in index '" + memoryMap.Name() + "' cannot be used because it's not a primitive type.")
+		}
 	}
 
 	err := memoryMap.Reindex()

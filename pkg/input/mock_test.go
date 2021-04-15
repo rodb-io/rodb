@@ -2,6 +2,7 @@ package input
 
 import (
 	"errors"
+	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"testing"
 )
@@ -11,7 +12,7 @@ func TestMockHasColumn(t *testing.T) {
 	expectedRecord := record.NewStringColumnsMock(map[string]string{
 		columnName: "value",
 	}, 0)
-	mock := NewMock([]IterateAllResult{{Record: expectedRecord}})
+	mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
 
 	t.Run("true", func(t *testing.T) {
 		if !mock.HasColumn(columnName) {
@@ -30,7 +31,7 @@ func TestMockGet(t *testing.T) {
 		expectedRecord := record.NewStringColumnsMock(map[string]string{
 			"col": "value",
 		}, 0)
-		mock := NewMock([]IterateAllResult{{Record: expectedRecord}})
+		mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
 
 		record, err := mock.Get(0)
 		if err != nil {
@@ -43,7 +44,7 @@ func TestMockGet(t *testing.T) {
 	})
 	t.Run("expected error", func(t *testing.T) {
 		expectedError := errors.New("Test error")
-		mock := NewMock([]IterateAllResult{{Error: expectedError}})
+		mock := NewMock(parser.NewMock(), []IterateAllResult{{Error: expectedError}})
 
 		_, err := mock.Get(0)
 		if err != expectedError {
@@ -51,7 +52,7 @@ func TestMockGet(t *testing.T) {
 		}
 	})
 	t.Run("unexpected error", func(t *testing.T) {
-		mock := NewMock([]IterateAllResult{})
+		mock := NewMock(parser.NewMock(), []IterateAllResult{})
 
 		_, err := mock.Get(0)
 		if err == nil {
@@ -68,7 +69,7 @@ func TestMockSize(t *testing.T) {
 		data := []IterateAllResult{
 			{Record: expectedRecord},
 		}
-		mock := NewMock(data)
+		mock := NewMock(parser.NewMock(), data)
 
 		size, err := mock.Size()
 		if err != nil {
@@ -89,7 +90,7 @@ func TestMockIterateAll(t *testing.T) {
 			}, 0)},
 			{Error: errors.New("Test error")},
 		}
-		mock := NewMock(data)
+		mock := NewMock(parser.NewMock(), data)
 
 		channel := mock.IterateAll()
 

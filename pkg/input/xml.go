@@ -109,6 +109,16 @@ func (xmlInput *Xml) HasColumn(columnName string) bool {
 	return false
 }
 
+func (xmlInput *Xml) GetColumnParser(columnName string) parser.Parser {
+	for columnIndex, column := range xmlInput.config.Columns {
+		if column.Name == columnName {
+			return xmlInput.columnParsers[columnIndex]
+		}
+	}
+
+	return nil
+}
+
 func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 	xmlInput.readerLock.Lock()
 	defer xmlInput.readerLock.Unlock()

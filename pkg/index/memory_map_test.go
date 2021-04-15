@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"testing"
 )
@@ -17,7 +18,7 @@ func TestMemoryMap(t *testing.T) {
 				Logger:  logrus.NewEntry(logrus.StandardLogger()),
 			},
 			input.List{
-				"input": input.NewMock([]input.IterateAllResult{
+				"input": input.NewMock(parser.NewMock(), []input.IterateAllResult{
 					{Record: record.NewStringColumnsMock(map[string]string{
 						"col":  "value_a",
 						"col2": "value_2",
@@ -74,7 +75,7 @@ func TestMemoryMap(t *testing.T) {
 }
 
 func TestMemoryMapGetRecordPositions(t *testing.T) {
-	mockInput := input.NewMock([]input.IterateAllResult{
+	mockInput := input.NewMock(parser.NewMock(), []input.IterateAllResult{
 		{Record: record.NewStringColumnsMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",

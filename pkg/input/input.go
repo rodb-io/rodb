@@ -10,6 +10,7 @@ import (
 type Input interface {
 	Name() string
 	HasColumn(columnName string) bool
+	GetColumnParser(columnName string) parser.Parser
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)
 

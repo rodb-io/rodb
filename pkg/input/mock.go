@@ -2,16 +2,19 @@ package input
 
 import (
 	"errors"
+	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 )
 
 type Mock struct {
-	data []IterateAllResult
+	data   []IterateAllResult
+	parser parser.Parser
 }
 
-func NewMock(data []IterateAllResult) *Mock {
+func NewMock(parser parser.Parser, data []IterateAllResult) *Mock {
 	return &Mock{
-		data: data,
+		data:   data,
+		parser: parser,
 	}
 }
 
@@ -27,6 +30,10 @@ func (mock *Mock) HasColumn(columnName string) bool {
 	_, err := mock.data[0].Record.Get(columnName)
 
 	return err == nil
+}
+
+func (mock *Mock) GetColumnParser(columnName string) parser.Parser {
+	return mock.parser
 }
 
 func (mock *Mock) Get(position record.Position) (record.Record, error) {

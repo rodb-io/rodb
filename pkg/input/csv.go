@@ -94,6 +94,16 @@ func (csvInput *Csv) HasColumn(columnName string) bool {
 	return false
 }
 
+func (csvInput *Csv) GetColumnParser(columnName string) parser.Parser {
+	for columnIndex, column := range csvInput.config.Columns {
+		if column.Name == columnName {
+			return csvInput.columnParsers[columnIndex]
+		}
+	}
+
+	return nil
+}
+
 func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	csvInput.readerLock.Lock()
 	defer csvInput.readerLock.Unlock()

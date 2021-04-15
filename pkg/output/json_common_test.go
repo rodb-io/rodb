@@ -41,7 +41,7 @@ func mockJsonDataForTests() jsonDataForTests {
 		}, 3)},
 	}
 
-	mockInput := input.NewMock(mockResults)
+	mockInput := input.NewMock(parser.NewMock(), mockResults)
 	mockIndex := index.NewNoop(&config.NoopIndex{}, input.List{"mock": mockInput})
 	mockIndex2 := index.NewNoop(&config.NoopIndex{}, input.List{"mock": mockInput})
 	mockParser := parser.NewMock()
