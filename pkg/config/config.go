@@ -135,6 +135,10 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 				TrueValues:  []string{"true", "1", "TRUE"},
 				FalseValues: []string{"false", "0", "FALSE"},
 			},
+		}, {
+			Json: &JsonParser{
+				Name: "json",
+			},
 		},
 	} {
 		if _, exists := config.Parsers[parserConfig.Name()]; exists {

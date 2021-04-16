@@ -13,6 +13,8 @@ parsers:
   - string:
       name: defaultString
       convertFromCharset: ""
+  - json:
+      name: defaultJson
 inputs:
   - csv:
       name: defaultInput

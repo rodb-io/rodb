@@ -30,6 +30,9 @@ func NewFromConfig(
 	if config.Boolean != nil {
 		return NewBoolean(config.Boolean), nil
 	}
+	if config.Json != nil {
+		return NewJson(config.Json), nil
+	}
 
 	return nil, errors.New("Failed to initialize parser")
 }
