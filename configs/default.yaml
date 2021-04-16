@@ -15,6 +15,10 @@ parsers:
       convertFromCharset: ""
   - json:
       name: defaultJson
+  - split:
+      name: defaultSplit
+      delimiter: "/"
+      parser: integer
 inputs:
   - csv:
       name: defaultInput

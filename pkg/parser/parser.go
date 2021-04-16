@@ -17,6 +17,7 @@ type List = map[string]Parser
 
 func NewFromConfig(
 	config config.Parser,
+	parsers List,
 ) (Parser, error) {
 	if config.String != nil {
 		return NewString(config.String)
@@ -33,6 +34,9 @@ func NewFromConfig(
 	if config.Json != nil {
 		return NewJson(config.Json), nil
 	}
+	if config.Split != nil {
+		return NewSplit(config.Split, parsers), nil
+	}
 
 	return nil, errors.New("Failed to initialize parser")
 }
@@ -42,7 +46,7 @@ func NewFromConfigs(
 ) (List, error) {
 	parsers := make(List)
 	for parserName, parserConfig := range configs {
-		parser, err := NewFromConfig(parserConfig)
+		parser, err := NewFromConfig(parserConfig, parsers)
 		if err != nil {
 			return nil, err
 		}

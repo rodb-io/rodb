@@ -11,6 +11,7 @@ type Parser struct {
 	Boolean *BooleanParser `yaml:"boolean"`
 	String  *StringParser  `yaml:"string"`
 	Json    *JsonParser    `yaml:"json"`
+	Split   *SplitParser   `yaml:"split"`
 }
 
 func (config *Parser) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -50,6 +51,13 @@ func (config *Parser) validate(rootConfig *Config, log *logrus.Entry) error {
 			return err
 		}
 	}
+	if config.Split != nil {
+		definedFields++
+		err := config.Split.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
 
 	if definedFields == 0 {
 		return errors.New("One of your parsers does not have a definition.")
@@ -77,6 +85,9 @@ func (config *Parser) Name() string {
 	if config.Json != nil {
 		return config.Json.Name
 	}
+	if config.Split != nil {
+		return config.Split.Name
+	}
 
 	return ""
 }
@@ -96,6 +107,9 @@ func (config *Parser) Primitive() bool {
 	}
 	if config.Json != nil {
 		return config.Json.Primitive()
+	}
+	if config.Split != nil {
+		return config.Split.Primitive()
 	}
 
 	return false
