@@ -18,6 +18,12 @@ parsers:
   - split:
       name: defaultSplit
       delimiter: "/"
+      delimiterIsRegexp: false
+      parser: integer
+  - split:
+      name: defaultSplitRegexp
+      delimiter: "[^a-z]"
+      delimiterIsRegexp: true
       parser: integer
 inputs:
   - csv:

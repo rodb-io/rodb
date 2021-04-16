@@ -34,7 +34,12 @@ func (split *Split) GetRegexpPattern() string {
 }
 
 func (split *Split) Parse(value string) (interface{}, error) {
-	values := strings.Split(value, *split.config.Delimiter)
+	var values []string
+	if *split.config.DelimiterIsRegexp {
+		values = split.config.DelimiterRegexp.Split(value, -1)
+	} else {
+		values = strings.Split(value, *split.config.Delimiter)
+	}
 
 	// Need to find this at runtime, because the required parser
 	// may not be created before the current one
