@@ -30,7 +30,7 @@ func NewCsv(
 func (record *Csv) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	for _, column := range record.config.Columns {
-		value, err := record.Get(column.Name)
+		value, err := record.getColumn(column.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -41,10 +41,10 @@ func (record *Csv) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
-func (record *Csv) Get(field string) (interface{}, error) {
-	fieldIndex, exists := record.config.ColumnIndexByName[field]
+func (record *Csv) getColumn(columnName string) (interface{}, error) {
+	fieldIndex, exists := record.config.ColumnIndexByName[columnName]
 	if !exists {
-		return nil, fmt.Errorf("The column '%v' does not exist.", field)
+		return nil, fmt.Errorf("The column '%v' does not exist.", columnName)
 	}
 
 	if fieldIndex >= len(record.data) {
@@ -58,6 +58,10 @@ func (record *Csv) Get(field string) (interface{}, error) {
 	}
 
 	return value, nil
+}
+
+func (record *Csv) Get(field string) (interface{}, error) {
+	return record.getColumn(field)
 }
 
 func (record *Csv) Position() Position {
