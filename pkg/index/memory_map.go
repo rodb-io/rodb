@@ -53,6 +53,32 @@ func (mm *MemoryMap) Reindex() error {
 		index[property] = make(memoryMapPropertyIndex)
 	}
 
+	var addValueToIndex func(property string, value interface{}, position record.Position) error
+	addValueToIndex = func(property string, value interface{}, position record.Position) error {
+		if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
+			for _, valueArrayValue := range valueArray {
+				err := addValueToIndex(property, valueArrayValue, position)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		if _, valueIsMap := value.(map[string]interface{}); valueIsMap {
+			return errors.New("Indexing objects is not supported")
+		}
+
+		propertyIndex := index[property]
+		valueIndexes, valueIndexesExists := propertyIndex[value]
+		if valueIndexesExists {
+			propertyIndex[value] = append(valueIndexes, position)
+		} else {
+			propertyIndex[value] = record.PositionList{position}
+		}
+
+		return nil
+	}
+
 	totalSize, err := mm.input.Size()
 	if err != nil {
 		mm.config.Logger.Errorf("Cannot determine the total size of the input: '%+v'. The indexing progress will not be displayed.", err)
@@ -85,12 +111,9 @@ func (mm *MemoryMap) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			propertyIndex := index[property]
-			valueIndexes, valueIndexesExists := propertyIndex[value]
-			if valueIndexesExists {
-				propertyIndex[value] = append(valueIndexes, result.Record.Position())
-			} else {
-				propertyIndex[value] = record.PositionList{result.Record.Position()}
+			err = addValueToIndex(property, value, result.Record.Position())
+			if err != nil {
+				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
 	}
