@@ -19,7 +19,13 @@ type List []Record
 var RecordNotFoundError = errors.New("Record not found")
 
 type Record interface {
+	// Returns all the record's data. Each value may be a
+	// []interface{} or map[string]interface{}, recursively
 	All() (map[string]interface{}, error)
-	Get(field string) (interface{}, error)
+
+	// Returns the value matching the given path. The path is a dot-separated string.
+	// Array indexes does not have a specific syntax, ie foo.0.bar.1 ...
+	Get(path string) (interface{}, error)
+
 	Position() Position
 }

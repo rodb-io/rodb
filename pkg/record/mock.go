@@ -60,21 +60,21 @@ func (record *Mock) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
-func (record *Mock) Get(field string) (interface{}, error) {
-	if value, ok := record.strings[field]; ok {
+func (record *Mock) Get(path string) (interface{}, error) {
+	if value, ok := record.strings[path]; ok {
 		return value, nil
 	}
-	if value, ok := record.integers[field]; ok {
+	if value, ok := record.integers[path]; ok {
 		return value, nil
 	}
-	if value, ok := record.floats[field]; ok {
+	if value, ok := record.floats[path]; ok {
 		return value, nil
 	}
-	if value, ok := record.booleans[field]; ok {
+	if value, ok := record.booleans[path]; ok {
 		return value, nil
 	}
 
-	return nil, fmt.Errorf("Property '%v' does not exist in mocked record", field)
+	return nil, fmt.Errorf("Property '%v' does not exist in mocked record", path)
 }
 
 func (record *Mock) Position() Position {

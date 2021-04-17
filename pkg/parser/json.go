@@ -30,7 +30,7 @@ func (json *Json) GetRegexpPattern() string {
 }
 
 func (json *Json) Parse(value string) (interface{}, error) {
-	data := map[string]interface{}{}
+	var data interface{}
 	err := jsonModule.Unmarshal([]byte(value), &data)
 	return data, err
 }

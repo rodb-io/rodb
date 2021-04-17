@@ -44,10 +44,10 @@ func (record *Xml) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
-func (record *Xml) Get(field string) (interface{}, error) {
-	fieldIndex, exists := record.config.PropertyIndexByName[field]
+func (record *Xml) Get(path string) (interface{}, error) {
+	fieldIndex, exists := record.config.PropertyIndexByName[path]
 	if !exists {
-		return nil, fmt.Errorf("The property '%v' does not exist.", field)
+		return nil, fmt.Errorf("The property '%v' does not exist.", path)
 	}
 
 	if fieldIndex >= len(record.config.Properties) {
