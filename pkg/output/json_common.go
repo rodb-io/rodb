@@ -15,14 +15,14 @@ func checkRelationshipMatches(
 	parentInput inputModule.Input,
 ) error {
 	for _, sort := range relationship.Sort {
-		if !parentInput.HasColumn(sort.Column) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInput.Name(), sort.Column)
+		if !parentInput.HasProperty(sort.Property) {
+			return fmt.Errorf("Input '%v' does not have a property called '%v'.", parentInput.Name(), sort.Property)
 		}
 	}
 
 	for _, match := range relationship.Match {
-		if !parentInput.HasColumn(match.ParentColumn) {
-			return fmt.Errorf("Input '%v' does not have a column called '%v'.", parentInput.Name(), match.ParentColumn)
+		if !parentInput.HasProperty(match.ParentProperty) {
+			return fmt.Errorf("Input '%v' does not have a property called '%v'.", parentInput.Name(), match.ParentProperty)
 		}
 	}
 
@@ -52,9 +52,9 @@ func getRelationshipFiltersPerIndex(
 ) (map[string]map[string]interface{}, error) {
 	filtersPerIndex := map[string]map[string]interface{}{}
 	for _, match := range matchConfig {
-		matchData, matchColumnExists := data[match.ParentColumn]
-		if !matchColumnExists {
-			return nil, errors.New("Parent column '" + match.ParentColumn + "' does not exists in relationship '" + relationshipName + "'.")
+		matchData, matchPropertyExists := data[match.ParentProperty]
+		if !matchPropertyExists {
+			return nil, errors.New("Parent property '" + match.ParentProperty + "' does not exists in relationship '" + relationshipName + "'.")
 		}
 
 		indexFilters, indexFiltersExist := filtersPerIndex[match.ChildIndex]
@@ -63,7 +63,7 @@ func getRelationshipFiltersPerIndex(
 			filtersPerIndex[match.ChildIndex] = indexFilters
 		}
 
-		indexFilters[match.ChildColumn] = matchData
+		indexFilters[match.ChildProperty] = matchData
 	}
 
 	return filtersPerIndex, nil

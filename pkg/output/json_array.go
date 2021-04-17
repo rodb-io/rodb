@@ -200,7 +200,7 @@ func (jsonArray *JsonArray) getFiltersPerIndex(params map[string]string) (map[st
 			filtersPerIndex[paramConfig.Index] = indexFilters
 		}
 
-		indexFilters[paramConfig.Column] = parsedParamValue
+		indexFilters[paramConfig.Property] = parsedParamValue
 	}
 
 	return filtersPerIndex, nil

@@ -13,21 +13,21 @@ func TestMemoryMap(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		index, err := NewMemoryMap(
 			&config.MemoryMapIndex{
-				Columns: []string{"col", "col2"},
-				Input:   "input",
-				Logger:  logrus.NewEntry(logrus.StandardLogger()),
+				Properties: []string{"col", "col2"},
+				Input:      "input",
+				Logger:     logrus.NewEntry(logrus.StandardLogger()),
 			},
 			input.List{
 				"input": input.NewMock(parser.NewMock(), []input.IterateAllResult{
-					{Record: record.NewStringColumnsMock(map[string]string{
+					{Record: record.NewStringPropertiesMock(map[string]string{
 						"col":  "value_a",
 						"col2": "value_2",
 					}, 0)},
-					{Record: record.NewStringColumnsMock(map[string]string{
+					{Record: record.NewStringPropertiesMock(map[string]string{
 						"col":  "value_b",
 						"col2": "value_2",
 					}, 0)},
-					{Record: record.NewStringColumnsMock(map[string]string{
+					{Record: record.NewStringPropertiesMock(map[string]string{
 						"col":  "value_b",
 						"col2": "value_2",
 					}, 1)},
@@ -76,32 +76,32 @@ func TestMemoryMap(t *testing.T) {
 
 func TestMemoryMapGetRecordPositions(t *testing.T) {
 	mockInput := input.NewMock(parser.NewMock(), []input.IterateAllResult{
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",
 		}, 0)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 1)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_a",
 		}, 2)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 3)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_b",
 		}, 4)},
 	})
 	index, err := NewMemoryMap(
 		&config.MemoryMapIndex{
-			Columns: []string{"col", "col2"},
-			Input:   "input",
-			Logger:  logrus.NewEntry(logrus.StandardLogger()),
+			Properties: []string{"col", "col2"},
+			Input:      "input",
+			Logger:     logrus.NewEntry(logrus.StandardLogger()),
 		},
 		input.List{
 			"input": mockInput,
@@ -164,7 +164,7 @@ func TestMemoryMapGetRecordPositions(t *testing.T) {
 			t.Errorf("Expected an error, got %v", err)
 		}
 	})
-	t.Run("wrong column", func(t *testing.T) {
+	t.Run("wrong property", func(t *testing.T) {
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
 		})

@@ -137,7 +137,7 @@ func (jsonObject *JsonObject) getRouteFiltersPerIndex(params map[string]string) 
 		if err != nil {
 			return nil, err
 		}
-		indexFilters[param.Column] = paramValue
+		indexFilters[param.Property] = paramValue
 	}
 
 	return filtersPerIndex, nil

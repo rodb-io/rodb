@@ -20,7 +20,7 @@ func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *NoopIndex) DoesHandleColumn(column string) bool {
+func (config *NoopIndex) DoesHandleProperty(property string) bool {
 	return true
 }
 

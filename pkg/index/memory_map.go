@@ -11,9 +11,9 @@ import (
 	"time"
 )
 
-type memoryMapColumnValueIndex = record.PositionList
-type memoryMapColumnIndex = map[interface{}]memoryMapColumnValueIndex
-type memoryMapIndex = map[string]memoryMapColumnIndex
+type memoryMapPropertyValueIndex = record.PositionList
+type memoryMapPropertyIndex = map[interface{}]memoryMapPropertyValueIndex
+type memoryMapIndex = map[string]memoryMapPropertyIndex
 
 type MemoryMap struct {
 	config *config.MemoryMapIndex
@@ -35,13 +35,13 @@ func NewMemoryMap(
 		input:  input,
 	}
 
-	for _, columnName := range memoryMap.config.Columns {
-		if !memoryMap.input.HasColumn(columnName) {
-			return nil, errors.New("Input '" + memoryMap.config.Input + "' does not have a column named '" + columnName + "'.")
+	for _, propertyName := range memoryMap.config.Properties {
+		if !memoryMap.input.HasProperty(propertyName) {
+			return nil, errors.New("Input '" + memoryMap.config.Input + "' does not have a property named '" + propertyName + "'.")
 		}
-		parser := memoryMap.input.GetColumnParser(columnName)
+		parser := memoryMap.input.GetPropertyParser(propertyName)
 		if !parser.Primitive() {
-			return nil, errors.New("Column '" + columnName + "' defined in index '" + memoryMap.Name() + "' cannot be used because it's not a primitive type.")
+			return nil, errors.New("Property '" + propertyName + "' defined in index '" + memoryMap.Name() + "' cannot be used because it's not a primitive type.")
 		}
 	}
 
@@ -59,8 +59,8 @@ func (mm *MemoryMap) Name() string {
 
 func (mm *MemoryMap) Reindex() error {
 	index := make(memoryMapIndex)
-	for _, column := range mm.config.Columns {
-		index[column] = make(memoryMapColumnIndex)
+	for _, property := range mm.config.Properties {
+		index[property] = make(memoryMapPropertyIndex)
 	}
 
 	totalSize, err := mm.input.Size()
@@ -85,8 +85,8 @@ func (mm *MemoryMap) Reindex() error {
 			}
 		}
 
-		for _, column := range mm.config.Columns {
-			value, err := result.Record.Get(column)
+		for _, property := range mm.config.Properties {
+			value, err := result.Record.Get(property)
 			if err != nil {
 				return err
 			}
@@ -95,12 +95,12 @@ func (mm *MemoryMap) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			columnIndex := index[column]
-			valueIndexes, valueIndexesExists := columnIndex[value]
+			propertyIndex := index[property]
+			valueIndexes, valueIndexesExists := propertyIndex[value]
 			if valueIndexesExists {
-				columnIndex[value] = append(valueIndexes, result.Record.Position())
+				propertyIndex[value] = append(valueIndexes, result.Record.Position())
 			} else {
-				columnIndex[value] = record.PositionList{result.Record.Position()}
+				propertyIndex[value] = record.PositionList{result.Record.Position()}
 			}
 		}
 	}
@@ -125,13 +125,13 @@ func (mm *MemoryMap) GetRecordPositions(
 		return nil, fmt.Errorf("This index requires at least one filter.")
 	}
 
-	individualFiltersResults := make([]memoryMapColumnValueIndex, 0, len(filters))
-	for columnName, filter := range filters {
-		if !mm.config.DoesHandleColumn(columnName) {
-			return nil, fmt.Errorf("This index does not handle the column '%v'.", columnName)
+	individualFiltersResults := make([]memoryMapPropertyValueIndex, 0, len(filters))
+	for propertyName, filter := range filters {
+		if !mm.config.DoesHandleProperty(propertyName) {
+			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
 		}
 
-		indexedValues, foundIndexedValues := mm.index[columnName]
+		indexedValues, foundIndexedValues := mm.index[propertyName]
 		if !foundIndexedValues {
 			return nil, nil
 		}

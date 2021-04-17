@@ -15,9 +15,9 @@ type Relationship struct {
 }
 
 type RelationshipMatch struct {
-	ParentColumn string `yaml:"parentColumn"`
-	ChildColumn  string `yaml:"childColumn"`
-	ChildIndex   string `yaml:"childIndex"`
+	ParentProperty string `yaml:"parentProperty"`
+	ChildProperty  string `yaml:"childProperty"`
+	ChildIndex     string `yaml:"childIndex"`
 }
 
 func (config *Relationship) validate(
@@ -42,20 +42,20 @@ func (config *Relationship) validate(
 		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	alreadyExistingSortColumns := make(map[string]bool)
+	alreadyExistingSortProperties := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
 		err := sort.validate(rootConfig, input, log, "jsonObject.relationships[].sort.")
 		if err != nil {
 			return fmt.Errorf("sort.%v.%w", sortIndex, err)
 		}
 
-		if _, alreadyExists := alreadyExistingSortColumns[sort.Column]; alreadyExists {
-			return fmt.Errorf("sort.%v.column: column %v is used twice for sorting", sortIndex, sort.Column)
+		if _, alreadyExists := alreadyExistingSortProperties[sort.Property]; alreadyExists {
+			return fmt.Errorf("sort.%v.property: property %v is used twice for sorting", sortIndex, sort.Property)
 		}
-		alreadyExistingSortColumns[sort.Column] = true
+		alreadyExistingSortProperties[sort.Property] = true
 	}
 
-	alreadyExistingChildColumn := make(map[string]bool)
+	alreadyExistingChildProperty := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		logPrefix := fmt.Sprintf("match.%v.", matchIndex)
 		err := match.validate(
@@ -68,10 +68,10 @@ func (config *Relationship) validate(
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
-		if _, alreadyExists := alreadyExistingChildColumn[match.ChildColumn]; alreadyExists {
-			return fmt.Errorf("%vchildColumn: Duplicate filter on childColumn %v", logPrefix, match.ChildColumn)
+		if _, alreadyExists := alreadyExistingChildProperty[match.ChildProperty]; alreadyExists {
+			return fmt.Errorf("%vchildProperty: Duplicate filter on childProperty %v", logPrefix, match.ChildProperty)
 		}
-		alreadyExistingChildColumn[match.ChildColumn] = true
+		alreadyExistingChildProperty[match.ChildProperty] = true
 	}
 
 	for relationshipName, relationship := range config.Relationships {
@@ -91,7 +91,7 @@ func (config *RelationshipMatch) validate(
 	logPrefix string,
 	input Input,
 ) error {
-	// The parentColumn and childColumn will be validated at runtime (must be validated against the input and not the index)
+	// The parentProperty and childProperty will be validated at runtime (must be validated against the input and not the index)
 
 	if config.ChildIndex == "" {
 		log.Debugf(logPrefix + "childIndex is empty. Assuming 'default'.\n")
@@ -105,8 +105,8 @@ func (config *RelationshipMatch) validate(
 	if !childIndex.DoesHandleInput(input) {
 		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, input.Name())
 	}
-	if !childIndex.DoesHandleColumn(config.ChildColumn) {
-		return fmt.Errorf("childColumn: Index '%v' does not handle column '%v'.", config.ChildIndex, config.ChildColumn)
+	if !childIndex.DoesHandleProperty(config.ChildProperty) {
+		return fmt.Errorf("childProperty: Index '%v' does not handle property '%v'.", config.ChildIndex, config.ChildProperty)
 	}
 
 	return nil

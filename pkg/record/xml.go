@@ -8,56 +8,56 @@ import (
 )
 
 type Xml struct {
-	config        *config.XmlInput
-	columnParsers []parserModule.Parser
-	node          *xmlquery.Node
-	nodeNavigator *xmlquery.NodeNavigator
-	position      Position
+	config          *config.XmlInput
+	propertyParsers []parserModule.Parser
+	node            *xmlquery.Node
+	nodeNavigator   *xmlquery.NodeNavigator
+	position        Position
 }
 
 func NewXml(
 	config *config.XmlInput,
-	columnParsers []parserModule.Parser,
+	propertyParsers []parserModule.Parser,
 	node *xmlquery.Node,
 	position Position,
 ) (*Xml, error) {
 	return &Xml{
-		config:        config,
-		columnParsers: columnParsers,
-		node:          node,
-		nodeNavigator: xmlquery.CreateXPathNavigator(node),
-		position:      position,
+		config:          config,
+		propertyParsers: propertyParsers,
+		node:            node,
+		nodeNavigator:   xmlquery.CreateXPathNavigator(node),
+		position:        position,
 	}, nil
 }
 
 func (record *Xml) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
-	for _, column := range record.config.Columns {
-		value, err := record.Get(column.Name)
+	for _, property := range record.config.Properties {
+		value, err := record.Get(property.Name)
 		if err != nil {
 			return nil, err
 		}
 
-		result[column.Name] = value
+		result[property.Name] = value
 	}
 
 	return result, nil
 }
 
 func (record *Xml) Get(field string) (interface{}, error) {
-	fieldIndex, exists := record.config.ColumnIndexByName[field]
+	fieldIndex, exists := record.config.PropertyIndexByName[field]
 	if !exists {
-		return nil, fmt.Errorf("The column '%v' does not exist.", field)
+		return nil, fmt.Errorf("The property '%v' does not exist.", field)
 	}
 
-	if fieldIndex >= len(record.config.Columns) {
+	if fieldIndex >= len(record.config.Properties) {
 		return nil, nil
 	}
 
-	parser := record.columnParsers[fieldIndex]
-	columnConfig := record.config.Columns[fieldIndex]
+	parser := record.propertyParsers[fieldIndex]
+	propertyConfig := record.config.Properties[fieldIndex]
 
-	result := columnConfig.CompiledXPath.Evaluate(record.nodeNavigator)
+	result := propertyConfig.CompiledXPath.Evaluate(record.nodeNavigator)
 	switch result.(type) {
 	case string:
 		value, err := parser.Parse(result.(string))
@@ -73,9 +73,9 @@ func (record *Xml) Get(field string) (interface{}, error) {
 			return int(result.(float64)), nil
 		} else {
 			return nil, fmt.Errorf(
-				"The xpath '%v' for column '%v' returned a numeric value, but the column does not have a numeric type.",
-				columnConfig.XPath,
-				columnConfig.Name,
+				"The xpath '%v' for property '%v' returned a numeric value, but the property does not have a numeric type.",
+				propertyConfig.XPath,
+				propertyConfig.Name,
 			)
 		}
 	case bool:
@@ -83,16 +83,16 @@ func (record *Xml) Get(field string) (interface{}, error) {
 			return result, nil
 		} else {
 			return nil, fmt.Errorf(
-				"The xpath '%v' for column '%v' returned a boolean value, but the column does not have a boolean type.",
-				columnConfig.XPath,
-				columnConfig.Name,
+				"The xpath '%v' for property '%v' returned a boolean value, but the property does not have a boolean type.",
+				propertyConfig.XPath,
+				propertyConfig.Name,
 			)
 		}
 	default:
 		return nil, fmt.Errorf(
-			"The xpath '%v' for column '%v' did not return a primitive type.",
-			columnConfig.XPath,
-			columnConfig.Name,
+			"The xpath '%v' for property '%v' did not return a primitive type.",
+			propertyConfig.XPath,
+			propertyConfig.Name,
 		)
 	}
 }

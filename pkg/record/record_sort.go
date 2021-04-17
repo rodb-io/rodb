@@ -25,12 +25,12 @@ func (sorter *recordListSorter) Less(i int, j int) bool {
 	iRecord, jRecord := sorter.records[i], sorter.records[j]
 
 	for _, sort := range sorter.config {
-		iValue, err := iRecord.Get(sort.Column)
+		iValue, err := iRecord.Get(sort.Property)
 		if err != nil {
 			sort.Logger.Errorf("Unhandlable error during sort operation: %v", err)
 		}
 
-		jValue, err := jRecord.Get(sort.Column)
+		jValue, err := jRecord.Get(sort.Property)
 		if err != nil {
 			sort.Logger.Errorf("Unhandlable error during sort operation: %v", err)
 		}

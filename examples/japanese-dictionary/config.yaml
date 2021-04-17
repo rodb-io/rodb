@@ -3,7 +3,7 @@ inputs:
       name: dictionary
       path: ./JMdict.xml
       recordXpath: "//entry"
-      columns:
+      properties:
         - name: writing
           parser: string
           xpath: "string(//keb[1])"
@@ -17,7 +17,7 @@ indexes:
   - memoryMap:
       name: index
       input: dictionary
-      columns:
+      properties:
         - writing
         - reading
 outputs:
@@ -26,7 +26,7 @@ outputs:
       input: dictionary
       parameters:
         word:
-          column: writing
+          property: writing
           index: index
           parser: string
 services:

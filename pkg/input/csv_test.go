@@ -29,7 +29,7 @@ func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
 	return file, nil
 }
 
-func TestCsvHasColumn(t *testing.T) {
+func TestCsvHasProperty(t *testing.T) {
 	file, err := createCsvTestFile(t, "")
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
@@ -61,16 +61,16 @@ func TestCsvHasColumn(t *testing.T) {
 	}
 
 	t.Run("true", func(t *testing.T) {
-		if !csv.HasColumn("a") {
-			t.Errorf("Expected to have column 'a', got false")
+		if !csv.HasProperty("a") {
+			t.Errorf("Expected to have property 'a', got false")
 		}
-		if !csv.HasColumn("b") {
-			t.Errorf("Expected to have column 'b', got false")
+		if !csv.HasProperty("b") {
+			t.Errorf("Expected to have property 'b', got false")
 		}
 	})
 	t.Run("false", func(t *testing.T) {
-		if csv.HasColumn("wrong") {
-			t.Errorf("Expected to not have column 'wrong', got true")
+		if csv.HasProperty("wrong") {
+			t.Errorf("Expected to not have property 'wrong', got true")
 		}
 	})
 }

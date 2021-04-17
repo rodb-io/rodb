@@ -9,16 +9,16 @@ import (
 )
 
 type XmlInput struct {
-	Name              string            `yaml:"name"`
-	Path              string            `yaml:"path"`
-	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
-	Columns           []*XmlInputColumn `yaml:"columns"`
-	RecordXPath       string            `yaml:"recordXpath"`
-	ColumnIndexByName map[string]int
-	Logger            *logrus.Entry
+	Name                string              `yaml:"name"`
+	Path                string              `yaml:"path"`
+	DieOnInputChange    *bool               `yaml:"dieOnInputChange"`
+	Properties          []*XmlInputProperty `yaml:"properties"`
+	RecordXPath         string              `yaml:"recordXpath"`
+	PropertyIndexByName map[string]int
+	Logger              *logrus.Entry
 }
 
-type XmlInputColumn struct {
+type XmlInputProperty struct {
 	Name          string `yaml:"name"`
 	Parser        string `yaml:"parser"`
 	XPath         string `yaml:"xpath"`
@@ -43,8 +43,8 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		return fmt.Errorf("recordXpath: Invalid xpath expression: %w", err)
 	}
 
-	if len(config.Columns) == 0 {
-		return errors.New("An xml input must have at least one column")
+	if len(config.Properties) == 0 {
+		return errors.New("An xml input must have at least one property")
 	}
 
 	fileInfo, err := os.Stat(config.Path)
@@ -55,33 +55,33 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		return errors.New("The path '" + config.Path + "' is not a file")
 	}
 
-	config.ColumnIndexByName = make(map[string]int)
-	for columnIndex, column := range config.Columns {
-		err := column.validate(rootConfig, log)
+	config.PropertyIndexByName = make(map[string]int)
+	for propertyIndex, property := range config.Properties {
+		err := property.validate(rootConfig, log)
 		if err != nil {
-			return fmt.Errorf("xml.columns[%v]: %w", columnIndex, err)
+			return fmt.Errorf("xml.properties[%v]: %w", propertyIndex, err)
 		}
 
-		if _, exists := config.ColumnIndexByName[column.Name]; exists {
-			return fmt.Errorf("Column names must be unique. Found '%v' twice.", column.Name)
+		if _, exists := config.PropertyIndexByName[property.Name]; exists {
+			return fmt.Errorf("Property names must be unique. Found '%v' twice.", property.Name)
 		}
-		config.ColumnIndexByName[column.Name] = columnIndex
+		config.PropertyIndexByName[property.Name] = propertyIndex
 	}
 
 	return nil
 }
 
-func (config *XmlInput) ColumnParser(columnName string) *string {
-	for _, column := range config.Columns {
-		if column.Name == columnName {
-			return &column.Parser
+func (config *XmlInput) PropertyParser(propertyName string) *string {
+	for _, property := range config.Properties {
+		if property.Name == propertyName {
+			return &property.Parser
 		}
 	}
 
 	return nil
 }
 
-func (config *XmlInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *XmlInputProperty) validate(rootConfig *Config, log *logrus.Entry) error {
 	_, parserExists := rootConfig.Parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("Parser '%v' not found in parsers list.", config.Parser)
@@ -98,7 +98,7 @@ func (config *XmlInputColumn) validate(rootConfig *Config, log *logrus.Entry) er
 	}
 
 	if config.Parser == "" {
-		log.Debug("xml.columns[].parser not defined. Assuming 'string'")
+		log.Debug("xml.properties[].parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
 

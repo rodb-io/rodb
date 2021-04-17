@@ -22,17 +22,17 @@ func (mock *Mock) Name() string {
 	return "mock"
 }
 
-func (mock *Mock) HasColumn(columnName string) bool {
+func (mock *Mock) HasProperty(propertyName string) bool {
 	if len(mock.data) == 0 {
 		return false
 	}
 
-	_, err := mock.data[0].Record.Get(columnName)
+	_, err := mock.data[0].Record.Get(propertyName)
 
 	return err == nil
 }
 
-func (mock *Mock) GetColumnParser(columnName string) parser.Parser {
+func (mock *Mock) GetPropertyParser(propertyName string) parser.Parser {
 	return mock.parser
 }
 

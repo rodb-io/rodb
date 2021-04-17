@@ -73,12 +73,12 @@ indexes:
   - memoryMap:
       name: zipCode
       input: zipCodesTokyo
-      columns:
+      properties:
         - zipCode
   - memoryMap:
       name: municipality
       input: zipCodesTokyo
-      columns:
+      properties:
         - municipality
 outputs:
   - jsonArray:
@@ -92,42 +92,42 @@ outputs:
         parameter: "offset"
       parameters:
         municipality:
-          column: municipality
+          property: municipality
           index: municipality
           parser: string
       relationships:
         updated:
           input: updatedValues
           match:
-            - parentColumn: updatedId
-              childColumn: id
+            - parentProperty: updatedId
+              childProperty: id
               childIndex: default
         reasonsForUpdate:
           input: reasonsForUpdate
           match:
-            - parentColumn: reasonForUpdateId
-              childColumn: id
+            - parentProperty: reasonForUpdateId
+              childProperty: id
               childIndex: default
   - jsonObject:
       name: findOnePostalCode
       input: zipCodesTokyo
       parameters:
         zipCode:
-          column: zipCode
+          property: zipCode
           index: zipCode
           parser: string
       relationships:
         updated:
           input: updatedValues
           match:
-            - parentColumn: updatedId
-              childColumn: id
+            - parentProperty: updatedId
+              childProperty: id
               childIndex: default
         reasonsForUpdate:
           input: reasonsForUpdate
           match:
-            - parentColumn: reasonForUpdateId
-              childColumn: id
+            - parentProperty: reasonForUpdateId
+              childProperty: id
               childIndex: default
 services:
   - http:

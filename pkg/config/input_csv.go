@@ -87,7 +87,7 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *CsvInput) ColumnParser(columnName string) *string {
+func (config *CsvInput) PropertyParser(columnName string) *string {
 	for _, column := range config.Columns {
 		if column.Name == columnName {
 			return &column.Parser

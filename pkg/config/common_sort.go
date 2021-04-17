@@ -7,7 +7,7 @@ import (
 
 type Sort struct {
 	Logger    *logrus.Entry
-	Column    string `yaml:"column"`
+	Property  string `yaml:"property"`
 	Ascending *bool  `yaml:"ascending"`
 }
 
@@ -19,16 +19,16 @@ func (config *Sort) validate(
 ) error {
 	config.Logger = log
 
-	parserName := input.ColumnParser(config.Column)
+	parserName := input.PropertyParser(config.Property)
 	if parserName == nil {
-		return fmt.Errorf("column: Could not find the associated parser.")
+		return fmt.Errorf("property: Could not find the associated parser.")
 	}
 	parser, parserExists := rootConfig.Parsers[*parserName]
 	if !parserExists {
-		return fmt.Errorf("column: The associated parser '%v' does not exist.", *parserName)
+		return fmt.Errorf("property: The associated parser '%v' does not exist.", *parserName)
 	}
 	if !parser.Primitive() {
-		return fmt.Errorf("column: Cannot be used to sort because it does not have a primitive type.")
+		return fmt.Errorf("property: Cannot be used to sort because it does not have a primitive type.")
 	}
 
 	if config.Ascending == nil {

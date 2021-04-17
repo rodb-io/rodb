@@ -29,7 +29,7 @@ func createXmlTestFile(t *testing.T, data string) (*os.File, error) {
 	return file, nil
 }
 
-func TestXmlHasColumn(t *testing.T) {
+func TestXmlHasProperty(t *testing.T) {
 	file, err := createXmlTestFile(t, "")
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)
@@ -44,11 +44,11 @@ func TestXmlHasColumn(t *testing.T) {
 		DieOnInputChange: &falseValue,
 		RecordXPath:      "test",
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		Columns: []*config.XmlInputColumn{
+		Properties: []*config.XmlInputProperty{
 			{Name: "a", Parser: "mock"},
 			{Name: "b", Parser: "mock"},
 		},
-		ColumnIndexByName: map[string]int{
+		PropertyIndexByName: map[string]int{
 			"a": 0,
 			"b": 1,
 		},
@@ -60,16 +60,16 @@ func TestXmlHasColumn(t *testing.T) {
 	}
 
 	t.Run("true", func(t *testing.T) {
-		if !xml.HasColumn("a") {
-			t.Errorf("Expected to have column 'a', got false")
+		if !xml.HasProperty("a") {
+			t.Errorf("Expected to have property 'a', got false")
 		}
-		if !xml.HasColumn("b") {
-			t.Errorf("Expected to have column 'b', got false")
+		if !xml.HasProperty("b") {
+			t.Errorf("Expected to have property 'b', got false")
 		}
 	})
 	t.Run("false", func(t *testing.T) {
-		if xml.HasColumn("wrong") {
-			t.Errorf("Expected to not have column 'wrong', got true")
+		if xml.HasProperty("wrong") {
+			t.Errorf("Expected to not have property 'wrong', got true")
 		}
 	})
 }
@@ -95,7 +95,7 @@ func TestXmlGet(t *testing.T) {
 		DieOnInputChange: &falseValue,
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
 		RecordXPath:      "//item",
-		Columns: []*config.XmlInputColumn{
+		Properties: []*config.XmlInputProperty{
 			{
 				Name:          "a",
 				Parser:        "mock",
@@ -106,7 +106,7 @@ func TestXmlGet(t *testing.T) {
 				CompiledXPath: xpath.MustCompile("string(/b)"),
 			},
 		},
-		ColumnIndexByName: map[string]int{
+		PropertyIndexByName: map[string]int{
 			"a": 0,
 			"b": 1,
 		},
@@ -219,12 +219,12 @@ func TestXmlSize(t *testing.T) {
 
 		falseValue := false
 		config := &config.XmlInput{
-			Path:              file.Name(),
-			DieOnInputChange:  &falseValue,
-			RecordXPath:       "test",
-			Logger:            logrus.NewEntry(logrus.StandardLogger()),
-			Columns:           []*config.XmlInputColumn{},
-			ColumnIndexByName: map[string]int{},
+			Path:                file.Name(),
+			DieOnInputChange:    &falseValue,
+			RecordXPath:         "test",
+			Logger:              logrus.NewEntry(logrus.StandardLogger()),
+			Properties:          []*config.XmlInputProperty{},
+			PropertyIndexByName: map[string]int{},
 		}
 
 		xml, err := NewXml(config, parsers)
@@ -293,7 +293,7 @@ func TestXmlIterateAll(t *testing.T) {
 				DieOnInputChange: &falseValue,
 				RecordXPath:      "//item",
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
-				Columns: []*config.XmlInputColumn{
+				Properties: []*config.XmlInputProperty{
 					{
 						Name:          "a",
 						Parser:        "mock",
@@ -304,7 +304,7 @@ func TestXmlIterateAll(t *testing.T) {
 						CompiledXPath: xpath.MustCompile("string(/b)"),
 					},
 				},
-				ColumnIndexByName: map[string]int{
+				PropertyIndexByName: map[string]int{
 					"a": 0,
 					"b": 1,
 				},
@@ -322,13 +322,13 @@ func TestXmlIterateAll(t *testing.T) {
 					for j, k := range []string{"a", "b"} {
 						result, err := result.Record.Get(k)
 						if err != nil {
-							t.Errorf("Got error '%v', expected '%v' for record %v, column number %v", err, testCase.expectedRows[i][j], i, j)
+							t.Errorf("Got error '%v', expected '%v' for record %v, property number %v", err, testCase.expectedRows[i][j], i, j)
 							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
 						if !(result == nil && expected == nil) && result != expected {
-							t.Errorf("Received '%v', expected '%v' for record %v, column number %v", result, testCase.expectedRows[i][j], i, j)
+							t.Errorf("Received '%v', expected '%v' for record %v, property number %v", result, testCase.expectedRows[i][j], i, j)
 						}
 					}
 

@@ -7,9 +7,9 @@ import (
 )
 
 type Parameter struct {
-	Column string `yaml:"column"`
-	Index  string `yaml:"index"`
-	Parser string `yaml:"parser"`
+	Property string `yaml:"property"`
+	Index    string `yaml:"index"`
+	Parser   string `yaml:"parser"`
 }
 
 func (config *Parameter) validate(
@@ -18,8 +18,8 @@ func (config *Parameter) validate(
 	logPrefix string,
 	input Input,
 ) error {
-	if config.Column == "" {
-		return errors.New("column is empty")
+	if config.Property == "" {
+		return errors.New("property is empty")
 	}
 
 	if config.Index == "" {
@@ -33,8 +33,8 @@ func (config *Parameter) validate(
 	if !index.DoesHandleInput(input) {
 		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, input.Name())
 	}
-	if !index.DoesHandleColumn(config.Column) {
-		return fmt.Errorf("column: Index '%v' does not handle column '%v'.", config.Index, config.Column)
+	if !index.DoesHandleProperty(config.Property) {
+		return fmt.Errorf("property: Index '%v' does not handle property '%v'.", config.Index, config.Property)
 	}
 
 	if config.Parser == "" {

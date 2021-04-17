@@ -27,13 +27,13 @@ func TestXmlGet(t *testing.T) {
 		parser parserModule.Parser,
 	) *Xml {
 		var testConfig *config.XmlInput = &config.XmlInput{
-			Columns: []*config.XmlInputColumn{
+			Properties: []*config.XmlInputProperty{
 				{
 					Name:          colName,
 					CompiledXPath: xpath.MustCompile(xPath),
 				},
 			},
-			ColumnIndexByName: map[string]int{
+			PropertyIndexByName: map[string]int{
 				colName: 0,
 			},
 		}
@@ -66,7 +66,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("string xpath on integer column", func(t *testing.T) {
+	t.Run("string xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
 			"string(/root/a)",
@@ -81,7 +81,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("string xpath on float column", func(t *testing.T) {
+	t.Run("string xpath on float property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42.1</a></root>"),
 			"string(/root/a)",
@@ -96,7 +96,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("string xpath on boolean column", func(t *testing.T) {
+	t.Run("string xpath on boolean property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>true</a></root>"),
 			"string(/root/a)",
@@ -111,7 +111,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("number xpath on integer column", func(t *testing.T) {
+	t.Run("number xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
 			"number(/root/a)",
@@ -126,7 +126,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("number xpath on float column", func(t *testing.T) {
+	t.Run("number xpath on float property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42.1</a></root>"),
 			"number(/root/a)",
@@ -141,7 +141,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("number xpath on string column", func(t *testing.T) {
+	t.Run("number xpath on string property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
 			"number(/root/a)",
@@ -168,7 +168,7 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("boolean xpath on integer column", func(t *testing.T) {
+	t.Run("boolean xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a</a></root>"),
 			"/root/a[text()='a']",

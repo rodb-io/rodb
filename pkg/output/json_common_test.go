@@ -23,19 +23,19 @@ type jsonDataForTests struct {
 
 func mockJsonDataForTests() jsonDataForTests {
 	mockResults := []input.IterateAllResult{
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"id":         "1",
 			"belongs_to": "0",
 		}, 0)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
 		}, 1)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
 		}, 2)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
 		}, 3)},
@@ -73,17 +73,17 @@ func TestJsonObjectGetRelationshipFiltersPerIndex(t *testing.T) {
 			},
 			[]*config.RelationshipMatch{
 				{
-					ParentColumn: "foo",
-					ChildColumn:  "foo",
-					ChildIndex:   "a",
+					ParentProperty: "foo",
+					ChildProperty:  "foo",
+					ChildIndex:     "a",
 				}, {
-					ParentColumn: "foo",
-					ChildColumn:  "foo",
-					ChildIndex:   "b",
+					ParentProperty: "foo",
+					ChildProperty:  "foo",
+					ChildIndex:     "b",
 				}, {
-					ParentColumn: "bar",
-					ChildColumn:  "bar",
-					ChildIndex:   "b",
+					ParentProperty: "bar",
+					ChildProperty:  "bar",
+					ChildIndex:     "b",
 				},
 			},
 			"test",
@@ -216,15 +216,15 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 				Limit:   2,
 				Sort: []*config.Sort{
 					{
-						Column:    "id",
+						Property:  "id",
 						Ascending: &falseValue,
 					},
 				},
 				Match: []*config.RelationshipMatch{
 					{
-						ParentColumn: "id",
-						ChildColumn:  "belongs_to",
-						ChildIndex:   "mock",
+						ParentProperty: "id",
+						ChildProperty:  "belongs_to",
+						ChildIndex:     "mock",
 					},
 				},
 				Relationships: map[string]*config.Relationship{
@@ -233,9 +233,9 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 						IsArray: false,
 						Match: []*config.RelationshipMatch{
 							{
-								ParentColumn: "belongs_to",
-								ChildColumn:  "id",
-								ChildIndex:   "mock",
+								ParentProperty: "belongs_to",
+								ChildProperty:  "id",
+								ChildIndex:     "mock",
 							},
 						},
 					},

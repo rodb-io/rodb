@@ -23,14 +23,14 @@ var xmlParserOptions = xmlquery.ParserOptions{
 }
 
 type Xml struct {
-	config        *configModule.XmlInput
-	reader        io.ReadSeeker
-	readerBuffer  *bufio.Reader
-	readerLock    sync.Mutex
-	xmlFile       *os.File
-	xmlParser     *xmlquery.StreamParser
-	columnParsers []parser.Parser
-	watcher       *fsnotify.Watcher
+	config          *configModule.XmlInput
+	reader          io.ReadSeeker
+	readerBuffer    *bufio.Reader
+	readerLock      sync.Mutex
+	xmlFile         *os.File
+	xmlParser       *xmlquery.StreamParser
+	propertyParsers []parser.Parser
+	watcher         *fsnotify.Watcher
 }
 
 type xmlTempRecordNode struct {
@@ -83,13 +83,13 @@ func NewXml(
 		return nil, err
 	}
 
-	xmlInput.columnParsers = make([]parser.Parser, len(config.Columns))
-	for i, column := range config.Columns {
-		parser, parserExists := parsers[column.Parser]
+	xmlInput.propertyParsers = make([]parser.Parser, len(config.Properties))
+	for i, property := range config.Properties {
+		parser, parserExists := parsers[property.Parser]
 		if !parserExists {
-			return nil, errors.New("Parser '" + column.Parser + "' does not exist")
+			return nil, errors.New("Parser '" + property.Parser + "' does not exist")
 		}
-		xmlInput.columnParsers[i] = parser
+		xmlInput.propertyParsers[i] = parser
 	}
 
 	return xmlInput, nil
@@ -99,9 +99,9 @@ func (xmlInput *Xml) Name() string {
 	return xmlInput.config.Name
 }
 
-func (xmlInput *Xml) HasColumn(columnName string) bool {
-	for _, column := range xmlInput.config.Columns {
-		if column.Name == columnName {
+func (xmlInput *Xml) HasProperty(propertyName string) bool {
+	for _, property := range xmlInput.config.Properties {
+		if property.Name == propertyName {
 			return true
 		}
 	}
@@ -109,10 +109,10 @@ func (xmlInput *Xml) HasColumn(columnName string) bool {
 	return false
 }
 
-func (xmlInput *Xml) GetColumnParser(columnName string) parser.Parser {
-	for columnIndex, column := range xmlInput.config.Columns {
-		if column.Name == columnName {
-			return xmlInput.columnParsers[columnIndex]
+func (xmlInput *Xml) GetPropertyParser(propertyName string) parser.Parser {
+	for propertyIndex, property := range xmlInput.config.Properties {
+		if property.Name == propertyName {
+			return xmlInput.propertyParsers[propertyIndex]
 		}
 	}
 
@@ -136,7 +136,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read xml data: %w", err)
 	}
 
-	return record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
+	return record.NewXml(xmlInput.config, xmlInput.propertyParsers, node, position)
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -196,7 +196,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 				return
 			}
 
-			record, err := record.NewXml(xmlInput.config, xmlInput.columnParsers, node, position)
+			record, err := record.NewXml(xmlInput.config, xmlInput.propertyParsers, node, position)
 			if err != nil {
 				channel <- IterateAllResult{
 					Error: fmt.Errorf("Error when creating record after position %v: %v", position, err),

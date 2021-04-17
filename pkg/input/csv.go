@@ -84,7 +84,7 @@ func (csvInput *Csv) Name() string {
 	return csvInput.config.Name
 }
 
-func (csvInput *Csv) HasColumn(columnName string) bool {
+func (csvInput *Csv) HasProperty(columnName string) bool {
 	for _, column := range csvInput.config.Columns {
 		if column.Name == columnName {
 			return true
@@ -94,7 +94,7 @@ func (csvInput *Csv) HasColumn(columnName string) bool {
 	return false
 }
 
-func (csvInput *Csv) GetColumnParser(columnName string) parser.Parser {
+func (csvInput *Csv) GetPropertyParser(columnName string) parser.Parser {
 	for columnIndex, column := range csvInput.config.Columns {
 		if column.Name == columnName {
 			return csvInput.columnParsers[columnIndex]

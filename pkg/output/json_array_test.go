@@ -35,9 +35,9 @@ func TestJsonArrayHandler(t *testing.T) {
 		},
 		Parameters: map[string]config.Parameter{
 			"belongs_to_param": {
-				Column: "belongs_to",
-				Parser: "mock",
-				Index:  "mock",
+				Property: "belongs_to",
+				Parser:   "mock",
+				Index:    "mock",
 			},
 		},
 		Relationships: map[string]*config.Relationship{
@@ -46,9 +46,9 @@ func TestJsonArrayHandler(t *testing.T) {
 				IsArray: false,
 				Match: []*config.RelationshipMatch{
 					{
-						ParentColumn: "belongs_to",
-						ChildColumn:  "id",
-						ChildIndex:   "mock",
+						ParentProperty: "belongs_to",
+						ChildProperty:  "id",
+						ChildIndex:     "mock",
 					},
 				},
 			},
@@ -363,19 +363,19 @@ func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 			Input: "mock",
 			Parameters: map[string]config.Parameter{
 				"a": {
-					Column: "a",
-					Index:  "a",
-					Parser: "mock",
+					Property: "a",
+					Index:    "a",
+					Parser:   "mock",
 				},
 				"b": {
-					Column: "b",
-					Index:  "a",
-					Parser: "prefix",
+					Property: "b",
+					Index:    "a",
+					Parser:   "prefix",
 				},
 				"c": {
-					Column: "c",
-					Index:  "b",
-					Parser: "prefix",
+					Property: "c",
+					Index:    "b",
+					Parser:   "prefix",
 				},
 			},
 		})

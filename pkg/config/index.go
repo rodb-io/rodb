@@ -48,12 +48,12 @@ func (config *Index) Name() string {
 	return ""
 }
 
-func (config *Index) DoesHandleColumn(column string) bool {
+func (config *Index) DoesHandleProperty(property string) bool {
 	if config.MemoryMap != nil {
-		return config.MemoryMap.DoesHandleColumn(column)
+		return config.MemoryMap.DoesHandleProperty(property)
 	}
 	if config.Noop != nil {
-		return config.Noop.DoesHandleColumn(column)
+		return config.Noop.DoesHandleProperty(property)
 	}
 
 	return false

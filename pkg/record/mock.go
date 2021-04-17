@@ -28,7 +28,7 @@ func NewMock(
 	}
 }
 
-func NewStringColumnsMock(
+func NewStringPropertiesMock(
 	values map[string]string,
 	position Position,
 ) *Mock {
@@ -74,7 +74,7 @@ func (record *Mock) Get(field string) (interface{}, error) {
 		return value, nil
 	}
 
-	return nil, fmt.Errorf("Column '%v' does not exist in mocked record", field)
+	return nil, fmt.Errorf("Property '%v' does not exist in mocked record", field)
 }
 
 func (record *Mock) Position() Position {

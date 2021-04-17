@@ -53,7 +53,7 @@ inputs:
       path: ./dummy.xml
       dieOnInputChange: true
       recordXpath: "//item"
-      columns:
+      properties:
         - name: id
           parser: defaultInteger
           xpath: "/id"
@@ -70,7 +70,7 @@ indexes:
   - memoryMap:
       name: defaultIndex
       input: defaultInput
-      columns:
+      properties:
         - id
         - name
 outputs:
@@ -87,11 +87,11 @@ outputs:
         parameter: "offset"
       parameters:
         id:
-          column: id
+          property: id
           index: defaultIndex
           parser: integer
         name:
-          column: name
+          property: name
           index: defaultIndex
           parser: string
       relationships:
@@ -99,8 +99,8 @@ outputs:
           input: defaultInput
           isArray: false
           match:
-            - parentColumn: id
-              childColumn: id
+            - parentProperty: id
+              childProperty: id
               childIndex: defaultIndex
   - jsonObject:
       name: defaultJsonObjectOutput
@@ -110,23 +110,23 @@ outputs:
           input: defaultInput
           isArray: false
           match:
-            - parentColumn: id
-              childColumn: id
+            - parentProperty: id
+              childProperty: id
               childIndex: defaultIndex
           relationships:
             mySubSubProperty:
               input: defaultInput
               isArray: true
               match:
-                - parentColumn: id
-                  childColumn: id
+                - parentProperty: id
+                  childProperty: id
                   childIndex: defaultIndex
               sort:
-                - column: id
+                - property: id
                   ascending: true
       parameters:
         id:
-          column: id
+          property: id
           index: defaultIndex
           parser: integer
 services:

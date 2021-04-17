@@ -29,9 +29,9 @@ func TestJsonObjectHandler(t *testing.T) {
 		Input: "mock",
 		Parameters: map[string]*config.Parameter{
 			"foo_id": {
-				Column: "id",
-				Parser: "mock",
-				Index:  "mock",
+				Property: "id",
+				Parser:   "mock",
+				Index:    "mock",
 			},
 		},
 		Relationships: map[string]*config.Relationship{
@@ -40,9 +40,9 @@ func TestJsonObjectHandler(t *testing.T) {
 				IsArray: false,
 				Match: []*config.RelationshipMatch{
 					{
-						ParentColumn: "belongs_to",
-						ChildColumn:  "id",
-						ChildIndex:   "mock",
+						ParentProperty: "belongs_to",
+						ChildProperty:  "id",
+						ChildIndex:     "mock",
 					},
 				},
 				Relationships: map[string]*config.Relationship{
@@ -52,15 +52,15 @@ func TestJsonObjectHandler(t *testing.T) {
 						Limit:   2,
 						Sort: []*config.Sort{
 							{
-								Column:    "id",
+								Property:  "id",
 								Ascending: &trueValue,
 							},
 						},
 						Match: []*config.RelationshipMatch{
 							{
-								ParentColumn: "id",
-								ChildColumn:  "belongs_to",
-								ChildIndex:   "mock",
+								ParentProperty: "id",
+								ChildProperty:  "belongs_to",
+								ChildIndex:     "mock",
 							},
 						},
 					},
@@ -179,14 +179,14 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {
-					Column: "foo",
-					Parser: "mock",
-					Index:  "mock",
+					Property: "foo",
+					Parser:   "mock",
+					Index:    "mock",
 				},
 				"bar_id": {
-					Column: "bar",
-					Parser: "mock",
-					Index:  "mock",
+					Property: "bar",
+					Parser:   "mock",
+					Index:    "mock",
 				},
 			},
 		})
@@ -202,19 +202,19 @@ func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {
-					Column: "foo",
-					Parser: "mock",
-					Index:  "a",
+					Property: "foo",
+					Parser:   "mock",
+					Index:    "a",
 				},
 				"bar_id": {
-					Column: "bar",
-					Parser: "mock",
-					Index:  "b",
+					Property: "bar",
+					Parser:   "mock",
+					Index:    "b",
 				},
 				"baz_id": {
-					Column: "baz",
-					Parser: "mock",
-					Index:  "a",
+					Property: "baz",
+					Parser:   "mock",
+					Index:    "a",
 				},
 			},
 		})

@@ -7,28 +7,28 @@ import (
 	"testing"
 )
 
-func TestMockHasColumn(t *testing.T) {
-	columnName := "col"
-	expectedRecord := record.NewStringColumnsMock(map[string]string{
-		columnName: "value",
+func TestMockHasProperty(t *testing.T) {
+	propertyName := "col"
+	expectedRecord := record.NewStringPropertiesMock(map[string]string{
+		propertyName: "value",
 	}, 0)
 	mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
 
 	t.Run("true", func(t *testing.T) {
-		if !mock.HasColumn(columnName) {
-			t.Errorf("Expected to have column '%v', got false", columnName)
+		if !mock.HasProperty(propertyName) {
+			t.Errorf("Expected to have property '%v', got false", propertyName)
 		}
 	})
 	t.Run("false", func(t *testing.T) {
-		if mock.HasColumn("wrong_" + columnName) {
-			t.Errorf("Expected to not have column 'wrong_%v', got true", columnName)
+		if mock.HasProperty("wrong_" + propertyName) {
+			t.Errorf("Expected to not have property 'wrong_%v', got true", propertyName)
 		}
 	})
 }
 
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := record.NewStringColumnsMock(map[string]string{
+		expectedRecord := record.NewStringPropertiesMock(map[string]string{
 			"col": "value",
 		}, 0)
 		mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
@@ -63,7 +63,7 @@ func TestMockGet(t *testing.T) {
 
 func TestMockSize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := record.NewStringColumnsMock(map[string]string{
+		expectedRecord := record.NewStringPropertiesMock(map[string]string{
 			"col": "value",
 		}, 0)
 		data := []IterateAllResult{
@@ -85,7 +85,7 @@ func TestMockSize(t *testing.T) {
 func TestMockIterateAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := []IterateAllResult{
-			{Record: record.NewStringColumnsMock(map[string]string{
+			{Record: record.NewStringPropertiesMock(map[string]string{
 				"col": "value",
 			}, 0)},
 			{Error: errors.New("Test error")},

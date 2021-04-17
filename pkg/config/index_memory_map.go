@@ -7,10 +7,10 @@ import (
 )
 
 type MemoryMapIndex struct {
-	Name    string   `yaml:"name"`
-	Input   string   `yaml:"input"`
-	Columns []string `yaml:"columns"`
-	Logger  *logrus.Entry
+	Name       string   `yaml:"name"`
+	Input      string   `yaml:"input"`
+	Properties []string `yaml:"properties"`
+	Logger     *logrus.Entry
 }
 
 func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -25,23 +25,23 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	alreadyExistingColumns := make(map[string]bool)
-	for _, columnName := range config.Columns {
-		if _, alreadyExists := alreadyExistingColumns[columnName]; alreadyExists {
-			return fmt.Errorf("memoryMap.columns: Duplicate column '%v' in array.", columnName)
+	alreadyExistingProperties := make(map[string]bool)
+	for _, propertyName := range config.Properties {
+		if _, alreadyExists := alreadyExistingProperties[propertyName]; alreadyExists {
+			return fmt.Errorf("memoryMap.properties: Duplicate property '%v' in array.", propertyName)
 		}
-		alreadyExistingColumns[columnName] = true
+		alreadyExistingProperties[propertyName] = true
 	}
 
-	// The columns validity will be validated at runtime
+	// The properties validity will be validated at runtime
 
 	return nil
 }
 
-func (config *MemoryMapIndex) DoesHandleColumn(column string) bool {
+func (config *MemoryMapIndex) DoesHandleProperty(property string) bool {
 	isHandled := false
-	for _, handledColumn := range config.Columns {
-		if column == handledColumn {
+	for _, handledProperty := range config.Properties {
+		if property == handledProperty {
 			isHandled = true
 			break
 		}

@@ -10,23 +10,23 @@ import (
 
 func TestNoopGetRecordPositions(t *testing.T) {
 	mockInput := input.NewMock(parser.NewMock(), []input.IterateAllResult{
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",
 		}, 0)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 1)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_a",
 		}, 2)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 3)},
-		{Record: record.NewStringColumnsMock(map[string]string{
+		{Record: record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_b",
 		}, 4)},
@@ -85,7 +85,7 @@ func TestNoopGetRecordPositions(t *testing.T) {
 			}
 		}
 	})
-	t.Run("wrong column", func(t *testing.T) {
+	t.Run("wrong property", func(t *testing.T) {
 		nextPosition, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
 		})

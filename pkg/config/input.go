@@ -48,12 +48,12 @@ func (config *Input) Name() string {
 	return ""
 }
 
-func (config *Input) ColumnParser(columnName string) *string {
+func (config *Input) PropertyParser(propertyName string) *string {
 	if config.Csv != nil {
-		return config.Csv.ColumnParser(columnName)
+		return config.Csv.PropertyParser(propertyName)
 	}
 	if config.Xml != nil {
-		return config.Xml.ColumnParser(columnName)
+		return config.Xml.PropertyParser(propertyName)
 	}
 
 	return nil

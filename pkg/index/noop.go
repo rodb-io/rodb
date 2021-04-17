@@ -40,8 +40,8 @@ func (noop *Noop) GetRecordPositions(
 			}
 
 			matches := true
-			for columnName, filter := range filters {
-				value, err := result.Record.Get(columnName)
+			for propertyName, filter := range filters {
+				value, err := result.Record.Get(propertyName)
 				if err != nil {
 					return nil, err
 				}
