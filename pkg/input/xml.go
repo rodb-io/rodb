@@ -99,16 +99,6 @@ func (xmlInput *Xml) Name() string {
 	return xmlInput.config.Name
 }
 
-func (xmlInput *Xml) GetPropertyParser(propertyName string) parser.Parser {
-	for propertyIndex, property := range xmlInput.config.Properties {
-		if property.Name == propertyName {
-			return xmlInput.propertyParsers[propertyIndex]
-		}
-	}
-
-	return nil
-}
-
 func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 	xmlInput.readerLock.Lock()
 	defer xmlInput.readerLock.Unlock()

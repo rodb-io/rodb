@@ -22,10 +22,6 @@ func (mock *Mock) Name() string {
 	return "mock"
 }
 
-func (mock *Mock) GetPropertyParser(propertyName string) parser.Parser {
-	return mock.parser
-}
-
 func (mock *Mock) Get(position record.Position) (record.Record, error) {
 	index := int(position)
 	if index >= len(mock.data) {
