@@ -29,51 +29,6 @@ func createXmlTestFile(t *testing.T, data string) (*os.File, error) {
 	return file, nil
 }
 
-func TestXmlHasProperty(t *testing.T) {
-	file, err := createXmlTestFile(t, "")
-	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
-	}
-	defer file.Close()
-
-	parsers := parser.List{"mock": parser.NewMock()}
-
-	falseValue := false
-	config := &config.XmlInput{
-		Path:             file.Name(),
-		DieOnInputChange: &falseValue,
-		RecordXPath:      "test",
-		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		Properties: []*config.XmlInputProperty{
-			{Name: "a", Parser: "mock"},
-			{Name: "b", Parser: "mock"},
-		},
-		PropertyIndexByName: map[string]int{
-			"a": 0,
-			"b": 1,
-		},
-	}
-
-	xml, err := NewXml(config, parsers)
-	if err != nil {
-		t.Error(err)
-	}
-
-	t.Run("true", func(t *testing.T) {
-		if !xml.HasProperty("a") {
-			t.Errorf("Expected to have property 'a', got false")
-		}
-		if !xml.HasProperty("b") {
-			t.Errorf("Expected to have property 'b', got false")
-		}
-	})
-	t.Run("false", func(t *testing.T) {
-		if xml.HasProperty("wrong") {
-			t.Errorf("Expected to not have property 'wrong', got true")
-		}
-	})
-}
-
 func TestXmlGet(t *testing.T) {
 	file, err := createXmlTestFile(t, `
 		<root>

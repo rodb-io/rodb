@@ -9,7 +9,6 @@ import (
 
 type Input interface {
 	Name() string
-	HasProperty(propertyName string) bool
 	GetPropertyParser(propertyName string) parser.Parser
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)

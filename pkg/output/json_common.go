@@ -14,18 +14,6 @@ func checkRelationshipMatches(
 	relationship *configModule.Relationship,
 	parentInput inputModule.Input,
 ) error {
-	for _, sort := range relationship.Sort {
-		if !parentInput.HasProperty(sort.Property) {
-			return fmt.Errorf("Input '%v' does not have a property called '%v'.", parentInput.Name(), sort.Property)
-		}
-	}
-
-	for _, match := range relationship.Match {
-		if !parentInput.HasProperty(match.ParentProperty) {
-			return fmt.Errorf("Input '%v' does not have a property called '%v'.", parentInput.Name(), match.ParentProperty)
-		}
-	}
-
 	for _, relationship := range relationship.Relationships {
 		relationshipInput, inputExists := inputs[relationship.Input]
 		if !inputExists {

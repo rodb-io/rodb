@@ -29,52 +29,6 @@ func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
 	return file, nil
 }
 
-func TestCsvHasProperty(t *testing.T) {
-	file, err := createCsvTestFile(t, "")
-	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
-	}
-	defer file.Close()
-
-	parsers := parser.List{"mock": parser.NewMock()}
-
-	falseValue := false
-	config := &config.CsvInput{
-		Path:             file.Name(),
-		IgnoreFirstRow:   false,
-		DieOnInputChange: &falseValue,
-		Delimiter:        ",",
-		Logger:           logrus.NewEntry(logrus.StandardLogger()),
-		Columns: []*config.CsvInputColumn{
-			{Name: "a", Parser: "mock"},
-			{Name: "b", Parser: "mock"},
-		},
-		ColumnIndexByName: map[string]int{
-			"a": 0,
-			"b": 1,
-		},
-	}
-
-	csv, err := NewCsv(config, parsers)
-	if err != nil {
-		t.Error(err)
-	}
-
-	t.Run("true", func(t *testing.T) {
-		if !csv.HasProperty("a") {
-			t.Errorf("Expected to have property 'a', got false")
-		}
-		if !csv.HasProperty("b") {
-			t.Errorf("Expected to have property 'b', got false")
-		}
-	})
-	t.Run("false", func(t *testing.T) {
-		if csv.HasProperty("wrong") {
-			t.Errorf("Expected to not have property 'wrong', got true")
-		}
-	})
-}
-
 func TestCsvGet(t *testing.T) {
 	file, err := createCsvTestFile(t, "test1,test2\n\ntest3")
 	if err != nil {

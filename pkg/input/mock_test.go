@@ -7,25 +7,6 @@ import (
 	"testing"
 )
 
-func TestMockHasProperty(t *testing.T) {
-	propertyName := "col"
-	expectedRecord := record.NewStringPropertiesMock(map[string]string{
-		propertyName: "value",
-	}, 0)
-	mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
-
-	t.Run("true", func(t *testing.T) {
-		if !mock.HasProperty(propertyName) {
-			t.Errorf("Expected to have property '%v', got false", propertyName)
-		}
-	})
-	t.Run("false", func(t *testing.T) {
-		if mock.HasProperty("wrong_" + propertyName) {
-			t.Errorf("Expected to not have property 'wrong_%v', got true", propertyName)
-		}
-	})
-}
-
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		expectedRecord := record.NewStringPropertiesMock(map[string]string{

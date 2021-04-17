@@ -22,16 +22,6 @@ func (mock *Mock) Name() string {
 	return "mock"
 }
 
-func (mock *Mock) HasProperty(propertyName string) bool {
-	if len(mock.data) == 0 {
-		return false
-	}
-
-	_, err := mock.data[0].Record.Get(propertyName)
-
-	return err == nil
-}
-
 func (mock *Mock) GetPropertyParser(propertyName string) parser.Parser {
 	return mock.parser
 }

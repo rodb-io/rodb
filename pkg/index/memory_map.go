@@ -36,9 +36,6 @@ func NewMemoryMap(
 	}
 
 	for _, propertyName := range memoryMap.config.Properties {
-		if !memoryMap.input.HasProperty(propertyName) {
-			return nil, errors.New("Input '" + memoryMap.config.Input + "' does not have a property named '" + propertyName + "'.")
-		}
 		parser := memoryMap.input.GetPropertyParser(propertyName)
 		if !parser.Primitive() {
 			return nil, errors.New("Property '" + propertyName + "' defined in index '" + memoryMap.Name() + "' cannot be used because it's not a primitive type.")

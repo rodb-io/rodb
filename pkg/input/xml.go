@@ -99,16 +99,6 @@ func (xmlInput *Xml) Name() string {
 	return xmlInput.config.Name
 }
 
-func (xmlInput *Xml) HasProperty(propertyName string) bool {
-	for _, property := range xmlInput.config.Properties {
-		if property.Name == propertyName {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (xmlInput *Xml) GetPropertyParser(propertyName string) parser.Parser {
 	for propertyIndex, property := range xmlInput.config.Properties {
 		if property.Name == propertyName {

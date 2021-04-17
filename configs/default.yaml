@@ -66,6 +66,16 @@ inputs:
         - name: bool
           parser: defaultBoolean
           xpath: "/bool"
+        - name: intArray
+          isArray: true
+          parser: defaultInteger
+          xpath: "/*/foo::text()"
+        - name: object
+          isObject: true
+          properties:
+            - name: prop_a
+              parser: defaultInteger
+              xpath: "/*/foo::text()"
 indexes:
   - memoryMap:
       name: defaultIndex
