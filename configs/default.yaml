@@ -66,12 +66,23 @@ inputs:
         - name: bool
           parser: defaultBoolean
           xpath: "/bool"
-        - name: intArray
-          isArray: true
-          parser: defaultInteger
+        - name: integerArray
+          type: array
           xpath: "/*/foo::text()"
+          items:
+            parser: defaultInteger
+        - name: objectArray
+          type: array
+          xpath: "/bar"
+          items:
+            type: object
+            properties:
+              - name: prop_a
+                parser: defaultInteger
+                xpath: "string(/baz)"
         - name: object
-          isObject: true
+          type: object
+          xpath: "/*/foo::text()"
           properties:
             - name: prop_a
               parser: defaultInteger

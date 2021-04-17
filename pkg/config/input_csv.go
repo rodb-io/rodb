@@ -73,9 +73,10 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	config.ColumnIndexByName = make(map[string]int)
 	for columnIndex, column := range config.Columns {
-		err := column.validate(rootConfig, log)
+		logPrefix := fmt.Sprintf("csv.columns[%v].", columnIndex)
+		err := column.validate(rootConfig, log, logPrefix)
 		if err != nil {
-			return fmt.Errorf("csv.columns[%v]: %w", columnIndex, err)
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
 		if _, exists := config.ColumnIndexByName[column.Name]; exists {
@@ -97,10 +98,10 @@ func (config *CsvInput) PropertyParser(columnName string) *string {
 	return nil
 }
 
-func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
 	_, parserExists := rootConfig.Parsers[config.Parser]
 	if !parserExists {
-		return fmt.Errorf("Parser '%v' not found in parsers list.", config.Parser)
+		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
 	if config.Name == "" {
@@ -108,7 +109,7 @@ func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry) er
 	}
 
 	if config.Parser == "" {
-		log.Debug("csv.columns[].parser not defined. Assuming 'string'")
+		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
 

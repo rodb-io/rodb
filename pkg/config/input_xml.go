@@ -19,9 +19,12 @@ type XmlInput struct {
 }
 
 type XmlInputProperty struct {
-	Name          string `yaml:"name"`
-	Parser        string `yaml:"parser"`
-	XPath         string `yaml:"xpath"`
+	Name          string             `yaml:"name"`
+	Type          string             `yaml:"type"`
+	Parser        string             `yaml:"parser"`
+	XPath         string             `yaml:"xpath"`
+	Items         *XmlInputProperty  `yaml:"items"`
+	Properties    []XmlInputProperty `yaml:"properties"`
 	CompiledXPath *xpath.Expr
 }
 
@@ -57,9 +60,10 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	config.PropertyIndexByName = make(map[string]int)
 	for propertyIndex, property := range config.Properties {
-		err := property.validate(rootConfig, log)
+		logPrefix := fmt.Sprintf("xml.properties[%v].", propertyIndex)
+		err := property.validate(rootConfig, true, log, logPrefix)
 		if err != nil {
-			return fmt.Errorf("xml.properties[%v]: %w", propertyIndex, err)
+			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
 		if _, exists := config.PropertyIndexByName[property.Name]; exists {
@@ -81,13 +85,13 @@ func (config *XmlInput) PropertyParser(propertyName string) *string {
 	return nil
 }
 
-func (config *XmlInputProperty) validate(rootConfig *Config, log *logrus.Entry) error {
-	_, parserExists := rootConfig.Parsers[config.Parser]
-	if !parserExists {
-		return fmt.Errorf("Parser '%v' not found in parsers list.", config.Parser)
-	}
-
-	if config.Name == "" {
+func (config *XmlInputProperty) validate(
+	rootConfig *Config,
+	nameRequired bool,
+	log *logrus.Entry,
+	logPrefix string,
+) error {
+	if nameRequired && config.Name == "" {
 		return errors.New("name is required")
 	}
 
@@ -97,9 +101,69 @@ func (config *XmlInputProperty) validate(rootConfig *Config, log *logrus.Entry) 
 		return fmt.Errorf("xpath: Invalid xpath expression: %w", err)
 	}
 
-	if config.Parser == "" {
-		log.Debug("xml.properties[].parser not defined. Assuming 'string'")
-		config.Parser = "string"
+	if config.Type == "" {
+		log.Debugf(logPrefix + "type is not set. Assuming 'primitive'.\n")
+		config.Type = "primitive"
+	}
+
+	switch config.Type {
+	case "primitive":
+		if config.Parser == "" {
+			log.Debug(logPrefix + "parser not defined. Assuming 'string'")
+			config.Parser = "string"
+		}
+
+		_, parserExists := rootConfig.Parsers[config.Parser]
+		if !parserExists {
+			return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
+		}
+
+		if config.Items != nil {
+			return fmt.Errorf("items can only be used on array properties.")
+		}
+		if config.Properties != nil && len(config.Properties) > 0 {
+			return fmt.Errorf("properties can only be used on object properties.")
+		}
+	case "array":
+		if config.Parser != "" {
+			return fmt.Errorf("parser '%v' specified, but the property is not a primitive.", config.Parser)
+		}
+
+		if config.Properties != nil && len(config.Properties) > 0 {
+			return fmt.Errorf("properties can only be used on object properties.")
+		}
+
+		if config.Items == nil {
+			return fmt.Errorf("items is required for arrays.")
+		}
+
+		itemsLogPrefix := fmt.Sprintf("%vitems.", logPrefix)
+		err := config.Items.validate(rootConfig, false, log, itemsLogPrefix)
+		if err != nil {
+			return fmt.Errorf("items.%w", err)
+		}
+	case "object":
+		if config.Parser != "" {
+			return fmt.Errorf("parser '%v' specified, but the property is not a primitive.", config.Parser)
+		}
+
+		if config.Items != nil {
+			return fmt.Errorf("items can only be used on array properties.")
+		}
+
+		if config.Properties == nil || len(config.Properties) == 0 {
+			return errors.New("properties is required for objects.")
+		}
+
+		for propertyIndex, property := range config.Properties {
+			propertyLogPrefix := fmt.Sprintf("%vproperties[%v].", logPrefix, propertyIndex)
+			err := property.validate(rootConfig, true, log, propertyLogPrefix)
+			if err != nil {
+				return fmt.Errorf("properties[%v].%w", propertyIndex, err)
+			}
+		}
+	default:
+		return fmt.Errorf("type '%v' is invalid.", config.Type)
 	}
 
 	return nil
