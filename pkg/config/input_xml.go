@@ -8,23 +8,30 @@ import (
 	"os"
 )
 
+type XmlInputPropertyType string
+
+const (
+	XmlInputPropertyTypePrimitive = XmlInputPropertyType("primitive")
+	XmlInputPropertyTypeArray     = XmlInputPropertyType("array")
+	XmlInputPropertyTypeObject    = XmlInputPropertyType("object")
+)
+
 type XmlInput struct {
-	Name                string              `yaml:"name"`
-	Path                string              `yaml:"path"`
-	DieOnInputChange    *bool               `yaml:"dieOnInputChange"`
-	Properties          []*XmlInputProperty `yaml:"properties"`
-	RecordXPath         string              `yaml:"recordXpath"`
-	PropertyIndexByName map[string]int
-	Logger              *logrus.Entry
+	Name             string              `yaml:"name"`
+	Path             string              `yaml:"path"`
+	DieOnInputChange *bool               `yaml:"dieOnInputChange"`
+	Properties       []*XmlInputProperty `yaml:"properties"`
+	RecordXPath      string              `yaml:"recordXpath"`
+	Logger           *logrus.Entry
 }
 
 type XmlInputProperty struct {
-	Name          string             `yaml:"name"`
-	Type          string             `yaml:"type"`
-	Parser        string             `yaml:"parser"`
-	XPath         string             `yaml:"xpath"`
-	Items         *XmlInputProperty  `yaml:"items"`
-	Properties    []XmlInputProperty `yaml:"properties"`
+	Name          string               `yaml:"name"`
+	Type          XmlInputPropertyType `yaml:"type"`
+	Parser        string               `yaml:"parser"`
+	XPath         string               `yaml:"xpath"`
+	Items         *XmlInputProperty    `yaml:"items"`
+	Properties    []*XmlInputProperty  `yaml:"properties"`
 	CompiledXPath *xpath.Expr
 }
 
@@ -58,7 +65,7 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 		return errors.New("The path '" + config.Path + "' is not a file")
 	}
 
-	config.PropertyIndexByName = make(map[string]int)
+	alreadyExistingNames := make(map[string]bool)
 	for propertyIndex, property := range config.Properties {
 		logPrefix := fmt.Sprintf("xml.properties[%v].", propertyIndex)
 		err := property.validate(rootConfig, true, log, logPrefix)
@@ -66,10 +73,10 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
-		if _, exists := config.PropertyIndexByName[property.Name]; exists {
+		if _, exists := alreadyExistingNames[property.Name]; exists {
 			return fmt.Errorf("Property names must be unique. Found '%v' twice.", property.Name)
 		}
-		config.PropertyIndexByName[property.Name] = propertyIndex
+		alreadyExistingNames[property.Name] = true
 	}
 
 	return nil
@@ -107,7 +114,7 @@ func (config *XmlInputProperty) validate(
 	}
 
 	switch config.Type {
-	case "primitive":
+	case XmlInputPropertyTypePrimitive:
 		if config.Parser == "" {
 			log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 			config.Parser = "string"
@@ -124,7 +131,7 @@ func (config *XmlInputProperty) validate(
 		if config.Properties != nil && len(config.Properties) > 0 {
 			return fmt.Errorf("properties can only be used on object properties.")
 		}
-	case "array":
+	case XmlInputPropertyTypeArray:
 		if config.Parser != "" {
 			return fmt.Errorf("parser '%v' specified, but the property is not a primitive.", config.Parser)
 		}
@@ -142,7 +149,7 @@ func (config *XmlInputProperty) validate(
 		if err != nil {
 			return fmt.Errorf("items.%w", err)
 		}
-	case "object":
+	case XmlInputPropertyTypeObject:
 		if config.Parser != "" {
 			return fmt.Errorf("parser '%v' specified, but the property is not a primitive.", config.Parser)
 		}
@@ -155,12 +162,18 @@ func (config *XmlInputProperty) validate(
 			return errors.New("properties is required for objects.")
 		}
 
+		alreadyExistingNames := make(map[string]bool)
 		for propertyIndex, property := range config.Properties {
 			propertyLogPrefix := fmt.Sprintf("%vproperties[%v].", logPrefix, propertyIndex)
 			err := property.validate(rootConfig, true, log, propertyLogPrefix)
 			if err != nil {
 				return fmt.Errorf("properties[%v].%w", propertyIndex, err)
 			}
+
+			if _, exists := alreadyExistingNames[property.Name]; exists {
+				return fmt.Errorf("Property names must be unique. Found '%v' twice.", property.Name)
+			}
+			alreadyExistingNames[property.Name] = true
 		}
 	default:
 		return fmt.Errorf("type '%v' is invalid.", config.Type)

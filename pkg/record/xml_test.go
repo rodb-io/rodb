@@ -30,11 +30,9 @@ func TestXmlGet(t *testing.T) {
 			Properties: []*config.XmlInputProperty{
 				{
 					Name:          colName,
+					Parser:        "parser",
 					CompiledXPath: xpath.MustCompile(xPath),
 				},
-			},
-			PropertyIndexByName: map[string]int{
-				colName: 0,
 			},
 		}
 
@@ -43,7 +41,11 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Unexpected error: '%v'", err)
 		}
 
-		record, err := NewXml(testConfig, []parserModule.Parser{parser}, node, 0)
+		parsers := parserModule.List{
+			"parser": parser,
+		}
+
+		record, err := NewXml(testConfig, node, parsers, 0)
 		if err != nil {
 			t.Errorf("Unexpected error: '%v'", err)
 		}
@@ -190,6 +192,25 @@ func TestXmlGet(t *testing.T) {
 		_, err := record.Get(colName)
 		if err == nil {
 			t.Errorf("Expected error, got nil")
+		}
+	})
+	t.Run("test", func(t *testing.T) {
+		// TODO
+		// TODO test getting non-existing node (does it work? return unsupported nil?
+		record := createRecord(
+			[]byte(`<root>
+				<a>a1</a>
+				<a>a2</a>
+				<a>a3</a>
+				<a>a4</a>
+			</root>`),
+			"/root/a",
+			mockParser,
+		)
+
+		_, err := record.Get(colName)
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
 		}
 	})
 }

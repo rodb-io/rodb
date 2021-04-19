@@ -3,7 +3,6 @@ package input
 import (
 	"bufio"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"github.com/fsnotify/fsnotify"
@@ -23,14 +22,14 @@ var xmlParserOptions = xmlquery.ParserOptions{
 }
 
 type Xml struct {
-	config          *configModule.XmlInput
-	reader          io.ReadSeeker
-	readerBuffer    *bufio.Reader
-	readerLock      sync.Mutex
-	xmlFile         *os.File
-	xmlParser       *xmlquery.StreamParser
-	propertyParsers []parser.Parser
-	watcher         *fsnotify.Watcher
+	config       *configModule.XmlInput
+	reader       io.ReadSeeker
+	readerBuffer *bufio.Reader
+	readerLock   sync.Mutex
+	xmlFile      *os.File
+	xmlParser    *xmlquery.StreamParser
+	parsers      parser.List
+	watcher      *fsnotify.Watcher
 }
 
 type xmlTempRecordNode struct {
@@ -52,6 +51,7 @@ func NewXml(
 		config:     config,
 		readerLock: sync.Mutex{},
 		watcher:    watcher,
+		parsers:    parsers,
 	}
 
 	util.StartFilesystemWatchProcess(
@@ -83,15 +83,6 @@ func NewXml(
 		return nil, err
 	}
 
-	xmlInput.propertyParsers = make([]parser.Parser, len(config.Properties))
-	for i, property := range config.Properties {
-		parser, parserExists := parsers[property.Parser]
-		if !parserExists {
-			return nil, errors.New("Parser '" + property.Parser + "' does not exist")
-		}
-		xmlInput.propertyParsers[i] = parser
-	}
-
 	return xmlInput, nil
 }
 
@@ -116,7 +107,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read xml data: %w", err)
 	}
 
-	return record.NewXml(xmlInput.config, xmlInput.propertyParsers, node, position)
+	return record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -176,7 +167,7 @@ func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
 				return
 			}
 
-			record, err := record.NewXml(xmlInput.config, xmlInput.propertyParsers, node, position)
+			record, err := record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
 			if err != nil {
 				channel <- IterateAllResult{
 					Error: fmt.Errorf("Error when creating record after position %v: %v", position, err),
