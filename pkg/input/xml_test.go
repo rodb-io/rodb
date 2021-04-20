@@ -61,10 +61,6 @@ func TestXmlGet(t *testing.T) {
 				CompiledXPath: xpath.MustCompile("string(/b)"),
 			},
 		},
-		PropertyIndexByName: map[string]int{
-			"a": 0,
-			"b": 1,
-		},
 	}
 
 	xml, err := NewXml(config, parsers)
@@ -174,12 +170,11 @@ func TestXmlSize(t *testing.T) {
 
 		falseValue := false
 		config := &config.XmlInput{
-			Path:                file.Name(),
-			DieOnInputChange:    &falseValue,
-			RecordXPath:         "test",
-			Logger:              logrus.NewEntry(logrus.StandardLogger()),
-			Properties:          []*config.XmlInputProperty{},
-			PropertyIndexByName: map[string]int{},
+			Path:             file.Name(),
+			DieOnInputChange: &falseValue,
+			RecordXPath:      "test",
+			Logger:           logrus.NewEntry(logrus.StandardLogger()),
+			Properties:       []*config.XmlInputProperty{},
 		}
 
 		xml, err := NewXml(config, parsers)
@@ -258,10 +253,6 @@ func TestXmlIterateAll(t *testing.T) {
 						Parser:        "mock",
 						CompiledXPath: xpath.MustCompile("string(/b)"),
 					},
-				},
-				PropertyIndexByName: map[string]int{
-					"a": 0,
-					"b": 1,
 				},
 			}
 			xml, err := NewXml(config, parsers)
