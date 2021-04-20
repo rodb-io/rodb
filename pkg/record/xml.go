@@ -3,7 +3,6 @@ package record
 import (
 	"fmt"
 	"github.com/antchfx/xmlquery"
-	"github.com/antchfx/xpath"
 	"rodb.io/pkg/config"
 	parserModule "rodb.io/pkg/parser"
 	"strconv"
@@ -11,11 +10,10 @@ import (
 )
 
 type Xml struct {
-	config        *config.XmlInput
-	node          *xmlquery.Node
-	parsers       parserModule.List
-	nodeNavigator *xmlquery.NodeNavigator
-	position      Position
+	config   *config.XmlInput
+	node     *xmlquery.Node
+	parsers  parserModule.List
+	position Position
 }
 
 func NewXml(
@@ -25,18 +23,17 @@ func NewXml(
 	position Position,
 ) (*Xml, error) {
 	return &Xml{
-		config:        config,
-		node:          node,
-		parsers:       parsers,
-		nodeNavigator: xmlquery.CreateXPathNavigator(node),
-		position:      position,
+		config:   config,
+		node:     node,
+		parsers:  parsers,
+		position: position,
 	}, nil
 }
 
 func (record *Xml) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	for _, property := range record.config.Properties {
-		value, err := record.getAllValues(record.nodeNavigator, property)
+		value, err := record.getAllValues(record.node, property)
 		if err != nil {
 			return nil, err
 		}
@@ -48,47 +45,36 @@ func (record *Xml) All() (map[string]interface{}, error) {
 }
 
 func (record *Xml) nodeIteratorToArray(
-	nodeIterator *xpath.NodeIterator,
+	nodes []*xmlquery.Node,
 	config *config.XmlInputProperty,
 ) ([]interface{}, error) {
-	values := make([]interface{}, 0)
-	for {
-		nodeNavigator := nodeIterator.Current().(*xmlquery.NodeNavigator)
-		if nodeNavigator == nil {
-			break
-		}
-
-		currentValue, err := record.getAllValues(nodeNavigator, config.Items)
+	values := make([]interface{}, len(nodes))
+	for i, node := range nodes {
+		currentValue, err := record.getAllValues(node, config.Items)
 		if err != nil {
 			return nil, err
 		}
 
-		values = append(values, currentValue)
-
-		if !nodeIterator.MoveNext() {
-			break
-		}
+		values[i] = currentValue
 	}
 
 	return values, nil
 }
 
 func (record *Xml) nodeIteratorToObject(
-	nodeIterator *xpath.NodeIterator,
+	nodes []*xmlquery.Node,
 	config *config.XmlInputProperty,
 ) (interface{}, error) {
-	nodeNavigator := nodeIterator.Current().(*xmlquery.NodeNavigator)
-	if nodeNavigator == nil {
+	if len(nodes) == 0 {
 		return nil, nil
 	}
-
-	if nodeIterator.MoveNext() {
+	if len(nodes) > 1 {
 		return nil, record.xpathError(config, fmt.Sprintf("got multiple nodes, but the property has an object type"))
 	}
 
 	values := map[string]interface{}{}
 	for _, property := range config.Properties {
-		currentValue, err := record.getAllValues(nodeNavigator, property)
+		currentValue, err := record.getAllValues(nodes[0], property)
 		if err != nil {
 			return nil, err
 		}
@@ -100,20 +86,20 @@ func (record *Xml) nodeIteratorToObject(
 }
 
 func (record *Xml) getAllValues(
-	currentNode *xmlquery.NodeNavigator,
+	node *xmlquery.Node,
 	currentConfig *config.XmlInputProperty,
 ) (interface{}, error) {
-	result := currentConfig.CompiledXPath.Evaluate(currentNode)
-
-	if nodeIterator, isNodeIterator := result.(*xpath.NodeIterator); isNodeIterator {
-		if currentConfig.Type == config.XmlInputPropertyTypeArray {
-			return record.nodeIteratorToArray(nodeIterator, currentConfig)
-		} else if currentConfig.Type == config.XmlInputPropertyTypeObject {
-			return record.nodeIteratorToObject(nodeIterator, currentConfig)
-		} else {
-			return nil, record.xpathError(currentConfig, fmt.Sprintf("got a node list, but the property is nor an array or an object"))
-		}
+	if currentConfig.Type == config.XmlInputPropertyTypeArray {
+		nodes := xmlquery.QuerySelectorAll(node, currentConfig.CompiledXPath)
+		return record.nodeIteratorToArray(nodes, currentConfig)
+	} else if currentConfig.Type == config.XmlInputPropertyTypeObject {
+		nodes := xmlquery.QuerySelectorAll(node, currentConfig.CompiledXPath)
+		return record.nodeIteratorToObject(nodes, currentConfig)
 	}
+
+	result := currentConfig.CompiledXPath.Evaluate(
+		xmlquery.CreateXPathNavigator(node),
+	)
 
 	if currentConfig.Type != config.XmlInputPropertyTypePrimitive {
 		return nil, record.xpathError(currentConfig, fmt.Sprintf("got a primitive value, but the property does not have a primitive type"))
@@ -141,7 +127,7 @@ func (record *Xml) Get(path string) (interface{}, error) {
 
 	for _, property := range record.config.Properties {
 		if property.Name == pathArray[0] {
-			return record.getSubValue(record.nodeNavigator, property, pathArray[1:])
+			return record.getSubValue(record.node, property, pathArray[1:])
 		}
 	}
 
@@ -186,13 +172,13 @@ func (record *Xml) handleBoolValue(config *config.XmlInputProperty, value bool) 
 }
 
 func (record *Xml) getSubArrayValue(
-	nodeIterator *xpath.NodeIterator,
+	nodes []*xmlquery.Node,
 	config *config.XmlInputProperty,
 	path []string,
 ) (interface{}, error) {
 	if len(path) == 0 {
 		// Getting the whole sub-array
-		return record.nodeIteratorToArray(nodeIterator, config)
+		return record.nodeIteratorToArray(nodes, config)
 	}
 
 	requestedIndex, err := strconv.Atoi(path[0])
@@ -200,50 +186,35 @@ func (record *Xml) getSubArrayValue(
 		return nil, fmt.Errorf("Cannot get sub-path '%v' because the requested key is '%v', but the value is an array", path, path[0])
 	}
 
-	currentIndex := 0
-	for {
-		nodeNavigator := nodeIterator.Current().(*xmlquery.NodeNavigator)
-		if nodeNavigator == nil {
-			break
-		}
-
-		if currentIndex == requestedIndex {
-			return record.getSubValue(nodeNavigator, config.Items, path[1:])
-		}
-
-		if !nodeIterator.MoveNext() {
-			break
-		}
-		currentIndex++
+	if requestedIndex >= len(nodes) {
+		// Not having the required index is a common case that
+		// should not trigger an error, but get a nil value
+		return nil, nil
 	}
 
-	// Not having the required index is a common case that
-	// should not trigger an error, but get a nil value
-	return nil, nil
+	return record.getSubValue(nodes[requestedIndex], config.Items, path[1:])
 }
 
 func (record *Xml) getSubObjectValue(
-	nodeIterator *xpath.NodeIterator,
+	nodes []*xmlquery.Node,
 	config *config.XmlInputProperty,
 	path []string,
 ) (interface{}, error) {
 	if len(path) == 0 {
 		// Getting the whole sub-object
-		return record.nodeIteratorToObject(nodeIterator, config)
+		return record.nodeIteratorToObject(nodes, config)
 	}
 
-	nodeNavigator := nodeIterator.Current().(*xmlquery.NodeNavigator)
-	if nodeNavigator == nil {
+	if len(nodes) == 0 {
 		return nil, nil
 	}
-
-	if nodeIterator.MoveNext() {
+	if len(nodes) > 1 {
 		return nil, record.xpathError(config, fmt.Sprintf("got multiple nodes, but the property has an object type"))
 	}
 
 	for _, property := range config.Properties {
 		if property.Name == path[0] {
-			return record.getSubValue(nodeNavigator, property, path[1:])
+			return record.getSubValue(nodes[0], property, path[1:])
 		}
 	}
 
@@ -253,22 +224,21 @@ func (record *Xml) getSubObjectValue(
 }
 
 func (record *Xml) getSubValue(
-	currentNode *xmlquery.NodeNavigator,
+	node *xmlquery.Node,
 	currentConfig *config.XmlInputProperty,
 	path []string,
 ) (interface{}, error) {
-	result := currentConfig.CompiledXPath.Evaluate(currentNode)
-
-	// First, handling the array and object cases
-	if nodeIterator, isNodeIterator := result.(*xpath.NodeIterator); isNodeIterator {
-		if currentConfig.Type == config.XmlInputPropertyTypeArray {
-			return record.getSubArrayValue(nodeIterator, currentConfig, path)
-		} else if currentConfig.Type == config.XmlInputPropertyTypeObject {
-			return record.getSubObjectValue(nodeIterator, currentConfig, path)
-		} else {
-			return nil, record.xpathError(currentConfig, fmt.Sprintf("got a node list, but the property is nor an array or an object"))
-		}
+	if currentConfig.Type == config.XmlInputPropertyTypeArray {
+		nodes := xmlquery.QuerySelectorAll(node, currentConfig.CompiledXPath)
+		return record.getSubArrayValue(nodes, currentConfig, path)
+	} else if currentConfig.Type == config.XmlInputPropertyTypeObject {
+		nodes := xmlquery.QuerySelectorAll(node, currentConfig.CompiledXPath)
+		return record.getSubObjectValue(nodes, currentConfig, path)
 	}
+
+	result := currentConfig.CompiledXPath.Evaluate(
+		xmlquery.CreateXPathNavigator(node),
+	)
 
 	// From here, we only have to handle the primitive types returned by the xpath
 
