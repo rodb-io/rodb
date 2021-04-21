@@ -359,19 +359,22 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
-	t.Run("array instead of object", func(t *testing.T) {
+	t.Run("object type, but multiple results", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a1</a><a>a2</a></root>"),
 			&config.XmlInput{
 				Properties: []*config.XmlInputProperty{
 					{
-						Type:          config.XmlInputPropertyTypeArray,
+						Type:          config.XmlInputPropertyTypeObject,
 						CompiledXPath: xpath.MustCompile("/root/a"),
 						Name:          colName,
-						Items: &config.XmlInputProperty{
-							Type:          config.XmlInputPropertyTypePrimitive,
-							CompiledXPath: xpath.MustCompile("string(/)"),
-							Parser:        "parser",
+						Properties: []*config.XmlInputProperty{
+							{
+								Type:          config.XmlInputPropertyTypePrimitive,
+								CompiledXPath: xpath.MustCompile("string(/a)"),
+								Name:          "prop",
+								Parser:        "parser",
+							},
 						},
 					},
 				},
@@ -468,7 +471,7 @@ func TestXmlGet(t *testing.T) {
 					{
 						Type:          config.XmlInputPropertyTypePrimitive,
 						Parser:        "parser",
-						CompiledXPath: xpath.MustCompile("/root/a"),
+						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 					},
 				},
@@ -480,7 +483,7 @@ func TestXmlGet(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error, got %v", err)
 		}
-		if expect := 42; result != expect {
+		if expect := float64(42); result != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, result)
 		}
 	})
@@ -493,7 +496,7 @@ func TestXmlGet(t *testing.T) {
 				Properties: []*config.XmlInputProperty{
 					{
 						Type:          config.XmlInputPropertyTypePrimitive,
-						CompiledXPath: xpath.MustCompile("/root/sub"),
+						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 						Parser:        "parser",
 					},
@@ -506,9 +509,8 @@ func TestXmlGet(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error, got %v", err)
 		}
-		objectResult := result.(map[string]interface{})
-		if expect := 42; objectResult["prop"] != expect {
-			t.Errorf("Expected to get '%v', got '%v'", expect, objectResult["prop"])
+		if expect := float64(42); result != expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, result)
 		}
 	})
 	t.Run("array value from parse", func(t *testing.T) {
@@ -521,7 +523,7 @@ func TestXmlGet(t *testing.T) {
 					{
 						Type:          config.XmlInputPropertyTypePrimitive,
 						Parser:        "parser",
-						CompiledXPath: xpath.MustCompile("/root/a"),
+						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 					},
 				},
@@ -537,10 +539,10 @@ func TestXmlGet(t *testing.T) {
 		if expect := 2; len(arrayResult) != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, arrayResult)
 		}
-		if expect := 1; arrayResult[0] != expect {
+		if expect := float64(1); arrayResult[0] != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, arrayResult[0])
 		}
-		if expect := 42; arrayResult[1] != expect {
+		if expect := float64(42); arrayResult[1] != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, arrayResult[1])
 		}
 	})
@@ -553,7 +555,7 @@ func TestXmlGet(t *testing.T) {
 				Properties: []*config.XmlInputProperty{
 					{
 						Type:          config.XmlInputPropertyTypePrimitive,
-						CompiledXPath: xpath.MustCompile("/root/sub"),
+						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 						Parser:        "parser",
 					},
@@ -567,35 +569,8 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Unexpected error, got %v", err)
 		}
 		objectResult := result.(map[string]interface{})
-		if expect := 42; objectResult["prop"] != expect {
+		if expect := float64(42); objectResult["prop"] != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, objectResult["prop"])
-		}
-	})
-	t.Run("primitive xpath with non-primitive type", func(t *testing.T) {
-		record := createRecord(
-			[]byte(`<root>
-				<a>1</a>
-			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
-					{
-						Type:          config.XmlInputPropertyTypeArray,
-						CompiledXPath: xpath.MustCompile("string(/root/a)"),
-						Name:          colName,
-						Items: &config.XmlInputProperty{
-							Type:          config.XmlInputPropertyTypePrimitive,
-							CompiledXPath: xpath.MustCompile("string(/)"),
-							Parser:        "parser",
-						},
-					},
-				},
-			},
-			parserModule.List{"parser": integerParser},
-		)
-
-		_, err := record.Get(colName)
-		if err == nil {
-			t.Errorf("Expected error, got %v", err)
 		}
 	})
 	t.Run("integer in array in object", func(t *testing.T) {
@@ -616,7 +591,7 @@ func TestXmlGet(t *testing.T) {
 						Properties: []*config.XmlInputProperty{
 							{
 								Type:          config.XmlInputPropertyTypeArray,
-								CompiledXPath: xpath.MustCompile("/sub/a"),
+								CompiledXPath: xpath.MustCompile("/a"),
 								Name:          "prop",
 								Items: &config.XmlInputProperty{
 									Type:          config.XmlInputPropertyTypePrimitive,
@@ -657,7 +632,7 @@ func TestXmlGet(t *testing.T) {
 						Name:          colName,
 						Items: &config.XmlInputProperty{
 							Type:          config.XmlInputPropertyTypeObject,
-							CompiledXPath: xpath.MustCompile("/sub/a"),
+							CompiledXPath: xpath.MustCompile("/a"),
 							Properties: []*config.XmlInputProperty{
 								{
 									Type:          config.XmlInputPropertyTypePrimitive,

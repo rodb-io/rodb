@@ -52,10 +52,12 @@ func TestXmlGet(t *testing.T) {
 		RecordXPath:      "//item",
 		Properties: []*config.XmlInputProperty{
 			{
+				Type:          config.XmlInputPropertyTypePrimitive,
 				Name:          "a",
 				Parser:        "mock",
 				CompiledXPath: xpath.MustCompile("string(/@a)"),
 			}, {
+				Type:          config.XmlInputPropertyTypePrimitive,
 				Name:          "b",
 				Parser:        "mock",
 				CompiledXPath: xpath.MustCompile("string(/b)"),
@@ -245,10 +247,12 @@ func TestXmlIterateAll(t *testing.T) {
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
 				Properties: []*config.XmlInputProperty{
 					{
+						Type:          config.XmlInputPropertyTypePrimitive,
 						Name:          "a",
 						Parser:        "mock",
 						CompiledXPath: xpath.MustCompile("string(/@a)"),
 					}, {
+						Type:          config.XmlInputPropertyTypePrimitive,
 						Name:          "b",
 						Parser:        "mock",
 						CompiledXPath: xpath.MustCompile("string(/b)"),
