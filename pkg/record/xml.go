@@ -3,6 +3,7 @@ package record
 import (
 	"fmt"
 	"github.com/antchfx/xmlquery"
+	"github.com/antchfx/xpath"
 	"rodb.io/pkg/config"
 	parserModule "rodb.io/pkg/parser"
 	"strconv"
@@ -115,7 +116,45 @@ func (record *Xml) getAllValues(
 		return record.handleBoolValue(currentConfig, boolResult)
 	}
 
+	if nodeIterator, resultIsNodeIterator := result.(*xpath.NodeIterator); resultIsNodeIterator {
+		return record.handleNodeIteratorValue(currentConfig, nodeIterator)
+	}
+
 	return nil, record.xpathError(currentConfig, fmt.Sprintf("returned an unexpected type: %#v", result))
+}
+
+// Converts a node iterator result into a string containing the raw XML,
+// to facilitate debugging and setting-up the configuration
+func (record *Xml) handleNodeIteratorValue(config *config.XmlInputProperty, nodeIterator *xpath.NodeIterator) (interface{}, error) {
+	parser, parserExists := record.parsers[config.Parser]
+	if !parserExists {
+		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
+	}
+
+	if _, parserIsString := parser.(*parserModule.String); !parserIsString {
+		return nil, record.xpathError(config, fmt.Sprintf("got XML node(s), but the property does not have the appropriate configuration or a string parser"))
+	}
+
+	result := ""
+	for {
+		if !nodeIterator.MoveNext() {
+			break
+		}
+
+		nodeNavigator := nodeIterator.Current().(*xmlquery.NodeNavigator)
+		if nodeNavigator == nil {
+			continue
+		}
+
+		node := nodeNavigator.Current()
+		if node == nil {
+			continue
+		}
+
+		result = result + node.OutputXML(true)
+	}
+
+	return result, nil
 }
 
 func (record *Xml) Get(path string) (interface{}, error) {
@@ -267,6 +306,9 @@ func (record *Xml) getSubValue(
 	}
 	if boolResult, resultIsBool := result.(bool); resultIsBool {
 		return record.handleBoolValue(currentConfig, boolResult)
+	}
+	if nodeIterator, resultIsNodeIterator := result.(*xpath.NodeIterator); resultIsNodeIterator {
+		return record.handleNodeIteratorValue(currentConfig, nodeIterator)
 	}
 
 	return nil, record.xpathError(currentConfig, fmt.Sprintf("returned an unexpected type: %#v", result))

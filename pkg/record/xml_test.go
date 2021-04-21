@@ -19,7 +19,10 @@ func TestXmlAll(t *testing.T) {
 	})
 	integerParser := parserModule.NewInteger(&config.IntegerParser{})
 	jsonParser := parserModule.NewJson(&config.JsonParser{})
-	mockParser := parserModule.NewMock()
+	stringParser, err := parserModule.NewString(&config.StringParser{})
+	if err != nil {
+		t.Errorf("Unexpected error: '%v'", err)
+	}
 
 	node, err := xmlquery.Parse(bytes.NewReader([]byte(`
 		<root>
@@ -121,11 +124,17 @@ func TestXmlAll(t *testing.T) {
 					},
 				},
 			},
+			{
+				Type:          config.XmlInputPropertyTypePrimitive,
+				Name:          "nodeAsString",
+				Parser:        "string",
+				CompiledXPath: xpath.MustCompile("/root/integer"),
+			},
 		},
 	}
 
 	parsers := parserModule.List{
-		"string":  mockParser,
+		"string":  stringParser,
 		"json":    jsonParser,
 		"boolean": booleanParser,
 		"float":   floatParser,
@@ -188,6 +197,10 @@ func TestXmlAll(t *testing.T) {
 	if expect, got := "array of obj val b", arrayOfObjects1["prop"].(string); got != expect {
 		t.Errorf("Expected to get '%v', got '%v'", expect, got)
 	}
+
+	if expect, got := "<integer>42</integer>", result["nodeAsString"].(string); got != expect {
+		t.Errorf("Expected to get '%v', got '%v'", expect, got)
+	}
 }
 
 func TestXmlGet(t *testing.T) {
@@ -201,6 +214,10 @@ func TestXmlGet(t *testing.T) {
 	integerParser := parserModule.NewInteger(&config.IntegerParser{})
 	jsonParser := parserModule.NewJson(&config.JsonParser{})
 	mockParser := parserModule.NewMock()
+	stringParser, err := parserModule.NewString(&config.StringParser{})
+	if err != nil {
+		t.Errorf("Unexpected error: '%v'", err)
+	}
 
 	colName := "col_a"
 	createRecord := func(
@@ -834,6 +851,33 @@ func TestXmlGet(t *testing.T) {
 			t.Errorf("Unexpected error, got %v", err)
 		}
 		if expect := 42; got != expect {
+			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+		}
+	})
+	t.Run("nodes as string", func(t *testing.T) {
+		record := createRecord(
+			[]byte(`<root>
+				<a>a1</a>
+				<a>a2</a>
+			</root>`),
+			&config.XmlInput{
+				Properties: []*config.XmlInputProperty{
+					{
+						Type:          config.XmlInputPropertyTypePrimitive,
+						CompiledXPath: xpath.MustCompile("/root/a"),
+						Name:          colName,
+						Parser:        "parser",
+					},
+				},
+			},
+			parserModule.List{"parser": stringParser},
+		)
+
+		result, err := record.Get(colName)
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+		if expect, got := "<a>a1</a><a>a2</a>", result.(string); got != expect {
 			t.Errorf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
