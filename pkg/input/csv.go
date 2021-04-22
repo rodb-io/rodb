@@ -171,51 +171,49 @@ func (csvInput *Csv) open() (io.ReadSeeker, *bufio.Reader, *csv.Reader, *os.File
 	return reader, readerBuffer, csvReader, file, nil
 }
 
-func (csvInput *Csv) IterateAll() <-chan IterateAllResult {
-	channel := make(chan IterateAllResult)
+func (csvInput *Csv) IterateAll() (record.Iterator, func() error, error) {
+	reader, readerBuffer, csvReader, file, err := csvInput.open()
+	if err != nil {
+		return nil, nil, err
+	}
 
-	go func() {
-		defer close(channel)
-
-		reader, readerBuffer, csvReader, file, err := csvInput.open()
+	if csvInput.config.IgnoreFirstRow {
+		_, err = csvReader.Read()
 		if err != nil {
-			channel <- IterateAllResult{Error: err}
-			return
+			return nil, nil, err
 		}
-		defer file.Close()
+	}
 
-		if csvInput.config.IgnoreFirstRow {
-			_, _ = csvReader.Read()
+	iterator := func() (record.Record, error) {
+		position, err := util.GetBufferedReaderOffset(reader, readerBuffer)
+		if err != nil {
+			return nil, fmt.Errorf("Cannot read csv position: %w", err)
 		}
 
-		for {
-			position, err := util.GetBufferedReaderOffset(reader, readerBuffer)
-			if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv position: %w", err)}
-			}
-
-			row, err := csvReader.Read()
-			if err == io.EOF {
-				break
-			} else if errors.Is(err, csv.ErrFieldCount) {
-				csvInput.config.Logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
-			} else if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read csv data: %w", err)}
-				return
-			}
-
-			channel <- IterateAllResult{
-				Record: record.NewCsv(
-					csvInput.config,
-					csvInput.columnParsers,
-					row,
-					position,
-				),
-			}
+		row, err := csvReader.Read()
+		if err == io.EOF {
+			return nil, nil
+		} else if errors.Is(err, csv.ErrFieldCount) {
+			csvInput.config.Logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
+		} else if err != nil {
+			return nil, fmt.Errorf("Cannot read csv data: %w", err)
 		}
-	}()
 
-	return channel
+		record := record.NewCsv(
+			csvInput.config,
+			csvInput.columnParsers,
+			row,
+			position,
+		)
+
+		return record, nil
+	}
+
+	end := func() error {
+		return file.Close()
+	}
+
+	return iterator, end, nil
 }
 
 func (csvInput *Csv) Close() error {

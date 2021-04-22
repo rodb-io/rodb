@@ -119,67 +119,55 @@ func (xmlInput *Xml) Size() (int64, error) {
 	return fileInfo.Size(), nil
 }
 
-func (xmlInput *Xml) IterateAll() <-chan IterateAllResult {
-	channel := make(chan IterateAllResult)
+func (xmlInput *Xml) IterateAll() (record.Iterator, func() error, error) {
+	file, err := os.Open(xmlInput.config.Path)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	go func() {
-		defer close(channel)
+	reader := io.ReadSeeker(file)
+	readerBuffer := bufio.NewReader(reader)
 
-		file, err := os.Open(xmlInput.config.Path)
+	xmlParser, err := xmlquery.CreateStreamParserWithOptions(
+		readerBuffer,
+		xmlParserOptions,
+		xmlInput.config.RecordXPath,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	position := int64(0)
+	iterator := func() (record.Record, error) {
+		// The returned position is actually the end of the opening tag of the previous element
+		// We cannot easily get a more precise position, but since we can get the next record
+		// reliably from this position, it works
+		position, err = util.GetBufferedReaderOffset(reader, readerBuffer)
 		if err != nil {
-			channel <- IterateAllResult{Error: err}
-			return
+			return nil, fmt.Errorf("Error when getting xml offset: %v", err)
 		}
-		defer file.Close()
 
-		reader := io.ReadSeeker(file)
-		readerBuffer := bufio.NewReader(reader)
-
-		xmlParser, err := xmlquery.CreateStreamParserWithOptions(
-			readerBuffer,
-			xmlParserOptions,
-			xmlInput.config.RecordXPath,
-		)
+		node, err := xmlParser.Read()
+		if err == io.EOF {
+			return nil, nil
+		}
 		if err != nil {
-			channel <- IterateAllResult{Error: err}
-			return
+			return nil, fmt.Errorf("Cannot read xml data: %w", err)
 		}
 
-		position := int64(0)
-		for {
-			// The returned position is actually the end of the opening tag of the previous element
-			// We cannot easily get a more precise position, but since we can get the next record
-			// reliably from this position, it works
-			position, err = util.GetBufferedReaderOffset(reader, readerBuffer)
-			if err != nil {
-				channel <- IterateAllResult{
-					Error: fmt.Errorf("Error when getting xml offset: %v", err),
-				}
-				return
-			}
-
-			node, err := xmlParser.Read()
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				channel <- IterateAllResult{Error: fmt.Errorf("Cannot read xml data: %w", err)}
-				return
-			}
-
-			record, err := record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
-			if err != nil {
-				channel <- IterateAllResult{
-					Error: fmt.Errorf("Error when creating record after position %v: %v", position, err),
-				}
-				return
-			}
-
-			channel <- IterateAllResult{Record: record}
+		record, err := record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
+		if err != nil {
+			return nil, fmt.Errorf("Error when creating record after position %v: %v", position, err)
 		}
-	}()
 
-	return channel
+		return record, nil
+	}
+
+	end := func() error {
+		return file.Close()
+	}
+
+	return iterator, end, nil
 }
 
 func (xmlInput *Xml) Close() error {

@@ -32,16 +32,30 @@ func (noop *Noop) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
 ) (record.PositionIterator, error) {
-	inputIterator := input.IterateAll()
+	inputIterator, end, err := input.IterateAll()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err := end()
+		if err != nil {
+			noop.config.Logger.Errorf("Error while closing input iterator: %v", err)
+		}
+	}()
+
 	return func() (*record.Position, error) {
-		for result := range inputIterator {
-			if result.Error != nil {
-				return nil, result.Error
+		for {
+			record, err := inputIterator()
+			if err != nil {
+				return nil, err
+			}
+			if record == nil {
+				break
 			}
 
 			matches := true
 			for propertyName, filter := range filters {
-				value, err := result.Record.Get(propertyName)
+				value, err := record.Get(propertyName)
 				if err != nil {
 					return nil, err
 				}
@@ -63,7 +77,7 @@ func (noop *Noop) GetRecordPositions(
 			}
 
 			if matches {
-				position := result.Record.Position()
+				position := record.Position()
 				return &position, nil
 			}
 		}

@@ -9,27 +9,27 @@ import (
 )
 
 func TestNoopGetRecordPositions(t *testing.T) {
-	mockInput := input.NewMock(parser.NewMock(), []input.IterateAllResult{
-		{Record: record.NewStringPropertiesMock(map[string]string{
+	mockInput := input.NewMock(parser.NewMock(), []record.Record{
+		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",
-		}, 0)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 0),
+		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
-		}, 1)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 1),
+		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_a",
-		}, 2)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 2),
+		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
-		}, 3)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 3),
+		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_b",
-		}, 4)},
+		}, 4),
 	})
 	index := NewNoop(
 		&config.NoopIndex{},

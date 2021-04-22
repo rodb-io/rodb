@@ -87,22 +87,36 @@ func (mm *MemoryMap) Reindex() error {
 	}
 
 	nextProgress := time.Now()
-	inputIterator := mm.input.IterateAll()
-	for result := range inputIterator {
-		if result.Error != nil {
-			return result.Error
+	inputIterator, end, err := mm.input.IterateAll()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err := end()
+		if err != nil {
+			mm.config.Logger.Errorf("Error while closing input iterator: %v", err)
+		}
+	}()
+
+	for {
+		record, err := inputIterator()
+		if err != nil {
+			return err
+		}
+		if record == nil {
+			break
 		}
 
 		if totalSize != 0 {
 			if now := time.Now(); now.After(nextProgress) {
-				progress := float64(result.Record.Position()) / float64(totalSize)
+				progress := float64(record.Position()) / float64(totalSize)
 				mm.config.Logger.Infof("Indexing progress: %d%%", int(math.Floor(progress*100)))
 				nextProgress = now.Add(time.Second)
 			}
 		}
 
 		for _, property := range mm.config.Properties {
-			value, err := result.Record.Get(property)
+			value, err := record.Get(property)
 			if err != nil {
 				return err
 			}
@@ -111,7 +125,7 @@ func (mm *MemoryMap) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = addValueToIndex(property, value, result.Record.Position())
+			err = addValueToIndex(property, value, record.Position())
 			if err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}

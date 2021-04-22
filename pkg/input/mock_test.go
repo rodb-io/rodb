@@ -1,7 +1,6 @@
 package input
 
 import (
-	"errors"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"testing"
@@ -12,7 +11,7 @@ func TestMockGet(t *testing.T) {
 		expectedRecord := record.NewStringPropertiesMock(map[string]string{
 			"col": "value",
 		}, 0)
-		mock := NewMock(parser.NewMock(), []IterateAllResult{{Record: expectedRecord}})
+		mock := NewMock(parser.NewMock(), []record.Record{expectedRecord})
 
 		record, err := mock.Get(0)
 		if err != nil {
@@ -23,23 +22,6 @@ func TestMockGet(t *testing.T) {
 			t.Errorf("Expected %+v, got %+v", expectedRecord, record)
 		}
 	})
-	t.Run("expected error", func(t *testing.T) {
-		expectedError := errors.New("Test error")
-		mock := NewMock(parser.NewMock(), []IterateAllResult{{Error: expectedError}})
-
-		_, err := mock.Get(0)
-		if err != expectedError {
-			t.Errorf("Expected error '%+v', got '%+v'", expectedError, err)
-		}
-	})
-	t.Run("unexpected error", func(t *testing.T) {
-		mock := NewMock(parser.NewMock(), []IterateAllResult{})
-
-		_, err := mock.Get(0)
-		if err == nil {
-			t.Errorf("Expected an error, got '%+v'", err)
-		}
-	})
 }
 
 func TestMockSize(t *testing.T) {
@@ -47,9 +29,7 @@ func TestMockSize(t *testing.T) {
 		expectedRecord := record.NewStringPropertiesMock(map[string]string{
 			"col": "value",
 		}, 0)
-		data := []IterateAllResult{
-			{Record: expectedRecord},
-		}
+		data := []record.Record{expectedRecord}
 		mock := NewMock(parser.NewMock(), data)
 
 		size, err := mock.Size()
@@ -65,19 +45,35 @@ func TestMockSize(t *testing.T) {
 
 func TestMockIterateAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		data := []IterateAllResult{
-			{Record: record.NewStringPropertiesMock(map[string]string{
+		data := []record.Record{
+			record.NewStringPropertiesMock(map[string]string{
 				"col": "value",
-			}, 0)},
-			{Error: errors.New("Test error")},
+			}, 0),
+			record.NewStringPropertiesMock(map[string]string{
+				"col": "value",
+			}, 1),
 		}
 		mock := NewMock(parser.NewMock(), data)
 
-		channel := mock.IterateAll()
+		iterator, end, err := mock.IterateAll()
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+		defer func() {
+			err := end()
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+		}()
 
 		for i := 0; i < len(data); i++ {
-			if result := <-channel; result != data[i] {
-				t.Errorf("Expected %+v, got %+v", data[i], result)
+			record, err := iterator()
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+
+			if record != data[i] {
+				t.Errorf("Expected %+v, got %+v", data[i], record)
 			}
 		}
 	})

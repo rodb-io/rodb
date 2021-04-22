@@ -14,17 +14,14 @@ type Input interface {
 
 	// Iterates all the records in the input, ordered
 	// from the smallest to the biggest position
-	IterateAll() <-chan IterateAllResult
+	// The second returned parameter is a callback that
+	// must be used to close the relevant resources
+	IterateAll() (record.Iterator, func() error, error)
 
 	Close() error
 }
 
 type List = map[string]Input
-
-type IterateAllResult struct {
-	Record record.Record
-	Error  error
-}
 
 func NewFromConfig(
 	config config.Input,

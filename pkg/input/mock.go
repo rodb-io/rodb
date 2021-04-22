@@ -7,11 +7,11 @@ import (
 )
 
 type Mock struct {
-	data   []IterateAllResult
+	data   []record.Record
 	parser parser.Parser
 }
 
-func NewMock(parser parser.Parser, data []IterateAllResult) *Mock {
+func NewMock(parser parser.Parser, data []record.Record) *Mock {
 	return &Mock{
 		data:   data,
 		parser: parser,
@@ -29,25 +29,30 @@ func (mock *Mock) Get(position record.Position) (record.Record, error) {
 	}
 
 	result := mock.data[index]
-	return result.Record, result.Error
+	return result, nil
 }
 
 func (mock *Mock) Size() (int64, error) {
 	return int64(len(mock.data)), nil
 }
 
-func (mock *Mock) IterateAll() <-chan IterateAllResult {
-	channel := make(chan IterateAllResult)
-
-	go func() {
-		defer close(channel)
-
-		for _, row := range mock.data {
-			channel <- row
+func (mock *Mock) IterateAll() (record.Iterator, func() error, error) {
+	i := 0
+	iterator := func() (record.Record, error) {
+		for i < len(mock.data) {
+			record := mock.data[i]
+			i++
+			return record, nil
 		}
-	}()
 
-	return channel
+		return nil, nil
+	}
+
+	end := func() error {
+		return nil
+	}
+
+	return iterator, end, nil
 }
 
 func (mock *Mock) Close() error {

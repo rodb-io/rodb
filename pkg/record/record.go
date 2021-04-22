@@ -8,13 +8,19 @@ type Position = int64
 
 type PositionList []Position
 
-// Ends when both the record and error are nil at the same time
+// Ends when both the position and error are nil at the same time
 // a nil position with a non-nil error does not mean it reached the end
 // When the end has been reached, the iterator is expected
-// to return (nil, nil) even if called again
+// to return (nil, nil), even if called again
 type PositionIterator func() (*Position, error)
 
 type List []Record
+
+// Ends when both the record and error are nil at the same time
+// a nil record with a non-nil error does not mean it reached the end
+// When the end has been reached, the iterator is expected
+// to return (nil, nil), even if called again
+type Iterator func() (Record, error)
 
 var RecordNotFoundError = errors.New("Record not found")
 

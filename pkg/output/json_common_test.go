@@ -10,7 +10,7 @@ import (
 )
 
 type jsonDataForTests struct {
-	mockResults      []input.IterateAllResult
+	mockResults      []record.Record
 	mockInput        *input.Mock
 	mockIndex        *index.Noop
 	mockIndex2       *index.Noop
@@ -22,23 +22,23 @@ type jsonDataForTests struct {
 }
 
 func mockJsonDataForTests() jsonDataForTests {
-	mockResults := []input.IterateAllResult{
-		{Record: record.NewStringPropertiesMock(map[string]string{
+	mockResults := []record.Record{
+		record.NewStringPropertiesMock(map[string]string{
 			"id":         "1",
 			"belongs_to": "0",
-		}, 0)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 0),
+		record.NewStringPropertiesMock(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
-		}, 1)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 1),
+		record.NewStringPropertiesMock(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
-		}, 2)},
-		{Record: record.NewStringPropertiesMock(map[string]string{
+		}, 2),
+		record.NewStringPropertiesMock(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
-		}, 3)},
+		}, 3),
 	}
 
 	mockInput := input.NewMock(parser.NewMock(), mockResults)

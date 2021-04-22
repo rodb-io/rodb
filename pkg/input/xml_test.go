@@ -129,14 +129,30 @@ func TestXmlGet(t *testing.T) {
 		wait.Wait()
 	})
 	t.Run("from IterateAll", func(t *testing.T) {
+		iterator, end, err := xml.IterateAll()
+		if err != nil {
+			t.Errorf("Expected no error, got '%v'", err)
+		}
+		defer func() {
+			err := end()
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+		}()
+
 		index := 0
 		var secondRow record.Record = nil
-		for result := range xml.IterateAll() {
-			if result.Error != nil {
-				t.Errorf("Expected no error, got '%v'", result.Error)
+		for {
+			record, err := iterator()
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
 			}
+			if record == nil {
+				break
+			}
+
 			if index == 1 {
-				secondRow = result.Record
+				secondRow = record
 			}
 			index++
 		}
@@ -264,13 +280,27 @@ func TestXmlIterateAll(t *testing.T) {
 				t.Error(err)
 			}
 
-			resultsChannel := xml.IterateAll()
+			iterator, end, err := xml.IterateAll()
+			if err != nil {
+				t.Errorf("Expected no error, got '%v'", err)
+			}
+			defer func() {
+				err := end()
+				if err != nil {
+					t.Errorf("Expected no error, got '%v'", err)
+				}
+			}()
+
 			for i := 0; i < len(testCase.expectedRows); i++ {
-				if result := <-resultsChannel; result.Error != nil {
+				if record, err := iterator(); err != nil {
 					t.Error(err)
 				} else {
+					if record == nil {
+						break
+					}
+
 					for j, k := range []string{"a", "b"} {
-						result, err := result.Record.Get(k)
+						result, err := record.Get(k)
 						if err != nil {
 							t.Errorf("Got error '%v', expected '%v' for record %v, property number %v", err, testCase.expectedRows[i][j], i, j)
 							continue
@@ -282,7 +312,7 @@ func TestXmlIterateAll(t *testing.T) {
 						}
 					}
 
-					if got, expect := result.Record.Position(), testCase.expectedPositions[i]; got != expect {
+					if got, expect := record.Position(), testCase.expectedPositions[i]; got != expect {
 						t.Errorf("Got position '%v', expected '%v' for record %v", got, expect, i)
 					}
 				}
