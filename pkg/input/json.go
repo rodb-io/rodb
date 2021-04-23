@@ -7,29 +7,20 @@ import (
 	"io"
 	"os"
 	configModule "rodb.io/pkg/config"
-	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
 )
 
 type Json struct {
-	config      *configModule.JsonInput
-	reader      io.ReadSeeker
-	readerLock  sync.Mutex
-	jsonFile    *os.File
-	jsonDecoder *json.Decoder
-	watcher     *fsnotify.Watcher
-
-	// If true, the file is a json array containing the required objects
-	// If false, the file contains multiple independent json documents
-	jsonIsArray bool
+	config     *configModule.JsonInput
+	reader     io.ReadSeeker
+	readerLock sync.Mutex
+	jsonFile   *os.File
+	watcher    *fsnotify.Watcher
 }
 
-func NewJson(
-	config *configModule.JsonInput,
-	parsers parser.List,
-) (*Json, error) {
+func NewJson(config *configModule.JsonInput) (*Json, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, err
@@ -47,21 +38,12 @@ func NewJson(
 		jsonInput.config.Logger,
 	)
 
-	reader, jsonDecoder, file, err := jsonInput.open()
+	reader, file, err := jsonInput.open()
 	if err != nil {
 		return nil, err
 	}
 	jsonInput.reader = reader
 	jsonInput.jsonFile = file
-	jsonInput.jsonDecoder = jsonDecoder
-
-	// Analyzing the first token to check if it's an array
-	// or a sequence of documents
-	firstToken, err := jsonDecoder.Token()
-	if err != nil {
-		return nil, err
-	}
-	jsonInput.jsonIsArray = (firstToken == json.Delim('['))
 
 	// Returning to the beginning of the file after checking the first token
 	_, err = reader.Seek(0, io.SeekStart)
@@ -90,8 +72,12 @@ func (jsonInput *Json) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot seek position '%v' in json file: %w", position, err)
 	}
 
+	// Creating a new decoder each time because we cannot reset
+	// it's internal state when seeking otherwise
+	jsonDecoder := json.NewDecoder(jsonInput.reader)
+
 	var data map[string]interface{}
-	err = jsonInput.jsonDecoder.Decode(&data)
+	err = jsonDecoder.Decode(&data)
 	if err != nil {
 		return nil, fmt.Errorf("Cannot read json data: %w", err)
 	}
@@ -112,42 +98,33 @@ func (jsonInput *Json) Size() (int64, error) {
 	return fileInfo.Size(), nil
 }
 
-func (jsonInput *Json) open() (io.ReadSeeker, *json.Decoder, *os.File, error) {
+func (jsonInput *Json) open() (io.ReadSeeker, *os.File, error) {
 	file, err := os.Open(jsonInput.config.Path)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	reader := io.ReadSeeker(file)
-
-	jsonDecoder := json.NewDecoder(reader)
-
-	return reader, jsonDecoder, file, nil
-}
-
-func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
-	reader, jsonDecoder, file, err := jsonInput.open()
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if jsonInput.jsonIsArray {
-		// Skipping the first token (array opening)
-		_, err := jsonInput.jsonDecoder.Token()
-		if err != nil {
-			return nil, nil, err
-		}
+	reader := io.ReadSeeker(file)
+
+	return reader, file, nil
+}
+
+func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
+	reader, file, err := jsonInput.open()
+	if err != nil {
+		return nil, nil, err
 	}
 
-	iterator := func() (record.Record, error) {
-		position, err := reader.Seek(0, io.SeekCurrent)
-		if err != nil {
-			return nil, fmt.Errorf("Cannot read json position: %w", err)
-		}
+	// Creating a new decoder each time because we cannot reset
+	// it's internal state when seeking otherwise
+	jsonDecoder := json.NewDecoder(reader)
 
+	iterator := func() (record.Record, error) {
 		if !jsonDecoder.More() {
 			return nil, nil
 		}
+
+		position := jsonDecoder.InputOffset()
 
 		var data map[string]interface{}
 		err = jsonDecoder.Decode(&data)
