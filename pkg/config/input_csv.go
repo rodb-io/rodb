@@ -88,14 +88,14 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *CsvInput) PropertyParser(columnName string) *string {
+func (config *CsvInput) PropertyParser(columnName string) (*string, error) {
 	for _, column := range config.Columns {
 		if column.Name == columnName {
-			return &column.Parser
+			return &column.Parser, nil
 		}
 	}
 
-	return nil
+	return nil, fmt.Errorf("Could not find any property named '%v'", columnName)
 }
 
 func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {

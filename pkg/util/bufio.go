@@ -23,7 +23,13 @@ func SetBufferedReaderOffset(
 	reader io.ReadSeeker,
 	buffer *bufio.Reader,
 	offset int64,
-) {
-	reader.Seek(offset, io.SeekStart)
+) error {
+	_, err := reader.Seek(offset, io.SeekStart)
+	if err != nil {
+		return err
+	}
+
 	buffer.Reset(reader)
+
+	return nil
 }

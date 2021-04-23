@@ -94,11 +94,14 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 	xmlInput.readerLock.Lock()
 	defer xmlInput.readerLock.Unlock()
 
-	util.SetBufferedReaderOffset(
+	err := util.SetBufferedReaderOffset(
 		xmlInput.reader,
 		xmlInput.readerBuffer,
 		position,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	node, err := xmlInput.xmlParser.Read()
 	if err == io.EOF {

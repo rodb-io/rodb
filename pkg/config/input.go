@@ -6,8 +6,9 @@ import (
 )
 
 type Input struct {
-	Csv *CsvInput `yaml:"csv"`
-	Xml *XmlInput `yaml:"xml"`
+	Csv  *CsvInput  `yaml:"csv"`
+	Xml  *XmlInput  `yaml:"xml"`
+	Json *JsonInput `yaml:"json"`
 }
 
 func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -22,6 +23,13 @@ func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {
 	if config.Xml != nil {
 		definedFields++
 		err := config.Xml.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.Json != nil {
+		definedFields++
+		err := config.Json.validate(rootConfig, log)
 		if err != nil {
 			return err
 		}
@@ -44,17 +52,23 @@ func (config *Input) Name() string {
 	if config.Xml != nil {
 		return config.Xml.Name
 	}
+	if config.Json != nil {
+		return config.Json.Name
+	}
 
 	return ""
 }
 
-func (config *Input) PropertyParser(propertyName string) *string {
+func (config *Input) PropertyParser(propertyName string) (*string, error) {
 	if config.Csv != nil {
 		return config.Csv.PropertyParser(propertyName)
 	}
 	if config.Xml != nil {
 		return config.Xml.PropertyParser(propertyName)
 	}
+	if config.Json != nil {
+		return config.Json.PropertyParser(propertyName)
+	}
 
-	return nil
+	return nil, nil
 }

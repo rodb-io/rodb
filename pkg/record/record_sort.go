@@ -27,17 +27,17 @@ func (sorter *recordListSorter) Less(i int, j int) bool {
 	for _, sort := range sorter.config {
 		iValue, err := iRecord.Get(sort.Property)
 		if err != nil {
-			sort.Logger.Errorf("Unhandlable error during sort operation: %v", err)
+			sort.Logger.Errorf("Unhandlable error during sort operation on property '%v': %v", sort.Property, err)
 		}
 
 		jValue, err := jRecord.Get(sort.Property)
 		if err != nil {
-			sort.Logger.Errorf("Unhandlable error during sort operation: %v", err)
+			sort.Logger.Errorf("Unhandlable error during sort operation on property '%v': %v", sort.Property, err)
 		}
 
 		result, err := parser.Compare(iValue, jValue)
 		if err != nil {
-			sort.Logger.Errorf("Unhandlable error during sort operation: %v", err)
+			sort.Logger.Errorf("Unhandlable error during sort operation on property '%v': %v", sort.Property, err)
 		}
 
 		if result == nil {

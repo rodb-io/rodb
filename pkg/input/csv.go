@@ -88,11 +88,14 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	csvInput.readerLock.Lock()
 	defer csvInput.readerLock.Unlock()
 
-	util.SetBufferedReaderOffset(
+	err := util.SetBufferedReaderOffset(
 		csvInput.reader,
 		csvInput.readerBuffer,
 		position,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	row, err := csvInput.csvReader.Read()
 	if err != nil {

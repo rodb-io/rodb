@@ -19,16 +19,18 @@ func (config *Sort) validate(
 ) error {
 	config.Logger = log
 
-	parserName := input.PropertyParser(config.Property)
-	if parserName == nil {
-		return fmt.Errorf("property: Could not find the associated parser.")
+	parserName, err := input.PropertyParser(config.Property)
+	if err != nil {
+		return fmt.Errorf("property: %w", err)
 	}
-	parser, parserExists := rootConfig.Parsers[*parserName]
-	if !parserExists {
-		return fmt.Errorf("property: The associated parser '%v' does not exist.", *parserName)
-	}
-	if !parser.Primitive() {
-		return fmt.Errorf("property: Cannot be used to sort because it does not have a primitive type.")
+	if parserName != nil {
+		parser, parserExists := rootConfig.Parsers[*parserName]
+		if !parserExists {
+			return fmt.Errorf("property: The associated parser '%v' does not exist.", *parserName)
+		}
+		if !parser.Primitive() {
+			return fmt.Errorf("property: Cannot be used to sort because it does not have a primitive type.")
+		}
 	}
 
 	if config.Ascending == nil {

@@ -87,6 +87,10 @@ inputs:
             - name: prop_a
               parser: defaultInteger
               xpath: "/*/foo::text()"
+  - json:
+      name: defaultInput4
+      path: ./dummy.json
+      dieOnInputChange: true
 indexes:
   - memoryMap:
       name: defaultIndex

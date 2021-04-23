@@ -33,6 +33,9 @@ func NewFromConfig(
 	if config.Xml != nil {
 		return NewXml(config.Xml, parsers)
 	}
+	if config.Json != nil {
+		return NewJson(config.Json, parsers)
+	}
 
 	return nil, errors.New("Failed to initialize input")
 }
