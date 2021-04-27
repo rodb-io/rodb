@@ -11,8 +11,7 @@ import (
 	"time"
 )
 
-type memoryMapPropertyValueIndex = record.PositionList
-type memoryMapPropertyIndex = map[interface{}]memoryMapPropertyValueIndex
+type memoryMapPropertyIndex = map[interface{}]record.PositionList
 type memoryMapIndex = map[string]memoryMapPropertyIndex
 
 type MemoryMap struct {
@@ -51,32 +50,6 @@ func (mm *MemoryMap) Reindex() error {
 	index := make(memoryMapIndex)
 	for _, property := range mm.config.Properties {
 		index[property] = make(memoryMapPropertyIndex)
-	}
-
-	var addValueToIndex func(property string, value interface{}, position record.Position) error
-	addValueToIndex = func(property string, value interface{}, position record.Position) error {
-		if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
-			for _, valueArrayValue := range valueArray {
-				err := addValueToIndex(property, valueArrayValue, position)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		if _, valueIsMap := value.(map[string]interface{}); valueIsMap {
-			return errors.New("Indexing objects is not supported")
-		}
-
-		propertyIndex := index[property]
-		valueIndexes, valueIndexesExists := propertyIndex[value]
-		if valueIndexesExists {
-			propertyIndex[value] = append(valueIndexes, position)
-		} else {
-			propertyIndex[value] = record.PositionList{position}
-		}
-
-		return nil
 	}
 
 	totalSize, err := mm.input.Size()
@@ -125,7 +98,7 @@ func (mm *MemoryMap) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = addValueToIndex(property, value, record.Position())
+			err = mm.addValueToIndex(index, property, value, record.Position())
 			if err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
@@ -138,8 +111,36 @@ func (mm *MemoryMap) Reindex() error {
 	return nil
 }
 
-// Get the record positions (if indexed) that matches all the given filters
-// A limit of 0 means that there is no limit
+func (mm *MemoryMap) addValueToIndex(
+	index memoryMapIndex,
+	property string,
+	value interface{},
+	position record.Position,
+) error {
+	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
+		for _, valueArrayValue := range valueArray {
+			err := mm.addValueToIndex(index, property, valueArrayValue, position)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	if _, valueIsMap := value.(map[string]interface{}); valueIsMap {
+		return errors.New("Indexing objects is not supported")
+	}
+
+	propertyIndex := index[property]
+	valueIndexes, valueIndexesExists := propertyIndex[value]
+	if valueIndexesExists {
+		propertyIndex[value] = append(valueIndexes, position)
+	} else {
+		propertyIndex[value] = record.PositionList{position}
+	}
+
+	return nil
+}
+
 func (mm *MemoryMap) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
@@ -152,7 +153,7 @@ func (mm *MemoryMap) GetRecordPositions(
 		return nil, fmt.Errorf("This index requires at least one filter.")
 	}
 
-	individualFiltersResults := make([]memoryMapPropertyValueIndex, 0, len(filters))
+	individualFiltersResults := make([]record.PositionIterator, 0, len(filters))
 	for propertyName, filter := range filters {
 		if !mm.config.DoesHandleProperty(propertyName) {
 			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
@@ -168,38 +169,10 @@ func (mm *MemoryMap) GetRecordPositions(
 			return nil, nil
 		}
 
-		individualFiltersResults = append(individualFiltersResults, indexedResults)
+		individualFiltersResults = append(individualFiltersResults, indexedResults.Iterate())
 	}
 
-	var i int = 0
-	return func() (*record.Position, error) {
-		for i < len(individualFiltersResults[0]) {
-			position := individualFiltersResults[0][i]
-
-			matchesAllCriterias := true
-			for j := 1; j < len(individualFiltersResults); j++ {
-				matchesCurrentCriteria := false
-				for _, currentPosition := range individualFiltersResults[j] {
-					if currentPosition == position {
-						matchesCurrentCriteria = true
-						break
-					}
-				}
-
-				if !matchesCurrentCriteria {
-					matchesAllCriterias = false
-					break
-				}
-			}
-
-			i++
-			if matchesAllCriterias {
-				return &position, nil
-			}
-		}
-
-		return nil, nil
-	}, nil
+	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
 func (mm *MemoryMap) Close() error {

@@ -35,3 +35,16 @@ type Record interface {
 
 	Position() Position
 }
+
+func (list PositionList) Iterate() PositionIterator {
+	var i int = 0
+	return func() (*Position, error) {
+		for i < len(list) {
+			position := list[i]
+			i++
+			return &position, nil
+		}
+
+		return nil, nil
+	}
+}
