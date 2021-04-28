@@ -3,21 +3,20 @@ package index
 import (
 	"errors"
 	"fmt"
-	"math"
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
-	"time"
+	"rodb.io/pkg/util"
 )
 
+// Index for the values of a single property
 type memoryMapPropertyIndex = map[interface{}]record.PositionList
-type memoryMapIndex = map[string]memoryMapPropertyIndex
 
 type MemoryMap struct {
 	config *config.MemoryMapIndex
 	input  input.Input
-	index  memoryMapIndex
+	index  map[string]memoryMapPropertyIndex
 }
 
 func NewMemoryMap(
@@ -47,19 +46,13 @@ func (mm *MemoryMap) Name() string {
 }
 
 func (mm *MemoryMap) Reindex() error {
-	index := make(memoryMapIndex)
+	index := make(map[string]memoryMapPropertyIndex)
 	for _, property := range mm.config.Properties {
 		index[property] = make(memoryMapPropertyIndex)
 	}
 
-	totalSize, err := mm.input.Size()
-	if err != nil {
-		mm.config.Logger.Errorf("Cannot determine the total size of the input: '%+v'. The indexing progress will not be displayed.", err)
-	} else if totalSize == 0 {
-		mm.config.Logger.Infoln("The total size of the input is unknown. The indexing progress will not be displayed.")
-	}
+	updateProgress := util.TrackProgress(mm.input, mm.config.Logger)
 
-	nextProgress := time.Now()
 	inputIterator, end, err := mm.input.IterateAll()
 	if err != nil {
 		return err
@@ -67,7 +60,7 @@ func (mm *MemoryMap) Reindex() error {
 	defer func() {
 		err := end()
 		if err != nil {
-			mm.config.Logger.Errorf("Error while closing input iterator: %v", err)
+			mm.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
 
@@ -80,13 +73,7 @@ func (mm *MemoryMap) Reindex() error {
 			break
 		}
 
-		if totalSize != 0 {
-			if now := time.Now(); now.After(nextProgress) {
-				progress := float64(record.Position()) / float64(totalSize)
-				mm.config.Logger.Infof("Indexing progress: %d%%", int(math.Floor(progress*100)))
-				nextProgress = now.Add(time.Second)
-			}
-		}
+		updateProgress(record.Position())
 
 		for _, property := range mm.config.Properties {
 			value, err := record.Get(property)
@@ -112,7 +99,7 @@ func (mm *MemoryMap) Reindex() error {
 }
 
 func (mm *MemoryMap) addValueToIndex(
-	index memoryMapIndex,
+	index map[string]memoryMapPropertyIndex,
 	property string,
 	value interface{},
 	position record.Position,

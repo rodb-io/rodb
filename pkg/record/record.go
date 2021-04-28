@@ -8,6 +8,11 @@ type Position = int64
 
 type PositionList []Position
 
+type PositionLinkedList struct{
+	Position Position
+	NextPosition *PositionLinkedList
+}
+
 // Ends when both the position and error are nil at the same time
 // a nil position with a non-nil error does not mean it reached the end
 // When the end has been reached, the iterator is expected

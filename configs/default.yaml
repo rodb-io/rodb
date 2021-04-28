@@ -98,6 +98,11 @@ indexes:
       properties:
         - id
         - name
+  - memoryPartial:
+      name: defaultIndex
+      input: defaultInput
+      properties:
+        - name
 outputs:
   - graphql:
       name: defaultGraphqlOutput

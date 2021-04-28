@@ -27,6 +27,9 @@ func NewFromConfig(
 	if config.MemoryMap != nil {
 		return NewMemoryMap(config.MemoryMap, inputs)
 	}
+	if config.MemoryPartial != nil {
+		return NewMemoryPartial(config.MemoryPartial, inputs)
+	}
 	if config.Noop != nil {
 		return NewNoop(config.Noop, inputs), nil
 	}

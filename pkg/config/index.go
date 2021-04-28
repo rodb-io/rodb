@@ -6,8 +6,9 @@ import (
 )
 
 type Index struct {
-	MemoryMap *MemoryMapIndex `yaml:"memoryMap"`
-	Noop      *NoopIndex      `yaml:"noop"`
+	MemoryMap     *MemoryMapIndex     `yaml:"memoryMap"`
+	MemoryPartial *MemoryPartialIndex `yaml:"memoryPartial"`
+	Noop          *NoopIndex          `yaml:"noop"`
 }
 
 func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {
@@ -15,6 +16,13 @@ func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {
 	if config.MemoryMap != nil {
 		definedFields++
 		err := config.MemoryMap.validate(rootConfig, log)
+		if err != nil {
+			return err
+		}
+	}
+	if config.MemoryPartial != nil {
+		definedFields++
+		err := config.MemoryPartial.validate(rootConfig, log)
 		if err != nil {
 			return err
 		}
@@ -41,6 +49,9 @@ func (config *Index) Name() string {
 	if config.MemoryMap != nil {
 		return config.MemoryMap.Name
 	}
+	if config.MemoryPartial != nil {
+		return config.MemoryPartial.Name
+	}
 	if config.Noop != nil {
 		return config.Noop.Name
 	}
@@ -52,6 +63,9 @@ func (config *Index) DoesHandleProperty(property string) bool {
 	if config.MemoryMap != nil {
 		return config.MemoryMap.DoesHandleProperty(property)
 	}
+	if config.MemoryPartial != nil {
+		return config.MemoryPartial.DoesHandleProperty(property)
+	}
 	if config.Noop != nil {
 		return config.Noop.DoesHandleProperty(property)
 	}
@@ -62,6 +76,9 @@ func (config *Index) DoesHandleProperty(property string) bool {
 func (config *Index) DoesHandleInput(input Input) bool {
 	if config.MemoryMap != nil {
 		return config.MemoryMap.DoesHandleInput(input)
+	}
+	if config.MemoryPartial != nil {
+		return config.MemoryPartial.DoesHandleInput(input)
 	}
 	if config.Noop != nil {
 		return config.Noop.DoesHandleInput(input)
