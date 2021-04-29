@@ -9,78 +9,10 @@ import (
 	"rodb.io/pkg/util"
 )
 
-type memoryPartialTrieNode struct {
-	value         rune
-	nextSibling   *memoryPartialTrieNode
-	firstChild    *memoryPartialTrieNode
-	lastChild     *memoryPartialTrieNode
-	firstPosition *record.PositionLinkedList
-	lastPosition  *record.PositionLinkedList
-}
-
-func (node *memoryPartialTrieNode) appendChild(child *memoryPartialTrieNode) {
-	if node.firstChild == nil {
-		node.firstChild = child
-		node.lastChild = child
-	} else {
-		node.lastChild.nextSibling = child
-		node.lastChild = child
-	}
-}
-
-func (node *memoryPartialTrieNode) findChildByValue(value rune) *memoryPartialTrieNode {
-	for child := node.firstChild; child != nil; child = child.nextSibling {
-		if child.value == value {
-			return child
-		}
-	}
-
-	return nil
-}
-
-func (node *memoryPartialTrieNode) appendPositionIfNotExists(position record.Position) {
-	positionNode := &record.PositionLinkedList{
-		Position:     position,
-		NextPosition: nil,
-	}
-
-	if node.firstPosition == nil {
-		node.firstPosition = positionNode
-		node.lastPosition = positionNode
-	} else if node.lastPosition.Position != position {
-		node.lastPosition.NextPosition = positionNode
-		node.lastPosition = positionNode
-	}
-}
-
-func (root *memoryPartialTrieNode) addSequence(runes []rune, position record.Position) {
-	parentNode := root
-	for _, currentRune := range runes {
-		if existingNode := parentNode.findChildByValue(currentRune); existingNode == nil {
-			positionList := &record.PositionLinkedList{
-				Position: position,
-			}
-			newNode := &memoryPartialTrieNode{
-				value:         currentRune,
-				nextSibling:   nil,
-				firstChild:    nil,
-				lastChild:     nil,
-				firstPosition: positionList,
-				lastPosition:  positionList,
-			}
-			parentNode.appendChild(newNode)
-			parentNode = newNode
-		} else {
-			existingNode.appendPositionIfNotExists(position)
-			parentNode = existingNode
-		}
-	}
-}
-
 type MemoryPartial struct {
 	config *config.MemoryPartialIndex
 	input  input.Input
-	index  map[string]*memoryPartialTrieNode
+	index  map[string]*partialIndexTrieNode
 }
 
 func NewMemoryPartial(
@@ -110,9 +42,9 @@ func (mp *MemoryPartial) Name() string {
 }
 
 func (mp *MemoryPartial) Reindex() error {
-	index := make(map[string]*memoryPartialTrieNode)
+	index := make(map[string]*partialIndexTrieNode)
 	for _, property := range mp.config.Properties {
-		index[property] = &memoryPartialTrieNode{
+		index[property] = &partialIndexTrieNode{
 			value:         rune(0),
 			nextSibling:   nil,
 			firstChild:    nil,
@@ -170,7 +102,7 @@ func (mp *MemoryPartial) Reindex() error {
 }
 
 func (mp *MemoryPartial) addValueToIndex(
-	index map[string]*memoryPartialTrieNode,
+	index map[string]*partialIndexTrieNode,
 	property string,
 	value interface{},
 	position record.Position,

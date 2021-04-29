@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func stringifyMemoryPartialTrie(root *memoryPartialTrieNode) string {
+func stringifyMemoryPartialTrie(root *partialIndexTrieNode) string {
 	positionsToString := func(positions *record.PositionLinkedList) string {
 		result := ""
 		for currentPosition := positions; currentPosition != nil; currentPosition = currentPosition.NextPosition {
@@ -27,8 +27,8 @@ func stringifyMemoryPartialTrie(root *memoryPartialTrieNode) string {
 
 	results := make([]string, 0)
 
-	var stringify func(prefix string, node *memoryPartialTrieNode)
-	stringify = func(prefix string, node *memoryPartialTrieNode) {
+	var stringify func(prefix string, node *partialIndexTrieNode)
+	stringify = func(prefix string, node *partialIndexTrieNode) {
 		for child := node.firstChild; child != nil; child = child.nextSibling {
 			positions := positionsToString(child.firstPosition)
 			currentValue := prefix + string(child.value)
