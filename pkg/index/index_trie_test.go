@@ -147,3 +147,78 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 		}
 	})
 }
+
+func PartialIndexTreeNodeAddSequence(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		root := &partialIndexTrieNode{}
+
+		root.addSequence([]rune{'F', 'O', 'O'}, 1)
+
+		if root.firstChild.value != 'F' {
+			t.Errorf("Expected to have F as first node of root, got %v", root.firstChild.value)
+		}
+		if root.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
+		}
+		if root.firstChild.lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
+		}
+
+		if root.firstChild.firstChild.value != 'O' {
+			t.Errorf("Expected to have O as first node F, got %v", root.firstChild.firstChild.value)
+		}
+		if root.firstChild.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.lastPosition)
+		}
+
+		if root.firstChild.firstChild.firstChild.value != 'F' {
+			t.Errorf("Expected to have O as first node of O, got %v", root.firstChild.firstChild.firstChild.value)
+		}
+		if root.firstChild.firstChild.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.firstChild.lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.firstChild.lastPosition)
+		}
+	})
+	t.Run("new suffix to existing tree", func(t *testing.T) {
+		root := &partialIndexTrieNode{}
+		root.addSequence([]rune{'F', 'O', 'O'}, 1)
+
+		root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
+
+		if root.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
+		}
+		if root.firstChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
+		}
+
+		if root.firstChild.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.lastPosition)
+		}
+
+		if root.firstChild.firstChild.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.firstChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.firstChild.lastPosition)
+		}
+
+		if root.firstChild.firstChild.firstChild.firstChild.value != 'T' {
+			t.Errorf("Expected to have T as first node of O, got %v", root.firstChild.firstChild.firstChild.firstChild.value)
+		}
+		if root.firstChild.firstChild.firstChild.firstChild.firstPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in first position of T, got %v", root.firstChild.firstChild.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.firstChild.firstChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in last position of T, got %v", root.firstChild.firstChild.firstChild.firstChild.lastPosition)
+		}
+	})
+}
