@@ -115,22 +115,31 @@ func TestMemoryMapGetRecordPositions(t *testing.T) {
 		for _, testCase := range []struct {
 			expectedLength  int
 			expectedResults record.PositionList
+			filters         map[string]interface{}
 		}{
 			{
 				expectedLength:  2,
 				expectedResults: record.PositionList{1, 3},
+				filters: map[string]interface{}{
+					"col":  "col_a",
+					"col2": "col2_a",
+				},
+			}, {
+				expectedLength:  1,
+				expectedResults: record.PositionList{2},
+				filters: map[string]interface{}{
+					"col":  "col_b",
+					"col2": "col2_a",
+				},
 			}, {
 				expectedLength:  2,
-				expectedResults: record.PositionList{1, 3},
-			}, {
-				expectedLength:  2,
-				expectedResults: record.PositionList{1, 3},
+				expectedResults: record.PositionList{0, 4},
+				filters: map[string]interface{}{
+					"col2": "col2_b",
+				},
 			},
 		} {
-			nextPosition, err := index.GetRecordPositions(mockInput, map[string]interface{}{
-				"col":  "col_a",
-				"col2": "col2_a",
-			})
+			nextPosition, err := index.GetRecordPositions(mockInput, testCase.filters)
 			if err != nil {
 				t.Errorf("Expected no error, got %v", err)
 			}

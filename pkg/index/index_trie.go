@@ -49,8 +49,8 @@ func (node *partialIndexTrieNode) appendPositionIfNotExists(position record.Posi
 	}
 }
 
-func (root *partialIndexTrieNode) addSequence(runes []rune, position record.Position) {
-	parentNode := root
+func (node *partialIndexTrieNode) addSequence(runes []rune, position record.Position) {
+	parentNode := node
 	for _, currentRune := range runes {
 		if existingNode := parentNode.findChildByValue(currentRune); existingNode == nil {
 			positionList := &record.PositionLinkedList{
@@ -71,4 +71,18 @@ func (root *partialIndexTrieNode) addSequence(runes []rune, position record.Posi
 			parentNode = existingNode
 		}
 	}
+}
+
+func (node *partialIndexTrieNode) getSequence(runes []rune) *record.PositionLinkedList {
+	parentNode := node
+	for _, currentRune := range runes {
+		currentNode := parentNode.findChildByValue(currentRune)
+		if currentNode == nil {
+			return nil
+		}
+
+		parentNode = currentNode
+	}
+
+	return parentNode.firstPosition
 }

@@ -2,6 +2,8 @@ package index
 
 import (
 	"rodb.io/pkg/record"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -220,5 +222,54 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 		if root.firstChild.firstChild.firstChild.firstChild.lastPosition.Position != 2 {
 			t.Errorf("Expected to have position 2 in last position of T, got %v", root.firstChild.firstChild.firstChild.firstChild.lastPosition)
 		}
+	})
+}
+
+func PartialIndexTreeNodeGetSequence(t *testing.T) {
+	root := &partialIndexTrieNode{}
+	root.addSequence([]rune{'F', 'O', 'O'}, 1)
+	root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
+	root.addSequence([]rune{'T', 'O', 'P'}, 3)
+
+	checkList := func(t *testing.T, list *record.PositionLinkedList, positions []record.Position) {
+		stringPositions := []string{}
+		for _, position := range positions {
+			stringPositions = append(stringPositions, strconv.Itoa(int(position)))
+		}
+		expect := strings.Join(stringPositions, ",")
+
+		got := ""
+		iterator := list.Iterate()
+		for {
+			position, _ := iterator()
+			if position == nil {
+				break
+			}
+
+			if got != "" {
+				got += ","
+			}
+			got += strconv.Itoa(int(*position))
+		}
+
+		if got != expect {
+			t.Errorf("Expected to get positions %v, got %v", expect, got)
+		}
+	}
+
+	t.Run("multiple prefix", func(t *testing.T) {
+		checkList(t, root.getSequence([]rune("FOO")), []record.Position{1, 2})
+	})
+	t.Run("not found", func(t *testing.T) {
+		checkList(t, root.getSequence([]rune("BAR")), []record.Position{})
+	})
+	t.Run("single", func(t *testing.T) {
+		checkList(t, root.getSequence([]rune("TOP")), []record.Position{3})
+	})
+	t.Run("multiple middle", func(t *testing.T) {
+		checkList(t, root.getSequence([]rune("OO")), []record.Position{1, 2})
+	})
+	t.Run("suffix and prefix", func(t *testing.T) {
+		checkList(t, root.getSequence([]rune("T")), []record.Position{2, 3})
 	})
 }

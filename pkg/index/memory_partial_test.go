@@ -108,3 +108,118 @@ func TestMemoryPartial(t *testing.T) {
 		}
 	})
 }
+
+func TestMemoryPartialGetRecordPositions(t *testing.T) {
+	mockInput := input.NewMock(parser.NewMock(), []record.Record{
+		record.NewStringPropertiesMock(map[string]string{
+			"col":  "BANANA",
+			"col2": "col2_b",
+		}, 0),
+		record.NewStringPropertiesMock(map[string]string{
+			"col":  "BANANT",
+			"col2": "col2_a",
+		}, 1),
+		record.NewStringPropertiesMock(map[string]string{
+			"col":  "PLANT",
+			"col2": "col2_a",
+		}, 2),
+		record.NewStringPropertiesMock(map[string]string{
+			"col":  "BANANA",
+			"col2": "col2_a",
+		}, 3),
+		record.NewStringPropertiesMock(map[string]string{
+			"col":  "PLANT",
+			"col2": "col2_b",
+		}, 4),
+	})
+	index, err := NewMemoryPartial(
+		&config.MemoryPartialIndex{
+			Properties: []string{"col", "col2"},
+			Input:      "input",
+			Logger:     logrus.NewEntry(logrus.StandardLogger()),
+		},
+		input.List{
+			"input": mockInput,
+		},
+	)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		for _, testCase := range []struct {
+			expectedLength  int
+			expectedResults record.PositionList
+			filters         map[string]interface{}
+		}{
+			{
+				expectedLength:  2,
+				expectedResults: record.PositionList{1, 3},
+				filters: map[string]interface{}{
+					"col":  "BANAN",
+					"col2": "col2_a",
+				},
+			}, {
+				expectedLength:  1,
+				expectedResults: record.PositionList{2},
+				filters: map[string]interface{}{
+					"col":  "PLANT",
+					"col2": "col2_a",
+				},
+			}, {
+				expectedLength:  2,
+				expectedResults: record.PositionList{0, 4},
+				filters: map[string]interface{}{
+					"col2": "col2_b",
+				},
+			}, {
+				expectedLength:  3,
+				expectedResults: record.PositionList{1, 2, 4},
+				filters: map[string]interface{}{
+					"col": "ANT",
+				},
+			},
+		} {
+			nextPosition, err := index.GetRecordPositions(mockInput, testCase.filters)
+			if err != nil {
+				t.Errorf("Expected no error, got %v", err)
+			}
+
+			positions := make([]record.Position, 0)
+			for {
+				position, err := nextPosition()
+				if err != nil {
+					t.Errorf("Expected no error, got %v", err)
+				}
+				if position == nil {
+					break
+				}
+				positions = append(positions, *position)
+			}
+
+			if got, expect := len(positions), testCase.expectedLength; got != expect {
+				t.Errorf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
+			}
+
+			for i, position := range testCase.expectedResults {
+				if position != positions[i] {
+					t.Errorf("Expected position %v at index %v, got %v", position, i, positions[i])
+				}
+			}
+		}
+	})
+	t.Run("no filters", func(t *testing.T) {
+		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{})
+		if err == nil {
+			t.Errorf("Expected an error, got %v", err)
+		}
+	})
+	t.Run("wrong property", func(t *testing.T) {
+		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			"wrong_col": "",
+		})
+		if err == nil {
+			t.Errorf("Expected an error, got %v", err)
+		}
+	})
+}

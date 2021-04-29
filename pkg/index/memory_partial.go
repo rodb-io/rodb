@@ -134,7 +134,40 @@ func (mp *MemoryPartial) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
 ) (record.PositionIterator, error) {
-	return nil, nil
+	if input != mp.input {
+		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
+	}
+
+	if len(filters) == 0 {
+		return nil, fmt.Errorf("This index requires at least one filter.")
+	}
+
+	individualFiltersResults := make([]record.PositionIterator, 0, len(filters))
+	for propertyName, filter := range filters {
+		if !mp.config.DoesHandleProperty(propertyName) {
+			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
+		}
+
+		indexedTree, foundIndexedValues := mp.index[propertyName]
+		if !foundIndexedValues {
+			return nil, nil
+		}
+
+		stringFilter, filterIsString := filter.(string)
+		if !filterIsString {
+			return nil, fmt.Errorf("Cannot filter the value '%v' from property '%v' because it is not a string.", filter, propertyName)
+		}
+		filterRunes := []rune(stringFilter)
+
+		indexedResults := indexedTree.getSequence(filterRunes)
+		if indexedResults == nil {
+			return nil, nil
+		}
+
+		individualFiltersResults = append(individualFiltersResults, indexedResults.Iterate())
+	}
+
+	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
 func (mp *MemoryPartial) Close() error {

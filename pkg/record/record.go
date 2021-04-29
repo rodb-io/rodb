@@ -53,3 +53,16 @@ func (list PositionList) Iterate() PositionIterator {
 		return nil, nil
 	}
 }
+
+func (list *PositionLinkedList) Iterate() PositionIterator {
+	current := list
+	return func() (*Position, error) {
+		for current != nil {
+			position := current.Position
+			current = current.NextPosition
+			return &position, nil
+		}
+
+		return nil, nil
+	}
+}
