@@ -20,6 +20,11 @@ indexes:
       properties:
         - writing
         - reading
+  - memoryPartial:
+      name: indexSearch
+      input: dictionary
+      properties:
+        - translation
 outputs:
   - jsonArray:
       name: output
@@ -28,6 +33,10 @@ outputs:
         word:
           property: writing
           index: index
+          parser: string
+        translation:
+          property: translation
+          index: indexSearch
           parser: string
 services:
   - http:

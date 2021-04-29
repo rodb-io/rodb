@@ -99,7 +99,7 @@ indexes:
         - id
         - name
   - memoryPartial:
-      name: defaultIndex
+      name: defaultIndexPartial
       input: defaultInput
       properties:
         - name

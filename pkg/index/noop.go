@@ -1,6 +1,7 @@
 package index
 
 import (
+	"fmt"
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
@@ -36,15 +37,15 @@ func (noop *Noop) GetRecordPositions(
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		err := end()
-		if err != nil {
-			noop.config.Logger.Errorf("Error while closing input iterator: %v", err)
-		}
-	}()
+
+	closed := false
 
 	return func() (*record.Position, error) {
 		for {
+			if closed {
+				return nil, nil
+			}
+
 			record, err := inputIterator()
 			if err != nil {
 				return nil, err
@@ -80,6 +81,12 @@ func (noop *Noop) GetRecordPositions(
 				position := record.Position()
 				return &position, nil
 			}
+		}
+
+		closed = true
+		err := end()
+		if err != nil {
+			return nil, fmt.Errorf("Error while closing input iterator: %w", err)
 		}
 
 		return nil, nil

@@ -19,6 +19,10 @@ type PositionLinkedList struct {
 // to return (nil, nil), even if called again
 type PositionIterator func() (*Position, error)
 
+func EmptyIterator() (*Position, error) {
+	return nil, nil
+}
+
 type List []Record
 
 // Ends when both the record and error are nil at the same time

@@ -148,12 +148,12 @@ func (mm *MemoryMap) GetRecordPositions(
 
 		indexedValues, foundIndexedValues := mm.index[propertyName]
 		if !foundIndexedValues {
-			return nil, nil
+			return record.EmptyIterator, nil
 		}
 
 		indexedResults, foundIndexedResults := indexedValues[filter]
 		if !foundIndexedResults {
-			return nil, nil
+			return record.EmptyIterator, nil
 		}
 
 		individualFiltersResults = append(individualFiltersResults, indexedResults.Iterate())

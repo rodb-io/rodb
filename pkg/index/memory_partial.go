@@ -150,7 +150,7 @@ func (mp *MemoryPartial) GetRecordPositions(
 
 		indexedTree, foundIndexedValues := mp.index[propertyName]
 		if !foundIndexedValues {
-			return nil, nil
+			return record.EmptyIterator, nil
 		}
 
 		stringFilter, filterIsString := filter.(string)
@@ -161,7 +161,7 @@ func (mp *MemoryPartial) GetRecordPositions(
 
 		indexedResults := indexedTree.getSequence(filterRunes)
 		if indexedResults == nil {
-			return nil, nil
+			return record.EmptyIterator, nil
 		}
 
 		individualFiltersResults = append(individualFiltersResults, indexedResults.Iterate())
