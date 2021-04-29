@@ -10,12 +10,12 @@ import (
 )
 
 type memoryPartialTrieNode struct {
-	value rune
-	nextSibling *memoryPartialTrieNode
-	firstChild *memoryPartialTrieNode
-	lastChild *memoryPartialTrieNode
+	value         rune
+	nextSibling   *memoryPartialTrieNode
+	firstChild    *memoryPartialTrieNode
+	lastChild     *memoryPartialTrieNode
 	firstPosition *record.PositionLinkedList
-	lastPosition *record.PositionLinkedList
+	lastPosition  *record.PositionLinkedList
 }
 
 func (node *memoryPartialTrieNode) appendChild(child *memoryPartialTrieNode) {
@@ -40,15 +40,40 @@ func (node *memoryPartialTrieNode) findChildByValue(value rune) *memoryPartialTr
 
 func (node *memoryPartialTrieNode) appendPositionIfNotExists(position record.Position) {
 	positionNode := &record.PositionLinkedList{
-		Position: position,
+		Position:     position,
+		NextPosition: nil,
 	}
 
 	if node.firstPosition == nil {
 		node.firstPosition = positionNode
 		node.lastPosition = positionNode
-	} else {
+	} else if node.lastPosition.Position != position {
 		node.lastPosition.NextPosition = positionNode
 		node.lastPosition = positionNode
+	}
+}
+
+func (root *memoryPartialTrieNode) addSequence(runes []rune, position record.Position) {
+	parentNode := root
+	for _, currentRune := range runes {
+		if existingNode := parentNode.findChildByValue(currentRune); existingNode == nil {
+			positionList := &record.PositionLinkedList{
+				Position: position,
+			}
+			newNode := &memoryPartialTrieNode{
+				value:         currentRune,
+				nextSibling:   nil,
+				firstChild:    nil,
+				lastChild:     nil,
+				firstPosition: positionList,
+				lastPosition:  positionList,
+			}
+			parentNode.appendChild(newNode)
+			parentNode = newNode
+		} else {
+			existingNode.appendPositionIfNotExists(position)
+			parentNode = existingNode
+		}
 	}
 }
 
@@ -87,7 +112,14 @@ func (mp *MemoryPartial) Name() string {
 func (mp *MemoryPartial) Reindex() error {
 	index := make(map[string]*memoryPartialTrieNode)
 	for _, property := range mp.config.Properties {
-		index[property] = &memoryPartialTrieNode{}
+		index[property] = &memoryPartialTrieNode{
+			value:         rune(0),
+			nextSibling:   nil,
+			firstChild:    nil,
+			lastChild:     nil,
+			firstPosition: nil,
+			lastPosition:  nil,
+		}
 	}
 
 	updateProgress := util.TrackProgress(mp.input, mp.config.Logger)
@@ -158,27 +190,9 @@ func (mp *MemoryPartial) addValueToIndex(
 	}
 
 	root := index[property]
-	previousNode := root
-
 	runes := []rune(stringValue)
-	for _, currentRune := range runes {
-		if existingNode := previousNode.findChildByValue(currentRune); existingNode == nil {
-			newNode := &memoryPartialTrieNode{
-				value: currentRune,
-			}
-			previousNode.appendChild(newNode)
-
-			if existingRootNode := root.findChildByValue(currentRune); existingRootNode == nil {
-				existingRootNode.appendChild(newNode)
-			} else {
-				existingRootNode.appendPositionIfNotExists(position)
-			}
-
-			previousNode = newNode
-		} else {
-			existingNode.appendPositionIfNotExists(position)
-			previousNode = existingNode
-		}
+	for i := 0; i < len(runes)-1; i++ {
+		root.addSequence(runes[i:], position)
 	}
 
 	return nil

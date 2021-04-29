@@ -8,8 +8,8 @@ type Position = int64
 
 type PositionList []Position
 
-type PositionLinkedList struct{
-	Position Position
+type PositionLinkedList struct {
+	Position     Position
 	NextPosition *PositionLinkedList
 }
 
