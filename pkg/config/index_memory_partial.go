@@ -10,6 +10,7 @@ type MemoryPartialIndex struct {
 	Name       string   `yaml:"name"`
 	Input      string   `yaml:"input"`
 	Properties []string `yaml:"properties"`
+	IgnoreCase *bool    `yaml:"ignoreCase"`
 	Logger     *logrus.Entry
 }
 
@@ -31,6 +32,12 @@ func (config *MemoryPartialIndex) validate(rootConfig *Config, log *logrus.Entry
 			return fmt.Errorf("memoryPartial.properties: Duplicate property '%v' in array.", propertyName)
 		}
 		alreadyExistingProperties[propertyName] = true
+	}
+
+	if config.IgnoreCase == nil {
+		log.Debug("memoryPartial.ignoreCase not set. Assuming false")
+		falseValue := false
+		config.IgnoreCase = &falseValue
 	}
 
 	// The properties validity will be validated at runtime

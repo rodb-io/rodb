@@ -101,6 +101,7 @@ indexes:
   - memoryPartial:
       name: defaultIndexPartial
       input: defaultInput
+      ignoreCase: true
       properties:
         - name
 outputs:

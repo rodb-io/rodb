@@ -7,6 +7,7 @@ import (
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
+	"strings"
 )
 
 type MemoryPartial struct {
@@ -121,6 +122,10 @@ func (mp *MemoryPartial) addValueToIndex(
 		return fmt.Errorf("Cannot index the value '%v' from property '%v' because it is not a string.", value, property)
 	}
 
+	if mp.config.IgnoreCase != nil && *mp.config.IgnoreCase {
+		stringValue = strings.ToLower(stringValue)
+	}
+
 	root := index[property]
 	runes := []rune(stringValue)
 	for i := 0; i < len(runes)-1; i++ {
@@ -157,9 +162,12 @@ func (mp *MemoryPartial) GetRecordPositions(
 		if !filterIsString {
 			return nil, fmt.Errorf("Cannot filter the value '%v' from property '%v' because it is not a string.", filter, propertyName)
 		}
-		filterRunes := []rune(stringFilter)
 
-		indexedResults := indexedTree.getSequence(filterRunes)
+		if mp.config.IgnoreCase != nil && *mp.config.IgnoreCase {
+			stringFilter = strings.ToLower(stringFilter)
+		}
+
+		indexedResults := indexedTree.getSequence([]rune(stringFilter))
 		if indexedResults == nil {
 			return record.EmptyIterator, nil
 		}

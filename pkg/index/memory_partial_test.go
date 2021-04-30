@@ -110,43 +110,48 @@ func TestMemoryPartial(t *testing.T) {
 }
 
 func TestMemoryPartialGetRecordPositions(t *testing.T) {
-	mockInput := input.NewMock(parser.NewMock(), []record.Record{
-		record.NewStringPropertiesMock(map[string]string{
-			"col":  "BANANA",
-			"col2": "col2_b",
-		}, 0),
-		record.NewStringPropertiesMock(map[string]string{
-			"col":  "BANANT",
-			"col2": "col2_a",
-		}, 1),
-		record.NewStringPropertiesMock(map[string]string{
-			"col":  "PLANT",
-			"col2": "col2_a",
-		}, 2),
-		record.NewStringPropertiesMock(map[string]string{
-			"col":  "BANANA",
-			"col2": "col2_a",
-		}, 3),
-		record.NewStringPropertiesMock(map[string]string{
-			"col":  "PLANT",
-			"col2": "col2_b",
-		}, 4),
-	})
-	index, err := NewMemoryPartial(
-		&config.MemoryPartialIndex{
-			Properties: []string{"col", "col2"},
-			Input:      "input",
-			Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		},
-		input.List{
-			"input": mockInput,
-		},
-	)
-	if err != nil {
-		t.Error(err)
+	createTestData := func() (*input.Mock, *MemoryPartial) {
+		mockInput := input.NewMock(parser.NewMock(), []record.Record{
+			record.NewStringPropertiesMock(map[string]string{
+				"col":  "BANANA",
+				"col2": "col2_b",
+			}, 0),
+			record.NewStringPropertiesMock(map[string]string{
+				"col":  "BANANT",
+				"col2": "col2_a",
+			}, 1),
+			record.NewStringPropertiesMock(map[string]string{
+				"col":  "PLANT",
+				"col2": "col2_a",
+			}, 2),
+			record.NewStringPropertiesMock(map[string]string{
+				"col":  "BANANA",
+				"col2": "col2_a",
+			}, 3),
+			record.NewStringPropertiesMock(map[string]string{
+				"col":  "PLANT",
+				"col2": "col2_b",
+			}, 4),
+		})
+		index, err := NewMemoryPartial(
+			&config.MemoryPartialIndex{
+				Properties: []string{"col", "col2"},
+				Input:      "input",
+				Logger:     logrus.NewEntry(logrus.StandardLogger()),
+			},
+			input.List{
+				"input": mockInput,
+			},
+		)
+		if err != nil {
+			t.Error(err)
+		}
+
+		return mockInput, index
 	}
 
 	t.Run("normal", func(t *testing.T) {
+		mockInput, index := createTestData()
 		for _, testCase := range []struct {
 			expectedLength  int
 			expectedResults record.PositionList
@@ -209,17 +214,123 @@ func TestMemoryPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("no filters", func(t *testing.T) {
+		mockInput, index := createTestData()
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{})
 		if err == nil {
 			t.Errorf("Expected an error, got %v", err)
 		}
 	})
 	t.Run("wrong property", func(t *testing.T) {
+		mockInput, index := createTestData()
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
 		})
 		if err == nil {
 			t.Errorf("Expected an error, got %v", err)
+		}
+	})
+
+	createTestDataForIgnoreCase := func(ignoreCase bool) (*input.Mock, *MemoryPartial) {
+		mockInput := input.NewMock(parser.NewMock(), []record.Record{
+			record.NewStringPropertiesMock(map[string]string{
+				"col": "BANANÉ",
+			}, 42),
+		})
+		index, err := NewMemoryPartial(
+			&config.MemoryPartialIndex{
+				Properties: []string{"col"},
+				Input:      "input",
+				IgnoreCase: &ignoreCase,
+				Logger:     logrus.NewEntry(logrus.StandardLogger()),
+			},
+			input.List{
+				"input": mockInput,
+			},
+		)
+		if err != nil {
+			t.Error(err)
+		}
+
+		return mockInput, index
+	}
+
+	t.Run("IgnoreCase is true, search lower case", func(t *testing.T) {
+		mockInput, index := createTestDataForIgnoreCase(true)
+		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			"col": "ané",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+		recordPosition, err := iterator()
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+		if recordPosition == nil {
+			t.Errorf("Expected to get one record, got %v", recordPosition)
+		}
+		if *recordPosition != 42 {
+			t.Errorf("Expected to get record 42, got %v", recordPosition)
+		}
+	})
+	t.Run("IgnoreCase is true, search upper case", func(t *testing.T) {
+		mockInput, index := createTestDataForIgnoreCase(true)
+		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			"col": "ANÉ",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+		recordPosition, err := iterator()
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+		if recordPosition == nil {
+			t.Errorf("Expected to get one record, got %v", recordPosition)
+		}
+		if *recordPosition != 42 {
+			t.Errorf("Expected to get record 42, got %v", recordPosition)
+		}
+	})
+	t.Run("IgnoreCase is false, search lower case", func(t *testing.T) {
+		mockInput, index := createTestDataForIgnoreCase(false)
+
+		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			"col": "ané",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+
+		recordPosition, err := iterator()
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+
+		if recordPosition != nil {
+			t.Errorf("Expected not to get a record, got %v", recordPosition)
+		}
+	})
+	t.Run("IgnoreCase is false, search upper case", func(t *testing.T) {
+		mockInput, index := createTestDataForIgnoreCase(false)
+
+		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
+			"col": "ANÉ",
+		})
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+
+		recordPosition, err := iterator()
+		if err != nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+
+		if recordPosition == nil {
+			t.Errorf("Expected to get one record, got %v", recordPosition)
+		}
+		if *recordPosition != 42 {
+			t.Errorf("Expected to get record 42, got %v", recordPosition)
 		}
 	})
 }
