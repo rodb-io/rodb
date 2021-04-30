@@ -82,16 +82,6 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *XmlInput) PropertyParser(propertyName string) (*string, error) {
-	for _, property := range config.Properties {
-		if property.Name == propertyName {
-			return &property.Parser, nil
-		}
-	}
-
-	return nil, fmt.Errorf("Could not find any property named '%v'", propertyName)
-}
-
 func (config *XmlInputProperty) validate(
 	rootConfig *Config,
 	nameRequired bool,

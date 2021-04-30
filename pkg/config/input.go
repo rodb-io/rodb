@@ -58,17 +58,3 @@ func (config *Input) Name() string {
 
 	return ""
 }
-
-func (config *Input) PropertyParser(propertyName string) (*string, error) {
-	if config.Csv != nil {
-		return config.Csv.PropertyParser(propertyName)
-	}
-	if config.Xml != nil {
-		return config.Xml.PropertyParser(propertyName)
-	}
-	if config.Json != nil {
-		return config.Json.PropertyParser(propertyName)
-	}
-
-	return nil, nil
-}

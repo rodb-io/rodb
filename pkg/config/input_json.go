@@ -36,7 +36,3 @@ func (config *JsonInput) validate(rootConfig *Config, log *logrus.Entry) error {
 
 	return nil
 }
-
-func (config *JsonInput) PropertyParser(columnName string) (*string, error) {
-	return nil, nil
-}
