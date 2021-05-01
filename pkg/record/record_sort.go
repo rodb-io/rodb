@@ -45,7 +45,7 @@ func (sorter *recordListSorter) Less(i int, j int) bool {
 			continue
 		}
 
-		if *sort.Ascending == true {
+		if sort.IsAscending() {
 			return *result
 		} else {
 			return !*result

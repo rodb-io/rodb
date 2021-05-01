@@ -35,6 +35,10 @@ type XmlInputProperty struct {
 	CompiledXPath *xpath.Expr
 }
 
+func (config *XmlInput) ShouldDieOnInputChange() bool {
+	return config.DieOnInputChange == nil || *config.DieOnInputChange
+}
+
 func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

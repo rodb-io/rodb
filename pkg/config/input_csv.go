@@ -24,6 +24,10 @@ type CsvInputColumn struct {
 	Parser string `yaml:"parser"`
 }
 
+func (config *CsvInput) ShouldDieOnInputChange() bool {
+	return config.DieOnInputChange == nil || *config.DieOnInputChange
+}
+
 func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

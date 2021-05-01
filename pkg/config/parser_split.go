@@ -16,6 +16,17 @@ type SplitParser struct {
 	DelimiterRegexp   *regexp.Regexp
 }
 
+func (config *SplitParser) IsDelimiterARegexp() bool {
+	return config.DelimiterIsRegexp != nil && *config.DelimiterIsRegexp
+}
+
+func (config *SplitParser) GetDelimiter() string {
+	// Purposefully not checking the pointer because we want
+	// to panic if it's nil since the field is required and
+	// checked at validation time
+	return *config.Delimiter
+}
+
 func (config *SplitParser) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

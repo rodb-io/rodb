@@ -10,6 +10,10 @@ type Sort struct {
 	Ascending *bool  `yaml:"ascending"`
 }
 
+func (config *Sort) IsAscending() bool {
+	return config.Ascending == nil || *config.Ascending
+}
+
 func (config *Sort) validate(
 	rootConfig *Config,
 	input Input,

@@ -43,7 +43,7 @@ func NewCsv(
 
 	util.StartFilesystemWatchProcess(
 		csvInput.watcher,
-		*csvInput.config.DieOnInputChange,
+		csvInput.config.ShouldDieOnInputChange(),
 		csvInput.config.Logger,
 	)
 

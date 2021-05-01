@@ -56,7 +56,7 @@ func NewXml(
 
 	util.StartFilesystemWatchProcess(
 		xmlInput.watcher,
-		*xmlInput.config.DieOnInputChange,
+		xmlInput.config.ShouldDieOnInputChange(),
 		xmlInput.config.Logger,
 	)
 

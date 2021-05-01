@@ -13,6 +13,10 @@ type JsonInput struct {
 	Logger           *logrus.Entry
 }
 
+func (config *JsonInput) ShouldDieOnInputChange() bool {
+	return config.DieOnInputChange == nil || *config.DieOnInputChange
+}
+
 func (config *JsonInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

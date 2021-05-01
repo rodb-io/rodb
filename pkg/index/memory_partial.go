@@ -122,7 +122,7 @@ func (mp *MemoryPartial) addValueToIndex(
 		return fmt.Errorf("Cannot index the value '%v' from property '%v' because it is not a string.", value, property)
 	}
 
-	if mp.config.IgnoreCase != nil && *mp.config.IgnoreCase {
+	if mp.config.ShouldIgnoreCase() {
 		stringValue = strings.ToLower(stringValue)
 	}
 
@@ -163,7 +163,7 @@ func (mp *MemoryPartial) GetRecordPositions(
 			return nil, fmt.Errorf("Cannot filter the value '%v' from property '%v' because it is not a string.", filter, propertyName)
 		}
 
-		if mp.config.IgnoreCase != nil && *mp.config.IgnoreCase {
+		if mp.config.ShouldIgnoreCase() {
 			stringFilter = strings.ToLower(stringFilter)
 		}
 

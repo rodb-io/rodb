@@ -14,6 +14,10 @@ type MemoryPartialIndex struct {
 	Logger     *logrus.Entry
 }
 
+func (config *MemoryPartialIndex) ShouldIgnoreCase() bool {
+	return config.IgnoreCase != nil && *config.IgnoreCase
+}
+
 func (config *MemoryPartialIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

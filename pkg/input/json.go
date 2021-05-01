@@ -34,7 +34,7 @@ func NewJson(config *configModule.JsonInput) (*Json, error) {
 
 	util.StartFilesystemWatchProcess(
 		jsonInput.watcher,
-		*jsonInput.config.DieOnInputChange,
+		jsonInput.config.ShouldDieOnInputChange(),
 		jsonInput.config.Logger,
 	)
 
