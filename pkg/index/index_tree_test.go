@@ -9,10 +9,10 @@ import (
 
 func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			value: 'A',
 		}
-		newChild := &partialIndexTrieNode{
+		newChild := &partialIndexTreeNode{
 			value: 'B',
 		}
 		node.appendChild(newChild)
@@ -25,15 +25,15 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 		}
 	})
 	t.Run("already have child", func(t *testing.T) {
-		child := &partialIndexTrieNode{
+		child := &partialIndexTreeNode{
 			value: 'B',
 		}
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			value:      'A',
 			firstChild: child,
 			lastChild:  child,
 		}
-		newChild := &partialIndexTrieNode{
+		newChild := &partialIndexTreeNode{
 			value: 'C',
 		}
 		node.appendChild(newChild)
@@ -52,7 +52,7 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 
 func PartialIndexTreeNodeFindChildByValue(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			value:      'A',
 			firstChild: nil,
 			lastChild:  nil,
@@ -64,14 +64,14 @@ func PartialIndexTreeNodeFindChildByValue(t *testing.T) {
 		}
 	})
 	t.Run("found", func(t *testing.T) {
-		secondChild := &partialIndexTrieNode{
+		secondChild := &partialIndexTreeNode{
 			value: 'C',
 		}
-		child := &partialIndexTrieNode{
+		child := &partialIndexTreeNode{
 			value:       'B',
 			nextSibling: secondChild,
 		}
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			value:      'A',
 			firstChild: child,
 			lastChild:  secondChild,
@@ -83,10 +83,10 @@ func PartialIndexTreeNodeFindChildByValue(t *testing.T) {
 		}
 	})
 	t.Run("not found", func(t *testing.T) {
-		child := &partialIndexTrieNode{
+		child := &partialIndexTreeNode{
 			value: 'B',
 		}
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			value:      'A',
 			firstChild: child,
 			lastChild:  child,
@@ -101,7 +101,7 @@ func PartialIndexTreeNodeFindChildByValue(t *testing.T) {
 
 func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
-		node := &partialIndexTrieNode{}
+		node := &partialIndexTreeNode{}
 		node.appendPositionIfNotExists(1)
 
 		if node.firstPosition.Position != 1 {
@@ -115,7 +115,7 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 		position := &record.PositionLinkedList{
 			Position: 1,
 		}
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			firstPosition: position,
 			lastPosition:  position,
 		}
@@ -135,7 +135,7 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 		position := &record.PositionLinkedList{
 			Position: 1,
 		}
-		node := &partialIndexTrieNode{
+		node := &partialIndexTreeNode{
 			firstPosition: position,
 			lastPosition:  position,
 		}
@@ -152,7 +152,7 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 
 func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		root := &partialIndexTrieNode{}
+		root := &partialIndexTreeNode{}
 
 		root.addSequence([]rune{'F', 'O', 'O'}, 1)
 
@@ -187,7 +187,7 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 		}
 	})
 	t.Run("new suffix to existing tree", func(t *testing.T) {
-		root := &partialIndexTrieNode{}
+		root := &partialIndexTreeNode{}
 		root.addSequence([]rune{'F', 'O', 'O'}, 1)
 
 		root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
@@ -226,7 +226,7 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 }
 
 func PartialIndexTreeNodeGetSequence(t *testing.T) {
-	root := &partialIndexTrieNode{}
+	root := &partialIndexTreeNode{}
 	root.addSequence([]rune{'F', 'O', 'O'}, 1)
 	root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
 	root.addSequence([]rune{'T', 'O', 'P'}, 3)

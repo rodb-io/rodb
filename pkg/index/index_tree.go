@@ -4,16 +4,16 @@ import (
 	"rodb.io/pkg/record"
 )
 
-type partialIndexTrieNode struct {
+type partialIndexTreeNode struct {
 	value         rune
-	nextSibling   *partialIndexTrieNode
-	firstChild    *partialIndexTrieNode
-	lastChild     *partialIndexTrieNode
+	nextSibling   *partialIndexTreeNode
+	firstChild    *partialIndexTreeNode
+	lastChild     *partialIndexTreeNode
 	firstPosition *record.PositionLinkedList
 	lastPosition  *record.PositionLinkedList
 }
 
-func (node *partialIndexTrieNode) appendChild(child *partialIndexTrieNode) {
+func (node *partialIndexTreeNode) appendChild(child *partialIndexTreeNode) {
 	if node.firstChild == nil {
 		node.firstChild = child
 		node.lastChild = child
@@ -23,7 +23,7 @@ func (node *partialIndexTrieNode) appendChild(child *partialIndexTrieNode) {
 	}
 }
 
-func (node *partialIndexTrieNode) findChildByValue(value rune) *partialIndexTrieNode {
+func (node *partialIndexTreeNode) findChildByValue(value rune) *partialIndexTreeNode {
 	for child := node.firstChild; child != nil; child = child.nextSibling {
 		if child.value == value {
 			return child
@@ -34,7 +34,7 @@ func (node *partialIndexTrieNode) findChildByValue(value rune) *partialIndexTrie
 }
 
 // This only checks if the position already exists at the end of the list
-func (node *partialIndexTrieNode) appendPositionIfNotExists(position record.Position) {
+func (node *partialIndexTreeNode) appendPositionIfNotExists(position record.Position) {
 	positionNode := &record.PositionLinkedList{
 		Position:     position,
 		NextPosition: nil,
@@ -49,14 +49,14 @@ func (node *partialIndexTrieNode) appendPositionIfNotExists(position record.Posi
 	}
 }
 
-func (node *partialIndexTrieNode) addSequence(runes []rune, position record.Position) {
+func (node *partialIndexTreeNode) addSequence(runes []rune, position record.Position) {
 	parentNode := node
 	for _, currentRune := range runes {
 		if existingNode := parentNode.findChildByValue(currentRune); existingNode == nil {
 			positionList := &record.PositionLinkedList{
 				Position: position,
 			}
-			newNode := &partialIndexTrieNode{
+			newNode := &partialIndexTreeNode{
 				value:         currentRune,
 				nextSibling:   nil,
 				firstChild:    nil,
@@ -73,7 +73,7 @@ func (node *partialIndexTrieNode) addSequence(runes []rune, position record.Posi
 	}
 }
 
-func (node *partialIndexTrieNode) getSequence(runes []rune) *record.PositionLinkedList {
+func (node *partialIndexTreeNode) getSequence(runes []rune) *record.PositionLinkedList {
 	parentNode := node
 	for _, currentRune := range runes {
 		currentNode := parentNode.findChildByValue(currentRune)

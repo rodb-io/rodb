@@ -13,7 +13,7 @@ import (
 type MemoryPartial struct {
 	config *config.MemoryPartialIndex
 	input  input.Input
-	index  map[string]*partialIndexTrieNode
+	index  map[string]*partialIndexTreeNode
 }
 
 func NewMemoryPartial(
@@ -43,9 +43,9 @@ func (mp *MemoryPartial) Name() string {
 }
 
 func (mp *MemoryPartial) Reindex() error {
-	index := make(map[string]*partialIndexTrieNode)
+	index := make(map[string]*partialIndexTreeNode)
 	for _, property := range mp.config.Properties {
-		index[property] = &partialIndexTrieNode{
+		index[property] = &partialIndexTreeNode{
 			value:         rune(0),
 			nextSibling:   nil,
 			firstChild:    nil,
@@ -103,7 +103,7 @@ func (mp *MemoryPartial) Reindex() error {
 }
 
 func (mp *MemoryPartial) addValueToIndex(
-	index map[string]*partialIndexTrieNode,
+	index map[string]*partialIndexTreeNode,
 	property string,
 	value interface{},
 	position record.Position,

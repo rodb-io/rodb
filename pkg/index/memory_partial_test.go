@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func stringifyMemoryPartialTrie(root *partialIndexTrieNode) string {
+func stringifyMemoryPartialTree(root *partialIndexTreeNode) string {
 	positionsToString := func(positions *record.PositionLinkedList) string {
 		result := ""
 		for currentPosition := positions; currentPosition != nil; currentPosition = currentPosition.NextPosition {
@@ -27,8 +27,8 @@ func stringifyMemoryPartialTrie(root *partialIndexTrieNode) string {
 
 	results := make([]string, 0)
 
-	var stringify func(prefix string, node *partialIndexTrieNode)
-	stringify = func(prefix string, node *partialIndexTrieNode) {
+	var stringify func(prefix string, node *partialIndexTreeNode)
+	stringify = func(prefix string, node *partialIndexTreeNode) {
 		for child := node.firstChild; child != nil; child = child.nextSibling {
 			positions := positionsToString(child.firstPosition)
 			currentValue := prefix + string(child.value)
@@ -102,7 +102,7 @@ func TestMemoryPartial(t *testing.T) {
 			"PLAN=3",
 			"PLANT=3",
 		}, "\n")
-		got := stringifyMemoryPartialTrie(index.index["col"])
+		got := stringifyMemoryPartialTree(index.index["col"])
 		if got != expect {
 			t.Errorf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
