@@ -5,7 +5,7 @@ import (
 )
 
 type partialIndexTreeNode struct {
-	value         rune
+	value         byte
 	nextSibling   *partialIndexTreeNode
 	firstChild    *partialIndexTreeNode
 	lastChild     *partialIndexTreeNode
@@ -23,7 +23,7 @@ func (node *partialIndexTreeNode) appendChild(child *partialIndexTreeNode) {
 	}
 }
 
-func (node *partialIndexTreeNode) findChildByValue(value rune) *partialIndexTreeNode {
+func (node *partialIndexTreeNode) findChildByValue(value byte) *partialIndexTreeNode {
 	for child := node.firstChild; child != nil; child = child.nextSibling {
 		if child.value == value {
 			return child
@@ -49,15 +49,15 @@ func (node *partialIndexTreeNode) appendPositionIfNotExists(position record.Posi
 	}
 }
 
-func (node *partialIndexTreeNode) addSequence(runes []rune, position record.Position) {
+func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Position) {
 	parentNode := node
-	for _, currentRune := range runes {
-		if existingNode := parentNode.findChildByValue(currentRune); existingNode == nil {
+	for _, currentByte := range bytes {
+		if existingNode := parentNode.findChildByValue(currentByte); existingNode == nil {
 			positionList := &record.PositionLinkedList{
 				Position: position,
 			}
 			newNode := &partialIndexTreeNode{
-				value:         currentRune,
+				value:         currentByte,
 				nextSibling:   nil,
 				firstChild:    nil,
 				lastChild:     nil,
@@ -73,10 +73,10 @@ func (node *partialIndexTreeNode) addSequence(runes []rune, position record.Posi
 	}
 }
 
-func (node *partialIndexTreeNode) getSequence(runes []rune) *record.PositionLinkedList {
+func (node *partialIndexTreeNode) getSequence(bytes []byte) *record.PositionLinkedList {
 	parentNode := node
-	for _, currentRune := range runes {
-		currentNode := parentNode.findChildByValue(currentRune)
+	for _, currentByte := range bytes {
+		currentNode := parentNode.findChildByValue(currentByte)
 		if currentNode == nil {
 			return nil
 		}

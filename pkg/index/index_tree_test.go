@@ -154,7 +154,7 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		root := &partialIndexTreeNode{}
 
-		root.addSequence([]rune{'F', 'O', 'O'}, 1)
+		root.addSequence([]byte("FOO"), 1)
 
 		if root.firstChild.value != 'F' {
 			t.Errorf("Expected to have F as first node of root, got %v", root.firstChild.value)
@@ -188,9 +188,9 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	})
 	t.Run("new suffix to existing tree", func(t *testing.T) {
 		root := &partialIndexTreeNode{}
-		root.addSequence([]rune{'F', 'O', 'O'}, 1)
+		root.addSequence([]byte("FOO"), 1)
 
-		root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
+		root.addSequence([]byte("FOOT"), 2)
 
 		if root.firstChild.firstPosition.Position != 1 {
 			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
@@ -227,9 +227,9 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 
 func PartialIndexTreeNodeGetSequence(t *testing.T) {
 	root := &partialIndexTreeNode{}
-	root.addSequence([]rune{'F', 'O', 'O'}, 1)
-	root.addSequence([]rune{'F', 'O', 'O', 'T'}, 2)
-	root.addSequence([]rune{'T', 'O', 'P'}, 3)
+	root.addSequence([]byte("FOO"), 1)
+	root.addSequence([]byte("FOOT"), 2)
+	root.addSequence([]byte("TOP"), 3)
 
 	checkList := func(t *testing.T, list *record.PositionLinkedList, positions []record.Position) {
 		stringPositions := []string{}
@@ -258,18 +258,18 @@ func PartialIndexTreeNodeGetSequence(t *testing.T) {
 	}
 
 	t.Run("multiple prefix", func(t *testing.T) {
-		checkList(t, root.getSequence([]rune("FOO")), []record.Position{1, 2})
+		checkList(t, root.getSequence([]byte("FOO")), []record.Position{1, 2})
 	})
 	t.Run("not found", func(t *testing.T) {
-		checkList(t, root.getSequence([]rune("BAR")), []record.Position{})
+		checkList(t, root.getSequence([]byte("BAR")), []record.Position{})
 	})
 	t.Run("single", func(t *testing.T) {
-		checkList(t, root.getSequence([]rune("TOP")), []record.Position{3})
+		checkList(t, root.getSequence([]byte("TOP")), []record.Position{3})
 	})
 	t.Run("multiple middle", func(t *testing.T) {
-		checkList(t, root.getSequence([]rune("OO")), []record.Position{1, 2})
+		checkList(t, root.getSequence([]byte("OO")), []record.Position{1, 2})
 	})
 	t.Run("suffix and prefix", func(t *testing.T) {
-		checkList(t, root.getSequence([]rune("T")), []record.Position{2, 3})
+		checkList(t, root.getSequence([]byte("T")), []record.Position{2, 3})
 	})
 }
