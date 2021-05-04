@@ -10,10 +10,10 @@ import (
 func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
 		node := &partialIndexTreeNode{
-			value: 'A',
+			value: []byte("A"),
 		}
 		newChild := &partialIndexTreeNode{
-			value: 'B',
+			value: []byte("B"),
 		}
 		node.appendChild(newChild)
 
@@ -26,15 +26,15 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	})
 	t.Run("already have child", func(t *testing.T) {
 		child := &partialIndexTreeNode{
-			value: 'B',
+			value: []byte("B"),
 		}
 		node := &partialIndexTreeNode{
-			value:      'A',
+			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  child,
 		}
 		newChild := &partialIndexTreeNode{
-			value: 'C',
+			value: []byte("C"),
 		}
 		node.appendChild(newChild)
 
@@ -50,49 +50,74 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeFindChildByValue(t *testing.T) {
+func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
 		node := &partialIndexTreeNode{
-			value:      'A',
+			value:      []byte("A"),
 			firstChild: nil,
 			lastChild:  nil,
 		}
 
-		got := node.findChildByValue('B')
+		got, _ := node.findChildByPrefix([]byte("B"))
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
 	})
-	t.Run("found", func(t *testing.T) {
+	t.Run("found exact", func(t *testing.T) {
 		secondChild := &partialIndexTreeNode{
-			value: 'C',
+			value: []byte("CDE"),
 		}
 		child := &partialIndexTreeNode{
-			value:       'B',
+			value:       []byte("B"),
 			nextSibling: secondChild,
 		}
 		node := &partialIndexTreeNode{
-			value:      'A',
+			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  secondChild,
 		}
 
-		got := node.findChildByValue('C')
-		if got != secondChild {
-			t.Errorf("Expected to get node C, got %+v", got)
+		gotNode, gotLength := node.findChildByPrefix([]byte("CDE"))
+		if gotNode != secondChild {
+			t.Errorf("Expected to get node C, got %+v", gotNode)
+		}
+		if expectLength := len(secondChild.value); gotLength != expectLength {
+			t.Errorf("Expected to get length %v, got %v", expectLength, gotLength)
+		}
+	})
+	t.Run("found partial", func(t *testing.T) {
+		secondChild := &partialIndexTreeNode{
+			value: []byte("CDE"),
+		}
+		child := &partialIndexTreeNode{
+			value:       []byte("B"),
+			nextSibling: secondChild,
+		}
+		node := &partialIndexTreeNode{
+			value:      []byte("A"),
+			firstChild: child,
+			lastChild:  secondChild,
+		}
+
+		gotNode, gotLength := node.findChildByPrefix([]byte("CDX"))
+		if gotNode != secondChild {
+			t.Errorf("Expected to get node C, got %+v", gotNode)
+		}
+		if expectLength := 2; gotLength != expectLength {
+			t.Errorf("Expected to get length %v, got %v", expectLength, gotLength)
 		}
 	})
 	t.Run("not found", func(t *testing.T) {
 		child := &partialIndexTreeNode{
-			value: 'B',
+			value: []byte("B"),
 		}
 		node := &partialIndexTreeNode{
-			value:      'A',
+			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  child,
 		}
 
-		got := node.findChildByValue('C')
+		got, _ := node.findChildByPrefix([]byte("C"))
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
@@ -156,8 +181,8 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 
 		root.addSequence([]byte("FOO"), 1)
 
-		if root.firstChild.value != 'F' {
-			t.Errorf("Expected to have F as first node of root, got %v", root.firstChild.value)
+		if string(root.firstChild.value) != "FOO" {
+			t.Errorf("Expected to have FOO as first node of root, got %v", root.firstChild.value)
 		}
 		if root.firstChild.firstPosition.Position != 1 {
 			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
@@ -165,28 +190,8 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 		if root.firstChild.lastPosition.Position != 1 {
 			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
 		}
-
-		if root.firstChild.firstChild.value != 'O' {
-			t.Errorf("Expected to have O as first node F, got %v", root.firstChild.firstChild.value)
-		}
-		if root.firstChild.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstPosition)
-		}
-		if root.firstChild.firstChild.lastPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.lastPosition)
-		}
-
-		if root.firstChild.firstChild.firstChild.value != 'F' {
-			t.Errorf("Expected to have O as first node of O, got %v", root.firstChild.firstChild.firstChild.value)
-		}
-		if root.firstChild.firstChild.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstChild.firstPosition)
-		}
-		if root.firstChild.firstChild.firstChild.lastPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.firstChild.lastPosition)
-		}
 	})
-	t.Run("new suffix to existing tree", func(t *testing.T) {
+	t.Run("new suffix to existing node", func(t *testing.T) {
 		root := &partialIndexTreeNode{}
 		root.addSequence([]byte("FOO"), 1)
 
@@ -199,28 +204,49 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
 		}
 
-		if root.firstChild.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstPosition)
+		if string(root.firstChild.firstChild.value) != "T" {
+			t.Errorf("Expected to have value 'T' as first child of FOO, got %v", string(root.firstChild.firstChild.value))
+		}
+		if root.firstChild.firstChild.firstPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in first position of T, got %v", root.firstChild.firstChild.firstPosition)
 		}
 		if root.firstChild.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.lastPosition)
+			t.Errorf("Expected to have position 1 in last position of T, got %v", root.firstChild.firstChild.lastPosition)
+		}
+	})
+	t.Run("splitting existing node", func(t *testing.T) {
+		root := &partialIndexTreeNode{}
+		root.addSequence([]byte("FOO"), 1)
+		root.addSequence([]byte("FORMAT"), 2)
+
+		if string(root.firstChild.value) != "FO" {
+			t.Errorf("Expected to have value 'FO' as first child of root, got %v", string(root.firstChild.value))
+		}
+		if root.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
+		}
+		if root.firstChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
 		}
 
-		if root.firstChild.firstChild.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of O, got %v", root.firstChild.firstChild.firstChild.firstPosition)
+		if string(root.firstChild.firstChild.value) != "O" {
+			t.Errorf("Expected to have value 'O' as first child of 'FO', got %v", string(root.firstChild.firstChild.value))
 		}
-		if root.firstChild.firstChild.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in last position of O, got %v", root.firstChild.firstChild.firstChild.lastPosition)
+		if root.firstChild.firstChild.firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of T, got %v", root.firstChild.firstChild.firstPosition)
+		}
+		if root.firstChild.firstChild.lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of T, got %v", root.firstChild.firstChild.lastPosition)
 		}
 
-		if root.firstChild.firstChild.firstChild.firstChild.value != 'T' {
-			t.Errorf("Expected to have T as first node of O, got %v", root.firstChild.firstChild.firstChild.firstChild.value)
+		if string(root.firstChild.lastChild.value) != "RMAT" {
+			t.Errorf("Expected to have value 'RMAT' as first child of 'FO', got %v", string(root.firstChild.lastChild.value))
 		}
-		if root.firstChild.firstChild.firstChild.firstChild.firstPosition.Position != 2 {
-			t.Errorf("Expected to have position 2 in first position of T, got %v", root.firstChild.firstChild.firstChild.firstChild.firstPosition)
+		if root.firstChild.lastChild.firstPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in first position of 'RMAT', got %v", root.firstChild.lastChild.firstPosition)
 		}
-		if root.firstChild.firstChild.firstChild.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 2 in last position of T, got %v", root.firstChild.firstChild.firstChild.firstChild.lastPosition)
+		if root.firstChild.lastChild.lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in last position of 'RMAT', got %v", root.firstChild.lastChild.lastPosition)
 		}
 	})
 }
@@ -271,5 +297,8 @@ func PartialIndexTreeNodeGetSequence(t *testing.T) {
 	})
 	t.Run("suffix and prefix", func(t *testing.T) {
 		checkList(t, root.getSequence([]byte("T")), []record.Position{2, 3})
+	})
+	t.Run("partially matches the end", func(t *testing.T) {
+		checkList(t, root.getSequence([]byte("FO")), []record.Position{1, 2})
 	})
 }

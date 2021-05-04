@@ -31,7 +31,7 @@ func stringifyMemoryPartialTree(root *partialIndexTreeNode) string {
 	stringify = func(prefix string, node *partialIndexTreeNode) {
 		for child := node.firstChild; child != nil; child = child.nextSibling {
 			positions := positionsToString(child.firstPosition)
-			currentValue := prefix + string(child.value)
+			currentValue := prefix + ">" + string(child.value)
 			results = append(results, currentValue+"="+positions)
 			stringify(currentValue, child)
 		}
@@ -70,37 +70,28 @@ func TestMemoryPartial(t *testing.T) {
 		}
 
 		expect := strings.Join([]string{
-			"A=1,2,3",
-			"AN=1,2,3",
-			"ANA=1,2",
-			"ANAN=1,2",
-			"ANANA=1",
-			"ANANO=2",
-			"ANO=2",
-			"ANT=3",
-			"B=1,2",
-			"BA=1,2",
-			"BAN=1,2",
-			"BANA=1,2",
-			"BANAN=1,2",
-			"BANANA=1",
-			"BANANO=2",
-			"L=3",
-			"LA=3",
-			"LAN=3",
-			"LANT=3",
-			"N=1,2,3",
-			"NA=1,2",
-			"NAN=1,2",
-			"NANA=1",
-			"NANO=2",
-			"NO=2",
-			"NT=3",
-			"P=3",
-			"PL=3",
-			"PLA=3",
-			"PLAN=3",
-			"PLANT=3",
+			">A=1,2,3",
+			">A>N=1,2,3",
+			">A>N>A=1,2",
+			">A>N>A>N=1,2",
+			">A>N>A>N>A=1",
+			">A>N>A>N>O=2",
+			">A>N>O=2",
+			">A>N>T=3",
+			">BANAN=1,2",
+			">BANAN>A=1",
+			">BANAN>O=2",
+			">LANT=3",
+			">N=1,2,3",
+			">N>A=1,2",
+			">N>A>N=1,2",
+			">N>A>N>A=1",
+			">N>A>N>O=2",
+			">N>O=2",
+			">N>T=3",
+			">O=2",
+			">PLANT=3",
+			">T=3",
 		}, "\n")
 		got := stringifyMemoryPartialTree(index.index["col"])
 		if got != expect {

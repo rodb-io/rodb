@@ -46,7 +46,7 @@ func (mp *MemoryPartial) Reindex() error {
 	index := make(map[string]*partialIndexTreeNode)
 	for _, property := range mp.config.Properties {
 		index[property] = &partialIndexTreeNode{
-			value:         byte(0),
+			value:         []byte{},
 			nextSibling:   nil,
 			firstChild:    nil,
 			lastChild:     nil,
@@ -128,7 +128,7 @@ func (mp *MemoryPartial) addValueToIndex(
 
 	root := index[property]
 	bytes := []byte(stringValue)
-	for i := 0; i < len(bytes)-1; i++ {
+	for i := 0; i < len(bytes); i++ {
 		root.addSequence(bytes[i:], position)
 	}
 
