@@ -8,6 +8,7 @@ import (
 
 type JsonObjectOutput struct {
 	Name          string                   `yaml:"name"`
+	Type          string                   `yaml:"type"`
 	Input         string                   `yaml:"input"`
 	Parameters    map[string]*Parameter    `yaml:"parameters"`
 	Relationships map[string]*Relationship `yaml:"relationships"`

@@ -1,141 +1,141 @@
 parsers:
-  - boolean:
-      name: booleanZeroOne
-      falseValues: ["0"]
-      trueValues: ["1"]
-  - integer:
-      name: integerWithSpaces
-      ignoreCharacters: " "
-  - string:
-      name: shiftJisString
-      convertFromCharset: "Shift_JIS"
+  - name: booleanZeroOne
+    type: boolean
+    falseValues: ["0"]
+    trueValues: ["1"]
+  - name: integerWithSpaces
+    type: integer
+    ignoreCharacters: " "
+  - name: shiftJisString
+    type: string
+    convertFromCharset: "Shift_JIS"
 inputs:
-  - csv:
-      name: zipCodesTokyo
-      path: ./zip-codes.csv
-      dieOnInputChange: true
-      ignoreFirstRow: false
-      delimiter: ","
-      columns:
-        - name: code
-          parser: integer
-        - name: oldZipCode
-          parser: integerWithSpaces
-        - name: zipCode
-          parser: string
-        - name: prefectureKana
-          parser: shiftJisString
-        - name: municipalityKana
-          parser: shiftJisString
-        - name: townKana
-          parser: shiftJisString
-        - name: prefecture
-          parser: shiftJisString
-        - name: municipality
-          parser: shiftJisString
-        - name: town
-          parser: shiftJisString
-        - name: townHasMultipleZipCodes
-          parser: booleanZeroOne
-        - name: streetNumberAssignedPerKana
-          parser: booleanZeroOne
-        - name: hasSubdivision
-          parser: booleanZeroOne
-        - name: zipCodeHasMultipleTowns
-          parser: booleanZeroOne
-        - name: updatedId
-          parser: integer
-        - name: reasonForUpdateId
-          parser: integer
-  - csv:
-      name: updatedValues
-      path: ./updated-values.csv
-      dieOnInputChange: true
-      ignoreFirstRow: false
-      delimiter: ","
-      columns:
-        - name: id
-          parser: integer
-        - name: name
-          parser: string
-  - csv:
-      name: reasonsForUpdate
-      path: ./reasons-for-updated.csv
-      dieOnInputChange: true
-      ignoreFirstRow: false
-      delimiter: ","
-      columns:
-        - name: id
-          parser: integer
-        - name: name
-          parser: string
+  - name: zipCodesTokyo
+    type: csv
+    path: ./zip-codes.csv
+    dieOnInputChange: true
+    ignoreFirstRow: false
+    delimiter: ","
+    columns:
+      - name: code
+        parser: integer
+      - name: oldZipCode
+        parser: integerWithSpaces
+      - name: zipCode
+        parser: string
+      - name: prefectureKana
+        parser: shiftJisString
+      - name: municipalityKana
+        parser: shiftJisString
+      - name: townKana
+        parser: shiftJisString
+      - name: prefecture
+        parser: shiftJisString
+      - name: municipality
+        parser: shiftJisString
+      - name: town
+        parser: shiftJisString
+      - name: townHasMultipleZipCodes
+        parser: booleanZeroOne
+      - name: streetNumberAssignedPerKana
+        parser: booleanZeroOne
+      - name: hasSubdivision
+        parser: booleanZeroOne
+      - name: zipCodeHasMultipleTowns
+        parser: booleanZeroOne
+      - name: updatedId
+        parser: integer
+      - name: reasonForUpdateId
+        parser: integer
+  - name: updatedValues
+    type: csv
+    path: ./updated-values.csv
+    dieOnInputChange: true
+    ignoreFirstRow: false
+    delimiter: ","
+    columns:
+      - name: id
+        parser: integer
+      - name: name
+        parser: string
+  - name: reasonsForUpdate
+    type: csv
+    path: ./reasons-for-updated.csv
+    dieOnInputChange: true
+    ignoreFirstRow: false
+    delimiter: ","
+    columns:
+      - name: id
+        parser: integer
+      - name: name
+        parser: string
 indexes:
-  - memoryMap:
-      name: zipCode
-      input: zipCodesTokyo
-      properties:
-        - zipCode
-  - memoryMap:
-      name: municipality
-      input: zipCodesTokyo
-      properties:
-        - municipality
+  - name: zipCode
+    type: memoryMap
+    input: zipCodesTokyo
+    properties:
+      - zipCode
+  - name: municipality
+    type: memoryMap
+    input: zipCodesTokyo
+    properties:
+      - municipality
 outputs:
-  - jsonArray:
-      name: listPostalCodes
-      input: zipCodesTokyo
-      limit:
-        default: 100
-        max: 1000
-        parameter: "limit"
-      offset:
-        parameter: "offset"
-      parameters:
-        municipality:
-          property: municipality
-          index: municipality
-          parser: string
-      relationships:
-        updated:
-          input: updatedValues
-          match:
-            - parentProperty: updatedId
-              childProperty: id
-              childIndex: default
-        reasonsForUpdate:
-          input: reasonsForUpdate
-          match:
-            - parentProperty: reasonForUpdateId
-              childProperty: id
-              childIndex: default
-  - jsonObject:
-      name: findOnePostalCode
-      input: zipCodesTokyo
-      parameters:
-        zipCode:
-          property: zipCode
-          index: zipCode
-          parser: string
-      relationships:
-        updated:
-          input: updatedValues
-          match:
-            - parentProperty: updatedId
-              childProperty: id
-              childIndex: default
-        reasonsForUpdate:
-          input: reasonsForUpdate
-          match:
-            - parentProperty: reasonForUpdateId
-              childProperty: id
-              childIndex: default
+  - name: listPostalCodes
+    type: jsonArray
+    input: zipCodesTokyo
+    limit:
+      default: 100
+      max: 1000
+      parameter: "limit"
+    offset:
+      parameter: "offset"
+    parameters:
+      municipality:
+        property: municipality
+        index: municipality
+        parser: string
+    relationships:
+      updated:
+        input: updatedValues
+        match:
+          - parentProperty: updatedId
+            childProperty: id
+            childIndex: default
+      reasonsForUpdate:
+        input: reasonsForUpdate
+        match:
+          - parentProperty: reasonForUpdateId
+            childProperty: id
+            childIndex: default
+  - name: findOnePostalCode
+    type: jsonObject
+    input: zipCodesTokyo
+    parameters:
+      zipCode:
+        property: zipCode
+        index: zipCode
+        parser: string
+    relationships:
+      updated:
+        input: updatedValues
+        match:
+          - parentProperty: updatedId
+            childProperty: id
+            childIndex: default
+      reasonsForUpdate:
+        input: reasonsForUpdate
+        match:
+          - parentProperty: reasonForUpdateId
+            childProperty: id
+            childIndex: default
 services:
-  - http:
-      name: httpService
-      listen: ":80"
-      errorsType: application/json
-      routes:
-        - path: "/zip-codes"
-          output: listPostalCodes
-        - path: "/zip-codes/{zipCode}"
-          output: findOnePostalCode
+  - name: httpService
+    type: http
+    listen: ":80"
+    errorsType: application/json
+    routes:
+      - path: "/zip-codes"
+        output: listPostalCodes
+      - path: "/zip-codes/{zipCode}"
+        output: findOnePostalCode

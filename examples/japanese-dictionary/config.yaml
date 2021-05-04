@@ -1,48 +1,48 @@
 inputs:
-  - xml:
-      name: dictionary
-      path: ./JMdict.xml
-      recordXpath: "//entry"
-      properties:
-        - name: writing
-          parser: string
-          xpath: "string(//keb[1])"
-        - name: reading
-          parser: string
-          xpath: "string(//reb[1])"
-        - name: translation
-          parser: string
-          xpath: "string(//gloss[not(@xml:lang)][1])"
+  - name: dictionary
+    type: xml
+    path: ./JMdict.xml
+    recordXpath: "//entry"
+    properties:
+      - name: writing
+        parser: string
+        xpath: "string(//keb[1])"
+      - name: reading
+        parser: string
+        xpath: "string(//reb[1])"
+      - name: translation
+        parser: string
+        xpath: "string(//gloss[not(@xml:lang)][1])"
 indexes:
-  - memoryMap:
-      name: index
-      input: dictionary
-      properties:
-        - writing
-        - reading
-  - memoryPartial:
-      name: indexSearch
-      input: dictionary
-      properties:
-        - translation
+  - name: index
+    type: memoryMap
+    input: dictionary
+    properties:
+      - writing
+      - reading
+  - name: indexSearch
+    type: memoryPartial
+    input: dictionary
+    properties:
+      - translation
 outputs:
-  - jsonArray:
-      name: output
-      input: dictionary
-      parameters:
-        word:
-          property: writing
-          index: index
-          parser: string
-        translation:
-          property: translation
-          index: indexSearch
-          parser: string
+  - name: output
+    type: jsonArray
+    input: dictionary
+    parameters:
+      word:
+        property: writing
+        index: index
+        parser: string
+      translation:
+        property: translation
+        index: indexSearch
+        parser: string
 services:
-  - http:
-      name: service
-      listen: ":80"
-      errorsType: application/json
-      routes:
-        - path: "/"
-          output: output
+  - name: service
+    type: http
+    listen: ":80"
+    errorsType: application/json
+    routes:
+      - path: "/"
+        output: output

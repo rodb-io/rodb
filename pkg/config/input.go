@@ -2,13 +2,36 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/util"
 )
 
 type Input struct {
-	Csv  *CsvInput  `yaml:"csv"`
-	Xml  *XmlInput  `yaml:"xml"`
-	Json *JsonInput `yaml:"json"`
+	Csv  *CsvInput
+	Xml  *XmlInput
+	Json *JsonInput
+}
+
+func (config *Input) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	objectType, err := util.GetTypeFromConfigUnmarshaler(unmarshal)
+	if err != nil {
+		return fmt.Errorf("Error in input config: %w", err)
+	}
+
+	switch objectType {
+	case "csv":
+		config.Csv = &CsvInput{}
+		return unmarshal(config.Csv)
+	case "xml":
+		config.Xml = &XmlInput{}
+		return unmarshal(config.Xml)
+	case "json":
+		config.Json = &JsonInput{}
+		return unmarshal(config.Json)
+	default:
+		return fmt.Errorf("Error in input config: Unknown type '%v'", objectType)
+	}
 }
 
 func (config *Input) validate(rootConfig *Config, log *logrus.Entry) error {

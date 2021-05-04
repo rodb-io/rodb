@@ -7,6 +7,7 @@ import (
 
 type StringParser struct {
 	Name               string `yaml:"name"`
+	Type               string `yaml:"type"`
 	ConvertFromCharset string `yaml:"convertFromCharset"`
 	Logger             *logrus.Entry
 }

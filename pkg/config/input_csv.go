@@ -9,6 +9,7 @@ import (
 
 type CsvInput struct {
 	Name              string            `yaml:"name"`
+	Type              string            `yaml:"type"`
 	Path              string            `yaml:"path"`
 	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`

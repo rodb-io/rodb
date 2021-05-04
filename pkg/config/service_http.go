@@ -9,6 +9,7 @@ import (
 
 type HttpService struct {
 	Name       string             `yaml:"name"`
+	Type       string             `yaml:"type"`
 	Listen     string             `yaml:"listen"`
 	ErrorsType string             `yaml:"errorsType"`
 	Routes     []HttpServiceRoute `yaml:"routes"`

@@ -2,16 +2,48 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/util"
 )
 
 type Parser struct {
-	Integer *IntegerParser `yaml:"integer"`
-	Float   *FloatParser   `yaml:"float"`
-	Boolean *BooleanParser `yaml:"boolean"`
-	String  *StringParser  `yaml:"string"`
-	Json    *JsonParser    `yaml:"json"`
-	Split   *SplitParser   `yaml:"split"`
+	Integer *IntegerParser
+	Float   *FloatParser
+	Boolean *BooleanParser
+	String  *StringParser
+	Json    *JsonParser
+	Split   *SplitParser
+}
+
+func (config *Parser) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	objectType, err := util.GetTypeFromConfigUnmarshaler(unmarshal)
+	if err != nil {
+		return fmt.Errorf("Error in parser config: %w", err)
+	}
+
+	switch objectType {
+	case "integer":
+		config.Integer = &IntegerParser{}
+		return unmarshal(config.Integer)
+	case "float":
+		config.Float = &FloatParser{}
+		return unmarshal(config.Float)
+	case "boolean":
+		config.Boolean = &BooleanParser{}
+		return unmarshal(config.Boolean)
+	case "string":
+		config.String = &StringParser{}
+		return unmarshal(config.String)
+	case "json":
+		config.Json = &JsonParser{}
+		return unmarshal(config.Json)
+	case "split":
+		config.Split = &SplitParser{}
+		return unmarshal(config.Split)
+	default:
+		return fmt.Errorf("Error in parser config: Unknown type '%v'", objectType)
+	}
 }
 
 func (config *Parser) validate(rootConfig *Config, log *logrus.Entry) error {

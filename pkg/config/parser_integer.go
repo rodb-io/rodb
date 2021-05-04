@@ -7,6 +7,7 @@ import (
 
 type IntegerParser struct {
 	Name             string `yaml:"name"`
+	Type             string `yaml:"type"`
 	IgnoreCharacters string `yaml:"ignoreCharacters"`
 	Logger           *logrus.Entry
 }

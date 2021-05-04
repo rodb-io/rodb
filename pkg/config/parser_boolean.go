@@ -7,6 +7,7 @@ import (
 
 type BooleanParser struct {
 	Name        string   `yaml:"name"`
+	Type        string   `yaml:"type"`
 	TrueValues  []string `yaml:"trueValues"`
 	FalseValues []string `yaml:"falseValues"`
 	Logger      *logrus.Entry

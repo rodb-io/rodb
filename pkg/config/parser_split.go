@@ -9,6 +9,7 @@ import (
 
 type SplitParser struct {
 	Name              string  `yaml:"name"`
+	Type              string  `yaml:"type"`
 	Delimiter         *string `yaml:"delimiter"`
 	DelimiterIsRegexp *bool   `yaml:"delimiterIsRegexp"`
 	Parser            string  `yaml:"parser"`

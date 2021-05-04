@@ -1,172 +1,172 @@
 parsers:
-  - integer:
-      name: defaultInteger
-      ignoreCharacters: ", .€$"
-  - float:
-      name: defaultFloat
-      decimalSeparator: "."
-      ignoreCharacters: ", "
-  - boolean:
-      name: defaultBoolean
-      trueValues: ["true", "1", "yes", "TRUE", "YES"]
-      falseValues: ["false", "0", "no", "FALSE", "NO", ""]
-  - string:
-      name: defaultString
-      convertFromCharset: ""
-  - json:
-      name: defaultJson
-  - split:
-      name: defaultSplit
-      delimiter: "/"
-      delimiterIsRegexp: false
-      parser: integer
-  - split:
-      name: defaultSplitRegexp
-      delimiter: "[^a-z]"
-      delimiterIsRegexp: true
-      parser: integer
+  - name: defaultInteger
+    type: integer
+    ignoreCharacters: ", .€$"
+  - name: defaultFloat
+    type: float
+    decimalSeparator: "."
+    ignoreCharacters: ", "
+  - name: defaultBoolean
+    type: boolean
+    trueValues: ["true", "1", "yes", "TRUE", "YES"]
+    falseValues: ["false", "0", "no", "FALSE", "NO", ""]
+  - name: defaultString
+    type: string
+    convertFromCharset: ""
+  - name: defaultJson
+    type: json
+  - name: defaultSplit
+    type: split
+    delimiter: "/"
+    delimiterIsRegexp: false
+    parser: integer
+  - name: defaultSplitRegexp
+    type: split
+    delimiter: "[^a-z]"
+    delimiterIsRegexp: true
+    parser: integer
 inputs:
-  - csv:
-      name: defaultInput
-      path: ./dummy.csv
-      dieOnInputChange: true
-      ignoreFirstRow: true
-      delimiter: ","
-      columns:
-        - name: id
+  - name: defaultInput
+    type: csv
+    path: ./dummy.csv
+    dieOnInputChange: true
+    ignoreFirstRow: true
+    delimiter: ","
+    columns:
+      - name: id
+        parser: defaultInteger
+      - name: name
+        parser: defaultString
+      - name: number
+        parser: defaultFloat
+      - name: bool
+        parser: defaultBoolean
+  - name: defaultInput2
+    type: csv
+    path: ./dummy2.csv
+    dieOnInputChange: true
+    ignoreFirstRow: true
+    autodetectColumns: true
+    delimiter: ","
+  - name: defaultInput3
+    type: xml
+    path: ./dummy.xml
+    dieOnInputChange: true
+    recordXpath: "//item"
+    properties:
+      - name: id
+        parser: defaultInteger
+        xpath: "/id"
+      - name: name
+        parser: defaultString
+        xpath: "string(//name)"
+      - name: number
+        parser: defaultFloat
+        xpath: "/number"
+      - name: bool
+        parser: defaultBoolean
+        xpath: "/bool"
+      - name: integerArray
+        type: array
+        xpath: "/*/foo::text()"
+        items:
           parser: defaultInteger
-        - name: name
-          parser: defaultString
-        - name: number
-          parser: defaultFloat
-        - name: bool
-          parser: defaultBoolean
-  - csv:
-      name: defaultInput2
-      path: ./dummy2.csv
-      dieOnInputChange: true
-      ignoreFirstRow: true
-      autodetectColumns: true
-      delimiter: ","
-  - xml:
-      name: defaultInput3
-      path: ./dummy.xml
-      dieOnInputChange: true
-      recordXpath: "//item"
-      properties:
-        - name: id
-          parser: defaultInteger
-          xpath: "/id"
-        - name: name
-          parser: defaultString
-          xpath: "string(//name)"
-        - name: number
-          parser: defaultFloat
-          xpath: "/number"
-        - name: bool
-          parser: defaultBoolean
-          xpath: "/bool"
-        - name: integerArray
-          type: array
-          xpath: "/*/foo::text()"
-          items:
-            parser: defaultInteger
-        - name: objectArray
-          type: array
-          xpath: "/bar"
-          items:
-            type: object
-            properties:
-              - name: prop_a
-                parser: defaultInteger
-                xpath: "string(/baz)"
-        - name: object
+      - name: objectArray
+        type: array
+        xpath: "/bar"
+        items:
           type: object
-          xpath: "/*/foo::text()"
           properties:
             - name: prop_a
               parser: defaultInteger
-              xpath: "/*/foo::text()"
-  - json:
-      name: defaultInput4
-      path: ./dummy.json
-      dieOnInputChange: true
+              xpath: "string(/baz)"
+      - name: object
+        type: object
+        xpath: "/*/foo::text()"
+        properties:
+          - name: prop_a
+            parser: defaultInteger
+            xpath: "/*/foo::text()"
+  - name: defaultInput4
+    type: json
+    path: ./dummy.json
+    dieOnInputChange: true
 indexes:
-  - memoryMap:
-      name: defaultIndex
-      input: defaultInput
-      properties:
-        - id
-        - name
-  - memoryPartial:
-      name: defaultIndexPartial
-      input: defaultInput
-      ignoreCase: true
-      properties:
-        - name
+  - name: defaultIndex
+    type: memoryMap
+    input: defaultInput
+    properties:
+      - id
+      - name
+  - name: defaultIndexPartial
+    type: memoryPartial
+    input: defaultInput
+    ignoreCase: true
+    properties:
+      - name
 outputs:
-  - graphql:
-      name: defaultGraphqlOutput
-  - jsonArray:
-      name: defaultJsonArrayOutput
-      input: defaultInput
-      limit:
-        default: 100
-        max: 1000
-        parameter: "limit"
-      offset:
-        parameter: "offset"
-      parameters:
-        id:
-          property: id
-          index: defaultIndex
-          parser: integer
-        name:
-          property: name
-          index: defaultIndex
-          parser: string
-      relationships:
-        mySubProperty:
-          input: defaultInput
-          isArray: false
-          match:
-            - parentProperty: id
-              childProperty: id
-              childIndex: defaultIndex
-  - jsonObject:
-      name: defaultJsonObjectOutput
-      input: defaultInput
-      relationships:
-        mySubProperty:
-          input: defaultInput
-          isArray: false
-          match:
-            - parentProperty: id
-              childProperty: id
-              childIndex: defaultIndex
-          relationships:
-            mySubSubProperty:
-              input: defaultInput
-              isArray: true
-              match:
-                - parentProperty: id
-                  childProperty: id
-                  childIndex: defaultIndex
-              sort:
-                - property: id
-                  ascending: true
-      parameters:
-        id:
-          property: id
-          index: defaultIndex
-          parser: integer
+  - name: defaultGraphqlOutput
+    type: graphql
+  - name: defaultJsonArrayOutput
+    type: jsonArray
+    input: defaultInput
+    limit:
+      default: 100
+      max: 1000
+      parameter: "limit"
+    offset:
+      parameter: "offset"
+    parameters:
+      id:
+        property: id
+        index: defaultIndex
+        parser: integer
+      name:
+        property: name
+        index: defaultIndex
+        parser: string
+    relationships:
+      mySubProperty:
+        input: defaultInput
+        isArray: false
+        match:
+          - parentProperty: id
+            childProperty: id
+            childIndex: defaultIndex
+  - name: defaultJsonObjectOutput
+    type: jsonObject
+    input: defaultInput
+    relationships:
+      mySubProperty:
+        input: defaultInput
+        isArray: false
+        match:
+          - parentProperty: id
+            childProperty: id
+            childIndex: defaultIndex
+        relationships:
+          mySubSubProperty:
+            input: defaultInput
+            isArray: true
+            match:
+              - parentProperty: id
+                childProperty: id
+                childIndex: defaultIndex
+            sort:
+              - property: id
+                ascending: true
+    parameters:
+      id:
+        property: id
+        index: defaultIndex
+        parser: integer
 services:
-  - http:
-      name: defaultService
-      listen: ":80"
-      errorsType: application/json
-      routes:
-        - path: "/dummies"
-          output: defaultJsonArrayOutput
-        - path: "/dummies/{id}"
-          output: defaultJsonObjectOutput
+  - name: defaultService
+    type: http
+    listen: ":80"
+    errorsType: application/json
+    routes:
+      - path: "/dummies"
+        output: defaultJsonArrayOutput
+      - path: "/dummies/{id}"
+        output: defaultJsonObjectOutput

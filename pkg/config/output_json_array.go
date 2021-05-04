@@ -8,6 +8,7 @@ import (
 
 type JsonArrayOutput struct {
 	Name          string                   `yaml:"name"`
+	Type          string                   `yaml:"type"`
 	Input         string                   `yaml:"input"`
 	Limit         JsonArrayOutputLimit     `yaml:"limit"`
 	Offset        JsonArrayOutputOffset    `yaml:"offset"`

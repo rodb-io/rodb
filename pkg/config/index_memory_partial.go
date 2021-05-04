@@ -8,6 +8,7 @@ import (
 
 type MemoryPartialIndex struct {
 	Name       string   `yaml:"name"`
+	Type       string   `yaml:"type"`
 	Input      string   `yaml:"input"`
 	Properties []string `yaml:"properties"`
 	IgnoreCase *bool    `yaml:"ignoreCase"`

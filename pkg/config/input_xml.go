@@ -18,6 +18,7 @@ const (
 
 type XmlInput struct {
 	Name             string              `yaml:"name"`
+	Type             string              `yaml:"type"`
 	Path             string              `yaml:"path"`
 	DieOnInputChange *bool               `yaml:"dieOnInputChange"`
 	Properties       []*XmlInputProperty `yaml:"properties"`

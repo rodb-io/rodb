@@ -8,6 +8,7 @@ import (
 
 type JsonInput struct {
 	Name             string `yaml:"name"`
+	Type             string `yaml:"type"`
 	Path             string `yaml:"path"`
 	DieOnInputChange *bool  `yaml:"dieOnInputChange"`
 	Logger           *logrus.Entry

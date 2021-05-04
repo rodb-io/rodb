@@ -2,13 +2,36 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/util"
 )
 
 type Index struct {
-	MemoryMap     *MemoryMapIndex     `yaml:"memoryMap"`
-	MemoryPartial *MemoryPartialIndex `yaml:"memoryPartial"`
-	Noop          *NoopIndex          `yaml:"noop"`
+	MemoryMap     *MemoryMapIndex
+	MemoryPartial *MemoryPartialIndex
+	Noop          *NoopIndex
+}
+
+func (config *Index) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	objectType, err := util.GetTypeFromConfigUnmarshaler(unmarshal)
+	if err != nil {
+		return fmt.Errorf("Error in index config: %w", err)
+	}
+
+	switch objectType {
+	case "memoryMap":
+		config.MemoryMap = &MemoryMapIndex{}
+		return unmarshal(config.MemoryMap)
+	case "memoryPartial":
+		config.MemoryPartial = &MemoryPartialIndex{}
+		return unmarshal(config.MemoryPartial)
+	case "noop":
+		config.Noop = &NoopIndex{}
+		return unmarshal(config.Noop)
+	default:
+		return fmt.Errorf("Error in index config: Unknown type '%v'", objectType)
+	}
 }
 
 func (config *Index) validate(rootConfig *Config, log *logrus.Entry) error {

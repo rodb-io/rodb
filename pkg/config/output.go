@@ -2,13 +2,36 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/util"
 )
 
 type Output struct {
-	GraphQL    *GraphQLOutput    `yaml:"graphql"`
-	JsonArray  *JsonArrayOutput  `yaml:"jsonArray"`
-	JsonObject *JsonObjectOutput `yaml:"jsonObject"`
+	GraphQL    *GraphQLOutput
+	JsonArray  *JsonArrayOutput
+	JsonObject *JsonObjectOutput
+}
+
+func (config *Output) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	objectType, err := util.GetTypeFromConfigUnmarshaler(unmarshal)
+	if err != nil {
+		return fmt.Errorf("Error in output config: %w", err)
+	}
+
+	switch objectType {
+	case "graphql":
+		config.GraphQL = &GraphQLOutput{}
+		return unmarshal(config.GraphQL)
+	case "jsonArray":
+		config.JsonArray = &JsonArrayOutput{}
+		return unmarshal(config.JsonArray)
+	case "jsonObject":
+		config.JsonObject = &JsonObjectOutput{}
+		return unmarshal(config.JsonObject)
+	default:
+		return fmt.Errorf("Error in output config: Unknown type '%v'", objectType)
+	}
 }
 
 func (config *Output) validate(rootConfig *Config, log *logrus.Entry) error {

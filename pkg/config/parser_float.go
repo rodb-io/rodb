@@ -7,6 +7,7 @@ import (
 
 type FloatParser struct {
 	Name             string `yaml:"name"`
+	Type             string `yaml:"type"`
 	DecimalSeparator string `yaml:"decimalSeparator"`
 	IgnoreCharacters string `yaml:"ignoreCharacters"`
 	Logger           *logrus.Entry
