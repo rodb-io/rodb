@@ -90,3 +90,32 @@ func TestPositionLinkedListToIterator(t *testing.T) {
 		}
 	})
 }
+
+func TestPositionLinkedListCopy(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		list := &PositionLinkedList{
+			Position: 1,
+			NextPosition: &PositionLinkedList{
+				Position: 2,
+				NextPosition: &PositionLinkedList{
+					Position:     3,
+					NextPosition: nil,
+				},
+			},
+		}
+		copyFirst, copyLast := list.Copy()
+
+		if got, expect := copyFirst.Position, list.Position; got != expect {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if got, expect := copyFirst.NextPosition.Position, list.NextPosition.Position; got != expect {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if got, expect := copyFirst.NextPosition.NextPosition.Position, list.NextPosition.NextPosition.Position; got != expect {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if got, expect := copyLast, copyFirst.NextPosition.NextPosition; got != expect {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}

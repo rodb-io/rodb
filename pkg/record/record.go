@@ -70,3 +70,24 @@ func (list *PositionLinkedList) Iterate() PositionIterator {
 		return nil, nil
 	}
 }
+
+func (list *PositionLinkedList) Copy() (
+	first *PositionLinkedList,
+	last *PositionLinkedList,
+) {
+	first = &PositionLinkedList{
+		Position:     list.Position,
+		NextPosition: nil,
+	}
+	last = first
+	for current := list.NextPosition; current != nil; current = current.NextPosition {
+		newCurrent := &PositionLinkedList{
+			Position:     current.Position,
+			NextPosition: nil,
+		}
+		last.NextPosition = newCurrent
+		last = newCurrent
+	}
+
+	return first, last
+}
