@@ -14,6 +14,10 @@ type JsonInput struct {
 	Logger           *logrus.Entry
 }
 
+func (config *JsonInput) GetName() string {
+	return config.Name
+}
+
 func (config *JsonInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }

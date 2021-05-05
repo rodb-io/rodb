@@ -21,6 +21,10 @@ type HttpServiceRoute struct {
 	Path   string `yaml:"path"`
 }
 
+func (config *HttpService) GetName() string {
+	return config.Name
+}
+
 func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

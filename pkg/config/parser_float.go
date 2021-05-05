@@ -27,6 +27,10 @@ func (config *FloatParser) validate(rootConfig *Config, log *logrus.Entry) error
 	return nil
 }
 
+func (config *FloatParser) GetName() string {
+	return config.Name
+}
+
 func (config *FloatParser) Primitive() bool {
 	return true
 }

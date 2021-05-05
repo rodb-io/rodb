@@ -22,6 +22,10 @@ func (config *IntegerParser) validate(rootConfig *Config, log *logrus.Entry) err
 	return nil
 }
 
+func (config *IntegerParser) GetName() string {
+	return config.Name
+}
+
 func (config *IntegerParser) Primitive() bool {
 	return true
 }

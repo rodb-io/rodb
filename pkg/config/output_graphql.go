@@ -11,6 +11,10 @@ type GraphQLOutput struct {
 	Logger *logrus.Entry
 }
 
+func (config *GraphQLOutput) GetName() string {
+	return config.Name
+}
+
 func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

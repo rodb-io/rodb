@@ -36,6 +36,10 @@ type XmlInputProperty struct {
 	CompiledXPath *xpath.Expr
 }
 
+func (config *XmlInput) GetName() string {
+	return config.Name
+}
+
 func (config *XmlInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }

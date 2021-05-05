@@ -31,7 +31,7 @@ func (config *Parameter) validate(
 		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
 	}
 	if !index.DoesHandleInput(input) {
-		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, input.Name())
+		return fmt.Errorf("index: Index '%v' does not handle input '%v'.", config.Index, input.GetName())
 	}
 	if !index.DoesHandleProperty(config.Property) {
 		return fmt.Errorf("property: Index '%v' does not handle property '%v'.", config.Index, config.Property)

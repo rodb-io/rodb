@@ -21,6 +21,10 @@ func (config *NoopIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
+func (config *NoopIndex) GetName() string {
+	return config.Name
+}
+
 func (config *NoopIndex) DoesHandleProperty(property string) bool {
 	return true
 }

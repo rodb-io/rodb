@@ -17,6 +17,10 @@ type SplitParser struct {
 	DelimiterRegexp   *regexp.Regexp
 }
 
+func (config *SplitParser) GetName() string {
+	return config.Name
+}
+
 func (config *SplitParser) IsDelimiterARegexp() bool {
 	return config.DelimiterIsRegexp != nil && *config.DelimiterIsRegexp
 }

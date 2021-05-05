@@ -1,8 +1,8 @@
 package input
 
 import (
-	"errors"
-	"rodb.io/pkg/config"
+	"fmt"
+	configModule "rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 )
@@ -24,24 +24,23 @@ type Input interface {
 type List = map[string]Input
 
 func NewFromConfig(
-	config config.Input,
+	config configModule.Input,
 	parsers parser.List,
 ) (Input, error) {
-	if config.Csv != nil {
-		return NewCsv(config.Csv, parsers)
+	switch config.(type) {
+	case *configModule.CsvInput:
+		return NewCsv(config.(*configModule.CsvInput), parsers)
+	case *configModule.XmlInput:
+		return NewXml(config.(*configModule.XmlInput), parsers)
+	case *configModule.JsonInput:
+		return NewJson(config.(*configModule.JsonInput))
+	default:
+		return nil, fmt.Errorf("Unknown input config type: %#v", config)
 	}
-	if config.Xml != nil {
-		return NewXml(config.Xml, parsers)
-	}
-	if config.Json != nil {
-		return NewJson(config.Json)
-	}
-
-	return nil, errors.New("Failed to initialize input")
 }
 
 func NewFromConfigs(
-	configs map[string]config.Input,
+	configs map[string]configModule.Input,
 	parsers parser.List,
 ) (List, error) {
 	inputs := make(List)

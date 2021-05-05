@@ -24,6 +24,10 @@ func (config *StringParser) validate(rootConfig *Config, log *logrus.Entry) erro
 	return nil
 }
 
+func (config *StringParser) GetName() string {
+	return config.Name
+}
+
 func (config *StringParser) Primitive() bool {
 	return true
 }

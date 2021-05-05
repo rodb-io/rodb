@@ -27,6 +27,10 @@ type JsonArrayOutputOffset struct {
 	Parameter string `yaml:"parameter"`
 }
 
+func (config *JsonArrayOutput) GetName() string {
+	return config.Name
+}
+
 func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

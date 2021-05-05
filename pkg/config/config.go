@@ -8,12 +8,12 @@ import (
 	"os"
 )
 
-type ParsedConfig struct {
-	Parsers  []Parser
-	Inputs   []Input
-	Indexes  []Index
-	Services []Service
-	Outputs  []Output
+type configParser struct {
+	Parsers  []parserParser
+	Inputs   []inputParser
+	Indexes  []indexParser
+	Services []serviceParser
+	Outputs  []outputParser
 }
 
 type Config struct {
@@ -32,7 +32,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 	yamlConfigWithEnv := []byte(os.ExpandEnv(string(configData)))
 
-	parsedConfig := &ParsedConfig{}
+	parsedConfig := &configParser{}
 	err = yaml.UnmarshalStrict(yamlConfigWithEnv, parsedConfig)
 	if err != nil {
 		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
@@ -53,7 +53,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 	return config, nil
 }
 
-func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
+func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 	config := &Config{
 		Parsers:  map[string]Parser{},
 		Inputs:   map[string]Input{},
@@ -63,88 +63,80 @@ func NewConfigFromParsedConfig(parsedConfig *ParsedConfig) (*Config, error) {
 	}
 
 	for _, parser := range parsedConfig.Parsers {
-		name := parser.Name()
+		name := parser.parser.GetName()
 		if _, exists := config.Parsers[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for parser.", name)
 		}
-		config.Parsers[name] = parser
+		config.Parsers[name] = parser.parser
 	}
 	for _, input := range parsedConfig.Inputs {
-		name := input.Name()
+		name := input.input.GetName()
 		if _, exists := config.Inputs[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for input.", name)
 		}
-		config.Inputs[name] = input
+		config.Inputs[name] = input.input
 	}
 	for _, index := range parsedConfig.Indexes {
-		name := index.Name()
+		name := index.index.GetName()
 		if _, exists := config.Indexes[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for index.", name)
 		}
-		config.Indexes[name] = index
+		config.Indexes[name] = index.index
 	}
 	for _, service := range parsedConfig.Services {
-		name := service.Name()
+		name := service.service.GetName()
 		if _, exists := config.Services[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for service.", name)
 		}
-		config.Services[name] = service
+		config.Services[name] = service.service
 	}
 	for _, output := range parsedConfig.Outputs {
-		name := output.Name()
+		name := output.output.GetName()
 		if _, exists := config.Outputs[name]; exists {
 			return nil, fmt.Errorf("Duplicate name '%v' for output.", name)
 		}
-		config.Outputs[name] = output
+		config.Outputs[name] = output.output
 	}
 
 	return config, nil
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	defaultIndex := Index{
-		Noop: &NoopIndex{
-			Name: "default",
-		},
+	defaultIndex := &NoopIndex{
+		Name: "default",
 	}
-	if _, exists := config.Indexes[defaultIndex.Name()]; exists {
+	if _, exists := config.Indexes[defaultIndex.GetName()]; exists {
 		log.Warnf("You have declared an index named 'default', which will replace the internally used one.\n")
 	} else {
-		config.Indexes[defaultIndex.Name()] = defaultIndex
+		config.Indexes[defaultIndex.GetName()] = defaultIndex
 	}
 
 	for _, parserConfig := range []Parser{
-		{
-			String: &StringParser{
-				Name: "string",
-			},
-		}, {
-			Integer: &IntegerParser{
-				Name:             "integer",
-				IgnoreCharacters: "",
-			},
-		}, {
-			Float: &FloatParser{
-				Name:             "float",
-				DecimalSeparator: ".",
-				IgnoreCharacters: "",
-			},
-		}, {
-			Boolean: &BooleanParser{
-				Name:        "boolean",
-				TrueValues:  []string{"true", "1", "TRUE"},
-				FalseValues: []string{"false", "0", "FALSE"},
-			},
-		}, {
-			Json: &JsonParser{
-				Name: "json",
-			},
+		&StringParser{
+			Name: "string",
+		},
+		&IntegerParser{
+			Name:             "integer",
+			IgnoreCharacters: "",
+		},
+		&FloatParser{
+			Name:             "float",
+			DecimalSeparator: ".",
+			IgnoreCharacters: "",
+		},
+		&BooleanParser{
+			Name:        "boolean",
+			TrueValues:  []string{"true", "1", "TRUE"},
+			FalseValues: []string{"false", "0", "FALSE"},
+		},
+		&JsonParser{
+			Name: "json",
 		},
 	} {
-		if _, exists := config.Parsers[parserConfig.Name()]; exists {
-			log.Warnf("You have declared a parser named '%v', which will replace the default one.\n", parserConfig.Name())
+		if _, exists := config.Parsers[parserConfig.GetName()]; exists {
+			log.Warnf("You have declared a parser named '%v', which will replace the default one.\n", parserConfig.GetName())
 		} else {
-			config.Parsers[parserConfig.Name()] = parserConfig
+			config.Parsers[parserConfig.GetName()] = parserConfig
 		}
 	}
 }

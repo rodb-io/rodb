@@ -50,6 +50,10 @@ func (config *MemoryPartialIndex) validate(rootConfig *Config, log *logrus.Entry
 	return nil
 }
 
+func (config *MemoryPartialIndex) GetName() string {
+	return config.Name
+}
+
 func (config *MemoryPartialIndex) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
@@ -63,5 +67,5 @@ func (config *MemoryPartialIndex) DoesHandleProperty(property string) bool {
 }
 
 func (config *MemoryPartialIndex) DoesHandleInput(input Input) bool {
-	return input.Name() == config.Input
+	return input.GetName() == config.Input
 }

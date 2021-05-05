@@ -15,6 +15,10 @@ type JsonObjectOutput struct {
 	Logger        *logrus.Entry
 }
 
+func (config *JsonObjectOutput) GetName() string {
+	return config.Name
+}
+
 func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 

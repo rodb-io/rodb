@@ -1,10 +1,9 @@
 package output
 
 import (
-	"errors"
 	"fmt"
 	"io"
-	"rodb.io/pkg/config"
+	configModule "rodb.io/pkg/config"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
@@ -28,7 +27,7 @@ type Output interface {
 type List = map[string]Output
 
 func NewFromConfig(
-	config config.Output,
+	config configModule.Output,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,
@@ -38,18 +37,18 @@ func NewFromConfig(
 		return nil, fmt.Errorf("Index 'default' not found in indexes list.")
 	}
 
-	if config.JsonObject != nil {
-		return NewJsonObject(config.JsonObject, inputs, defaultIndex, indexes, parsers)
+	switch config.(type) {
+	case *configModule.JsonObjectOutput:
+		return NewJsonObject(config.(*configModule.JsonObjectOutput), inputs, defaultIndex, indexes, parsers)
+	case *configModule.JsonArrayOutput:
+		return NewJsonArray(config.(*configModule.JsonArrayOutput), inputs, defaultIndex, indexes, parsers)
+	default:
+		return nil, fmt.Errorf("Unknown output config type: %#v", config)
 	}
-	if config.JsonArray != nil {
-		return NewJsonArray(config.JsonArray, inputs, defaultIndex, indexes, parsers)
-	}
-
-	return nil, errors.New("Failed to initialize output")
 }
 
 func NewFromConfigs(
-	configs map[string]config.Output,
+	configs map[string]configModule.Output,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,

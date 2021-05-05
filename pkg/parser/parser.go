@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
-	"rodb.io/pkg/config"
+	configModule "rodb.io/pkg/config"
 )
 
 type Parser interface {
@@ -16,33 +15,29 @@ type Parser interface {
 type List = map[string]Parser
 
 func NewFromConfig(
-	config config.Parser,
+	config configModule.Parser,
 	parsers List,
 ) (Parser, error) {
-	if config.String != nil {
-		return NewString(config.String)
+	switch config.(type) {
+	case *configModule.StringParser:
+		return NewString(config.(*configModule.StringParser))
+	case *configModule.IntegerParser:
+		return NewInteger(config.(*configModule.IntegerParser)), nil
+	case *configModule.FloatParser:
+		return NewFloat(config.(*configModule.FloatParser)), nil
+	case *configModule.BooleanParser:
+		return NewBoolean(config.(*configModule.BooleanParser)), nil
+	case *configModule.JsonParser:
+		return NewJson(config.(*configModule.JsonParser)), nil
+	case *configModule.SplitParser:
+		return NewSplit(config.(*configModule.SplitParser), parsers), nil
+	default:
+		return nil, fmt.Errorf("Unknown parser config type: %#v", config)
 	}
-	if config.Integer != nil {
-		return NewInteger(config.Integer), nil
-	}
-	if config.Float != nil {
-		return NewFloat(config.Float), nil
-	}
-	if config.Boolean != nil {
-		return NewBoolean(config.Boolean), nil
-	}
-	if config.Json != nil {
-		return NewJson(config.Json), nil
-	}
-	if config.Split != nil {
-		return NewSplit(config.Split, parsers), nil
-	}
-
-	return nil, errors.New("Failed to initialize parser")
 }
 
 func NewFromConfigs(
-	configs map[string]config.Parser,
+	configs map[string]configModule.Parser,
 ) (List, error) {
 	parsers := make(List)
 	for parserName, parserConfig := range configs {

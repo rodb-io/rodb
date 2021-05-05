@@ -1,8 +1,8 @@
 package index
 
 import (
-	"errors"
-	"rodb.io/pkg/config"
+	"fmt"
+	configModule "rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 )
@@ -21,24 +21,23 @@ type Index interface {
 type List = map[string]Index
 
 func NewFromConfig(
-	config config.Index,
+	config configModule.Index,
 	inputs input.List,
 ) (Index, error) {
-	if config.MemoryMap != nil {
-		return NewMemoryMap(config.MemoryMap, inputs)
+	switch config.(type) {
+	case *configModule.MemoryMapIndex:
+		return NewMemoryMap(config.(*configModule.MemoryMapIndex), inputs)
+	case *configModule.MemoryPartialIndex:
+		return NewMemoryPartial(config.(*configModule.MemoryPartialIndex), inputs)
+	case *configModule.NoopIndex:
+		return NewNoop(config.(*configModule.NoopIndex), inputs), nil
+	default:
+		return nil, fmt.Errorf("Unknown index config type: %#v", config)
 	}
-	if config.MemoryPartial != nil {
-		return NewMemoryPartial(config.MemoryPartial, inputs)
-	}
-	if config.Noop != nil {
-		return NewNoop(config.Noop, inputs), nil
-	}
-
-	return nil, errors.New("Failed to initialize index")
 }
 
 func NewFromConfigs(
-	configs map[string]config.Index,
+	configs map[string]configModule.Index,
 	inputs input.List,
 ) (List, error) {
 	indexes := make(List)

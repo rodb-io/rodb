@@ -39,6 +39,10 @@ func (config *MemoryMapIndex) validate(rootConfig *Config, log *logrus.Entry) er
 	return nil
 }
 
+func (config *MemoryMapIndex) GetName() string {
+	return config.Name
+}
+
 func (config *MemoryMapIndex) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
@@ -52,5 +56,5 @@ func (config *MemoryMapIndex) DoesHandleProperty(property string) bool {
 }
 
 func (config *MemoryMapIndex) DoesHandleInput(input Input) bool {
-	return input.Name() == config.Input
+	return input.GetName() == config.Input
 }

@@ -21,6 +21,10 @@ func (config *JsonParser) validate(rootConfig *Config, log *logrus.Entry) error 
 	return nil
 }
 
+func (config *JsonParser) GetName() string {
+	return config.Name
+}
+
 func (config *JsonParser) Primitive() bool {
 	return false
 }

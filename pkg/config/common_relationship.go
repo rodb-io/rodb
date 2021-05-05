@@ -103,7 +103,7 @@ func (config *RelationshipMatch) validate(
 		return fmt.Errorf("childIndex: Index '%v' not found in indexes list.", config.ChildIndex)
 	}
 	if !childIndex.DoesHandleInput(input) {
-		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, input.Name())
+		return fmt.Errorf("childIndex: Index '%v' does not handle input '%v'.", config.ChildIndex, input.GetName())
 	}
 	if !childIndex.DoesHandleProperty(config.ChildProperty) {
 		return fmt.Errorf("childProperty: Index '%v' does not handle property '%v'.", config.ChildIndex, config.ChildProperty)

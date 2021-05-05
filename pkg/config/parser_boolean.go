@@ -30,6 +30,10 @@ func (config *BooleanParser) validate(rootConfig *Config, log *logrus.Entry) err
 	return nil
 }
 
+func (config *BooleanParser) GetName() string {
+	return config.Name
+}
+
 func (config *BooleanParser) Primitive() bool {
 	return true
 }

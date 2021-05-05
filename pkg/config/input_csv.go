@@ -25,6 +25,10 @@ type CsvInputColumn struct {
 	Parser string `yaml:"parser"`
 }
 
+func (config *CsvInput) GetName() string {
+	return config.Name
+}
+
 func (config *CsvInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
