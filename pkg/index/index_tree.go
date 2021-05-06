@@ -13,6 +13,17 @@ type partialIndexTreeNode struct {
 	lastPosition  *record.PositionLinkedList
 }
 
+func createEmptyPartialIndexTreeRootNode() *partialIndexTreeNode {
+	return &partialIndexTreeNode{
+		value:         []byte{},
+		nextSibling:   nil,
+		firstChild:    nil,
+		lastChild:     nil,
+		firstPosition: nil,
+		lastPosition:  nil,
+	}
+}
+
 func (node *partialIndexTreeNode) appendChild(child *partialIndexTreeNode) {
 	if node.firstChild == nil {
 		node.firstChild = child

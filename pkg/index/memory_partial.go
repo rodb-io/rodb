@@ -45,14 +45,7 @@ func (mp *MemoryPartial) Name() string {
 func (mp *MemoryPartial) Reindex() error {
 	index := make(map[string]*partialIndexTreeNode)
 	for _, property := range mp.config.Properties {
-		index[property] = &partialIndexTreeNode{
-			value:         []byte{},
-			nextSibling:   nil,
-			firstChild:    nil,
-			lastChild:     nil,
-			firstPosition: nil,
-			lastPosition:  nil,
-		}
+		index[property] = createEmptyPartialIndexTreeRootNode()
 	}
 
 	updateProgress := util.TrackProgress(mp.input, mp.config.Logger)
