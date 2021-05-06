@@ -6,9 +6,22 @@ WORKDIR /
 RUN apk add gzip
 RUN gzip -d JMdict.gz
 
+RUN mkdir -p /etc/ssl/certs
+RUN apk add openssl
+RUN openssl req \
+    -x509 \
+    -nodes \
+    -newkey rsa:2048 \
+    -keyout /etc/ssl/certs/rodb.key \
+    -out /etc/ssl/certs/rodb.crt \
+    -subj "/C=JP/ST=Tokyo/L=Tokyo/O=RODB/OU=RODB/CN=localhost"
+RUN chmod a+r-w -R /etc/ssl/certs/rodb.*
+
 FROM localhost/rodb:latest
 
 COPY ./config.yaml /
 COPY --from=data /JMdict /JMdict.xml
+COPY --from=data /etc/ssl/certs/rodb.key /
+COPY --from=data /etc/ssl/certs/rodb.crt /
 
 ENTRYPOINT ["/rodb", "--config=/config.yaml", "--verbose"]

@@ -43,6 +43,10 @@ services:
     type: http
     http:
       listen: ":80"
+    https:
+      listen: ":443"
+      certificatePath: "/rodb.crt"
+      privateKeyPath: "/rodb.key"
     errorsType: application/json
     routes:
       - path: "/"
