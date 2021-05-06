@@ -21,12 +21,15 @@ import (
 )
 
 type Http struct {
-	config    *config.HttpService
-	listener  net.Listener
-	server    *http.Server
-	waitGroup *sync.WaitGroup
-	routes    []*httpRoute
-	lastError error
+	config         *config.HttpService
+	httpListener   net.Listener
+	httpsListener  net.Listener
+	httpServer     *http.Server
+	httpsServer    *http.Server
+	waitGroup      *sync.WaitGroup
+	routes         []*httpRoute
+	lastHttpError  error
+	lastHttpsError error
 }
 
 type httpRoute struct {
@@ -40,19 +43,11 @@ func NewHttp(
 	config *config.HttpService,
 	outputs map[string]output.Output,
 ) (*Http, error) {
-	listener, err := net.Listen("tcp", config.Listen)
-	if err != nil {
-		return nil, err
-	}
-
 	service := &Http{
-		config:    config,
-		waitGroup: &sync.WaitGroup{},
-		listener:  listener,
-		lastError: nil,
-		server: &http.Server{
-			ErrorLog: goLog.New(config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
-		},
+		config:         config,
+		waitGroup:      &sync.WaitGroup{},
+		lastHttpError:  nil,
+		lastHttpsError: nil,
 	}
 
 	service.routes = make([]*httpRoute, 0, len(config.Routes))
@@ -81,15 +76,51 @@ func NewHttp(
 		})
 	}
 
-	service.server.Handler = service.getHandlerFunc()
+	var err error
+	if config.Http != nil {
+		service.httpListener, service.httpServer, err = service.createServer(config.Http.Listen)
+		if err != nil {
+			return nil, err
+		}
 
-	service.waitGroup.Add(1)
-	go func() {
-		defer service.waitGroup.Done()
-		service.lastError = service.server.Serve(service.listener)
-	}()
+		service.waitGroup.Add(1)
+		go func() {
+			defer service.waitGroup.Done()
+			service.lastHttpError = service.httpServer.Serve(service.httpListener)
+		}()
+	}
+	if config.Https != nil {
+		service.httpsListener, service.httpsServer, err = service.createServer(config.Https.Listen)
+		if err != nil {
+			return nil, err
+		}
+
+		service.waitGroup.Add(1)
+		go func() {
+			defer service.waitGroup.Done()
+			service.lastHttpsError = service.httpsServer.ServeTLS(
+				service.httpsListener,
+				config.Https.CertificatePath,
+				config.Https.PrivateKeyPath,
+			)
+		}()
+	}
 
 	return service, nil
+}
+
+func (service *Http) createServer(listen string) (net.Listener, *http.Server, error) {
+	listener, err := net.Listen("tcp", listen)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	server := &http.Server{
+		ErrorLog: goLog.New(service.config.Logger.WriterLevel(logrus.ErrorLevel), "", 0),
+		Handler:  service.getHandlerFunc(),
+	}
+
+	return listener, server, nil
 }
 
 func (service *Http) Name() string {
@@ -97,7 +128,11 @@ func (service *Http) Name() string {
 }
 
 func (service *Http) Address() string {
-	return "http://" + util.GetAddress(service.listener.Addr())
+	if service.config.Https != nil {
+		return "https://" + util.GetAddress(service.httpsListener.Addr())
+	} else {
+		return "http://" + util.GetAddress(service.httpListener.Addr())
+	}
 }
 
 // Returns a regular expression to match a string, and the list of param names
@@ -270,17 +305,29 @@ func (service *Http) getPayload(route *httpRoute, body io.Reader) ([]byte, error
 
 func (service *Http) Wait() error {
 	service.waitGroup.Wait()
-	if service.lastError != http.ErrServerClosed {
-		return service.lastError
+	if service.config.Http != nil && service.lastHttpError != http.ErrServerClosed {
+		return service.lastHttpError
+	}
+	if service.config.Https != nil && service.lastHttpsError != http.ErrServerClosed {
+		return service.lastHttpsError
 	}
 
 	return nil
 }
 
 func (service *Http) Close() error {
-	err := service.server.Shutdown(context.Background())
-	if err != nil {
-		return err
+	if service.config.Http != nil {
+		err := service.httpServer.Shutdown(context.Background())
+		if err != nil {
+			return err
+		}
+	}
+
+	if service.config.Https != nil {
+		err := service.httpsServer.Shutdown(context.Background())
+		if err != nil {
+			return err
+		}
 	}
 
 	return service.Wait()

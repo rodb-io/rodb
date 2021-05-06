@@ -163,7 +163,12 @@ outputs:
 services:
   - name: defaultService
     type: http
-    listen: ":80"
+    http:
+      listen: ":80"
+    https:
+      listen: ":443"
+      certificatePath: "./foo.cert"
+      privateKeyPath: "./foo.key"
     errorsType: application/json
     routes:
       - path: "/dummies"

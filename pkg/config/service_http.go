@@ -4,16 +4,28 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"os"
 	"rodb.io/pkg/util"
 )
 
 type HttpService struct {
 	Name       string             `yaml:"name"`
 	Type       string             `yaml:"type"`
-	Listen     string             `yaml:"listen"`
+	Http       *HttpServiceHttp   `yaml:"http"`
+	Https      *HttpServiceHttps  `yaml:"https"`
 	ErrorsType string             `yaml:"errorsType"`
 	Routes     []HttpServiceRoute `yaml:"routes"`
 	Logger     *logrus.Entry
+}
+
+type HttpServiceHttp struct {
+	Listen string `yaml:"listen"`
+}
+
+type HttpServiceHttps struct {
+	Listen          string `yaml:"listen"`
+	CertificatePath string `yaml:"certificatePath"`
+	PrivateKeyPath  string `yaml:"privateKeyPath"`
 }
 
 type HttpServiceRoute struct {
@@ -32,13 +44,25 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		return errors.New("http.name is required")
 	}
 
-	if config.Listen == "" {
-		config.Listen = "127.0.0.1:0"
-	}
-
 	if config.ErrorsType == "" {
 		log.Debugf("http.errorsType is not set. Defaulting to application/json")
 		config.ErrorsType = "application/json"
+	}
+
+	if config.Https == nil && config.Http == nil {
+		return errors.New("At least one of the http or https property is required.")
+	}
+	if config.Http != nil {
+		err := config.Http.validate(rootConfig, log)
+		if err != nil {
+			return fmt.Errorf("http.%w", err)
+		}
+	}
+	if config.Https != nil {
+		err := config.Https.validate(rootConfig, log)
+		if err != nil {
+			return fmt.Errorf("https.%w", err)
+		}
 	}
 
 	alreadyExistingPaths := make(map[string]bool)
@@ -58,6 +82,44 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		"application/json",
 	}) {
 		return errors.New("http.errorsType: type '" + config.ErrorsType + "' is not supported.")
+	}
+
+	return nil
+}
+
+func (config *HttpServiceHttp) validate(rootConfig *Config, log *logrus.Entry) error {
+	if config.Listen == "" {
+		config.Listen = "127.0.0.1:0"
+	}
+
+	return nil
+}
+
+func (config *HttpServiceHttps) validate(rootConfig *Config, log *logrus.Entry) error {
+	if config.Listen == "" {
+		config.Listen = "127.0.0.1:0"
+	}
+
+	if config.CertificatePath == "" {
+		return errors.New("certificatePath: This field is required")
+	}
+	certificateFileInfo, err := os.Stat(config.CertificatePath)
+	if os.IsNotExist(err) {
+		return errors.New("certificatePath: The file '" + config.CertificatePath + "' does not exist")
+	}
+	if certificateFileInfo.IsDir() {
+		return errors.New("certificatePath: The path '" + config.CertificatePath + "' is not a file")
+	}
+
+	if config.PrivateKeyPath == "" {
+		return errors.New("privateKeyFile: This field is required")
+	}
+	privateKeyFile, err := os.Stat(config.PrivateKeyPath)
+	if os.IsNotExist(err) {
+		return errors.New("privateKeyFile: The file '" + config.PrivateKeyPath + "' does not exist")
+	}
+	if privateKeyFile.IsDir() {
+		return errors.New("privateKeyFile: The path '" + config.PrivateKeyPath + "' is not a file")
 	}
 
 	return nil

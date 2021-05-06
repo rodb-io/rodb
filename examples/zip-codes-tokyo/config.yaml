@@ -132,7 +132,8 @@ outputs:
 services:
   - name: httpService
     type: http
-    listen: ":80"
+    http:
+      listen: ":80"
     errorsType: application/json
     routes:
       - path: "/zip-codes"

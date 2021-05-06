@@ -41,7 +41,8 @@ outputs:
 services:
   - name: service
     type: http
-    listen: ":80"
+    http:
+      listen: ":80"
     errorsType: application/json
     routes:
       - path: "/"

@@ -17,7 +17,9 @@ import (
 
 func TestHttp(t *testing.T) {
 	config := &config.HttpService{
-		Listen:     ":0", // Auto-assign port
+		Http: &config.HttpServiceHttp{
+			Listen: ":0", // Auto-assign port
+		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
 		Routes: []config.HttpServiceRoute{
@@ -101,7 +103,9 @@ func TestHttp(t *testing.T) {
 
 func TestHttpOutputList(t *testing.T) {
 	config := &config.HttpService{
-		Listen:     ":0", // Auto-assign port
+		Http: &config.HttpServiceHttp{
+			Listen: ":0", // Auto-assign port
+		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
 		Routes: []config.HttpServiceRoute{
