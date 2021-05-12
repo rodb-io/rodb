@@ -10,54 +10,54 @@ import (
 	"strings"
 )
 
-type MemoryPartial struct {
-	config *config.MemoryPartialIndex
+type Partial struct {
+	config *config.PartialIndex
 	input  input.Input
 	index  map[string]*partialIndexTreeNode
 }
 
-func NewMemoryPartial(
-	config *config.MemoryPartialIndex,
+func NewPartial(
+	config *config.PartialIndex,
 	inputs input.List,
-) (*MemoryPartial, error) {
+) (*Partial, error) {
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
 	}
 
-	memoryPartial := &MemoryPartial{
+	partialIndex := &Partial{
 		config: config,
 		input:  input,
 	}
 
-	err := memoryPartial.Reindex()
+	err := partialIndex.Reindex()
 	if err != nil {
 		return nil, err
 	}
 
-	return memoryPartial, nil
+	return partialIndex, nil
 }
 
-func (mp *MemoryPartial) Name() string {
-	return mp.config.Name
+func (partialIndex *Partial) Name() string {
+	return partialIndex.config.Name
 }
 
-func (mp *MemoryPartial) Reindex() error {
+func (partialIndex *Partial) Reindex() error {
 	index := make(map[string]*partialIndexTreeNode)
-	for _, property := range mp.config.Properties {
+	for _, property := range partialIndex.config.Properties {
 		index[property] = createEmptyPartialIndexTreeRootNode()
 	}
 
-	updateProgress := util.TrackProgress(mp.input, mp.config.Logger)
+	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
 
-	inputIterator, end, err := mp.input.IterateAll()
+	inputIterator, end, err := partialIndex.input.IterateAll()
 	if err != nil {
 		return err
 	}
 	defer func() {
 		err := end()
 		if err != nil {
-			mp.config.Logger.Errorf("Error while closing the input iterator: %v", err)
+			partialIndex.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
 
@@ -72,7 +72,7 @@ func (mp *MemoryPartial) Reindex() error {
 
 		updateProgress(record.Position())
 
-		for _, property := range mp.config.Properties {
+		for _, property := range partialIndex.config.Properties {
 			value, err := record.Get(property)
 			if err != nil {
 				return err
@@ -82,20 +82,20 @@ func (mp *MemoryPartial) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = mp.addValueToIndex(index, property, value, record.Position())
+			err = partialIndex.addValueToIndex(index, property, value, record.Position())
 			if err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
 	}
 
-	mp.index = index
-	mp.config.Logger.Infof("Successfully finished indexing")
+	partialIndex.index = index
+	partialIndex.config.Logger.Infof("Successfully finished indexing")
 
 	return nil
 }
 
-func (mp *MemoryPartial) addValueToIndex(
+func (partialIndex *Partial) addValueToIndex(
 	index map[string]*partialIndexTreeNode,
 	property string,
 	value interface{},
@@ -103,7 +103,7 @@ func (mp *MemoryPartial) addValueToIndex(
 ) error {
 	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
 		for _, valueArrayValue := range valueArray {
-			err := mp.addValueToIndex(index, property, valueArrayValue, position)
+			err := partialIndex.addValueToIndex(index, property, valueArrayValue, position)
 			if err != nil {
 				return err
 			}
@@ -115,7 +115,7 @@ func (mp *MemoryPartial) addValueToIndex(
 		return fmt.Errorf("Cannot index the value '%v' from property '%v' because it is not a string.", value, property)
 	}
 
-	if mp.config.ShouldIgnoreCase() {
+	if partialIndex.config.ShouldIgnoreCase() {
 		stringValue = strings.ToLower(stringValue)
 	}
 
@@ -128,11 +128,11 @@ func (mp *MemoryPartial) addValueToIndex(
 	return nil
 }
 
-func (mp *MemoryPartial) GetRecordPositions(
+func (partialIndex *Partial) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
 ) (record.PositionIterator, error) {
-	if input != mp.input {
+	if input != partialIndex.input {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
 	}
 
@@ -142,11 +142,11 @@ func (mp *MemoryPartial) GetRecordPositions(
 
 	individualFiltersResults := make([]record.PositionIterator, 0, len(filters))
 	for propertyName, filter := range filters {
-		if !mp.config.DoesHandleProperty(propertyName) {
+		if !partialIndex.config.DoesHandleProperty(propertyName) {
 			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
 		}
 
-		indexedTree, foundIndexedValues := mp.index[propertyName]
+		indexedTree, foundIndexedValues := partialIndex.index[propertyName]
 		if !foundIndexedValues {
 			return record.EmptyIterator, nil
 		}
@@ -156,7 +156,7 @@ func (mp *MemoryPartial) GetRecordPositions(
 			return nil, fmt.Errorf("Cannot filter the value '%v' from property '%v' because it is not a string.", filter, propertyName)
 		}
 
-		if mp.config.ShouldIgnoreCase() {
+		if partialIndex.config.ShouldIgnoreCase() {
 			stringFilter = strings.ToLower(stringFilter)
 		}
 
@@ -171,6 +171,6 @@ func (mp *MemoryPartial) GetRecordPositions(
 	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
-func (mp *MemoryPartial) Close() error {
+func (partialIndex *Partial) Close() error {
 	return nil
 }

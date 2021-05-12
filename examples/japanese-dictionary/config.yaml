@@ -21,7 +21,7 @@ indexes:
       - writing
       - reading
   - name: indexSearch
-    type: memoryPartial
+    type: partial
     input: dictionary
     properties:
       - translation

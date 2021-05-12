@@ -27,8 +27,8 @@ func NewFromConfig(
 	switch config.(type) {
 	case *configModule.MapIndex:
 		return NewMap(config.(*configModule.MapIndex), inputs)
-	case *configModule.MemoryPartialIndex:
-		return NewMemoryPartial(config.(*configModule.MemoryPartialIndex), inputs)
+	case *configModule.PartialIndex:
+		return NewPartial(config.(*configModule.PartialIndex), inputs)
 	case *configModule.NoopIndex:
 		return NewNoop(config.(*configModule.NoopIndex), inputs), nil
 	default:

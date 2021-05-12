@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func stringifyMemoryPartialTree(root *partialIndexTreeNode) string {
+func stringifyPartialTree(root *partialIndexTreeNode) string {
 	positionsToString := func(positions *record.PositionLinkedList) string {
 		result := ""
 		for currentPosition := positions; currentPosition != nil; currentPosition = currentPosition.NextPosition {
@@ -43,10 +43,10 @@ func stringifyMemoryPartialTree(root *partialIndexTreeNode) string {
 	return strings.Join(results, "\n")
 }
 
-func TestMemoryPartial(t *testing.T) {
+func TestPartial(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		index, err := NewMemoryPartial(
-			&config.MemoryPartialIndex{
+		index, err := NewPartial(
+			&config.PartialIndex{
 				Properties: []string{"col"},
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -93,15 +93,15 @@ func TestMemoryPartial(t *testing.T) {
 			">PLANT=3",
 			">T=3",
 		}, "\n")
-		got := stringifyMemoryPartialTree(index.index["col"])
+		got := stringifyPartialTree(index.index["col"])
 		if got != expect {
 			t.Errorf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
 	})
 }
 
-func TestMemoryPartialGetRecordPositions(t *testing.T) {
-	createTestData := func() (*input.Mock, *MemoryPartial) {
+func TestPartialGetRecordPositions(t *testing.T) {
+	createTestData := func() (*input.Mock, *Partial) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANA",
@@ -124,8 +124,8 @@ func TestMemoryPartialGetRecordPositions(t *testing.T) {
 				"col2": "col2_b",
 			}, 4),
 		})
-		index, err := NewMemoryPartial(
-			&config.MemoryPartialIndex{
+		index, err := NewPartial(
+			&config.PartialIndex{
 				Properties: []string{"col", "col2"},
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -221,14 +221,14 @@ func TestMemoryPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 
-	createTestDataForIgnoreCase := func(ignoreCase bool) (*input.Mock, *MemoryPartial) {
+	createTestDataForIgnoreCase := func(ignoreCase bool) (*input.Mock, *Partial) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col": "BANANÉ",
 			}, 42),
 		})
-		index, err := NewMemoryPartial(
-			&config.MemoryPartialIndex{
+		index, err := NewPartial(
+			&config.PartialIndex{
 				Properties: []string{"col"},
 				Input:      "input",
 				IgnoreCase: &ignoreCase,

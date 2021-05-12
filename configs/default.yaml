@@ -99,7 +99,7 @@ indexes:
       - id
       - name
   - name: defaultIndexPartial
-    type: memoryPartial
+    type: partial
     input: defaultInput
     ignoreCase: true
     properties:

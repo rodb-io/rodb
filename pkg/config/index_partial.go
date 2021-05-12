@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type MemoryPartialIndex struct {
+type PartialIndex struct {
 	Name       string   `yaml:"name"`
 	Type       string   `yaml:"type"`
 	Input      string   `yaml:"input"`
@@ -15,32 +15,32 @@ type MemoryPartialIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *MemoryPartialIndex) ShouldIgnoreCase() bool {
+func (config *PartialIndex) ShouldIgnoreCase() bool {
 	return config.IgnoreCase != nil && *config.IgnoreCase
 }
 
-func (config *MemoryPartialIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *PartialIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
-		return errors.New("memoryPartial.name is required")
+		return errors.New("partial.name is required")
 	}
 
 	_, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
-		return fmt.Errorf("memoryPartial.input: Input '%v' not found in inputs list.", config.Input)
+		return fmt.Errorf("partial.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	alreadyExistingProperties := make(map[string]bool)
 	for _, propertyName := range config.Properties {
 		if _, alreadyExists := alreadyExistingProperties[propertyName]; alreadyExists {
-			return fmt.Errorf("memoryPartial.properties: Duplicate property '%v' in array.", propertyName)
+			return fmt.Errorf("partial.properties: Duplicate property '%v' in array.", propertyName)
 		}
 		alreadyExistingProperties[propertyName] = true
 	}
 
 	if config.IgnoreCase == nil {
-		log.Debug("memoryPartial.ignoreCase not set. Assuming false")
+		log.Debug("partial.ignoreCase not set. Assuming false")
 		falseValue := false
 		config.IgnoreCase = &falseValue
 	}
@@ -50,11 +50,11 @@ func (config *MemoryPartialIndex) validate(rootConfig *Config, log *logrus.Entry
 	return nil
 }
 
-func (config *MemoryPartialIndex) GetName() string {
+func (config *PartialIndex) GetName() string {
 	return config.Name
 }
 
-func (config *MemoryPartialIndex) DoesHandleProperty(property string) bool {
+func (config *PartialIndex) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
 		if property == handledProperty {
@@ -66,6 +66,6 @@ func (config *MemoryPartialIndex) DoesHandleProperty(property string) bool {
 	return isHandled
 }
 
-func (config *MemoryPartialIndex) DoesHandleInput(input Input) bool {
+func (config *PartialIndex) DoesHandleInput(input Input) bool {
 	return input.GetName() == config.Input
 }
