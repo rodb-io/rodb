@@ -93,7 +93,7 @@ inputs:
     dieOnInputChange: true
 indexes:
   - name: defaultIndex
-    type: memoryMap
+    type: map
     input: defaultInput
     properties:
       - id

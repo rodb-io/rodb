@@ -39,7 +39,7 @@ func (config *Relationship) validate(
 
 	input, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
-		return fmt.Errorf("memoryMap.input: Input '%v' not found in inputs list.", config.Input)
+		return fmt.Errorf("map.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	alreadyExistingSortProperties := make(map[string]bool)

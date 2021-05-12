@@ -9,10 +9,10 @@ import (
 	"testing"
 )
 
-func TestMemoryMap(t *testing.T) {
+func TestMap(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		index, err := NewMemoryMap(
-			&config.MemoryMapIndex{
+		index, err := NewMap(
+			&config.MapIndex{
 				Properties: []string{"col", "col2"},
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -74,7 +74,7 @@ func TestMemoryMap(t *testing.T) {
 	})
 }
 
-func TestMemoryMapGetRecordPositions(t *testing.T) {
+func TestMapGetRecordPositions(t *testing.T) {
 	mockInput := input.NewMock(parser.NewMock(), []record.Record{
 		record.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
@@ -97,8 +97,8 @@ func TestMemoryMapGetRecordPositions(t *testing.T) {
 			"col2": "col2_b",
 		}, 4),
 	})
-	index, err := NewMemoryMap(
-		&config.MemoryMapIndex{
+	index, err := NewMap(
+		&config.MapIndex{
 			Properties: []string{"col", "col2"},
 			Input:      "input",
 			Logger:     logrus.NewEntry(logrus.StandardLogger()),

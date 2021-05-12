@@ -17,8 +17,8 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 	}
 
 	switch objectType {
-	case "memoryMap":
-		config.index = &MemoryMapIndex{}
+	case "map":
+		config.index = &MapIndex{}
 		return unmarshal(config.index)
 	case "memoryPartial":
 		config.index = &MemoryPartialIndex{}

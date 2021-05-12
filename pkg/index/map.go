@@ -11,56 +11,56 @@ import (
 )
 
 // Index for the values of a single property
-type memoryMapPropertyIndex = map[interface{}]record.PositionList
+type mapPropertyIndex = map[interface{}]record.PositionList
 
-type MemoryMap struct {
-	config *config.MemoryMapIndex
+type Map struct {
+	config *config.MapIndex
 	input  input.Input
-	index  map[string]memoryMapPropertyIndex
+	index  map[string]mapPropertyIndex
 }
 
-func NewMemoryMap(
-	config *config.MemoryMapIndex,
+func NewMap(
+	config *config.MapIndex,
 	inputs input.List,
-) (*MemoryMap, error) {
+) (*Map, error) {
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
 	}
 
-	memoryMap := &MemoryMap{
+	mapIndex := &Map{
 		config: config,
 		input:  input,
 	}
 
-	err := memoryMap.Reindex()
+	err := mapIndex.Reindex()
 	if err != nil {
 		return nil, err
 	}
 
-	return memoryMap, nil
+	return mapIndex, nil
 }
 
-func (mm *MemoryMap) Name() string {
-	return mm.config.Name
+func (mapIndex *Map) Name() string {
+	return mapIndex.config.Name
 }
 
-func (mm *MemoryMap) Reindex() error {
-	index := make(map[string]memoryMapPropertyIndex)
-	for _, property := range mm.config.Properties {
-		index[property] = make(memoryMapPropertyIndex)
+func (mapIndex *Map) Reindex() error {
+	index := make(map[string]mapPropertyIndex)
+	for _, property := range mapIndex.config.Properties {
+		index[property] = make(mapPropertyIndex)
 	}
 
-	updateProgress := util.TrackProgress(mm.input, mm.config.Logger)
+	updateProgress := util.TrackProgress(mapIndex.input, mapIndex.config.Logger)
 
-	inputIterator, end, err := mm.input.IterateAll()
+	inputIterator, end, err := mapIndex.input.IterateAll()
 	if err != nil {
 		return err
 	}
 	defer func() {
 		err := end()
 		if err != nil {
-			mm.config.Logger.Errorf("Error while closing the input iterator: %v", err)
+			mapIndex.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
 
@@ -75,7 +75,7 @@ func (mm *MemoryMap) Reindex() error {
 
 		updateProgress(record.Position())
 
-		for _, property := range mm.config.Properties {
+		for _, property := range mapIndex.config.Properties {
 			value, err := record.Get(property)
 			if err != nil {
 				return err
@@ -85,28 +85,28 @@ func (mm *MemoryMap) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = mm.addValueToIndex(index, property, value, record.Position())
+			err = mapIndex.addValueToIndex(index, property, value, record.Position())
 			if err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
 	}
 
-	mm.index = index
-	mm.config.Logger.Infof("Successfully finished indexing")
+	mapIndex.index = index
+	mapIndex.config.Logger.Infof("Successfully finished indexing")
 
 	return nil
 }
 
-func (mm *MemoryMap) addValueToIndex(
-	index map[string]memoryMapPropertyIndex,
+func (mapIndex *Map) addValueToIndex(
+	index map[string]mapPropertyIndex,
 	property string,
 	value interface{},
 	position record.Position,
 ) error {
 	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
 		for _, valueArrayValue := range valueArray {
-			err := mm.addValueToIndex(index, property, valueArrayValue, position)
+			err := mapIndex.addValueToIndex(index, property, valueArrayValue, position)
 			if err != nil {
 				return err
 			}
@@ -128,11 +128,11 @@ func (mm *MemoryMap) addValueToIndex(
 	return nil
 }
 
-func (mm *MemoryMap) GetRecordPositions(
+func (mapIndex *Map) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
 ) (record.PositionIterator, error) {
-	if input != mm.input {
+	if input != mapIndex.input {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
 	}
 
@@ -142,11 +142,11 @@ func (mm *MemoryMap) GetRecordPositions(
 
 	individualFiltersResults := make([]record.PositionIterator, 0, len(filters))
 	for propertyName, filter := range filters {
-		if !mm.config.DoesHandleProperty(propertyName) {
+		if !mapIndex.config.DoesHandleProperty(propertyName) {
 			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
 		}
 
-		indexedValues, foundIndexedValues := mm.index[propertyName]
+		indexedValues, foundIndexedValues := mapIndex.index[propertyName]
 		if !foundIndexedValues {
 			return record.EmptyIterator, nil
 		}
@@ -162,6 +162,6 @@ func (mm *MemoryMap) GetRecordPositions(
 	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
-func (mm *MemoryMap) Close() error {
+func (mapIndex *Map) Close() error {
 	return nil
 }

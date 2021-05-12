@@ -71,12 +71,12 @@ inputs:
         parser: string
 indexes:
   - name: zipCode
-    type: memoryMap
+    type: map
     input: zipCodesTokyo
     properties:
       - zipCode
   - name: municipality
-    type: memoryMap
+    type: map
     input: zipCodesTokyo
     properties:
       - municipality
