@@ -25,8 +25,8 @@ type partialIndexTreeNode struct {
 	lastChildOffset     partialIndexTreeNodeOffset
 
 	// TODO
-	firstPosition *record.PositionLinkedList
-	lastPosition  *record.PositionLinkedList
+	firstPosition *partialIndexPositionLinkedList
+	lastPosition  *partialIndexPositionLinkedList
 }
 
 func createEmptyPartialIndexTreeNode(
@@ -177,7 +177,7 @@ func (node *partialIndexTreeNode) findChildByPrefix(
 
 // This only checks if the position already exists at the end of the list
 func (node *partialIndexTreeNode) appendPositionIfNotExists(position record.Position) {
-	positionNode := &record.PositionLinkedList{
+	positionNode := &partialIndexPositionLinkedList{
 		Position:     position,
 		NextPosition: nil,
 	}
@@ -207,7 +207,7 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 
 		// No node for the remaining string: adding a node with it
 		if existingNode == nil {
-			positionList := &record.PositionLinkedList{
+			positionList := &partialIndexPositionLinkedList{
 				Position: position,
 			}
 			newNode, err := createEmptyPartialIndexTreeNode(node.stream, node.streamSize)
@@ -267,7 +267,7 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 	return nil
 }
 
-func (node *partialIndexTreeNode) getSequence(bytes []byte) (*record.PositionLinkedList, error) {
+func (node *partialIndexTreeNode) getSequence(bytes []byte) (*partialIndexPositionLinkedList, error) {
 	parentNode := node
 	currentPosition := 0
 	for currentPosition < len(bytes) {
