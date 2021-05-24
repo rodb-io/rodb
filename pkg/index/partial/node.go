@@ -1,23 +1,15 @@
 package partial
 
 import (
-	"fmt"
-	"io"
 	"rodb.io/pkg/record"
 )
-
-type ReaderAtWriterAt interface{
-	io.ReaderAt
-	io.WriterAt
-}
 
 type TreeNodeOffset *int64
 
 const TreeNodeSize int = 42 // TODO
 
 type TreeNode struct {
-	stream        ReaderAtWriterAt
-	streamSize    *int64
+	stream        *Stream
 	offset        TreeNodeOffset
 	value         []byte // TODO
 	nextSiblingOffset   TreeNodeOffset
@@ -29,13 +21,9 @@ type TreeNode struct {
 	lastPosition  *PositionLinkedList
 }
 
-func NewEmptyTreeNode(
-	stream ReaderAtWriterAt,
-	streamSize *int64,
-) (*TreeNode, error) {
+func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 	rootNode := &TreeNode{
 		stream:        stream,
-		streamSize:    streamSize,
 		offset:        nil,
 		value:         []byte{},
 		nextSiblingOffset:   nil,
@@ -54,26 +42,20 @@ func NewEmptyTreeNode(
 }
 
 func GetTreeNode(
-	stream ReaderAtWriterAt,
-	streamSize *int64,
+	stream *Stream,
 	offset TreeNodeOffset,
 ) (*TreeNode, error) {
 	if offset == nil {
 		return nil, nil
 	}
 
-	serialized := make([]byte, 0, TreeNodeSize)
-	size, err := stream.ReadAt(serialized, *offset)
+	serialized, err := stream.Get(TreeNodeSize, *offset)
 	if err != nil {
 		return nil, err
-	}
-	if size != TreeNodeSize {
-		return nil, fmt.Errorf("Expected to read %v bytes, got %v", TreeNodeSize, size)
 	}
 
 	node := &TreeNode{
 		stream:        stream,
-		streamSize:    streamSize,
 		offset:        offset,
 	}
 
@@ -83,38 +65,30 @@ func GetTreeNode(
 }
 
 func (node *TreeNode) NextSibling() (*TreeNode, error) {
-	return GetTreeNode(node.stream, node.streamSize, node.nextSiblingOffset)
+	return GetTreeNode(node.stream, node.nextSiblingOffset)
 }
 
 func (node *TreeNode) FirstChild() (*TreeNode, error) {
-	return GetTreeNode(node.stream, node.streamSize, node.firstChildOffset)
+	return GetTreeNode(node.stream, node.firstChildOffset)
 }
 
 func (node *TreeNode) LastChild() (*TreeNode, error) {
-	return GetTreeNode(node.stream, node.streamSize, node.lastChildOffset)
+	return GetTreeNode(node.stream, node.lastChildOffset)
 }
 
 func (node *TreeNode) Save() error {
-	serialized := []byte{} // TODO serialize node
+	serialized := []byte{} // TODO serialize node with size TreeNodeSize
 
 	if node.offset == nil {
-		newOffset := *node.streamSize
-		size, err := node.stream.WriteAt(serialized, newOffset)
+		newOffset, err := node.stream.Add(serialized)
 		if err != nil {
 			return err
-		}
-		if size != TreeNodeSize {
-			return fmt.Errorf("Expected to write %v bytes, wrote %v", TreeNodeSize, size)
 		}
 		node.offset = TreeNodeOffset(&newOffset)
-		*node.streamSize += int64(TreeNodeSize)
 	} else {
-		size, err := node.stream.WriteAt(serialized, *node.offset)
+		err := node.stream.Replace(*node.offset, serialized)
 		if err != nil {
 			return err
-		}
-		if size != TreeNodeSize {
-			return fmt.Errorf("Expected to write %v bytes, wrote %v", TreeNodeSize, size)
 		}
 	}
 
@@ -210,7 +184,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 			positionList := &PositionLinkedList{
 				Position: position,
 			}
-			newNode, err := NewEmptyTreeNode(node.stream, node.streamSize)
+			newNode, err := NewEmptyTreeNode(node.stream)
 			if err != nil {
 				return err
 			}
@@ -234,7 +208,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 		// proceeding with the parent (which has a prefix matching)
 		if commonBytes < len(existingNode.value) {
 			newChildFirstPosition, newChildLastPosition := existingNode.firstPosition.Copy()
-			newChild, err := NewEmptyTreeNode(node.stream, node.streamSize)
+			newChild, err := NewEmptyTreeNode(node.stream)
 			if err != nil {
 				return err
 			}

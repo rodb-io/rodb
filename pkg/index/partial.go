@@ -51,9 +51,11 @@ func (partialIndex *Partial) Reindex() error {
 	}
 	var indexFileSize int64 = 0
 
+	indexStream := partial.NewStream(indexFile, indexFileSize)
+
 	index := make(map[string]*partial.TreeNode)
 	for _, property := range partialIndex.config.Properties {
-		index[property] = partial.NewEmptyTreeNode(indexFile, &indexFileSize)
+		index[property] = partial.NewEmptyTreeNode(indexStream)
 	}
 
 	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
