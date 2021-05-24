@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 	"rodb.io/pkg/config"
+	"rodb.io/pkg/index/partial"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
@@ -14,7 +15,7 @@ import (
 type Partial struct {
 	config *config.PartialIndex
 	input  input.Input
-	index  map[string]*partialIndexTreeNode
+	index  map[string]*partial.TreeNode
 }
 
 func NewPartial(
@@ -50,9 +51,9 @@ func (partialIndex *Partial) Reindex() error {
 	}
 	var indexFileSize int64 = 0
 
-	index := make(map[string]*partialIndexTreeNode)
+	index := make(map[string]*partial.TreeNode)
 	for _, property := range partialIndex.config.Properties {
-		index[property] = createEmptyPartialIndexTreeNode(indexFile, &indexFileSize)
+		index[property] = partial.NewEmptyTreeNode(indexFile, &indexFileSize)
 	}
 
 	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
@@ -108,7 +109,7 @@ func (partialIndex *Partial) Reindex() error {
 }
 
 func (partialIndex *Partial) addValueToIndex(
-	index map[string]*partialIndexTreeNode,
+	index map[string]*partial.TreeNode,
 	property string,
 	value interface{},
 	position record.Position,
@@ -134,7 +135,7 @@ func (partialIndex *Partial) addValueToIndex(
 	root := index[property]
 	bytes := []byte(stringValue)
 	for i := 0; i < len(bytes); i++ {
-		root.addSequence(bytes[i:], position)
+		root.AddSequence(bytes[i:], position)
 	}
 
 	return nil
@@ -172,7 +173,7 @@ func (partialIndex *Partial) GetRecordPositions(
 			stringFilter = strings.ToLower(stringFilter)
 		}
 
-		indexedResults := indexedTree.getSequence([]byte(stringFilter))
+		indexedResults := indexedTree.GetSequence([]byte(stringFilter))
 		if indexedResults == nil {
 			return record.EmptyIterator, nil
 		}

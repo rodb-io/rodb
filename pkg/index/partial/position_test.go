@@ -1,4 +1,4 @@
-package index
+package partial
 
 import (
 	"testing"
@@ -6,11 +6,11 @@ import (
 
 func TestPositionLinkedListToIterator(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		list := &partialIndexPositionLinkedList{
+		list := &PositionLinkedList{
 			Position: 1,
-			NextPosition: &partialIndexPositionLinkedList{
+			NextPosition: &PositionLinkedList{
 				Position: 42,
-				NextPosition: &partialIndexPositionLinkedList{
+				NextPosition: &PositionLinkedList{
 					Position:     123,
 					NextPosition: nil,
 				},
@@ -54,11 +54,11 @@ func TestPositionLinkedListToIterator(t *testing.T) {
 
 func TestPositionLinkedListCopy(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		list := &partialIndexPositionLinkedList{
+		list := &PositionLinkedList{
 			Position: 1,
-			NextPosition: &partialIndexPositionLinkedList{
+			NextPosition: &PositionLinkedList{
 				Position: 2,
-				NextPosition: &partialIndexPositionLinkedList{
+				NextPosition: &PositionLinkedList{
 					Position:     3,
 					NextPosition: nil,
 				},

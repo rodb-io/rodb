@@ -1,4 +1,4 @@
-package index
+package partial
 
 import (
 	"rodb.io/pkg/record"
@@ -9,13 +9,13 @@ import (
 
 func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value: []byte("A"),
 		}
-		newChild := &partialIndexTreeNode{
+		newChild := &TreeNode{
 			value: []byte("B"),
 		}
-		node.appendChild(newChild)
+		node.AppendChild(newChild)
 
 		if node.firstChild != newChild {
 			t.Errorf("Expected to have B as first child, got %+v", node.firstChild)
@@ -25,18 +25,18 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 		}
 	})
 	t.Run("already have child", func(t *testing.T) {
-		child := &partialIndexTreeNode{
+		child := &TreeNode{
 			value: []byte("B"),
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  child,
 		}
-		newChild := &partialIndexTreeNode{
+		newChild := &TreeNode{
 			value: []byte("C"),
 		}
-		node.appendChild(newChild)
+		node.AppendChild(newChild)
 
 		if node.firstChild != child {
 			t.Errorf("Expected to have B as first child, got %+v", node.firstChild)
@@ -52,32 +52,32 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 
 func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value:      []byte("A"),
 			firstChild: nil,
 			lastChild:  nil,
 		}
 
-		got, _ := node.findChildByPrefix([]byte("B"))
+		got, _ := node.FindChildByPrefix([]byte("B"))
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
 	})
 	t.Run("found exact", func(t *testing.T) {
-		secondChild := &partialIndexTreeNode{
+		secondChild := &TreeNode{
 			value: []byte("CDE"),
 		}
-		child := &partialIndexTreeNode{
+		child := &TreeNode{
 			value:       []byte("B"),
 			nextSibling: secondChild,
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  secondChild,
 		}
 
-		gotNode, gotLength := node.findChildByPrefix([]byte("CDE"))
+		gotNode, gotLength := node.FindChildByPrefix([]byte("CDE"))
 		if gotNode != secondChild {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
@@ -86,20 +86,20 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 		}
 	})
 	t.Run("found partial", func(t *testing.T) {
-		secondChild := &partialIndexTreeNode{
+		secondChild := &TreeNode{
 			value: []byte("CDE"),
 		}
-		child := &partialIndexTreeNode{
+		child := &TreeNode{
 			value:       []byte("B"),
 			nextSibling: secondChild,
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  secondChild,
 		}
 
-		gotNode, gotLength := node.findChildByPrefix([]byte("CDX"))
+		gotNode, gotLength := node.FindChildByPrefix([]byte("CDX"))
 		if gotNode != secondChild {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
@@ -108,16 +108,16 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 		}
 	})
 	t.Run("not found", func(t *testing.T) {
-		child := &partialIndexTreeNode{
+		child := &TreeNode{
 			value: []byte("B"),
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			value:      []byte("A"),
 			firstChild: child,
 			lastChild:  child,
 		}
 
-		got, _ := node.findChildByPrefix([]byte("C"))
+		got, _ := node.FindChildByPrefix([]byte("C"))
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
@@ -126,8 +126,8 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 
 func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
-		node := &partialIndexTreeNode{}
-		node.appendPositionIfNotExists(1)
+		node := &TreeNode{}
+		node.AppendPositionIfNotExists(1)
 
 		if node.firstPosition.Position != 1 {
 			t.Errorf("Expected to have 1 as first position, got %+v", node.firstPosition)
@@ -137,14 +137,14 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 		}
 	})
 	t.Run("already have another position", func(t *testing.T) {
-		position := &record.PositionLinkedList{
+		position := &PositionLinkedList{
 			Position: 1,
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			firstPosition: position,
 			lastPosition:  position,
 		}
-		node.appendPositionIfNotExists(2)
+		node.AppendPositionIfNotExists(2)
 
 		if node.firstPosition.Position != 1 {
 			t.Errorf("Expected to have B as first position, got %+v", node.firstPosition)
@@ -157,14 +157,14 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 		}
 	})
 	t.Run("already have the same position", func(t *testing.T) {
-		position := &record.PositionLinkedList{
+		position := &PositionLinkedList{
 			Position: 1,
 		}
-		node := &partialIndexTreeNode{
+		node := &TreeNode{
 			firstPosition: position,
 			lastPosition:  position,
 		}
-		node.appendPositionIfNotExists(1)
+		node.AppendPositionIfNotExists(1)
 
 		if node.lastPosition != position {
 			t.Errorf("Expected to have 1 as first position, got %+v", node.lastPosition)
@@ -177,9 +177,9 @@ func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 
 func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		root := &partialIndexTreeNode{}
+		root := &TreeNode{}
 
-		root.addSequence([]byte("FOO"), 1)
+		root.AddSequence([]byte("FOO"), 1)
 
 		if string(root.firstChild.value) != "FOO" {
 			t.Errorf("Expected to have FOO as first node of root, got %v", root.firstChild.value)
@@ -192,10 +192,10 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 		}
 	})
 	t.Run("new suffix to existing node", func(t *testing.T) {
-		root := &partialIndexTreeNode{}
-		root.addSequence([]byte("FOO"), 1)
+		root := &TreeNode{}
+		root.AddSequence([]byte("FOO"), 1)
 
-		root.addSequence([]byte("FOOT"), 2)
+		root.AddSequence([]byte("FOOT"), 2)
 
 		if root.firstChild.firstPosition.Position != 1 {
 			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
@@ -215,9 +215,9 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 		}
 	})
 	t.Run("splitting existing node", func(t *testing.T) {
-		root := &partialIndexTreeNode{}
-		root.addSequence([]byte("FOO"), 1)
-		root.addSequence([]byte("FORMAT"), 2)
+		root := &TreeNode{}
+		root.AddSequence([]byte("FOO"), 1)
+		root.AddSequence([]byte("FORMAT"), 2)
 
 		if string(root.firstChild.value) != "FO" {
 			t.Errorf("Expected to have value 'FO' as first child of root, got %v", string(root.firstChild.value))
@@ -252,12 +252,12 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 }
 
 func PartialIndexTreeNodeGetSequence(t *testing.T) {
-	root := &partialIndexTreeNode{}
-	root.addSequence([]byte("FOO"), 1)
-	root.addSequence([]byte("FOOT"), 2)
-	root.addSequence([]byte("TOP"), 3)
+	root := &TreeNode{}
+	root.AddSequence([]byte("FOO"), 1)
+	root.AddSequence([]byte("FOOT"), 2)
+	root.AddSequence([]byte("TOP"), 3)
 
-	checkList := func(t *testing.T, list *record.PositionLinkedList, positions []record.Position) {
+	checkList := func(t *testing.T, list *PositionLinkedList, positions []record.Position) {
 		stringPositions := []string{}
 		for _, position := range positions {
 			stringPositions = append(stringPositions, strconv.Itoa(int(position)))
@@ -284,21 +284,21 @@ func PartialIndexTreeNodeGetSequence(t *testing.T) {
 	}
 
 	t.Run("multiple prefix", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("FOO")), []record.Position{1, 2})
+		checkList(t, root.GetSequence([]byte("FOO")), []record.Position{1, 2})
 	})
 	t.Run("not found", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("BAR")), []record.Position{})
+		checkList(t, root.GetSequence([]byte("BAR")), []record.Position{})
 	})
 	t.Run("single", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("TOP")), []record.Position{3})
+		checkList(t, root.GetSequence([]byte("TOP")), []record.Position{3})
 	})
 	t.Run("multiple middle", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("OO")), []record.Position{1, 2})
+		checkList(t, root.GetSequence([]byte("OO")), []record.Position{1, 2})
 	})
 	t.Run("suffix and prefix", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("T")), []record.Position{2, 3})
+		checkList(t, root.GetSequence([]byte("T")), []record.Position{2, 3})
 	})
 	t.Run("partially matches the end", func(t *testing.T) {
-		checkList(t, root.getSequence([]byte("FO")), []record.Position{1, 2})
+		checkList(t, root.GetSequence([]byte("FO")), []record.Position{1, 2})
 	})
 }

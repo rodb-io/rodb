@@ -3,6 +3,7 @@ package index
 import (
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/config"
+	"rodb.io/pkg/index/partial"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
@@ -12,7 +13,7 @@ import (
 	"testing"
 )
 
-func stringifyPartialTree(root *partialIndexTreeNode) string {
+func stringifyPartialTree(root *partial.TreeNode) string {
 	positionsToString := func(positions *record.PositionLinkedList) string {
 		result := ""
 		for currentPosition := positions; currentPosition != nil; currentPosition = currentPosition.NextPosition {
@@ -27,8 +28,8 @@ func stringifyPartialTree(root *partialIndexTreeNode) string {
 
 	results := make([]string, 0)
 
-	var stringify func(prefix string, node *partialIndexTreeNode)
-	stringify = func(prefix string, node *partialIndexTreeNode) {
+	var stringify func(prefix string, node *partial.TreeNode)
+	stringify = func(prefix string, node *partial.TreeNode) {
 		for child := node.firstChild; child != nil; child = child.nextSibling {
 			positions := positionsToString(child.firstPosition)
 			currentValue := prefix + ">" + string(child.value)

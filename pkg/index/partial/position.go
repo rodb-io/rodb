@@ -1,15 +1,15 @@
-package index
+package partial
 
 import (
 	"rodb.io/pkg/record"
 )
 
-type partialIndexPositionLinkedList struct {
+type PositionLinkedList struct {
 	Position     record.Position
-	NextPosition *partialIndexPositionLinkedList
+	NextPosition *PositionLinkedList
 }
 
-func (list *partialIndexPositionLinkedList) Iterate() record.PositionIterator {
+func (list *PositionLinkedList) Iterate() record.PositionIterator {
 	current := list
 	return func() (*record.Position, error) {
 		for current != nil {
@@ -22,17 +22,17 @@ func (list *partialIndexPositionLinkedList) Iterate() record.PositionIterator {
 	}
 }
 
-func (list *partialIndexPositionLinkedList) Copy() (
-	first *partialIndexPositionLinkedList,
-	last *partialIndexPositionLinkedList,
+func (list *PositionLinkedList) Copy() (
+	first *PositionLinkedList,
+	last *PositionLinkedList,
 ) {
-	first = &partialIndexPositionLinkedList{
+	first = &PositionLinkedList{
 		Position:     list.Position,
 		NextPosition: nil,
 	}
 	last = first
 	for current := list.NextPosition; current != nil; current = current.NextPosition {
-		newCurrent := &partialIndexPositionLinkedList{
+		newCurrent := &PositionLinkedList{
 			Position:     current.Position,
 			NextPosition: nil,
 		}

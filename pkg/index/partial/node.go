@@ -1,4 +1,4 @@
-package index
+package partial
 
 import (
 	"fmt"
@@ -6,34 +6,34 @@ import (
 	"rodb.io/pkg/record"
 )
 
-type readerAtWriterAt interface{
+type ReaderAtWriterAt interface{
 	io.ReaderAt
 	io.WriterAt
 }
 
-type partialIndexTreeNodeOffset *int64
+type TreeNodeOffset *int64
 
-const serializedPartialIndexTreeNodeSize int = 42 // TODO
+const TreeNodeSize int = 42 // TODO
 
-type partialIndexTreeNode struct {
-	stream        readerAtWriterAt
+type TreeNode struct {
+	stream        ReaderAtWriterAt
 	streamSize    *int64
-	offset        partialIndexTreeNodeOffset
+	offset        TreeNodeOffset
 	value         []byte // TODO
-	nextSiblingOffset   partialIndexTreeNodeOffset
-	firstChildOffset    partialIndexTreeNodeOffset
-	lastChildOffset     partialIndexTreeNodeOffset
+	nextSiblingOffset   TreeNodeOffset
+	firstChildOffset    TreeNodeOffset
+	lastChildOffset     TreeNodeOffset
 
 	// TODO
-	firstPosition *partialIndexPositionLinkedList
-	lastPosition  *partialIndexPositionLinkedList
+	firstPosition *PositionLinkedList
+	lastPosition  *PositionLinkedList
 }
 
-func createEmptyPartialIndexTreeNode(
-	stream readerAtWriterAt,
+func NewEmptyTreeNode(
+	stream ReaderAtWriterAt,
 	streamSize *int64,
-) (*partialIndexTreeNode, error) {
-	rootNode := &partialIndexTreeNode{
+) (*TreeNode, error) {
+	rootNode := &TreeNode{
 		stream:        stream,
 		streamSize:    streamSize,
 		offset:        nil,
@@ -45,7 +45,7 @@ func createEmptyPartialIndexTreeNode(
 		lastPosition:  nil,
 	}
 
-	err := rootNode.save()
+	err := rootNode.Save()
 	if err != nil {
 		return nil, err
 	}
@@ -53,25 +53,25 @@ func createEmptyPartialIndexTreeNode(
 	return rootNode, nil
 }
 
-func getPartialIndexTreeNode(
-	stream readerAtWriterAt,
+func GetTreeNode(
+	stream ReaderAtWriterAt,
 	streamSize *int64,
-	offset partialIndexTreeNodeOffset,
-) (*partialIndexTreeNode, error) {
+	offset TreeNodeOffset,
+) (*TreeNode, error) {
 	if offset == nil {
 		return nil, nil
 	}
 
-	serialized := make([]byte, 0, serializedPartialIndexTreeNodeSize)
+	serialized := make([]byte, 0, TreeNodeSize)
 	size, err := stream.ReadAt(serialized, *offset)
 	if err != nil {
 		return nil, err
 	}
-	if size != serializedPartialIndexTreeNodeSize {
-		return nil, fmt.Errorf("Expected to read %v bytes, got %v", serializedPartialIndexTreeNodeSize, size)
+	if size != TreeNodeSize {
+		return nil, fmt.Errorf("Expected to read %v bytes, got %v", TreeNodeSize, size)
 	}
 
-	node := &partialIndexTreeNode{
+	node := &TreeNode{
 		stream:        stream,
 		streamSize:    streamSize,
 		offset:        offset,
@@ -82,19 +82,19 @@ func getPartialIndexTreeNode(
 	return node, nil
 }
 
-func (node *partialIndexTreeNode) nextSibling() (*partialIndexTreeNode, error) {
-	return getPartialIndexTreeNode(node.stream, node.streamSize, node.nextSiblingOffset)
+func (node *TreeNode) NextSibling() (*TreeNode, error) {
+	return GetTreeNode(node.stream, node.streamSize, node.nextSiblingOffset)
 }
 
-func (node *partialIndexTreeNode) firstChild() (*partialIndexTreeNode, error) {
-	return getPartialIndexTreeNode(node.stream, node.streamSize, node.firstChildOffset)
+func (node *TreeNode) FirstChild() (*TreeNode, error) {
+	return GetTreeNode(node.stream, node.streamSize, node.firstChildOffset)
 }
 
-func (node *partialIndexTreeNode) lastChild() (*partialIndexTreeNode, error) {
-	return getPartialIndexTreeNode(node.stream, node.streamSize, node.lastChildOffset)
+func (node *TreeNode) LastChild() (*TreeNode, error) {
+	return GetTreeNode(node.stream, node.streamSize, node.lastChildOffset)
 }
 
-func (node *partialIndexTreeNode) save() error {
+func (node *TreeNode) Save() error {
 	serialized := []byte{} // TODO serialize node
 
 	if node.offset == nil {
@@ -103,51 +103,51 @@ func (node *partialIndexTreeNode) save() error {
 		if err != nil {
 			return err
 		}
-		if size != serializedPartialIndexTreeNodeSize {
-			return fmt.Errorf("Expected to write %v bytes, wrote %v", serializedPartialIndexTreeNodeSize, size)
+		if size != TreeNodeSize {
+			return fmt.Errorf("Expected to write %v bytes, wrote %v", TreeNodeSize, size)
 		}
-		node.offset = partialIndexTreeNodeOffset(&newOffset)
-		*node.streamSize += int64(serializedPartialIndexTreeNodeSize)
+		node.offset = TreeNodeOffset(&newOffset)
+		*node.streamSize += int64(TreeNodeSize)
 	} else {
 		size, err := node.stream.WriteAt(serialized, *node.offset)
 		if err != nil {
 			return err
 		}
-		if size != serializedPartialIndexTreeNodeSize {
-			return fmt.Errorf("Expected to write %v bytes, wrote %v", serializedPartialIndexTreeNodeSize, size)
+		if size != TreeNodeSize {
+			return fmt.Errorf("Expected to write %v bytes, wrote %v", TreeNodeSize, size)
 		}
 	}
 
 	return nil
 }
 
-func (node *partialIndexTreeNode) appendChild(child *partialIndexTreeNode) error {
+func (node *TreeNode) AppendChild(child *TreeNode) error {
 	if node.firstChildOffset == nil {
 		node.firstChildOffset = child.offset
 		node.lastChildOffset = child.offset
-		return node.save()
+		return node.Save()
 	} else {
-		lastChild, err := node.lastChild()
+		lastChild, err := node.LastChild()
 		if err != nil {
 			return err
 		}
 		lastChild.nextSiblingOffset = child.offset
-		lastChild.save()
+		lastChild.Save()
 
 		node.lastChildOffset = child.offset
-		return node.save()
+		return node.Save()
 	}
 }
 
 // Finds a child that has a common prefix with the given array
-func (node *partialIndexTreeNode) findChildByPrefix(
+func (node *TreeNode) FindChildByPrefix(
 	value []byte,
 ) (
-	foundNode *partialIndexTreeNode,
+	foundNode *TreeNode,
 	commonBytes int,
 	err error,
 ) {
-	child, err := node.firstChild()
+	child, err := node.FirstChild()
 	if err != nil {
 		return nil, 0, err
 	}
@@ -166,7 +166,7 @@ func (node *partialIndexTreeNode) findChildByPrefix(
 			return child, commonBytes, nil
 		}
 
-		child, err = child.nextSibling()
+		child, err = child.NextSibling()
 		if err != nil {
 			return nil, 0, err
 		}
@@ -176,8 +176,8 @@ func (node *partialIndexTreeNode) findChildByPrefix(
 }
 
 // This only checks if the position already exists at the end of the list
-func (node *partialIndexTreeNode) appendPositionIfNotExists(position record.Position) {
-	positionNode := &partialIndexPositionLinkedList{
+func (node *TreeNode) AppendPositionIfNotExists(position record.Position) {
+	positionNode := &PositionLinkedList{
 		Position:     position,
 		NextPosition: nil,
 	}
@@ -191,7 +191,7 @@ func (node *partialIndexTreeNode) appendPositionIfNotExists(position record.Posi
 	}
 }
 
-func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Position) error {
+func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error {
 	parentNode := node
 	currentPosition := 0
 	for {
@@ -200,17 +200,17 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 			return nil
 		}
 
-		existingNode, commonBytes, err := parentNode.findChildByPrefix(remainingBytes)
+		existingNode, commonBytes, err := parentNode.FindChildByPrefix(remainingBytes)
 		if err != nil {
 			return err
 		}
 
 		// No node for the remaining string: adding a node with it
 		if existingNode == nil {
-			positionList := &partialIndexPositionLinkedList{
+			positionList := &PositionLinkedList{
 				Position: position,
 			}
-			newNode, err := createEmptyPartialIndexTreeNode(node.stream, node.streamSize)
+			newNode, err := NewEmptyTreeNode(node.stream, node.streamSize)
 			if err != nil {
 				return err
 			}
@@ -221,12 +221,12 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 			newNode.lastChildOffset =      nil
 			newNode.firstPosition =  positionList
 			newNode.lastPosition =   positionList
-			err = newNode.save()
+			err = newNode.Save()
 			if err != nil {
 				return err
 			}
 
-			parentNode.appendChild(newNode)
+			parentNode.AppendChild(newNode)
 			break
 		}
 
@@ -234,7 +234,7 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 		// proceeding with the parent (which has a prefix matching)
 		if commonBytes < len(existingNode.value) {
 			newChildFirstPosition, newChildLastPosition := existingNode.firstPosition.Copy()
-			newChild, err := createEmptyPartialIndexTreeNode(node.stream, node.streamSize)
+			newChild, err := NewEmptyTreeNode(node.stream, node.streamSize)
 			if err != nil {
 				return err
 			}
@@ -245,7 +245,7 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 			newChild.lastChildOffset =     existingNode.lastChildOffset
 			newChild.firstPosition = newChildFirstPosition
 			newChild.lastPosition =  newChildLastPosition
-			err = newChild.save()
+			err = newChild.Save()
 			if err != nil {
 				return err
 			}
@@ -253,13 +253,13 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 			existingNode.firstChildOffset = newChild.offset
 			existingNode.lastChildOffset = newChild.offset
 			existingNode.value = existingNode.value[:commonBytes]
-			err = existingNode.save()
+			err = existingNode.Save()
 			if err != nil {
 				return err
 			}
 		}
 
-		existingNode.appendPositionIfNotExists(position)
+		existingNode.AppendPositionIfNotExists(position)
 		parentNode = existingNode
 		currentPosition += commonBytes
 	}
@@ -267,11 +267,11 @@ func (node *partialIndexTreeNode) addSequence(bytes []byte, position record.Posi
 	return nil
 }
 
-func (node *partialIndexTreeNode) getSequence(bytes []byte) (*partialIndexPositionLinkedList, error) {
+func (node *TreeNode) GetSequence(bytes []byte) (*PositionLinkedList, error) {
 	parentNode := node
 	currentPosition := 0
 	for currentPosition < len(bytes) {
-		currentNode, commonBytes, err := parentNode.findChildByPrefix(bytes[currentPosition:])
+		currentNode, commonBytes, err := parentNode.FindChildByPrefix(bytes[currentPosition:])
 		if err != nil {
 			return nil, err
 		}
