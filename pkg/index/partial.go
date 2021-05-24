@@ -2,6 +2,7 @@ package index
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
@@ -43,9 +44,15 @@ func (partialIndex *Partial) Name() string {
 }
 
 func (partialIndex *Partial) Reindex() error {
+	indexFile, err := os.Create("/temp/test-index")
+	if err != nil {
+		return err
+	}
+	var indexFileSize int64 = 0
+
 	index := make(map[string]*partialIndexTreeNode)
 	for _, property := range partialIndex.config.Properties {
-		index[property] = createEmptyPartialIndexTreeRootNode()
+		index[property] = createEmptyPartialIndexTreeNode(indexFile, &indexFileSize)
 	}
 
 	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
@@ -82,7 +89,12 @@ func (partialIndex *Partial) Reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = partialIndex.addValueToIndex(index, property, value, record.Position())
+			err = partialIndex.addValueToIndex(
+				index,
+				property,
+				value,
+				record.Position(),
+			)
 			if err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
