@@ -6,12 +6,15 @@ import (
 
 type TreeNodeOffset *int64
 
+type TreeNodeValueOffset int64
+
 const TreeNodeSize int = 42 // TODO
 
 type TreeNode struct {
 	stream        *Stream
 	offset        TreeNodeOffset
-	value         []byte // TODO
+	valueOffset         TreeNodeValueOffset
+	valueLength         int
 	nextSiblingOffset   TreeNodeOffset
 	firstChildOffset    TreeNodeOffset
 	lastChildOffset     TreeNodeOffset
@@ -23,7 +26,8 @@ func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 	node := &TreeNode{
 		stream:        stream,
 		offset:        nil,
-		value:         []byte{},
+		valueOffset:         0,
+		valueLength:         0,
 		nextSiblingOffset:   nil,
 		firstChildOffset:    nil,
 		lastChildOffset:     nil,
@@ -47,7 +51,7 @@ func GetTreeNode(
 		return nil, nil
 	}
 
-	serialized, err := stream.Get(TreeNodeSize, *offset)
+	serialized, err := stream.Get(*offset, TreeNodeSize)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +84,10 @@ func (node *TreeNode) FirstPosition() (*PositionLinkedList, error) {
 
 func (node *TreeNode) LastPosition() (*PositionLinkedList, error) {
 	return GetPositionLinkedList(node.stream, node.lastPositionOffset)
+}
+
+func (node *TreeNode) Value() ([]byte, error) {
+	return node.stream.Get(int64(node.valueOffset), node.valueLength)
 }
 
 func (node *TreeNode) Save() error {
@@ -133,9 +141,14 @@ func (node *TreeNode) FindChildByPrefix(
 	}
 
 	for child != nil {
+		childValue, err := child.Value()
+		if err != nil {
+			return nil, 0, err
+		}
+
 		commonBytes := 0
-		for byteIndex := 0; byteIndex < len(child.value) && byteIndex < len(value); byteIndex++ {
-			if child.value[byteIndex] == value[byteIndex] {
+		for byteIndex := 0; byteIndex < len(childValue) && byteIndex < len(value); byteIndex++ {
+			if childValue[byteIndex] == value[byteIndex] {
 				commonBytes++
 			} else {
 				break
@@ -187,6 +200,11 @@ func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error 
 }
 
 func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error {
+	bytesOffset, err := node.stream.Add(bytes)
+	if err != nil {
+		return err
+	}
+
 	parentNode := node
 	currentPosition := 0
 	for {
@@ -210,7 +228,8 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			newNode.value =          remainingBytes
+			newNode.valueOffset =          TreeNodeValueOffset(bytesOffset + int64(currentPosition))
+			newNode.valueLength =          len(remainingBytes)
 			newNode.nextSiblingOffset =    nil
 			newNode.firstChildOffset =     nil
 			newNode.lastChildOffset =      nil
@@ -227,7 +246,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 
 		// Only matching a part of the node. We need to split it and continue
 		// proceeding with the parent (which has a prefix matching)
-		if commonBytes < len(existingNode.value) {
+		if commonBytes < existingNode.valueLength {
 			existingNodeFirstPosition, err := existingNode.FirstPosition()
 			if err != nil {
 				return err
@@ -242,7 +261,8 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			newChild.value =         existingNode.value[commonBytes:]
+			newChild.valueOffset =         TreeNodeValueOffset(int64(existingNode.valueOffset) + int64(commonBytes))
+			newChild.valueLength =         existingNode.valueLength - commonBytes
 			newChild.nextSiblingOffset =   nil
 			newChild.firstChildOffset =    existingNode.firstChildOffset
 			newChild.lastChildOffset =     existingNode.lastChildOffset
@@ -255,7 +275,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 
 			existingNode.firstChildOffset = newChild.offset
 			existingNode.lastChildOffset = newChild.offset
-			existingNode.value = existingNode.value[:commonBytes]
+			existingNode.valueLength = commonBytes
 			err = existingNode.Save()
 			if err != nil {
 				return err
@@ -284,11 +304,11 @@ func (node *TreeNode) GetSequence(bytes []byte) (*PositionLinkedList, error) {
 		if currentNode == nil {
 			return nil, nil
 		}
-		if commonBytes < len(currentNode.value) && commonBytes+currentPosition < len(bytes) {
+		if commonBytes < currentNode.valueLength && commonBytes+currentPosition < len(bytes) {
 			return nil, nil
 		}
 
-		currentPosition += len(currentNode.value)
+		currentPosition += currentNode.valueLength
 		parentNode = currentNode
 	}
 

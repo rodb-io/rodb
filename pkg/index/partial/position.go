@@ -46,7 +46,7 @@ func GetPositionLinkedList(
 		return nil, nil
 	}
 
-	serialized, err := stream.Get(PositionLinkedListSize, *offset)
+	serialized, err := stream.Get(*offset, PositionLinkedListSize)
 	if err != nil {
 		return nil, err
 	}
