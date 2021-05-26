@@ -15,30 +15,28 @@ type TreeNode struct {
 	nextSiblingOffset   TreeNodeOffset
 	firstChildOffset    TreeNodeOffset
 	lastChildOffset     TreeNodeOffset
-
-	// TODO
-	firstPosition *PositionLinkedList
-	lastPosition  *PositionLinkedList
+	firstPositionOffset PositionLinkedListOffset
+	lastPositionOffset  PositionLinkedListOffset
 }
 
 func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
-	rootNode := &TreeNode{
+	node := &TreeNode{
 		stream:        stream,
 		offset:        nil,
 		value:         []byte{},
 		nextSiblingOffset:   nil,
 		firstChildOffset:    nil,
 		lastChildOffset:     nil,
-		firstPosition: nil,
-		lastPosition:  nil,
+		firstPositionOffset: nil,
+		lastPositionOffset:  nil,
 	}
 
-	err := rootNode.Save()
+	err := node.Save()
 	if err != nil {
 		return nil, err
 	}
 
-	return rootNode, nil
+	return node, nil
 }
 
 func GetTreeNode(
@@ -74,6 +72,14 @@ func (node *TreeNode) FirstChild() (*TreeNode, error) {
 
 func (node *TreeNode) LastChild() (*TreeNode, error) {
 	return GetTreeNode(node.stream, node.lastChildOffset)
+}
+
+func (node *TreeNode) FirstPosition() (*PositionLinkedList, error) {
+	return GetPositionLinkedList(node.stream, node.firstPositionOffset)
+}
+
+func (node *TreeNode) LastPosition() (*PositionLinkedList, error) {
+	return GetPositionLinkedList(node.stream, node.lastPositionOffset)
 }
 
 func (node *TreeNode) Save() error {
@@ -150,19 +156,34 @@ func (node *TreeNode) FindChildByPrefix(
 }
 
 // This only checks if the position already exists at the end of the list
-func (node *TreeNode) AppendPositionIfNotExists(position record.Position) {
-	positionNode := &PositionLinkedList{
-		Position:     position,
-		NextPosition: nil,
+func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error {
+	positionNode, err := NewPositionLinkedList(node.stream, position)
+	if err != nil {
+		return err
 	}
 
-	if node.firstPosition == nil {
-		node.firstPosition = positionNode
-		node.lastPosition = positionNode
-	} else if node.lastPosition.Position != position {
-		node.lastPosition.NextPosition = positionNode
-		node.lastPosition = positionNode
+	if node.firstPositionOffset == nil {
+		node.firstPositionOffset = positionNode.offset
+		node.lastPositionOffset = positionNode.offset
+		return node.Save()
 	}
+
+	nodeLastPosition, err := node.LastPosition()
+	if err != nil {
+		return err
+	}
+	if nodeLastPosition.Position != position {
+		nodeLastPosition.nextPositionOffset = positionNode.offset
+		err = nodeLastPosition.Save()
+		if err != nil {
+			return err
+		}
+
+		node.lastPositionOffset = positionNode.offset
+		return node.Save()
+	}
+
+	return nil
 }
 
 func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error {
@@ -193,8 +214,8 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 			newNode.nextSiblingOffset =    nil
 			newNode.firstChildOffset =     nil
 			newNode.lastChildOffset =      nil
-			newNode.firstPosition =  positionList
-			newNode.lastPosition =   positionList
+			newNode.firstPositionOffset =  positionList.offset
+			newNode.lastPositionOffset =   positionList.offset
 			err = newNode.Save()
 			if err != nil {
 				return err
@@ -207,7 +228,15 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 		// Only matching a part of the node. We need to split it and continue
 		// proceeding with the parent (which has a prefix matching)
 		if commonBytes < len(existingNode.value) {
-			newChildFirstPosition, newChildLastPosition := existingNode.firstPosition.Copy()
+			existingNodeFirstPosition, err := existingNode.FirstPosition()
+			if err != nil {
+				return err
+			}
+
+			newChildFirstPosition, newChildLastPosition, err := existingNodeFirstPosition.Copy()
+			if err != nil {
+				return err
+			}
 			newChild, err := NewEmptyTreeNode(node.stream)
 			if err != nil {
 				return err
@@ -217,8 +246,8 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 			newChild.nextSiblingOffset =   nil
 			newChild.firstChildOffset =    existingNode.firstChildOffset
 			newChild.lastChildOffset =     existingNode.lastChildOffset
-			newChild.firstPosition = newChildFirstPosition
-			newChild.lastPosition =  newChildLastPosition
+			newChild.firstPositionOffset = newChildFirstPosition.offset
+			newChild.lastPositionOffset =  newChildLastPosition.offset
 			err = newChild.Save()
 			if err != nil {
 				return err
@@ -233,7 +262,10 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 			}
 		}
 
-		existingNode.AppendPositionIfNotExists(position)
+		err = existingNode.AppendPositionIfNotExists(position)
+		if err != nil {
+			return err
+		}
 		parentNode = existingNode
 		currentPosition += commonBytes
 	}
@@ -260,5 +292,5 @@ func (node *TreeNode) GetSequence(bytes []byte) (*PositionLinkedList, error) {
 		parentNode = currentNode
 	}
 
-	return parentNode.firstPosition, nil
+	return parentNode.FirstPosition()
 }
