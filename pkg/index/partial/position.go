@@ -1,10 +1,12 @@
 package partial
 
 import (
+	"bytes"
+	"encoding/binary"
 	"rodb.io/pkg/record"
 )
 
-type PositionLinkedListOffset *int64
+type PositionLinkedListOffset int64
 
 const PositionLinkedListSize int = 42 // TODO
 
@@ -25,9 +27,9 @@ func NewPositionLinkedList(
 ) (*PositionLinkedList, error) {
 	node := &PositionLinkedList{
 		stream:        stream,
-		offset:        nil,
+		offset:        0,
 		Position: position,
-		nextPositionOffset:  nil,
+		nextPositionOffset:  0,
 	}
 
 	err := node.Save()
@@ -42,11 +44,11 @@ func GetPositionLinkedList(
 	stream *Stream,
 	offset PositionLinkedListOffset,
 ) (*PositionLinkedList, error) {
-	if offset == nil {
+	if offset == 0 {
 		return nil, nil
 	}
 
-	serialized, err := stream.Get(*offset, PositionLinkedListSize)
+	serialized, err := stream.Get(int64(offset), PositionLinkedListSize)
 	if err != nil {
 		return nil, err
 	}
@@ -56,22 +58,57 @@ func GetPositionLinkedList(
 		offset: offset,
 	}
 
-	// TODO unserialize in node
+	err = position.Unserialize(serialized)
+	if err != nil {
+		return nil, err
+	}
 
 	return position, nil
 }
 
-func (list *PositionLinkedList) Save() error {
-	serialized := []byte{} // TODO serialize position with size PositionLinkedListSize
+func (list *PositionLinkedList) Serialize() ([]byte, error) {
+	var err error
+	buffer := &bytes.Buffer{}
 
-	if list.offset == nil {
+	if err = binary.Write(buffer, binary.LittleEndian, list.Position); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, list.nextPositionOffset); err != nil {
+		return nil, err
+	}
+
+	return buffer.Bytes(), nil
+}
+
+func (list *PositionLinkedList) Unserialize(data []byte) error {
+	var err error
+	buffer := bytes.NewBuffer(data)
+
+	if err = binary.Read(buffer, binary.LittleEndian, &list.Position); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &list.nextPositionOffset); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (list *PositionLinkedList) Save() error {
+	serialized, err := list.Serialize()
+	if err != nil {
+		return err
+	}
+	// TODO set size PositionLinkedListSize
+
+	if list.offset == 0 {
 		newOffset, err := list.stream.Add(serialized)
 		if err != nil {
 			return err
 		}
-		list.offset = PositionLinkedListOffset(&newOffset)
+		list.offset = PositionLinkedListOffset(newOffset)
 	} else {
-		err := list.stream.Replace(*list.offset, serialized)
+		err := list.stream.Replace(int64(list.offset), serialized)
 		if err != nil {
 			return err
 		}

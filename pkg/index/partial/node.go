@@ -31,8 +31,8 @@ func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 		nextSiblingOffset:   nil,
 		firstChildOffset:    nil,
 		lastChildOffset:     nil,
-		firstPositionOffset: nil,
-		lastPositionOffset:  nil,
+		firstPositionOffset: 0,
+		lastPositionOffset:  0,
 	}
 
 	err := node.Save()
@@ -175,7 +175,7 @@ func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error 
 		return err
 	}
 
-	if node.firstPositionOffset == nil {
+	if node.firstPositionOffset == 0 {
 		node.firstPositionOffset = positionNode.offset
 		node.lastPositionOffset = positionNode.offset
 		return node.Save()

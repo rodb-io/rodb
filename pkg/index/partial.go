@@ -53,6 +53,14 @@ func (partialIndex *Partial) Reindex() error {
 
 	indexStream := partial.NewStream(indexFile, indexFileSize)
 
+	// Adding a dummy byte for now, because the process uses zero-values
+	// instead of nil, so an object at offset 0 would cause issues.
+	// In the future, we will have header bytes, so this won't be an issue.
+	_, err = indexStream.Add([]byte{0})
+	if err != nil {
+		return err
+	}
+
 	index := make(map[string]*partial.TreeNode)
 	for _, property := range partialIndex.config.Properties {
 		index[property] = partial.NewEmptyTreeNode(indexStream)
