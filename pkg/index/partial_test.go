@@ -13,14 +13,21 @@ import (
 	"testing"
 )
 
-func stringifyPartialTree(root *partial.TreeNode) string {
-	positionsToString := func(positions *record.PositionLinkedList) string {
+func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
+	positionsToString := func(positions *partial.PositionLinkedList) string {
 		result := ""
-		for currentPosition := positions; currentPosition != nil; currentPosition = currentPosition.NextPosition {
+		currentPosition := positions
+		var err error
+		for currentPosition != nil {
 			if currentPosition != positions {
 				result += ","
 			}
 			result += strconv.Itoa(int(currentPosition.Position))
+
+			currentPosition, err = currentPosition.NextPosition()
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
 		}
 
 		return result
@@ -30,11 +37,31 @@ func stringifyPartialTree(root *partial.TreeNode) string {
 
 	var stringify func(prefix string, node *partial.TreeNode)
 	stringify = func(prefix string, node *partial.TreeNode) {
-		for child := node.firstChild; child != nil; child = child.nextSibling {
-			positions := positionsToString(child.firstPosition)
-			currentValue := prefix + ">" + string(child.value)
+		child, err := node.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: %v", err)
+		}
+
+		for child != nil {
+			firstPosition, err := child.FirstPosition()
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
+
+			value, err := child.Value()
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
+
+			positions := positionsToString(firstPosition)
+			currentValue := prefix + ">" + string(value)
 			results = append(results, currentValue+"="+positions)
 			stringify(currentValue, child)
+
+			child, err = child.NextSibling()
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
 		}
 	}
 
@@ -94,7 +121,7 @@ func TestPartial(t *testing.T) {
 			">PLANT=3",
 			">T=3",
 		}, "\n")
-		got := stringifyPartialTree(index.index["col"])
+		got := stringifyPartialTree(t, index.index["col"])
 		if got != expect {
 			t.Errorf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
