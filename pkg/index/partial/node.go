@@ -1,10 +1,12 @@
 package partial
 
 import (
+	"bytes"
+	"encoding/binary"
 	"rodb.io/pkg/record"
 )
 
-type TreeNodeOffset *int64
+type TreeNodeOffset int64
 
 type TreeNodeValueOffset int64
 
@@ -14,7 +16,7 @@ type TreeNode struct {
 	stream        *Stream
 	offset        TreeNodeOffset
 	valueOffset         TreeNodeValueOffset
-	valueLength         int
+	valueLength         int64
 	nextSiblingOffset   TreeNodeOffset
 	firstChildOffset    TreeNodeOffset
 	lastChildOffset     TreeNodeOffset
@@ -25,12 +27,12 @@ type TreeNode struct {
 func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 	node := &TreeNode{
 		stream:        stream,
-		offset:        nil,
+		offset:        0,
 		valueOffset:         0,
 		valueLength:         0,
-		nextSiblingOffset:   nil,
-		firstChildOffset:    nil,
-		lastChildOffset:     nil,
+		nextSiblingOffset:   0,
+		firstChildOffset:    0,
+		lastChildOffset:     0,
 		firstPositionOffset: 0,
 		lastPositionOffset:  0,
 	}
@@ -47,11 +49,11 @@ func GetTreeNode(
 	stream *Stream,
 	offset TreeNodeOffset,
 ) (*TreeNode, error) {
-	if offset == nil {
+	if offset == 0 {
 		return nil, nil
 	}
 
-	serialized, err := stream.Get(*offset, TreeNodeSize)
+	serialized, err := stream.Get(int64(offset), TreeNodeSize)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +63,10 @@ func GetTreeNode(
 		offset:        offset,
 	}
 
-	// TODO unserialize in node
+	err = node.Unserialize(serialized)
+	if err != nil {
+		return nil, err
+	}
 
 	return node, nil
 }
@@ -87,20 +92,82 @@ func (node *TreeNode) LastPosition() (*PositionLinkedList, error) {
 }
 
 func (node *TreeNode) Value() ([]byte, error) {
-	return node.stream.Get(int64(node.valueOffset), node.valueLength)
+	return node.stream.Get(int64(node.valueOffset), int(node.valueLength))
 }
 
-func (node *TreeNode) Save() error {
-	serialized := []byte{} // TODO serialize node with size TreeNodeSize
+func (node *TreeNode) Serialize() ([]byte, error) {
+	var err error
+	buffer := &bytes.Buffer{}
 
-	if node.offset == nil {
+	if err = binary.Write(buffer, binary.LittleEndian, node.valueOffset); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.valueLength); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.nextSiblingOffset); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.firstChildOffset); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.lastChildOffset); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.firstPositionOffset); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.LittleEndian, node.lastPositionOffset); err != nil {
+		return nil, err
+	}
+
+	return buffer.Bytes(), nil
+}
+
+func (node *TreeNode) Unserialize(data []byte) error {
+	var err error
+	buffer := bytes.NewBuffer(data)
+
+	if err = binary.Read(buffer, binary.LittleEndian, &node.valueOffset); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.valueLength); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.nextSiblingOffset); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.firstChildOffset); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.lastChildOffset); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.firstPositionOffset); err != nil {
+		return err
+	}
+	if err = binary.Read(buffer, binary.LittleEndian, &node.lastPositionOffset); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+func (node *TreeNode) Save() error {
+	serialized, err := node.Serialize()
+	if err != nil {
+		return err
+	}
+
+	if node.offset == 0 {
 		newOffset, err := node.stream.Add(serialized)
 		if err != nil {
 			return err
 		}
-		node.offset = TreeNodeOffset(&newOffset)
+		node.offset = TreeNodeOffset(newOffset)
 	} else {
-		err := node.stream.Replace(*node.offset, serialized)
+		err := node.stream.Replace(int64(node.offset), serialized)
 		if err != nil {
 			return err
 		}
@@ -110,7 +177,7 @@ func (node *TreeNode) Save() error {
 }
 
 func (node *TreeNode) AppendChild(child *TreeNode) error {
-	if node.firstChildOffset == nil {
+	if node.firstChildOffset == 0 {
 		node.firstChildOffset = child.offset
 		node.lastChildOffset = child.offset
 		return node.Save()
@@ -132,7 +199,7 @@ func (node *TreeNode) FindChildByPrefix(
 	value []byte,
 ) (
 	foundNode *TreeNode,
-	commonBytes int,
+	commonBytes int64,
 	err error,
 ) {
 	child, err := node.FirstChild()
@@ -146,7 +213,7 @@ func (node *TreeNode) FindChildByPrefix(
 			return nil, 0, err
 		}
 
-		commonBytes := 0
+		commonBytes := int64(0)
 		for byteIndex := 0; byteIndex < len(childValue) && byteIndex < len(value); byteIndex++ {
 			if childValue[byteIndex] == value[byteIndex] {
 				commonBytes++
@@ -206,7 +273,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 	}
 
 	parentNode := node
-	currentPosition := 0
+	currentPosition := int64(0)
 	for {
 		remainingBytes := bytes[currentPosition:]
 		if len(remainingBytes) == 0 {
@@ -229,10 +296,10 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 			}
 
 			newNode.valueOffset =          TreeNodeValueOffset(bytesOffset + int64(currentPosition))
-			newNode.valueLength =          len(remainingBytes)
-			newNode.nextSiblingOffset =    nil
-			newNode.firstChildOffset =     nil
-			newNode.lastChildOffset =      nil
+			newNode.valueLength =          int64(len(remainingBytes))
+			newNode.nextSiblingOffset =    0
+			newNode.firstChildOffset =     0
+			newNode.lastChildOffset =      0
 			newNode.firstPositionOffset =  positionList.offset
 			newNode.lastPositionOffset =   positionList.offset
 			err = newNode.Save()
@@ -263,7 +330,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 
 			newChild.valueOffset =         TreeNodeValueOffset(int64(existingNode.valueOffset) + int64(commonBytes))
 			newChild.valueLength =         existingNode.valueLength - commonBytes
-			newChild.nextSiblingOffset =   nil
+			newChild.nextSiblingOffset =   0
 			newChild.firstChildOffset =    existingNode.firstChildOffset
 			newChild.lastChildOffset =     existingNode.lastChildOffset
 			newChild.firstPositionOffset = newChildFirstPosition.offset
@@ -295,8 +362,8 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 
 func (node *TreeNode) GetSequence(bytes []byte) (*PositionLinkedList, error) {
 	parentNode := node
-	currentPosition := 0
-	for currentPosition < len(bytes) {
+	currentPosition := int64(0)
+	for currentPosition < int64(len(bytes)) {
 		currentNode, commonBytes, err := parentNode.FindChildByPrefix(bytes[currentPosition:])
 		if err != nil {
 			return nil, err
@@ -304,7 +371,7 @@ func (node *TreeNode) GetSequence(bytes []byte) (*PositionLinkedList, error) {
 		if currentNode == nil {
 			return nil, nil
 		}
-		if commonBytes < currentNode.valueLength && commonBytes+currentPosition < len(bytes) {
+		if commonBytes < currentNode.valueLength && commonBytes+currentPosition < int64(len(bytes)) {
 			return nil, nil
 		}
 

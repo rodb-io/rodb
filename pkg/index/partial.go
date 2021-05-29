@@ -63,7 +63,10 @@ func (partialIndex *Partial) Reindex() error {
 
 	index := make(map[string]*partial.TreeNode)
 	for _, property := range partialIndex.config.Properties {
-		index[property] = partial.NewEmptyTreeNode(indexStream)
+		index[property], err = partial.NewEmptyTreeNode(indexStream)
+		if err != nil {
+			return err
+		}
 	}
 
 	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
@@ -183,7 +186,10 @@ func (partialIndex *Partial) GetRecordPositions(
 			stringFilter = strings.ToLower(stringFilter)
 		}
 
-		indexedResults := indexedTree.GetSequence([]byte(stringFilter))
+		indexedResults, err := indexedTree.GetSequence([]byte(stringFilter))
+		if err != nil {
+			return nil, err
+		}
 		if indexedResults == nil {
 			return record.EmptyIterator, nil
 		}
