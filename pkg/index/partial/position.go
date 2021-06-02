@@ -40,6 +40,38 @@ func NewPositionLinkedList(
 	return node, nil
 }
 
+func NewPositionLinkedListFromArray(
+	stream *Stream,
+	positions []record.Position,
+) (*PositionLinkedList, error) {
+	if len(positions) == 0 {
+		return nil, nil
+	}
+
+	list, err := NewPositionLinkedList(stream, positions[0])
+	if err != nil {
+		return nil, err
+	}
+
+	current := list
+	for i := 1; i < len(positions); i++ {
+		newCurrent, err := NewPositionLinkedList(stream, positions[i])
+		if err != nil {
+			return nil, err
+		}
+
+		current.nextPositionOffset = newCurrent.offset
+		err = current.Save()
+		if err != nil {
+			return nil, err
+		}
+
+		current = newCurrent
+	}
+
+	return list, nil
+}
+
 func GetPositionLinkedList(
 	stream *Stream,
 	offset PositionLinkedListOffset,

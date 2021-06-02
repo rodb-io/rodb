@@ -2,7 +2,7 @@ package index
 
 import (
 	"fmt"
-	"os"
+	"io/ioutil"
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/index/partial"
@@ -45,13 +45,12 @@ func (partialIndex *Partial) Name() string {
 }
 
 func (partialIndex *Partial) Reindex() error {
-	indexFile, err := os.Create("/temp/test-index")
+	indexFile, err := ioutil.TempFile("/tmp", "test-index")
 	if err != nil {
 		return err
 	}
-	var indexFileSize int64 = 0
 
-	indexStream := partial.NewStream(indexFile, indexFileSize)
+	indexStream := partial.NewStream(indexFile, 0)
 
 	// Adding a dummy byte for now, because the process uses zero-values
 	// instead of nil, so an object at offset 0 would cause issues.
