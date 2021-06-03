@@ -7,10 +7,6 @@ import (
 )
 
 func createTestPositionLinkedList(t *testing.T, positions []record.Position) *PositionLinkedList {
-	if len(positions) == 0 {
-		return nil
-	}
-
 	file, err := ioutil.TempFile("/tmp", "test-index")
 	if err != nil {
 		t.Errorf("Unexpected error: '%+v'", err)

@@ -1,123 +1,179 @@
 package partial
 
 import (
+	"io/ioutil"
 	"rodb.io/pkg/record"
 	"strconv"
 	"strings"
 	"testing"
 )
 
+func createTestStream(t *testing.T) *Stream {
+	file, err := ioutil.TempFile("/tmp", "test-index")
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+	stream := NewStream(file, 0)
+
+	// Dummy byte to avoid issues with the offset 0
+	_, err = stream.Add([]byte{0})
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	return stream
+}
+
+func createTestNode(t *testing.T, stream *Stream, value []byte) *TreeNode {
+	node, err := NewEmptyTreeNode(stream)
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	valueOffset, err := stream.Add(value)
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	node.valueOffset = TreeNodeValueOffset(valueOffset)
+	node.valueLength = int64(len(value))
+
+	if err := node.Save(); err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	return node
+}
+
 func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &TreeNode{
-			value: []byte("A"),
-		}
-		newChild := &TreeNode{
-			value: []byte("B"),
-		}
-		node.AppendChild(newChild)
+		stream := createTestStream(t)
+		node := createTestNode(t, stream, []byte("A"))
+		newChild := createTestNode(t, stream, []byte("B"))
 
-		if node.firstChild != newChild {
-			t.Errorf("Expected to have B as first child, got %+v", node.firstChild)
+		err := node.AppendChild(newChild)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if node.lastChild != newChild {
-			t.Errorf("Expected to have B as last child, got %+v", node.lastChild)
+
+		if node.firstChildOffset != newChild.offset {
+			t.Errorf("Expected to have B as first child offset, got %+v", node.firstChildOffset)
+		}
+		if node.lastChildOffset != newChild.offset {
+			t.Errorf("Expected to have B as last child offset, got %+v", node.lastChildOffset)
 		}
 	})
 	t.Run("already have child", func(t *testing.T) {
-		child := &TreeNode{
-			value: []byte("B"),
-		}
-		node := &TreeNode{
-			value:      []byte("A"),
-			firstChild: child,
-			lastChild:  child,
-		}
-		newChild := &TreeNode{
-			value: []byte("C"),
-		}
-		node.AppendChild(newChild)
+		stream := createTestStream(t)
+		child := createTestNode(t, stream, []byte("B"))
+		newChild := createTestNode(t, stream, []byte("C"))
 
-		if node.firstChild != child {
-			t.Errorf("Expected to have B as first child, got %+v", node.firstChild)
+		node := createTestNode(t, stream, []byte("A"))
+		node.firstChildOffset = child.offset
+		node.lastChildOffset = child.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if node.lastChild != newChild {
-			t.Errorf("Expected to have C as last child, got %+v", node.lastChild)
+
+		err := node.AppendChild(newChild)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if child.nextSibling != newChild {
-			t.Errorf("Expected to have C as sibling of B, got %+v", child.nextSibling)
+
+		if node.firstChildOffset != child.offset {
+			t.Errorf("Expected to have B as first child offset, got %+v", node.firstChildOffset)
+		}
+		if node.lastChildOffset != newChild.offset {
+			t.Errorf("Expected to have C as last child offset, got %+v", node.lastChildOffset)
+		}
+		if child.nextSiblingOffset != newChild.offset {
+			t.Errorf("Expected to have C's offset as sibling of B, got %+v", child.nextSiblingOffset)
 		}
 	})
 }
 
 func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
-		node := &TreeNode{
-			value:      []byte("A"),
-			firstChild: nil,
-			lastChild:  nil,
-		}
+		stream := createTestStream(t)
+		node := createTestNode(t, stream, []byte("A"))
+		node.firstChildOffset = 0
+		node.lastChildOffset = 0
 
-		got, _ := node.FindChildByPrefix([]byte("B"))
+		got, _, err := node.FindChildByPrefix([]byte("B"))
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
 	})
 	t.Run("found exact", func(t *testing.T) {
-		secondChild := &TreeNode{
-			value: []byte("CDE"),
+		stream := createTestStream(t)
+		secondChild := createTestNode(t, stream, []byte("CDE"))
+		child := createTestNode(t, stream, []byte("B"))
+		child.nextSiblingOffset = secondChild.offset
+		if err := child.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		child := &TreeNode{
-			value:       []byte("B"),
-			nextSibling: secondChild,
-		}
-		node := &TreeNode{
-			value:      []byte("A"),
-			firstChild: child,
-			lastChild:  secondChild,
+		node := createTestNode(t, stream, []byte("A"))
+		node.firstChildOffset = child.offset
+		node.lastChildOffset = secondChild.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		gotNode, gotLength := node.FindChildByPrefix([]byte("CDE"))
+		gotNode, gotLength, err := node.FindChildByPrefix([]byte("CDE"))
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		if gotNode != secondChild {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
-		if expectLength := len(secondChild.value); gotLength != expectLength {
+
+		if expectLength := int64(3); gotLength != expectLength {
 			t.Errorf("Expected to get length %v, got %v", expectLength, gotLength)
 		}
 	})
 	t.Run("found partial", func(t *testing.T) {
-		secondChild := &TreeNode{
-			value: []byte("CDE"),
+		stream := createTestStream(t)
+		secondChild := createTestNode(t, stream, []byte("CDE"))
+		child := createTestNode(t, stream, []byte("B"))
+		child.nextSiblingOffset = secondChild.offset
+		if err := child.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		child := &TreeNode{
-			value:       []byte("B"),
-			nextSibling: secondChild,
-		}
-		node := &TreeNode{
-			value:      []byte("A"),
-			firstChild: child,
-			lastChild:  secondChild,
+		node := createTestNode(t, stream, []byte("A"))
+		node.firstChildOffset = child.offset
+		node.lastChildOffset = secondChild.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		gotNode, gotLength := node.FindChildByPrefix([]byte("CDX"))
+		gotNode, gotLength, err := node.FindChildByPrefix([]byte("CDX"))
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		if gotNode != secondChild {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
-		if expectLength := 2; gotLength != expectLength {
+		if expectLength := int64(2); gotLength != expectLength {
 			t.Errorf("Expected to get length %v, got %v", expectLength, gotLength)
 		}
 	})
 	t.Run("not found", func(t *testing.T) {
-		child := &TreeNode{
-			value: []byte("B"),
-		}
-		node := &TreeNode{
-			value:      []byte("A"),
-			firstChild: child,
-			lastChild:  child,
+		stream := createTestStream(t)
+		child := createTestNode(t, stream, []byte("B"))
+		node := createTestNode(t, stream, []byte("A"))
+		node.firstChildOffset = child.offset
+		node.lastChildOffset = child.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		got, _ := node.FindChildByPrefix([]byte("C"))
+		got, _, err := node.FindChildByPrefix([]byte("C"))
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		if got != nil {
 			t.Errorf("Expected to get nil, got %+v", got)
 		}
@@ -126,127 +182,305 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 
 func PartialIndexTreeNodeAppendPosition(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
-		node := &TreeNode{}
-		node.AppendPositionIfNotExists(1)
-
-		if node.firstPosition.Position != 1 {
-			t.Errorf("Expected to have 1 as first position, got %+v", node.firstPosition)
+		stream := createTestStream(t)
+		node := createTestNode(t, stream, []byte(""))
+		err := node.AppendPositionIfNotExists(1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if node.lastPosition.Position != 1 {
-			t.Errorf("Expected to have 1 as last position, got %+v", node.lastPosition)
+
+		firstPosition, err := node.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have 1 as first position, got %+v", firstPosition)
+		}
+
+		lastPosition, err := node.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 1 {
+			t.Errorf("Expected to have 1 as last position, got %+v", lastPosition)
 		}
 	})
 	t.Run("already have another position", func(t *testing.T) {
-		position := &PositionLinkedList{
-			Position: 1,
+		stream := createTestStream(t)
+		position, err := NewPositionLinkedList(stream, 1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		node := &TreeNode{
-			firstPosition: position,
-			lastPosition:  position,
+		node := createTestNode(t, stream, []byte(""))
+		node.firstPositionOffset = position.offset
+		node.lastPositionOffset = position.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		node.AppendPositionIfNotExists(2)
 
-		if node.firstPosition.Position != 1 {
-			t.Errorf("Expected to have B as first position, got %+v", node.firstPosition)
+		err = node.AppendPositionIfNotExists(2)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if node.lastPosition.Position != 2 {
-			t.Errorf("Expected to have 2 as last position, got %+v", node.lastPosition)
+
+		firstPosition, err := node.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if position.NextPosition.Position != 2 {
-			t.Errorf("Expected to have position 2 next to 1, got %+v", position.NextPosition)
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have B as first position, got %+v", firstPosition)
+		}
+
+		lastPosition, err := node.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 2 {
+			t.Errorf("Expected to have 2 as last position, got %+v", lastPosition)
+		}
+
+		nextPosition, err := firstPosition.NextPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if nextPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 next to 1, got %+v", nextPosition)
 		}
 	})
 	t.Run("already have the same position", func(t *testing.T) {
-		position := &PositionLinkedList{
-			Position: 1,
+		stream := createTestStream(t)
+		position, err := NewPositionLinkedList(stream, 1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		node := &TreeNode{
-			firstPosition: position,
-			lastPosition:  position,
+		node := createTestNode(t, stream, []byte(""))
+		node.firstPositionOffset = position.offset
+		node.lastPositionOffset = position.offset
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		node.AppendPositionIfNotExists(1)
 
-		if node.lastPosition != position {
-			t.Errorf("Expected to have 1 as first position, got %+v", node.lastPosition)
+		err = node.AppendPositionIfNotExists(1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if position.NextPosition != nil {
-			t.Errorf("Expected not to have a position next to 1, got %+v", position.NextPosition)
+
+		lastPosition, err := node.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition != position {
+			t.Errorf("Expected to have 1 as first position, got %+v", lastPosition)
+		}
+
+		nextPosition, err := position.NextPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if nextPosition != nil {
+			t.Errorf("Expected not to have a position next to 1, got %+v", nextPosition)
 		}
 	})
 }
 
 func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		root := &TreeNode{}
+		stream := createTestStream(t)
+		root := createTestNode(t, stream, []byte(""))
 
-		root.AddSequence([]byte("FOO"), 1)
+		err := root.AddSequence([]byte("FOO"), 1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 
-		if string(root.firstChild.value) != "FOO" {
-			t.Errorf("Expected to have FOO as first node of root, got %v", root.firstChild.value)
+		firstChild, err := root.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if root.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
+
+		value, err := firstChild.Value()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if root.firstChild.lastPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
+		if string(value) != "FOO" {
+			t.Errorf("Expected to have FOO as first node of root, got %v", value)
+		}
+
+		firstPosition, err := firstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", firstPosition)
+		}
+
+		lastPosition, err := firstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", lastPosition)
 		}
 	})
 	t.Run("new suffix to existing node", func(t *testing.T) {
-		root := &TreeNode{}
-		root.AddSequence([]byte("FOO"), 1)
+		stream := createTestStream(t)
+		root := createTestNode(t, stream, []byte(""))
+		err := root.AddSequence([]byte("FOO"), 1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		err = root.AddSequence([]byte("FOOT"), 2)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 
-		root.AddSequence([]byte("FOOT"), 2)
-
-		if root.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
-		}
-		if root.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
+		firstChild, err := root.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		if string(root.firstChild.firstChild.value) != "T" {
-			t.Errorf("Expected to have value 'T' as first child of FOO, got %v", string(root.firstChild.firstChild.value))
+		firstPosition, err := firstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if root.firstChild.firstChild.firstPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in first position of T, got %v", root.firstChild.firstChild.firstPosition)
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", firstPosition)
 		}
-		if root.firstChild.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in last position of T, got %v", root.firstChild.firstChild.lastPosition)
+
+		lastPosition, err := firstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", lastPosition)
+		}
+
+		firstChildOfFirstChild, err := firstChild.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		value, err := firstChildOfFirstChild.Value()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if string(value) != "T" {
+			t.Errorf("Expected to have value 'T' as first child of FOO, got %v", string(value))
+		}
+
+		firstPosition, err = firstChildOfFirstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in first position of T, got %v", firstPosition)
+		}
+
+		lastPosition, err = firstChildOfFirstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of T, got %v", lastPosition)
 		}
 	})
 	t.Run("splitting existing node", func(t *testing.T) {
-		root := &TreeNode{}
-		root.AddSequence([]byte("FOO"), 1)
-		root.AddSequence([]byte("FORMAT"), 2)
-
-		if string(root.firstChild.value) != "FO" {
-			t.Errorf("Expected to have value 'FO' as first child of root, got %v", string(root.firstChild.value))
+		stream := createTestStream(t)
+		root := createTestNode(t, stream, []byte(""))
+		err := root.AddSequence([]byte("FOO"), 1)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if root.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of root, got %v", root.firstChild.firstPosition)
-		}
-		if root.firstChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 1 in last position of root, got %v", root.firstChild.lastPosition)
+		err = root.AddSequence([]byte("FORMAT"), 2)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		if string(root.firstChild.firstChild.value) != "O" {
-			t.Errorf("Expected to have value 'O' as first child of 'FO', got %v", string(root.firstChild.firstChild.value))
-		}
-		if root.firstChild.firstChild.firstPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in first position of T, got %v", root.firstChild.firstChild.firstPosition)
-		}
-		if root.firstChild.firstChild.lastPosition.Position != 1 {
-			t.Errorf("Expected to have position 1 in last position of T, got %v", root.firstChild.firstChild.lastPosition)
+		firstChild, err := root.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
 
-		if string(root.firstChild.lastChild.value) != "RMAT" {
-			t.Errorf("Expected to have value 'RMAT' as first child of 'FO', got %v", string(root.firstChild.lastChild.value))
+		value, err := firstChild.Value()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if root.firstChild.lastChild.firstPosition.Position != 2 {
-			t.Errorf("Expected to have position 2 in first position of 'RMAT', got %v", root.firstChild.lastChild.firstPosition)
+		if string(value) != "FO" {
+			t.Errorf("Expected to have value 'FO' as first child of root, got %v", string(value))
 		}
-		if root.firstChild.lastChild.lastPosition.Position != 2 {
-			t.Errorf("Expected to have position 2 in last position of 'RMAT', got %v", root.firstChild.lastChild.lastPosition)
+
+		firstPosition, err := firstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of root, got %v", firstPosition)
+		}
+
+		lastPosition, err := firstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 1 in last position of root, got %v", lastPosition)
+		}
+
+		firstChildOfFirstChild, err := firstChild.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		value, err = firstChildOfFirstChild.Value()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if string(value) != "O" {
+			t.Errorf("Expected to have value 'O' as first child of 'FO', got %v", string(value))
+		}
+
+		firstPosition, err = firstChildOfFirstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in first position of T, got %v", firstPosition)
+		}
+
+		lastPosition, err = firstChildOfFirstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 1 {
+			t.Errorf("Expected to have position 1 in last position of T, got %v", lastPosition)
+		}
+
+		lastChildOfFirstChild, err := firstChild.LastChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		value, err = lastChildOfFirstChild.Value()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if string(value) != "RMAT" {
+			t.Errorf("Expected to have value 'RMAT' as first child of 'FO', got %v", string(value))
+		}
+
+		firstPosition, err = lastChildOfFirstChild.FirstPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if firstPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in first position of 'RMAT', got %v", firstPosition)
+		}
+
+		lastPosition, err = lastChildOfFirstChild.LastPosition()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if lastPosition.Position != 2 {
+			t.Errorf("Expected to have position 2 in last position of 'RMAT', got %v", lastPosition)
 		}
 	})
 }
@@ -283,22 +517,31 @@ func PartialIndexTreeNodeGetSequence(t *testing.T) {
 		}
 	}
 
+	getSequence := func(node *TreeNode, sequence []byte) *PositionLinkedList {
+		list, err := node.GetSequence(sequence)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		return list
+	}
+
 	t.Run("multiple prefix", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("FOO")), []record.Position{1, 2})
+		checkList(t, getSequence(root, []byte("FOO")), []record.Position{1, 2})
 	})
 	t.Run("not found", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("BAR")), []record.Position{})
+		checkList(t, getSequence(root, []byte("BAR")), []record.Position{})
 	})
 	t.Run("single", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("TOP")), []record.Position{3})
+		checkList(t, getSequence(root, []byte("TOP")), []record.Position{3})
 	})
 	t.Run("multiple middle", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("OO")), []record.Position{1, 2})
+		checkList(t, getSequence(root, []byte("OO")), []record.Position{1, 2})
 	})
 	t.Run("suffix and prefix", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("T")), []record.Position{2, 3})
+		checkList(t, getSequence(root, []byte("T")), []record.Position{2, 3})
 	})
 	t.Run("partially matches the end", func(t *testing.T) {
-		checkList(t, root.GetSequence([]byte("FO")), []record.Position{1, 2})
+		checkList(t, getSequence(root, []byte("FO")), []record.Position{1, 2})
 	})
 }
