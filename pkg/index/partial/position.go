@@ -11,9 +11,9 @@ type PositionLinkedListOffset int64
 const PositionLinkedListSize int = 42 // TODO
 
 type PositionLinkedList struct {
-	stream        *Stream
-	offset        PositionLinkedListOffset
-	Position     record.Position
+	stream             *Stream
+	offset             PositionLinkedListOffset
+	Position           record.Position
 	nextPositionOffset PositionLinkedListOffset
 }
 
@@ -26,10 +26,10 @@ func NewPositionLinkedList(
 	position record.Position,
 ) (*PositionLinkedList, error) {
 	node := &PositionLinkedList{
-		stream:        stream,
-		offset:        0,
-		Position: position,
-		nextPositionOffset:  0,
+		stream:             stream,
+		offset:             0,
+		Position:           position,
+		nextPositionOffset: 0,
 	}
 
 	err := node.Save()
@@ -86,7 +86,7 @@ func GetPositionLinkedList(
 	}
 
 	position := &PositionLinkedList{
-		stream:        stream,
+		stream: stream,
 		offset: offset,
 	}
 

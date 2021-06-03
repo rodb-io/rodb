@@ -5,13 +5,13 @@ import (
 	"io"
 )
 
-type ReaderAtWriterAt interface{
+type ReaderAtWriterAt interface {
 	io.ReaderAt
 	io.WriterAt
 }
 
-type Stream struct{
-	stream ReaderAtWriterAt
+type Stream struct {
+	stream     ReaderAtWriterAt
 	streamSize int64
 }
 
@@ -20,7 +20,7 @@ func NewStream(
 	streamSize int64,
 ) *Stream {
 	return &Stream{
-		stream: stream,
+		stream:     stream,
 		streamSize: streamSize,
 	}
 }

@@ -13,8 +13,8 @@ type TreeNodeValueOffset int64
 const TreeNodeSize int = 42 // TODO
 
 type TreeNode struct {
-	stream        *Stream
-	offset        TreeNodeOffset
+	stream              *Stream
+	offset              TreeNodeOffset
 	valueOffset         TreeNodeValueOffset
 	valueLength         int64
 	nextSiblingOffset   TreeNodeOffset
@@ -26,8 +26,8 @@ type TreeNode struct {
 
 func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 	node := &TreeNode{
-		stream:        stream,
-		offset:        0,
+		stream:              stream,
+		offset:              0,
 		valueOffset:         0,
 		valueLength:         0,
 		nextSiblingOffset:   0,
@@ -59,8 +59,8 @@ func GetTreeNode(
 	}
 
 	node := &TreeNode{
-		stream:        stream,
-		offset:        offset,
+		stream: stream,
+		offset: offset,
 	}
 
 	err = node.Unserialize(serialized)
@@ -152,7 +152,6 @@ func (node *TreeNode) Unserialize(data []byte) error {
 
 	return nil
 }
-
 
 func (node *TreeNode) Save() error {
 	serialized, err := node.Serialize()
@@ -295,13 +294,13 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			newNode.valueOffset =          TreeNodeValueOffset(bytesOffset + int64(currentPosition))
-			newNode.valueLength =          int64(len(remainingBytes))
-			newNode.nextSiblingOffset =    0
-			newNode.firstChildOffset =     0
-			newNode.lastChildOffset =      0
-			newNode.firstPositionOffset =  positionList.offset
-			newNode.lastPositionOffset =   positionList.offset
+			newNode.valueOffset = TreeNodeValueOffset(bytesOffset + int64(currentPosition))
+			newNode.valueLength = int64(len(remainingBytes))
+			newNode.nextSiblingOffset = 0
+			newNode.firstChildOffset = 0
+			newNode.lastChildOffset = 0
+			newNode.firstPositionOffset = positionList.offset
+			newNode.lastPositionOffset = positionList.offset
 			err = newNode.Save()
 			if err != nil {
 				return err
@@ -328,13 +327,13 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			newChild.valueOffset =         TreeNodeValueOffset(int64(existingNode.valueOffset) + int64(commonBytes))
-			newChild.valueLength =         existingNode.valueLength - commonBytes
-			newChild.nextSiblingOffset =   0
-			newChild.firstChildOffset =    existingNode.firstChildOffset
-			newChild.lastChildOffset =     existingNode.lastChildOffset
+			newChild.valueOffset = TreeNodeValueOffset(int64(existingNode.valueOffset) + int64(commonBytes))
+			newChild.valueLength = existingNode.valueLength - commonBytes
+			newChild.nextSiblingOffset = 0
+			newChild.firstChildOffset = existingNode.firstChildOffset
+			newChild.lastChildOffset = existingNode.lastChildOffset
 			newChild.firstPositionOffset = newChildFirstPosition.offset
-			newChild.lastPositionOffset =  newChildLastPosition.offset
+			newChild.lastPositionOffset = newChildLastPosition.offset
 			err = newChild.Save()
 			if err != nil {
 				return err

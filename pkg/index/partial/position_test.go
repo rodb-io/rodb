@@ -107,4 +107,3 @@ func TestPositionLinkedListCopy(t *testing.T) {
 		}
 	})
 }
-
