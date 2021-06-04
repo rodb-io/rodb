@@ -26,7 +26,7 @@ func NewStream(
 }
 
 func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
-	bytes := make([]byte, 0, bytesCount)
+	bytes := make([]byte, bytesCount)
 	size, err := stream.stream.ReadAt(bytes, offset)
 	if err != nil {
 		return nil, err
