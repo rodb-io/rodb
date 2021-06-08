@@ -180,7 +180,7 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeAppendPosition(t *testing.T) {
+func PartialIndexTreeNodeAppendPositionIfNotExists(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
 		stream := createTestStream(t)
 		node := createTestNode(t, stream, []byte(""))

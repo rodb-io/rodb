@@ -10,7 +10,7 @@ type TreeNodeOffset int64
 
 type TreeNodeValueOffset int64
 
-const TreeNodeSize int = 42 // TODO
+const TreeNodeSize int = 56
 
 type TreeNode struct {
 	stream              *Stream
@@ -286,9 +286,11 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 
 		// No node for the remaining string: adding a node with it
 		if existingNode == nil {
-			positionList := &PositionLinkedList{
-				Position: position,
+			positionList, err := NewPositionLinkedList(node.stream, position)
+			if err != nil {
+				return err
 			}
+
 			newNode, err := NewEmptyTreeNode(node.stream)
 			if err != nil {
 				return err

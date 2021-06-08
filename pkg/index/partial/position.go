@@ -8,7 +8,7 @@ import (
 
 type PositionLinkedListOffset int64
 
-const PositionLinkedListSize int = 42 // TODO
+const PositionLinkedListSize int = 16
 
 type PositionLinkedList struct {
 	stream             *Stream
@@ -131,7 +131,6 @@ func (list *PositionLinkedList) Save() error {
 	if err != nil {
 		return err
 	}
-	// TODO set size PositionLinkedListSize
 
 	if list.offset == 0 {
 		newOffset, err := list.stream.Add(serialized)

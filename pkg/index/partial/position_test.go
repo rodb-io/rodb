@@ -98,12 +98,12 @@ func TestPositionLinkedListCopy(t *testing.T) {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
 
-		nextNextNext, err := next.NextPosition()
+		nextNextNext, err := nextNext.NextPosition()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
 		if nextNextNext != nil {
-			t.Errorf("Expected nil, got %v", nil, nextNextNext)
+			t.Errorf("Expected nil, got %v", nextNextNext)
 		}
 	})
 }
