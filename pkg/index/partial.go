@@ -45,7 +45,7 @@ func (partialIndex *Partial) Name() string {
 }
 
 func (partialIndex *Partial) Reindex() error {
-	indexFile, err := ioutil.TempFile("/tmp", "test-index")
+	indexFile, err := ioutil.TempFile("/", "test-index")
 	if err != nil {
 		return err
 	}
@@ -115,7 +115,13 @@ func (partialIndex *Partial) Reindex() error {
 	}
 
 	partialIndex.index = index
-	partialIndex.config.Logger.Infof("Successfully finished indexing")
+
+	indexStat, err := indexFile.Stat()
+	if err != nil {
+		return err
+	}
+
+	partialIndex.config.Logger.WithField("indexSize", indexStat.Size()).Infof("Successfully finished indexing")
 
 	return nil
 }
