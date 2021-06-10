@@ -99,25 +99,25 @@ func (node *TreeNode) Serialize() ([]byte, error) {
 	var err error
 	buffer := &bytes.Buffer{}
 
-	if err = binary.Write(buffer, binary.LittleEndian, node.valueOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.valueOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.valueLength); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.valueLength); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.nextSiblingOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.nextSiblingOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.firstChildOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.firstChildOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.lastChildOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.lastChildOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.firstPositionOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.firstPositionOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, node.lastPositionOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, node.lastPositionOffset); err != nil {
 		return nil, err
 	}
 
@@ -128,25 +128,25 @@ func (node *TreeNode) Unserialize(data []byte) error {
 	var err error
 	buffer := bytes.NewBuffer(data)
 
-	if err = binary.Read(buffer, binary.LittleEndian, &node.valueOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.valueOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.valueLength); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.valueLength); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.nextSiblingOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.nextSiblingOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.firstChildOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.firstChildOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.lastChildOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.lastChildOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.firstPositionOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.firstPositionOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &node.lastPositionOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &node.lastPositionOffset); err != nil {
 		return err
 	}
 

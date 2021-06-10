@@ -1,6 +1,7 @@
 package partial
 
 import (
+	"fmt"
 	"io/ioutil"
 	"rodb.io/pkg/record"
 	"testing"
@@ -25,6 +26,97 @@ func createTestPositionLinkedList(t *testing.T, positions []record.Position) *Po
 	}
 
 	return list
+}
+
+func TestPositionLinkedListSerialize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		list := PositionLinkedList{
+			Position:           1,
+			nextPositionOffset: 1234,
+		}
+		got, err := list.Serialize()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		expect := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", got); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("empty next", func(t *testing.T) {
+		list := PositionLinkedList{
+			Position:           1,
+			nextPositionOffset: 0,
+		}
+		got, err := list.Serialize()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		expect := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0,
+		}
+		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", got); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}
+
+func TestPositionLinkedListUnserialize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		list := PositionLinkedList{}
+		err := list.Unserialize([]byte{0, 0, 0, 0, 0, 0, 0, 0x01, 0, 0, 0, 0, 0, 0, 0x4, 0xD2})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := int64(1), list.Position; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(1234), list.nextPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("empty next", func(t *testing.T) {
+		list := PositionLinkedList{}
+		err := list.Unserialize([]byte{0, 0, 0, 0, 0, 0, 0, 0x01, 0, 0, 0, 0, 0, 0, 0, 0})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := int64(1), list.Position; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(0), list.nextPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("from serialize", func(t *testing.T) {
+		list1 := PositionLinkedList{
+			Position:           1,
+			nextPositionOffset: 1234,
+		}
+		serialized, err := list1.Serialize()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		list2 := PositionLinkedList{}
+		err = list2.Unserialize(serialized)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := int64(1), list2.Position; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(1234), list2.nextPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
 }
 
 func TestPositionLinkedListToIterator(t *testing.T) {

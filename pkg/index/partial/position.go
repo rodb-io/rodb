@@ -102,10 +102,10 @@ func (list *PositionLinkedList) Serialize() ([]byte, error) {
 	var err error
 	buffer := &bytes.Buffer{}
 
-	if err = binary.Write(buffer, binary.LittleEndian, list.Position); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, list.Position); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.LittleEndian, list.nextPositionOffset); err != nil {
+	if err = binary.Write(buffer, binary.BigEndian, list.nextPositionOffset); err != nil {
 		return nil, err
 	}
 
@@ -116,10 +116,10 @@ func (list *PositionLinkedList) Unserialize(data []byte) error {
 	var err error
 	buffer := bytes.NewBuffer(data)
 
-	if err = binary.Read(buffer, binary.LittleEndian, &list.Position); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &list.Position); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.LittleEndian, &list.nextPositionOffset); err != nil {
+	if err = binary.Read(buffer, binary.BigEndian, &list.nextPositionOffset); err != nil {
 		return err
 	}
 
