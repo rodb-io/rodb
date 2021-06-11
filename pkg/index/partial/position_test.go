@@ -70,7 +70,10 @@ func TestPositionLinkedListSerialize(t *testing.T) {
 func TestPositionLinkedListUnserialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		list := PositionLinkedList{}
-		err := list.Unserialize([]byte{0, 0, 0, 0, 0, 0, 0, 0x01, 0, 0, 0, 0, 0, 0, 0x4, 0xD2})
+		err := list.Unserialize([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -83,7 +86,10 @@ func TestPositionLinkedListUnserialize(t *testing.T) {
 	})
 	t.Run("empty next", func(t *testing.T) {
 		list := PositionLinkedList{}
-		err := list.Unserialize([]byte{0, 0, 0, 0, 0, 0, 0, 0x01, 0, 0, 0, 0, 0, 0, 0, 0})
+		err := list.Unserialize([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0,
+		})
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}

@@ -1,6 +1,7 @@
 package partial
 
 import (
+	"fmt"
 	"io/ioutil"
 	"rodb.io/pkg/record"
 	"strconv"
@@ -43,6 +44,119 @@ func createTestNode(t *testing.T, stream *Stream, value []byte) *TreeNode {
 	}
 
 	return node
+}
+
+func TestTreeNodeSerialize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		list := TreeNode{
+			valueOffset:         1,
+			valueLength:         2,
+			nextSiblingOffset:   3,
+			firstChildOffset:    4,
+			lastChildOffset:     0,
+			firstPositionOffset: 255,
+			lastPositionOffset:  1234,
+		}
+		got, err := list.Serialize()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		expect := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0x02,
+			0, 0, 0, 0, 0, 0, 0, 0x03,
+			0, 0, 0, 0, 0, 0, 0, 0x04,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0xFF,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", got); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}
+
+func TestTreeNodeUnserialize(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		list := TreeNode{}
+		err := list.Unserialize([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0x02,
+			0, 0, 0, 0, 0, 0, 0, 0x03,
+			0, 0, 0, 0, 0, 0, 0, 0x04,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0xFF,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+		if expect, got := TreeNodeValueOffset(1), list.valueOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := int64(2), list.valueLength; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(3), list.nextSiblingOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(4), list.firstChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(0), list.lastChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(255), list.firstPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(1234), list.lastPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("from serialize", func(t *testing.T) {
+		list1 := TreeNode{
+			valueOffset:         1,
+			valueLength:         2,
+			nextSiblingOffset:   3,
+			firstChildOffset:    4,
+			lastChildOffset:     0,
+			firstPositionOffset: 255,
+			lastPositionOffset:  1234,
+		}
+		serialized, err := list1.Serialize()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		list2 := TreeNode{}
+		err = list2.Unserialize(serialized)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := TreeNodeValueOffset(1), list2.valueOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := int64(2), list2.valueLength; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(3), list2.nextSiblingOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(4), list2.firstChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(0), list2.lastChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(255), list2.firstPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(1234), list2.lastPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
 }
 
 func PartialIndexTreeNodeAppendChild(t *testing.T) {
