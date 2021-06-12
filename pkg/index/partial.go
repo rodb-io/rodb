@@ -153,7 +153,10 @@ func (partialIndex *Partial) addValueToIndex(
 	root := index[property]
 	bytes := []byte(stringValue)
 	for i := 0; i < len(bytes); i++ {
-		root.AddSequence(bytes[i:], position)
+		err := root.AddSequence(bytes[i:], position)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

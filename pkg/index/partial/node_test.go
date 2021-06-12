@@ -159,7 +159,7 @@ func TestTreeNodeUnserialize(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeAppendChild(t *testing.T) {
+func TestTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
 		stream := createTestStream(t)
 		node := createTestNode(t, stream, []byte("A"))
@@ -180,7 +180,13 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 	t.Run("already have child", func(t *testing.T) {
 		stream := createTestStream(t)
 		child := createTestNode(t, stream, []byte("B"))
+		if err := child.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		newChild := createTestNode(t, stream, []byte("C"))
+		if err := child.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 
 		node := createTestNode(t, stream, []byte("A"))
 		node.firstChildOffset = child.offset
@@ -200,13 +206,18 @@ func PartialIndexTreeNodeAppendChild(t *testing.T) {
 		if node.lastChildOffset != newChild.offset {
 			t.Errorf("Expected to have C as last child offset, got %+v", node.lastChildOffset)
 		}
+
+		child, err = node.FirstChild()
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
 		if child.nextSiblingOffset != newChild.offset {
 			t.Errorf("Expected to have C's offset as sibling of B, got %+v", child.nextSiblingOffset)
 		}
 	})
 }
 
-func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
+func TestTreeNodeFindChildByPrefix(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
 		stream := createTestStream(t)
 		node := createTestNode(t, stream, []byte("A"))
@@ -240,7 +251,7 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if gotNode != secondChild {
+		if gotNode.offset != secondChild.offset {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
 
@@ -267,7 +278,7 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if gotNode != secondChild {
+		if gotNode.offset != secondChild.offset {
 			t.Errorf("Expected to get node C, got %+v", gotNode)
 		}
 		if expectLength := int64(2); gotLength != expectLength {
@@ -294,7 +305,7 @@ func PartialIndexTreeNodeFindChildByPrefix(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeAppendPositionIfNotExists(t *testing.T) {
+func TestTreeNodeAppendPositionIfNotExists(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
 		stream := createTestStream(t)
 		node := createTestNode(t, stream, []byte(""))
@@ -383,7 +394,7 @@ func PartialIndexTreeNodeAppendPositionIfNotExists(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if lastPosition != position {
+		if lastPosition.Position != position.Position {
 			t.Errorf("Expected to have 1 as first position, got %+v", lastPosition)
 		}
 
@@ -397,7 +408,7 @@ func PartialIndexTreeNodeAppendPositionIfNotExists(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeAddSequence(t *testing.T) {
+func TestTreeNodeAddSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
@@ -599,11 +610,23 @@ func PartialIndexTreeNodeAddSequence(t *testing.T) {
 	})
 }
 
-func PartialIndexTreeNodeGetSequence(t *testing.T) {
-	root := &TreeNode{}
-	root.AddSequence([]byte("FOO"), 1)
-	root.AddSequence([]byte("FOOT"), 2)
-	root.AddSequence([]byte("TOP"), 3)
+func TestTreeNodeGetSequence(t *testing.T) {
+	stream := createTestStream(t)
+	root, err := NewEmptyTreeNode(stream)
+	if err != nil {
+		t.Errorf("Unexpected error: '%+v'", err)
+	}
+
+	addSequences := func(t *testing.T, bytes []byte, position record.Position) {
+		for i := 0; i < len(bytes); i++ {
+			if err := root.AddSequence(bytes[i:], position); err != nil {
+				t.Errorf("Unexpected error: '%+v'", err)
+			}
+		}
+	}
+	addSequences(t, []byte("FOO"), 1)
+	addSequences(t, []byte("FOOT"), 2)
+	addSequences(t, []byte("TOP"), 3)
 
 	checkList := func(t *testing.T, list *PositionLinkedList, positions []record.Position) {
 		stringPositions := []string{}
@@ -615,7 +638,10 @@ func PartialIndexTreeNodeGetSequence(t *testing.T) {
 		got := ""
 		iterator := list.Iterate()
 		for {
-			position, _ := iterator()
+			position, err := iterator()
+			if err != nil {
+				t.Errorf("Unexpected error: '%+v'", err)
+			}
 			if position == nil {
 				break
 			}

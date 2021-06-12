@@ -266,6 +266,7 @@ func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error 
 }
 
 func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error {
+	// TODO should not add this everytime
 	bytesOffset, err := node.stream.Add(bytes)
 	if err != nil {
 		return err
@@ -308,7 +309,10 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			parentNode.AppendChild(newNode)
+			err = parentNode.AppendChild(newNode)
+			if err != nil {
+				return err
+			}
 			break
 		}
 
