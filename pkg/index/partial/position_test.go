@@ -152,6 +152,78 @@ func TestPositionLinkedListUnserialize(t *testing.T) {
 	})
 }
 
+func TestPositionLinkedListSave(t *testing.T) {
+	t.Run("create", func(t *testing.T) {
+		stream := createTestStream(t)
+		initialSize := stream.streamSize
+
+		list := PositionLinkedList{
+			stream:             stream,
+			offset:             0,
+			Position:           1,
+			nextPositionOffset: 1234,
+		}
+		if err := list.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := initialSize, int64(list.offset); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+
+		expectBytes := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		gotBytes, err := stream.Get(initialSize, 16)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := fmt.Sprintf("%x", expectBytes), fmt.Sprintf("%x", gotBytes); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+
+	t.Run("update", func(t *testing.T) {
+		stream := createTestStream(t)
+		offset, err := stream.Add([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		list := PositionLinkedList{
+			stream:             stream,
+			offset:             PositionLinkedListOffset(offset),
+			Position:           1,
+			nextPositionOffset: 1234,
+		}
+		if err := list.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := offset, int64(list.offset); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+
+		expectBytes := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		gotBytes, err := stream.Get(offset, 16)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := fmt.Sprintf("%x", expectBytes), fmt.Sprintf("%x", gotBytes); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}
+
 func TestPositionLinkedListToIterator(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		list := createTestPositionLinkedList(t, []record.Position{1, 42, 123})
