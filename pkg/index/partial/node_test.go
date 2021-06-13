@@ -29,9 +29,54 @@ func createTestNode(t *testing.T, stream *Stream, value []byte) *TreeNode {
 	return node
 }
 
+func TestGetTreeNode(t *testing.T) {
+	t.Run("normal", func(t *testing.T) {
+		stream := createTestStream(t)
+		offset, err := stream.Add([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0x02,
+			0, 0, 0, 0, 0, 0, 0, 0x03,
+			0, 0, 0, 0, 0, 0, 0, 0x04,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0xFF,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		node, err := GetTreeNode(stream, TreeNodeOffset(offset))
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := TreeNodeValueOffset(1), node.valueOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := int64(2), node.valueLength; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(3), node.nextSiblingOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(4), node.firstChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := TreeNodeOffset(0), node.lastChildOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(255), node.firstPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := PositionLinkedListOffset(1234), node.lastPositionOffset; expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}
+
 func TestTreeNodeSerialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		list := TreeNode{
+		node := TreeNode{
 			valueOffset:         1,
 			valueLength:         2,
 			nextSiblingOffset:   3,
@@ -40,7 +85,7 @@ func TestTreeNodeSerialize(t *testing.T) {
 			firstPositionOffset: 255,
 			lastPositionOffset:  1234,
 		}
-		got, err := list.Serialize()
+		got, err := node.Serialize()
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
@@ -62,8 +107,8 @@ func TestTreeNodeSerialize(t *testing.T) {
 
 func TestTreeNodeUnserialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		list := TreeNode{}
-		err := list.Unserialize([]byte{
+		node := TreeNode{}
+		err := node.Unserialize([]byte{
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0, 0x02,
 			0, 0, 0, 0, 0, 0, 0, 0x03,
@@ -75,25 +120,25 @@ func TestTreeNodeUnserialize(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error: '%+v'", err)
 		}
-		if expect, got := TreeNodeValueOffset(1), list.valueOffset; expect != got {
+		if expect, got := TreeNodeValueOffset(1), node.valueOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := int64(2), list.valueLength; expect != got {
+		if expect, got := int64(2), node.valueLength; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := TreeNodeOffset(3), list.nextSiblingOffset; expect != got {
+		if expect, got := TreeNodeOffset(3), node.nextSiblingOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := TreeNodeOffset(4), list.firstChildOffset; expect != got {
+		if expect, got := TreeNodeOffset(4), node.firstChildOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := TreeNodeOffset(0), list.lastChildOffset; expect != got {
+		if expect, got := TreeNodeOffset(0), node.lastChildOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := PositionLinkedListOffset(255), list.firstPositionOffset; expect != got {
+		if expect, got := PositionLinkedListOffset(255), node.firstPositionOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := PositionLinkedListOffset(1234), list.lastPositionOffset; expect != got {
+		if expect, got := PositionLinkedListOffset(1234), node.lastPositionOffset; expect != got {
 			t.Errorf("Expected %v, got %v", expect, got)
 		}
 	})
@@ -611,7 +656,7 @@ func TestTreeNodeGetSequence(t *testing.T) {
 	addSequences(t, []byte("FOOT"), 2)
 	addSequences(t, []byte("TOP"), 3)
 
-	checkList := func(t *testing.T, list *PositionLinkedList, positions []record.Position) {
+	checkList := func(t *testing.T, node *PositionLinkedList, positions []record.Position) {
 		stringPositions := []string{}
 		for _, position := range positions {
 			stringPositions = append(stringPositions, strconv.Itoa(int(position)))
@@ -619,7 +664,7 @@ func TestTreeNodeGetSequence(t *testing.T) {
 		expect := strings.Join(stringPositions, ",")
 
 		got := ""
-		iterator := list.Iterate()
+		iterator := node.Iterate()
 		for {
 			position, err := iterator()
 			if err != nil {
