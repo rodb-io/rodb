@@ -2,28 +2,11 @@ package partial
 
 import (
 	"fmt"
-	"io/ioutil"
 	"rodb.io/pkg/record"
 	"strconv"
 	"strings"
 	"testing"
 )
-
-func createTestStream(t *testing.T) *Stream {
-	file, err := ioutil.TempFile("/tmp", "test-index")
-	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
-	}
-	stream := NewStream(file, 0)
-
-	// Dummy byte to avoid issues with the offset 0
-	_, err = stream.Add([]byte{0})
-	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
-	}
-
-	return stream
-}
 
 func createTestNode(t *testing.T, stream *Stream, value []byte) *TreeNode {
 	node, err := NewEmptyTreeNode(stream)
