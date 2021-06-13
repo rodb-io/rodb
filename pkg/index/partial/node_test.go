@@ -187,6 +187,103 @@ func TestTreeNodeUnserialize(t *testing.T) {
 	})
 }
 
+func TestTreeNodeSave(t *testing.T) {
+	t.Run("create", func(t *testing.T) {
+		stream := createTestStream(t)
+		initialSize := stream.streamSize
+
+		node := TreeNode{
+			stream:              stream,
+			offset:              0,
+			valueOffset:         1,
+			valueLength:         2,
+			nextSiblingOffset:   3,
+			firstChildOffset:    4,
+			lastChildOffset:     0,
+			firstPositionOffset: 255,
+			lastPositionOffset:  1234,
+		}
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := initialSize, int64(node.offset); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+
+		expectBytes := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0x02,
+			0, 0, 0, 0, 0, 0, 0, 0x03,
+			0, 0, 0, 0, 0, 0, 0, 0x04,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0xFF,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		gotBytes, err := stream.Get(initialSize, 56)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := fmt.Sprintf("%x", expectBytes), fmt.Sprintf("%x", gotBytes); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+
+	t.Run("update", func(t *testing.T) {
+		stream := createTestStream(t)
+		offset, err := stream.Add([]byte{
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+		})
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		node := TreeNode{
+			stream:              stream,
+			offset:              TreeNodeOffset(offset),
+			valueOffset:         1,
+			valueLength:         2,
+			nextSiblingOffset:   3,
+			firstChildOffset:    4,
+			lastChildOffset:     0,
+			firstPositionOffset: 255,
+			lastPositionOffset:  1234,
+		}
+		if err := node.Save(); err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := offset, int64(node.offset); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+
+		expectBytes := []byte{
+			0, 0, 0, 0, 0, 0, 0, 0x01,
+			0, 0, 0, 0, 0, 0, 0, 0x02,
+			0, 0, 0, 0, 0, 0, 0, 0x03,
+			0, 0, 0, 0, 0, 0, 0, 0x04,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0xFF,
+			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
+		}
+		gotBytes, err := stream.Get(offset, 56)
+		if err != nil {
+			t.Errorf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := fmt.Sprintf("%x", expectBytes), fmt.Sprintf("%x", gotBytes); expect != got {
+			t.Errorf("Expected %v, got %v", expect, got)
+		}
+	})
+}
+
 func TestTreeNodeAppendChild(t *testing.T) {
 	t.Run("no childs", func(t *testing.T) {
 		stream := createTestStream(t)
