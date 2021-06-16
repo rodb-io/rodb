@@ -32,7 +32,7 @@ func createCsvTestFile(t *testing.T, data string) (*os.File, error) {
 func TestCsvGet(t *testing.T) {
 	file, err := createCsvTestFile(t, "test1,test2\n\ntest3")
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 	defer file.Close()
 
@@ -68,10 +68,10 @@ func TestCsvGet(t *testing.T) {
 		expect := "test1"
 		row, err := csv.Get(0)
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		if result, _ := row.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 
 		// Testing if the position in the file and buffer are properly set
@@ -79,10 +79,10 @@ func TestCsvGet(t *testing.T) {
 		expect = "test3"
 		row, err = csv.Get(12)
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		if result, _ := row.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 	})
 	t.Run("parallel", func(t *testing.T) {
@@ -93,10 +93,10 @@ func TestCsvGet(t *testing.T) {
 			expect := "test3"
 			row, err := csv.Get(12)
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Errorf("Expected '%v', got '%v'", expect, result)
+				t.Fatalf("Expected '%v', got '%v'", expect, result)
 			}
 			wait.Done()
 		})()
@@ -104,10 +104,10 @@ func TestCsvGet(t *testing.T) {
 			expect := "test1"
 			row, err := csv.Get(0)
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Errorf("Expected '%v', got '%v'", expect, result)
+				t.Fatalf("Expected '%v', got '%v'", expect, result)
 			}
 			wait.Done()
 		})()
@@ -116,12 +116,12 @@ func TestCsvGet(t *testing.T) {
 	t.Run("from IterateAll", func(t *testing.T) {
 		iterator, end, err := csv.IterateAll()
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		defer func() {
 			err := end()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 		}()
 
@@ -130,7 +130,7 @@ func TestCsvGet(t *testing.T) {
 		for {
 			record, err := iterator()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if record == nil {
 				break
@@ -141,20 +141,20 @@ func TestCsvGet(t *testing.T) {
 			index++
 		}
 		if secondRow == nil {
-			t.Errorf("Expected a record, got '%v'", secondRow)
+			t.Fatalf("Expected a record, got '%v'", secondRow)
 		}
 
 		record, err := csv.Get(secondRow.Position())
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 
 		expect := "test3"
 		if result, _ := secondRow.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 		if result, _ := record.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 	})
 }
@@ -164,7 +164,7 @@ func TestCsvSize(t *testing.T) {
 		data := "Hello World!"
 		file, err := createCsvTestFile(t, data)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
@@ -192,11 +192,11 @@ func TestCsvSize(t *testing.T) {
 
 		size, err := csv.Size()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if size != int64(len(data)) {
-			t.Errorf("Expected to get a size of '%v', got '%+v'", len(data), size)
+			t.Fatalf("Expected to get a size of '%v', got '%+v'", len(data), size)
 		}
 	})
 }
@@ -244,7 +244,7 @@ func TestCsvIterateAll(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			file, err := createCsvTestFile(t, testCase.file)
 			if err != nil {
-				t.Errorf("Unexpected error: '%+v'", err)
+				t.Fatalf("Unexpected error: '%+v'", err)
 			}
 			defer file.Close()
 
@@ -276,12 +276,12 @@ func TestCsvIterateAll(t *testing.T) {
 
 			iterator, end, err := csv.IterateAll()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			defer func() {
 				err := end()
 				if err != nil {
-					t.Errorf("Expected no error, got '%v'", err)
+					t.Fatalf("Expected no error, got '%v'", err)
 				}
 			}()
 
@@ -296,18 +296,18 @@ func TestCsvIterateAll(t *testing.T) {
 					for j, k := range []string{"a", "b"} {
 						result, err := record.Get(k)
 						if err != nil {
-							t.Errorf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
+							t.Fatalf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
 							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
 						if !(result == nil && expected == nil) && result != expected {
-							t.Errorf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
+							t.Fatalf("Received '%v', expected '%v' for cell [%v][%v]", result, testCase.expectedRows[i][j], i, j)
 						}
 					}
 
 					if got, expect := record.Position(), testCase.expectedPositions[i]; got != expect {
-						t.Errorf("Got position '%v', expected '%v' for row [%v]", got, expect, i)
+						t.Fatalf("Got position '%v', expected '%v' for row [%v]", got, expect, i)
 					}
 				}
 
@@ -332,7 +332,7 @@ func TestCsvAutodetectColumns(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		file, err := createCsvTestFile(t, "test1,test2\n\ntest3,test4")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
@@ -347,50 +347,50 @@ func TestCsvAutodetectColumns(t *testing.T) {
 			1: "test2",
 		} {
 			if index >= len(csv.config.Columns) {
-				t.Errorf("Expected to have a column indexed at '%v', got nothing", index)
+				t.Fatalf("Expected to have a column indexed at '%v', got nothing", index)
 			}
 
 			column := csv.config.Columns[index]
 			if column.Name != name {
-				t.Errorf("Expected to have a column named '%v' indexed at '%v', got '%v'", name, index, column.Name)
+				t.Fatalf("Expected to have a column named '%v' indexed at '%v', got '%v'", name, index, column.Name)
 			}
 			if column.Parser != "string" {
-				t.Errorf("Expected the column indexed at '%v' to have parser '%v', got '%v'", index, "string", column.Parser)
+				t.Fatalf("Expected the column indexed at '%v' to have parser '%v', got '%v'", index, "string", column.Parser)
 			}
 
 			columnIndex, columnIndexExists := csv.config.ColumnIndexByName[name]
 			if !columnIndexExists {
-				t.Errorf("Expected to have a column indexed under the name '%v', got nothing", name)
+				t.Fatalf("Expected to have a column indexed under the name '%v', got nothing", name)
 			}
 			if columnIndex != index {
-				t.Errorf("Expected to have index '%v' for column '%v', got '%v'", index, name, columnIndex)
+				t.Fatalf("Expected to have index '%v' for column '%v', got '%v'", index, name, columnIndex)
 			}
 		}
 	})
 	t.Run("empty", func(t *testing.T) {
 		file, err := createCsvTestFile(t, "test1,,test2\n\ntest3,test4")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
 		config.Path = file.Name()
 		_, err = NewCsv(config, parsers)
 		if err == nil {
-			t.Errorf("Expected to get an error, got '%v'", err)
+			t.Fatalf("Expected to get an error, got '%v'", err)
 		}
 	})
 	t.Run("duplicate", func(t *testing.T) {
 		file, err := createCsvTestFile(t, "test1,test1\n\ntest3,test4")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
 		config.Path = file.Name()
 		_, err = NewCsv(config, parsers)
 		if err == nil {
-			t.Errorf("Expected to get an error, got '%v'", err)
+			t.Fatalf("Expected to get an error, got '%v'", err)
 		}
 	})
 }
@@ -400,7 +400,7 @@ func TestCsvOpen(t *testing.T) {
 		data := "Hello World!"
 		file, err := createCsvTestFile(t, data)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
@@ -428,21 +428,21 @@ func TestCsvOpen(t *testing.T) {
 
 		reader, _, _, file, err := csv.open()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		content, err := ioutil.ReadAll(reader)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if string(content) != data {
-			t.Errorf("Expected to receive '%v', got '%+v'", data, string(content))
+			t.Fatalf("Expected to receive '%v', got '%+v'", data, string(content))
 		}
 
 		err = file.Close()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 	})
 }

@@ -28,32 +28,32 @@ func TestCsvAll(t *testing.T) {
 		record := NewCsv(testConfig, parsers, []string{"string_a", `{"b": "string_b"}`}, 0)
 		data, err := record.All()
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 
 		if expect := "string_a"; fmt.Sprintf("%v", data["col_a"]) != expect {
-			t.Errorf("Expected to get '%v', got '%v'", expect, data["col_b"])
+			t.Fatalf("Expected to get '%v', got '%v'", expect, data["col_b"])
 		}
 
 		if expect := map[string]interface{}{"b": "string_b"}; fmt.Sprintf("%v", data["col_b"]) != fmt.Sprintf("%v", expect) {
-			t.Errorf("Expected to get '%v', got '%v'", expect, data["col_b"])
+			t.Fatalf("Expected to get '%v', got '%v'", expect, data["col_b"])
 		}
 	})
 	t.Run("error if col does not exist", func(t *testing.T) {
 		record := NewCsv(testConfig, parsers, []string{}, 0)
 		got, err := record.Get("col_0")
 		if err == nil {
-			t.Errorf("Expected error, got '%v'", got)
+			t.Fatalf("Expected error, got '%v'", got)
 		}
 	})
 	t.Run("col not found", func(t *testing.T) {
 		record := NewCsv(testConfig, parsers, []string{}, 0)
 		got, err := record.Get("col_a")
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		if got != nil {
-			t.Errorf("Expected nil, got '%v'", got)
+			t.Fatalf("Expected nil, got '%v'", got)
 		}
 	})
 }
@@ -187,16 +187,16 @@ func TestCsvGet(t *testing.T) {
 			got, err := record.Get(testCase.path)
 			if testCase.expectError {
 				if err == nil {
-					t.Errorf("Expected error, got: '%v'", err)
+					t.Fatalf("Expected error, got: '%v'", err)
 				}
 			} else {
 				if err != nil {
-					t.Errorf("Unexpected error: '%v'", err)
+					t.Fatalf("Unexpected error: '%v'", err)
 				}
 			}
 
 			if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", testCase.expectValue) {
-				t.Errorf("Expected to get '%v', got '%v'", testCase.expectValue, got)
+				t.Fatalf("Expected to get '%v', got '%v'", testCase.expectValue, got)
 			}
 		})
 	}

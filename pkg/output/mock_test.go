@@ -25,7 +25,7 @@ func TestMockExpectedPayloadType(t *testing.T) {
 		mock.MockPayloadType = &expectedPayloadType
 
 		if got := mock.ExpectedPayloadType(); *got != expectedPayloadType {
-			t.Errorf("Expected to get the payload type '%+v', got: '%+v'", expectedPayloadType, got)
+			t.Fatalf("Expected to get the payload type '%+v', got: '%+v'", expectedPayloadType, got)
 		}
 	})
 }
@@ -53,20 +53,20 @@ func TestMockHandle(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		gotData, err := ioutil.ReadAll(output)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if gotErr != nil {
-			t.Errorf("Handler sent an unexpected error: '%+v'", gotErr)
+			t.Fatalf("Handler sent an unexpected error: '%+v'", gotErr)
 		}
 
 		if string(gotData) != data {
-			t.Errorf("Expected to get the data '%+v', got: '%+v'", data, string(gotData))
+			t.Fatalf("Expected to get the data '%+v', got: '%+v'", data, string(gotData))
 		}
 	})
 	t.Run("error", func(t *testing.T) {
@@ -91,11 +91,11 @@ func TestMockHandle(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if gotErr != data {
-			t.Errorf("Expected to get the error '%+v', got: '%+v'", data, gotErr)
+			t.Fatalf("Expected to get the error '%+v', got: '%+v'", data, gotErr)
 		}
 	})
 }
@@ -107,7 +107,7 @@ func TestMockClose(t *testing.T) {
 
 		err := mock.Close()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 	})
 }

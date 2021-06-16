@@ -55,7 +55,7 @@ func TestJsonArrayHandler(t *testing.T) {
 		},
 	})
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	getResult := func(params map[string]string) ([]interface{}, error) {
@@ -91,41 +91,41 @@ func TestJsonArrayHandler(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data, err := getResult(map[string]string{})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := 4, len(data); expect != got {
-			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v' items, got '%+v'.", expect, got)
 		}
 
 		row0 := data[0].(map[string]interface{})
 		if expect, got := "1", row0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row1 := data[1].(map[string]interface{})
 		if expect, got := "2", row1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row2 := data[2].(map[string]interface{})
 		if expect, got := "3", row2["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row3 := data[3].(map[string]interface{})
 		if expect, got := "4", row3["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 		if _, exists := row3["child"]; !exists {
-			t.Errorf("Expected to get a 'child' property, got none.")
+			t.Fatalf("Expected to get a 'child' property, got none.")
 		}
 
 		row3Child := row3["child"].(map[string]interface{})
 		if expect, got := "1", row3Child["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 		if expect, got := "0", row3Child["belongs_to"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 	t.Run("filter", func(t *testing.T) {
@@ -133,25 +133,25 @@ func TestJsonArrayHandler(t *testing.T) {
 			"belongs_to_param": "1",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := 3, len(data); expect != got {
-			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v' items, got '%+v'.", expect, got)
 		}
 
 		row0 := data[0].(map[string]interface{})
 		if expect, got := "2", row0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row1 := data[1].(map[string]interface{})
 		if expect, got := "3", row1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row2 := data[2].(map[string]interface{})
 		if expect, got := "4", row2["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 	t.Run("limit", func(t *testing.T) {
@@ -159,20 +159,20 @@ func TestJsonArrayHandler(t *testing.T) {
 			"limit": "2",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := 2, len(data); expect != got {
-			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v' items, got '%+v'.", expect, got)
 		}
 
 		row0 := data[0].(map[string]interface{})
 		if expect, got := "1", row0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row1 := data[1].(map[string]interface{})
 		if expect, got := "2", row1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 	t.Run("offset", func(t *testing.T) {
@@ -180,20 +180,20 @@ func TestJsonArrayHandler(t *testing.T) {
 			"offset": "2",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := 2, len(data); expect != got {
-			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v' items, got '%+v'.", expect, got)
 		}
 
 		row0 := data[0].(map[string]interface{})
 		if expect, got := "3", row0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row1 := data[1].(map[string]interface{})
 		if expect, got := "4", row1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 	t.Run("filter+offset+limit", func(t *testing.T) {
@@ -203,20 +203,20 @@ func TestJsonArrayHandler(t *testing.T) {
 			"limit":            "2",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := 2, len(data); expect != got {
-			t.Errorf("Expected to get '%+v' items, got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v' items, got '%+v'.", expect, got)
 		}
 
 		row0 := data[0].(map[string]interface{})
 		if expect, got := "3", row0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 
 		row1 := data[1].(map[string]interface{})
 		if expect, got := "4", row1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'.", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'.", expect, got)
 		}
 	})
 }
@@ -232,18 +232,18 @@ func TestJsonArrayGetLimit(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		limit, err := jsonArray.getLimit(map[string]string{
 			"testlimit": "123",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if got, expect := limit, uint(123); got != expect {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("max", func(t *testing.T) {
@@ -256,18 +256,18 @@ func TestJsonArrayGetLimit(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		limit, err := jsonArray.getLimit(map[string]string{
 			"testlimit": "123",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if got, expect := limit, uint(50); got != expect {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("default", func(t *testing.T) {
@@ -280,16 +280,16 @@ func TestJsonArrayGetLimit(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		limit, err := jsonArray.getLimit(map[string]string{})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if got, expect := limit, uint(12); got != expect {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
@@ -302,14 +302,14 @@ func TestJsonArrayGetLimit(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		_, err = jsonArray.getLimit(map[string]string{
 			"testlimit": "-42",
 		})
 		if err == nil {
-			t.Errorf("Expected error, got nil.")
+			t.Fatalf("Expected error, got nil.")
 		}
 	})
 }
@@ -323,18 +323,18 @@ func TestJsonArrayGetOffset(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		offset, err := jsonArray.getOffset(map[string]string{
 			"testoffset": "123",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if got, expect := offset, uint(123); got != expect {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
@@ -345,14 +345,14 @@ func TestJsonArrayGetOffset(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		_, err = jsonArray.getOffset(map[string]string{
 			"testoffset": "-42",
 		})
 		if err == nil {
-			t.Errorf("Expected error, got nil.")
+			t.Fatalf("Expected error, got nil.")
 		}
 	})
 }
@@ -380,7 +380,7 @@ func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 			},
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		filters, err := jsonArray.getFiltersPerIndex(map[string]string{
@@ -389,41 +389,41 @@ func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 			"c": "val-c",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if _, exists := filters["a"]; !exists {
-			t.Errorf("Expected to have filters for index 'a'")
+			t.Fatalf("Expected to have filters for index 'a'")
 		}
 		if _, exists := filters["b"]; !exists {
-			t.Errorf("Expected to have filters for index 'b'")
+			t.Fatalf("Expected to have filters for index 'b'")
 		}
 
 		if val, _ := filters["a"]; len(val) != 2 {
-			t.Errorf("Expected to have 2 filters for index 'a', got '%v'", len(val))
+			t.Fatalf("Expected to have 2 filters for index 'a', got '%v'", len(val))
 		}
 		if val, _ := filters["b"]; len(val) != 1 {
-			t.Errorf("Expected to have 1 filter for index 'b', got '%v'", len(val))
+			t.Fatalf("Expected to have 1 filter for index 'b', got '%v'", len(val))
 		}
 
 		if _, exists := filters["a"]["a"]; !exists {
-			t.Errorf("Expected to have a filter 'a' for index 'a'")
+			t.Fatalf("Expected to have a filter 'a' for index 'a'")
 		}
 		if _, exists := filters["a"]["b"]; !exists {
-			t.Errorf("Expected to have a filter 'b' for index 'a'")
+			t.Fatalf("Expected to have a filter 'b' for index 'a'")
 		}
 		if _, exists := filters["b"]["c"]; !exists {
-			t.Errorf("Expected to have a filter 'c' for index 'b'")
+			t.Fatalf("Expected to have a filter 'c' for index 'b'")
 		}
 
 		if expect, got := "val-a", filters["a"]["a"]; got != expect {
-			t.Errorf("Expected to have value '%v' for filter 'a' of index 'a', got '%v'", expect, got)
+			t.Fatalf("Expected to have value '%v' for filter 'a' of index 'a', got '%v'", expect, got)
 		}
 		if expect, got := "prefix_val-b", filters["a"]["b"]; got != expect {
-			t.Errorf("Expected to have value '%v' for filter 'b' of index 'a', got '%v'", expect, got)
+			t.Fatalf("Expected to have value '%v' for filter 'b' of index 'a', got '%v'", expect, got)
 		}
 		if expect, got := "prefix_val-c", filters["b"]["c"]; got != expect {
-			t.Errorf("Expected to have value '%v' for filter 'c' of index 'b', got '%v'", expect, got)
+			t.Fatalf("Expected to have value '%v' for filter 'c' of index 'b', got '%v'", expect, got)
 		}
 	})
 }

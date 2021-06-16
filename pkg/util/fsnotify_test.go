@@ -15,27 +15,27 @@ func TestStartFilesystemWatchProcess(t *testing.T) {
 
 		file, err := os.Create(path + "/" + fileName)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
 		_, err = file.WriteString("initial content")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		logger := logrus.NewEntry(logrus.StandardLogger())
 
 		watcher, err := fsnotify.NewWatcher()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		StartFilesystemWatchProcess(watcher, true, logger)
 
 		err = watcher.Add(file.Name())
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		dieWaiter := &sync.WaitGroup{}
@@ -48,28 +48,28 @@ func TestStartFilesystemWatchProcess(t *testing.T) {
 		dieWaiter.Add(1)
 		_, err = file.WriteString("changed content")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		dieWaiter.Wait()
 		if dieCount <= 0 {
-			t.Errorf("Expected the process to exit, got '%v' calls to Exit", dieCount)
+			t.Fatalf("Expected the process to exit, got '%v' calls to Exit", dieCount)
 		}
 
 		err = watcher.Close()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		dieCount = 0
 		dieWaiter.Add(1)
 		_, err = file.WriteString("changed content again")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if dieCount != 0 {
-			t.Errorf("Expected the process not to exit, got '%v' calls to Exit", dieCount)
+			t.Fatalf("Expected the process not to exit, got '%v' calls to Exit", dieCount)
 		}
 	})
 }

@@ -64,7 +64,7 @@ func TestJoinPositionIterators(t *testing.T) {
 			for {
 				position, err := nextPosition()
 				if err != nil {
-					t.Errorf("Unexpected error: '%+v'", err)
+					t.Fatalf("Unexpected error: '%+v'", err)
 				}
 				if position == nil {
 					break
@@ -73,12 +73,12 @@ func TestJoinPositionIterators(t *testing.T) {
 			}
 
 			if expect, got := len(testCase.expect), len(result); got != expect {
-				t.Errorf("Expected length of '%v', got '%v'", expect, got)
+				t.Fatalf("Expected length of '%v', got '%v'", expect, got)
 			}
 
 			for i, expect := range testCase.expect {
 				if got := result[i]; got != expect {
-					t.Errorf("Expected value of '%v' at index '%v', got '%v'", expect, i, got)
+					t.Fatalf("Expected value of '%v' at index '%v', got '%v'", expect, i, got)
 				}
 			}
 		})

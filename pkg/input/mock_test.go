@@ -15,11 +15,11 @@ func TestMockGet(t *testing.T) {
 
 		record, err := mock.Get(0)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if record != expectedRecord {
-			t.Errorf("Expected %+v, got %+v", expectedRecord, record)
+			t.Fatalf("Expected %+v, got %+v", expectedRecord, record)
 		}
 	})
 }
@@ -34,11 +34,11 @@ func TestMockSize(t *testing.T) {
 
 		size, err := mock.Size()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if size != int64(len(data)) {
-			t.Errorf("Expected to get a size of '%v', got '%+v'", len(data), size)
+			t.Fatalf("Expected to get a size of '%v', got '%+v'", len(data), size)
 		}
 	})
 }
@@ -57,23 +57,23 @@ func TestMockIterateAll(t *testing.T) {
 
 		iterator, end, err := mock.IterateAll()
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		defer func() {
 			err := end()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 		}()
 
 		for i := 0; i < len(data); i++ {
 			record, err := iterator()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 
 			if record != data[i] {
-				t.Errorf("Expected %+v, got %+v", data[i], record)
+				t.Fatalf("Expected %+v, got %+v", data[i], record)
 			}
 		}
 	})

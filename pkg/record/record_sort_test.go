@@ -35,12 +35,12 @@ func TestRecordListSort(t *testing.T) {
 		})
 
 		if expect, got := 3, len(result); got != expect {
-			t.Errorf("Expected length of '%v', got '%v'", expect, got)
+			t.Fatalf("Expected length of '%v', got '%v'", expect, got)
 		}
 
 		for index, expect := range []int64{2, 1, 0} {
 			if got := result[index].Position(); got != expect {
-				t.Errorf("Expected to get the record with position = '%v' at index '%v', got '%v'", expect, index, got)
+				t.Fatalf("Expected to get the record with position = '%v' at index '%v', got '%v'", expect, index, got)
 			}
 		}
 	})

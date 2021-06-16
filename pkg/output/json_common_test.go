@@ -89,31 +89,31 @@ func TestJsonObjectGetRelationshipFiltersPerIndex(t *testing.T) {
 			"test",
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if got, exists := filtersPerIndex["a"]; !exists {
-			t.Errorf("Expected to get filters for index 'a', got '%+v'", got)
+			t.Fatalf("Expected to get filters for index 'a', got '%+v'", got)
 		}
 		if got, exists := filtersPerIndex["b"]; !exists {
-			t.Errorf("Expected to get filters for index 'b', got '%+v'", got)
+			t.Fatalf("Expected to get filters for index 'b', got '%+v'", got)
 		}
 
 		if got, expect := len(filtersPerIndex["a"]), 1; got != expect {
-			t.Errorf("Expected to get '%+v' filters for index 'a', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' filters for index 'a', got '%+v'", expect, got)
 		}
 		if got, expect := len(filtersPerIndex["b"]), 2; got != expect {
-			t.Errorf("Expected to get '%+v' filters for index 'b', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' filters for index 'b', got '%+v'", expect, got)
 		}
 
 		if got, exists := filtersPerIndex["a"]["foo"]; !exists || got != "3" {
-			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", "3", got)
+			t.Fatalf("Expected to get '%+v' value for filter, got '%+v'", "3", got)
 		}
 		if got, exists := filtersPerIndex["a"]["foo"]; !exists || got != "3" {
-			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", "3", got)
+			t.Fatalf("Expected to get '%+v' value for filter, got '%+v'", "3", got)
 		}
 		if got, exists := filtersPerIndex["b"]["bar"]; !exists || got != "1" {
-			t.Errorf("Expected to get '%+v' value for filter, got '%+v'", "1", got)
+			t.Fatalf("Expected to get '%+v' value for filter, got '%+v'", "1", got)
 		}
 	})
 }
@@ -138,35 +138,35 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 			filtersPerIndex,
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := 2, len(recordLists); got != expect {
-			t.Errorf("Expected to get '%+v' entries in the array, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' entries in the array, got '%+v'", expect, got)
 		}
 
 		// Not working, because the map does not guarantee the order
 		// if expect, got := 1, len(recordLists[0]); got != expect {
-		// 	t.Errorf("Expected to get '%+v' entries in the first array, got '%+v'", expect, got)
+		// 	t.Fatalf("Expected to get '%+v' entries in the first array, got '%+v'", expect, got)
 		// }
 		// if expect, got := 3, len(recordLists[1]); got != expect {
-		// 	t.Errorf("Expected to get '%+v' entries in the second array, got '%+v'", expect, got)
+		// 	t.Fatalf("Expected to get '%+v' entries in the second array, got '%+v'", expect, got)
 		// }
 
 		position0, err := recordLists[0]()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := int64(1), *position0; got != expect {
-			t.Errorf("Expected to get position '%+v' for the first result of the first index, got '%+v'", expect, got)
+			t.Fatalf("Expected to get position '%+v' for the first result of the first index, got '%+v'", expect, got)
 		}
 
 		position1, err := recordLists[1]()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := int64(1), *position1; got != expect {
-			t.Errorf("Expected to get position '%+v' for the first result of the second index, got '%+v'", expect, got)
+			t.Fatalf("Expected to get position '%+v' for the first result of the second index, got '%+v'", expect, got)
 		}
 	})
 	t.Run("no filters", func(t *testing.T) {
@@ -179,18 +179,18 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 			map[string]map[string]interface{}{},
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := 1, len(recordIterators); got != expect {
-			t.Errorf("Expected to get '%+v' record lists, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' record lists, got '%+v'", expect, got)
 		}
 
 		recordCount := 0
 		for {
 			position, err := recordIterators[0]()
 			if err != nil {
-				t.Errorf("Unexpected error: '%+v'", err)
+				t.Fatalf("Unexpected error: '%+v'", err)
 			}
 			if position == nil {
 				break
@@ -199,7 +199,7 @@ func TestJsonObjectGetFilteredRecordPositionsPerIndex(t *testing.T) {
 		}
 
 		if expect, got := len(jsonDataForTests.mockResults), recordCount; got != expect {
-			t.Errorf("Expected to get '%+v' records in the first list, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' records in the first list, got '%+v'", expect, got)
 		}
 	})
 }
@@ -255,55 +255,55 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 			"mock",
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := "1", data["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 
 		if got, ok := data["children"]; !ok {
-			t.Errorf("Expected to get an array, got '%+v'", got)
+			t.Fatalf("Expected to get an array, got '%+v'", got)
 		}
 		if got, ok := data["children"].([]map[string]interface{}); !ok {
-			t.Errorf("Expected to get an array, got '%+v'", got)
+			t.Fatalf("Expected to get an array, got '%+v'", got)
 		}
 
 		children := data["children"].([]map[string]interface{})
 		if expect, got := 2, len(children); expect != got {
-			t.Errorf("Expected length of '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected length of '%+v', got '%+v'", expect, got)
 		}
 
 		// The sort result is only quickly tested, because record.List.Sort is already tested
 		if expect, got := "4", children[0]["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 		if expect, got := "3", children[1]["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 
 		if got, ok := children[0]["subchild"]; !ok {
-			t.Errorf("Expected to get an object, got '%+v'", got)
+			t.Fatalf("Expected to get an object, got '%+v'", got)
 		}
 		if got, ok := children[1]["subchild"]; !ok {
-			t.Errorf("Expected to get an object, got '%+v'", got)
+			t.Fatalf("Expected to get an object, got '%+v'", got)
 		}
 
 		if got, ok := children[0]["subchild"].(map[string]interface{}); !ok {
-			t.Errorf("Expected to get an object, got '%+v'", got)
+			t.Fatalf("Expected to get an object, got '%+v'", got)
 		}
 		if got, ok := children[1]["subchild"].(map[string]interface{}); !ok {
-			t.Errorf("Expected to get an object, got '%+v'", got)
+			t.Fatalf("Expected to get an object, got '%+v'", got)
 		}
 
 		subchild0 := children[0]["subchild"].(map[string]interface{})
 		subchild1 := children[1]["subchild"].(map[string]interface{})
 
 		if expect, got := "1", subchild0["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 		if expect, got := "1", subchild1["id"]; expect != got {
-			t.Errorf("Expected to get '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v', got '%+v'", expect, got)
 		}
 	})
 }

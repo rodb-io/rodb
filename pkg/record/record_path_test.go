@@ -161,16 +161,16 @@ func TestGetSubValue(t *testing.T) {
 			got, err := getSubValue(testCase.data, testCase.path)
 			if testCase.expectError {
 				if err == nil {
-					t.Errorf("Expected error, got: '%v'", err)
+					t.Fatalf("Expected error, got: '%v'", err)
 				}
 			} else {
 				if err != nil {
-					t.Errorf("Unexpected error: '%v'", err)
+					t.Fatalf("Unexpected error: '%v'", err)
 				}
 			}
 
 			if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", testCase.expectValue) {
-				t.Errorf("Expected to get '%v', got '%v'", testCase.expectValue, got)
+				t.Fatalf("Expected to get '%v', got '%v'", testCase.expectValue, got)
 			}
 		})
 	}

@@ -19,10 +19,10 @@ func TestMockGet(t *testing.T) {
 		got, err := record.Get("col_a")
 		expect := "string"
 		if fmt.Sprintf("%v", got) != expect {
-			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 	})
 	t.Run("integer", func(t *testing.T) {
@@ -38,10 +38,10 @@ func TestMockGet(t *testing.T) {
 		got, err := record.Get("col_a")
 		expect := 42
 		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
-			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 	})
 	t.Run("float", func(t *testing.T) {
@@ -57,10 +57,10 @@ func TestMockGet(t *testing.T) {
 		got, err := record.Get("col_a")
 		expect := float64(42)
 		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
-			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 	})
 	t.Run("boolean", func(t *testing.T) {
@@ -76,10 +76,10 @@ func TestMockGet(t *testing.T) {
 		got, err := record.Get("col_a")
 		expect := false
 		if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", expect) {
-			t.Errorf("Expected to get '%v', got '%v'", expect, got)
+			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 	})
 }

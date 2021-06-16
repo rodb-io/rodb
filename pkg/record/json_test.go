@@ -14,11 +14,11 @@ func TestJsonAll(t *testing.T) {
 		record := NewJson(&config.JsonInput{}, data, 0)
 		got, err := record.All()
 		if err != nil {
-			t.Errorf("Got error: '%v'", err)
+			t.Fatalf("Got error: '%v'", err)
 		}
 
 		if expect := 123; got["test"] != expect {
-			t.Errorf("Expected to get '%v', got '%v'", expect, data["col_b"])
+			t.Fatalf("Expected to get '%v', got '%v'", expect, data["col_b"])
 		}
 	})
 }
@@ -144,16 +144,16 @@ func TestJsonGet(t *testing.T) {
 			got, err := record.Get(testCase.path)
 			if testCase.expectError {
 				if err == nil {
-					t.Errorf("Expected error, got: '%v'", err)
+					t.Fatalf("Expected error, got: '%v'", err)
 				}
 			} else {
 				if err != nil {
-					t.Errorf("Unexpected error: '%v'", err)
+					t.Fatalf("Unexpected error: '%v'", err)
 				}
 			}
 
 			if fmt.Sprintf("%v", got) != fmt.Sprintf("%v", testCase.expectValue) {
-				t.Errorf("Expected to get '%v', got '%v'", testCase.expectValue, got)
+				t.Fatalf("Expected to get '%v', got '%v'", testCase.expectValue, got)
 			}
 		})
 	}

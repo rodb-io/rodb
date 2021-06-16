@@ -23,14 +23,14 @@ func TestIntegerParse(t *testing.T) {
 			got, err := integer.Parse(value)
 			if expectedResult == nil {
 				if err == nil {
-					t.Errorf("Expected error, got '%v', '%+v'", got, err)
+					t.Fatalf("Expected error, got '%v', '%+v'", got, err)
 				}
 			} else {
 				if err != nil {
-					t.Errorf("Expected no error, got '%v'", err)
+					t.Fatalf("Expected no error, got '%v'", err)
 				}
 				if expectedResult != got {
-					t.Errorf("Expected '%+v', got '%v'", expectedResult, got)
+					t.Fatalf("Expected '%+v', got '%v'", expectedResult, got)
 				}
 			}
 		})
@@ -44,7 +44,7 @@ func TestIntegerGetRegexpPattern(t *testing.T) {
 	integer := NewInteger(config)
 	pattern, err := regexp.Compile("^" + integer.GetRegexpPattern() + "$")
 	if err != nil {
-		t.Errorf("Expected no error, got '%v'", err)
+		t.Fatalf("Expected no error, got '%v'", err)
 	}
 
 	for value, expectedResult := range map[string]interface{}{
@@ -58,7 +58,7 @@ func TestIntegerGetRegexpPattern(t *testing.T) {
 		t.Run(value, func(t *testing.T) {
 			got := pattern.MatchString(value)
 			if expectedResult != got {
-				t.Errorf("Expected '%+v', got '%v' for value '%+v'", expectedResult, got, value)
+				t.Fatalf("Expected '%+v', got '%v' for value '%+v'", expectedResult, got, value)
 			}
 		})
 	}

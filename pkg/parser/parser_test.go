@@ -31,18 +31,18 @@ func TestCompare(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := Compare(testCase.a, testCase.b)
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if testCase.expectNil {
 				if result != nil {
-					t.Errorf("Expected to get nil, got '%v'", result)
+					t.Fatalf("Expected to get nil, got '%v'", result)
 				}
 			} else {
 				if result == nil {
-					t.Errorf("Expected to get '%v', got '%v'", testCase.expectValue, result)
+					t.Fatalf("Expected to get '%v', got '%v'", testCase.expectValue, result)
 				}
 				if *result != testCase.expectValue {
-					t.Errorf("Expected to get '%v', got '%v'", testCase.expectValue, *result)
+					t.Fatalf("Expected to get '%v', got '%v'", testCase.expectValue, *result)
 				}
 			}
 		})
@@ -50,13 +50,13 @@ func TestCompare(t *testing.T) {
 	t.Run("different", func(t *testing.T) {
 		_, err := Compare(42, "test")
 		if err == nil {
-			t.Errorf("Expected error, got '%v'", err)
+			t.Fatalf("Expected error, got '%v'", err)
 		}
 	})
 	t.Run("unknown", func(t *testing.T) {
 		_, err := Compare(struct{}{}, map[string]int{})
 		if err == nil {
-			t.Errorf("Expected error, got '%v'", err)
+			t.Fatalf("Expected error, got '%v'", err)
 		}
 	})
 }

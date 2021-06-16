@@ -36,7 +36,7 @@ func TestHttp(t *testing.T) {
 	}
 	server, err := NewHttp(config, outputs)
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 	defer server.Close()
 
@@ -47,23 +47,23 @@ func TestHttp(t *testing.T) {
 
 		response, err := http.Get(server.Address() + "/foo?name=Universe")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := http.StatusOK, response.StatusCode; got != expect {
-			t.Errorf("Expected status %+v, got '%+v'", expect, got)
+			t.Fatalf("Expected status %+v, got '%+v'", expect, got)
 		}
 
 		body, err := ioutil.ReadAll(response.Body)
 		defer response.Body.Close()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if got, expect := string(body), "Hello Universe!"; got != expect {
-			t.Errorf("Expected body '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected body '%+v', got '%+v'", expect, got)
 		}
 		if got, expect := response.Header.Get("Content-Type"), "text/plain"; !strings.HasPrefix(got, expect) {
-			t.Errorf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("404", func(t *testing.T) {
@@ -73,30 +73,30 @@ func TestHttp(t *testing.T) {
 
 		response, err := http.Get(server.Address() + "/foo")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := http.StatusNotFound, response.StatusCode; got != expect {
-			t.Errorf("Expected status '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected status '%+v', got '%+v'", expect, got)
 		}
 		if got, expect := response.Header.Get("Content-Type"), "application/json"; !strings.HasPrefix(got, expect) {
-			t.Errorf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected Content-Type starting with '%+v', got '%+v'", expect, got)
 		}
 
 		body, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		jsonBody := map[string]string{}
 		err = json.Unmarshal(body, &jsonBody)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		errorValue, errorValueExists := jsonBody["error"]
 		if !errorValueExists {
-			t.Errorf("Expected to have an 'error' key, got '%+v'", errorValue)
+			t.Fatalf("Expected to have an 'error' key, got '%+v'", errorValue)
 		}
 	})
 }
@@ -130,17 +130,17 @@ func TestHttpOutputList(t *testing.T) {
 	})
 	defer server.Close()
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	if expect, got := 2, len(server.routes); got != expect {
-		t.Errorf("Expected the server to hande %v routes, got %v", expect, got)
+		t.Fatalf("Expected the server to hande %v routes, got %v", expect, got)
 	}
 	if expect, got := outputFoo, server.routes[0].output; got != expect {
-		t.Errorf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
+		t.Fatalf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
 	}
 	if expect, got := outputBaz, server.routes[1].output; got != expect {
-		t.Errorf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
+		t.Fatalf("Expected the first route to be '%+v' routes, got '%+v'", expect, got)
 	}
 }
 
@@ -152,21 +152,21 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 	getFooOutput.MockPayloadType = nil
 	getFooRegexp, err := regexp.Compile("^/foo$")
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	postBarOutput := outputModule.NewMock(parser)
 	postBarOutput.MockPayloadType = &payloadType
 	postBarRegexp, err := regexp.Compile("^/bar$")
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	getBarOutput := outputModule.NewMock(parser)
 	getBarOutput.MockPayloadType = nil
 	getBarRegexp, err := regexp.Compile("^/bar$")
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	server := &Http{
@@ -188,7 +188,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 
 	requestUrl, err := url.Parse("/bar")
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
 	t.Run("get", func(t *testing.T) {
@@ -198,7 +198,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			URL:    requestUrl,
 		}).output
 		if got != expect {
-			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("post", func(t *testing.T) {
@@ -211,7 +211,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			Header: requestHeader,
 		}).output
 		if got != expect {
-			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 	t.Run("wrong", func(t *testing.T) {
@@ -224,7 +224,7 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 			Header: requestHeader,
 		})
 		if got != expect {
-			t.Errorf("Expected to get route '%+v', got '%+v'", expect, got)
+			t.Fatalf("Expected to get route '%+v', got '%+v'", expect, got)
 		}
 	})
 }
@@ -233,12 +233,12 @@ func TestHttpGetParams(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		url, err := url.Parse("/foo/42/bar?id=wrong&foo=bar&baz=")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		regexp, err := regexp.Compile("/foo/(?P<id>[0-9]+)/bar")
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		route := &httpRoute{
@@ -250,13 +250,13 @@ func TestHttpGetParams(t *testing.T) {
 		params := server.getParams(route, url)
 
 		if got := params["id"]; got != "42" {
-			t.Errorf("Expected param 'id' to be '42', got '%+v'", got)
+			t.Fatalf("Expected param 'id' to be '42', got '%+v'", got)
 		}
 		if got := params["foo"]; got != "bar" {
-			t.Errorf("Expected param 'foo' to be 'bar', got '%+v'", got)
+			t.Fatalf("Expected param 'foo' to be 'bar', got '%+v'", got)
 		}
 		if got := params["baz"]; got != "" {
-			t.Errorf("Expected param 'baz' to be '', got '%+v'", got)
+			t.Fatalf("Expected param 'baz' to be '', got '%+v'", got)
 		}
 	})
 }
@@ -275,10 +275,10 @@ func TestHttpGetPayload(t *testing.T) {
 
 		payload, err := server.getPayload(&httpRoute{output: output}, body)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if string(payload) != data {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 	})
 	t.Run("no expected payload", func(t *testing.T) {
@@ -290,10 +290,10 @@ func TestHttpGetPayload(t *testing.T) {
 
 		payload, err := server.getPayload(&httpRoute{output: output}, nil)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if len(payload) > 0 {
-			t.Errorf("Unexpected payload: '%+v'. Expected nil", err)
+			t.Fatalf("Unexpected payload: '%+v'. Expected nil", err)
 		}
 	})
 }
@@ -308,32 +308,32 @@ func TestHttpCreatePathRegexp(t *testing.T) {
 			Path: "/foo/{foo_id}/bar-{bar}-id",
 		}, output)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := 2, len(params); got != expect {
-			t.Errorf("Expected to get %v parameters, got %+v", expect, got)
+			t.Fatalf("Expected to get %v parameters, got %+v", expect, got)
 		}
 		if expect, got := "foo_id", params[0]; got != expect {
-			t.Errorf("Expected to get '%v' as a first parameter, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%v' as a first parameter, got '%+v'", expect, got)
 		}
 		if expect, got := "bar", params[1]; got != expect {
-			t.Errorf("Expected to get '%+v' as a second parameter, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' as a second parameter, got '%+v'", expect, got)
 		}
 
 		testPath := "/foo/42/bar-test-id"
 		if !regexp.MatchString(testPath) {
-			t.Errorf("Expected the regexp to match the path '%+v'", testPath)
+			t.Fatalf("Expected the regexp to match the path '%+v'", testPath)
 		}
 		matches := regexp.FindStringSubmatch(testPath)
 		if expect, got := 3, len(matches); got != expect {
-			t.Errorf("Expected to get %v match results, got %+v", expect, got)
+			t.Fatalf("Expected to get %v match results, got %+v", expect, got)
 		}
 		if expect, got := "42", matches[1]; got != expect {
-			t.Errorf("Expected to get '%v' as a second match, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%v' as a second match, got '%+v'", expect, got)
 		}
 		if expect, got := "test", matches[2]; got != expect {
-			t.Errorf("Expected to get '%+v' as a third match, got '%+v'", expect, got)
+			t.Fatalf("Expected to get '%+v' as a third match, got '%+v'", expect, got)
 		}
 	})
 	t.Run("no params", func(t *testing.T) {
@@ -345,16 +345,16 @@ func TestHttpCreatePathRegexp(t *testing.T) {
 			Path: "/foo",
 		}, output)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if expect, got := 0, len(params); got != expect {
-			t.Errorf("Expected to get %v parameters, got %+v", expect, got)
+			t.Fatalf("Expected to get %v parameters, got %+v", expect, got)
 		}
 
 		testPath := "/foo"
 		if !regexp.MatchString(testPath) {
-			t.Errorf("Expected the regexp to match the path '%+v'", testPath)
+			t.Fatalf("Expected the regexp to match the path '%+v'", testPath)
 		}
 	})
 }

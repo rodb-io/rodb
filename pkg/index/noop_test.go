@@ -59,14 +59,14 @@ func TestNoopGetRecordPositions(t *testing.T) {
 				"col2": "col2_a",
 			})
 			if err != nil {
-				t.Errorf("Expected no error, got %v", err)
+				t.Fatalf("Expected no error, got %v", err)
 			}
 
 			positions := make([]record.Position, 0)
 			for {
 				position, err := nextPosition()
 				if err != nil {
-					t.Errorf("Expected no error, got %v", err)
+					t.Fatalf("Expected no error, got %v", err)
 				}
 				if position == nil {
 					break
@@ -75,12 +75,12 @@ func TestNoopGetRecordPositions(t *testing.T) {
 			}
 
 			if got, expect := len(positions), testCase.expectedLength; got != expect {
-				t.Errorf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
+				t.Fatalf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
 			}
 
 			for i, position := range testCase.expectedResults {
 				if position != positions[i] {
-					t.Errorf("Expected position %v at index %v, got %v", position, i, positions[i])
+					t.Fatalf("Expected position %v at index %v, got %v", position, i, positions[i])
 				}
 			}
 		}
@@ -90,12 +90,12 @@ func TestNoopGetRecordPositions(t *testing.T) {
 			"wrong_col": "",
 		})
 		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
+			t.Fatalf("Expected no error, got %v", err)
 		}
 
 		_, err = nextPosition()
 		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
+			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 }

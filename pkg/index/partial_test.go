@@ -26,7 +26,7 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 
 			currentPosition, err = currentPosition.NextPosition()
 			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
+				t.Fatalf("Unexpected error: %v", err)
 			}
 		}
 
@@ -39,18 +39,18 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 	stringify = func(prefix string, node *partial.TreeNode) {
 		child, err := node.FirstChild()
 		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
+			t.Fatalf("Unexpected error: %v", err)
 		}
 
 		for child != nil {
 			firstPosition, err := child.FirstPosition()
 			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
+				t.Fatalf("Unexpected error: %v", err)
 			}
 
 			value, err := child.Value()
 			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
+				t.Fatalf("Unexpected error: %v", err)
 			}
 
 			positions := positionsToString(firstPosition)
@@ -60,7 +60,7 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 
 			child, err = child.NextSibling()
 			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
+				t.Fatalf("Unexpected error: %v", err)
 			}
 		}
 	}
@@ -94,7 +94,7 @@ func TestPartial(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
+			t.Fatalf("Unexpected error: %v", err)
 		}
 
 		expect := strings.Join([]string{
@@ -123,7 +123,7 @@ func TestPartial(t *testing.T) {
 		}, "\n")
 		got := stringifyPartialTree(t, index.index["col"])
 		if got != expect {
-			t.Errorf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
+			t.Fatalf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
 	})
 }
@@ -206,14 +206,14 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		} {
 			nextPosition, err := index.GetRecordPositions(mockInput, testCase.filters)
 			if err != nil {
-				t.Errorf("Expected no error, got %v", err)
+				t.Fatalf("Expected no error, got %v", err)
 			}
 
 			positions := make([]record.Position, 0)
 			for {
 				position, err := nextPosition()
 				if err != nil {
-					t.Errorf("Expected no error, got %v", err)
+					t.Fatalf("Expected no error, got %v", err)
 				}
 				if position == nil {
 					break
@@ -222,12 +222,12 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			}
 
 			if got, expect := len(positions), testCase.expectedLength; got != expect {
-				t.Errorf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
+				t.Fatalf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
 			}
 
 			for i, position := range testCase.expectedResults {
 				if position != positions[i] {
-					t.Errorf("Expected position %v at index %v, got %v", position, i, positions[i])
+					t.Fatalf("Expected position %v at index %v, got %v", position, i, positions[i])
 				}
 			}
 		}
@@ -236,7 +236,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		mockInput, index := createTestData()
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{})
 		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
+			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 	t.Run("wrong property", func(t *testing.T) {
@@ -245,7 +245,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			"wrong_col": "",
 		})
 		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
+			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 
@@ -279,17 +279,17 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			"col": "ané",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 		recordPosition, err := iterator()
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 		if recordPosition == nil {
-			t.Errorf("Expected to get one record, got %v", recordPosition)
+			t.Fatalf("Expected to get one record, got %v", recordPosition)
 		}
 		if *recordPosition != 42 {
-			t.Errorf("Expected to get record 42, got %v", recordPosition)
+			t.Fatalf("Expected to get record 42, got %v", recordPosition)
 		}
 	})
 	t.Run("IgnoreCase is true, search upper case", func(t *testing.T) {
@@ -298,17 +298,17 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			"col": "ANÉ",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 		recordPosition, err := iterator()
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 		if recordPosition == nil {
-			t.Errorf("Expected to get one record, got %v", recordPosition)
+			t.Fatalf("Expected to get one record, got %v", recordPosition)
 		}
 		if *recordPosition != 42 {
-			t.Errorf("Expected to get record 42, got %v", recordPosition)
+			t.Fatalf("Expected to get record 42, got %v", recordPosition)
 		}
 	})
 	t.Run("IgnoreCase is false, search lower case", func(t *testing.T) {
@@ -318,16 +318,16 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			"col": "ané",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 
 		recordPosition, err := iterator()
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 
 		if recordPosition != nil {
-			t.Errorf("Expected not to get a record, got %v", recordPosition)
+			t.Fatalf("Expected not to get a record, got %v", recordPosition)
 		}
 	})
 	t.Run("IgnoreCase is false, search upper case", func(t *testing.T) {
@@ -337,19 +337,19 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			"col": "ANÉ",
 		})
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 
 		recordPosition, err := iterator()
 		if err != nil {
-			t.Errorf("Unexpected error, got %v", err)
+			t.Fatalf("Unexpected error, got %v", err)
 		}
 
 		if recordPosition == nil {
-			t.Errorf("Expected to get one record, got %v", recordPosition)
+			t.Fatalf("Expected to get one record, got %v", recordPosition)
 		}
 		if *recordPosition != 42 {
-			t.Errorf("Expected to get record 42, got %v", recordPosition)
+			t.Fatalf("Expected to get record 42, got %v", recordPosition)
 		}
 	})
 }

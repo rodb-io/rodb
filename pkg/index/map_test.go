@@ -49,7 +49,7 @@ func TestMap(t *testing.T) {
 		} {
 			for key, expected := range expectedValues {
 				if got := len(index.index[col][key]); got != expected {
-					t.Errorf("Expected to have %v indexed value for '%v', got %v", expected, key, got)
+					t.Fatalf("Expected to have %v indexed value for '%v', got %v", expected, key, got)
 				}
 			}
 		}
@@ -66,7 +66,7 @@ func TestMap(t *testing.T) {
 			for key, expected := range expectedPositions {
 				for indexOfExpectation, expectedPosition := range expected {
 					if got := index.index[col][key][indexOfExpectation]; got != expectedPosition {
-						t.Errorf("Expected to have position %v indexed for value '%v'[%v], got %v", expectedPosition, key, indexOfExpectation, got)
+						t.Fatalf("Expected to have position %v indexed for value '%v'[%v], got %v", expectedPosition, key, indexOfExpectation, got)
 					}
 				}
 			}
@@ -141,14 +141,14 @@ func TestMapGetRecordPositions(t *testing.T) {
 		} {
 			nextPosition, err := index.GetRecordPositions(mockInput, testCase.filters)
 			if err != nil {
-				t.Errorf("Expected no error, got %v", err)
+				t.Fatalf("Expected no error, got %v", err)
 			}
 
 			positions := make([]record.Position, 0)
 			for {
 				position, err := nextPosition()
 				if err != nil {
-					t.Errorf("Expected no error, got %v", err)
+					t.Fatalf("Expected no error, got %v", err)
 				}
 				if position == nil {
 					break
@@ -157,12 +157,12 @@ func TestMapGetRecordPositions(t *testing.T) {
 			}
 
 			if got, expect := len(positions), testCase.expectedLength; got != expect {
-				t.Errorf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
+				t.Fatalf("Expected %v positions, got %v, testCase: %+v", expect, got, testCase)
 			}
 
 			for i, position := range testCase.expectedResults {
 				if position != positions[i] {
-					t.Errorf("Expected position %v at index %v, got %v", position, i, positions[i])
+					t.Fatalf("Expected position %v at index %v, got %v", position, i, positions[i])
 				}
 			}
 		}
@@ -170,7 +170,7 @@ func TestMapGetRecordPositions(t *testing.T) {
 	t.Run("no filters", func(t *testing.T) {
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{})
 		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
+			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 	t.Run("wrong property", func(t *testing.T) {
@@ -178,7 +178,7 @@ func TestMapGetRecordPositions(t *testing.T) {
 			"wrong_col": "",
 		})
 		if err == nil {
-			t.Errorf("Expected an error, got %v", err)
+			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 }

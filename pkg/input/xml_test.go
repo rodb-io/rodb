@@ -38,7 +38,7 @@ func TestXmlGet(t *testing.T) {
 		</root>
 	`)
 	if err != nil {
-		t.Errorf("Unexpected error: '%+v'", err)
+		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 	defer file.Close()
 
@@ -74,30 +74,30 @@ func TestXmlGet(t *testing.T) {
 		// Testing a normal read
 		row, err := xml.Get(13)
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		expect := "a0"
 		if result, _ := row.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 		expect = "b0"
 		if result, _ := row.Get("b"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 
 		// Testing if the position in the file and buffer are properly set
 		// when it has already been used once
 		row, err = xml.Get(46)
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		expect = "a1"
 		if result, _ := row.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 		expect = "b1"
 		if result, _ := row.Get("b"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 	})
 	t.Run("parallel", func(t *testing.T) {
@@ -108,10 +108,10 @@ func TestXmlGet(t *testing.T) {
 			expect := "a1"
 			row, err := xml.Get(46)
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Errorf("Expected '%v', got '%v'", expect, result)
+				t.Fatalf("Expected '%v', got '%v'", expect, result)
 			}
 			wait.Done()
 		})()
@@ -119,10 +119,10 @@ func TestXmlGet(t *testing.T) {
 			expect := "a0"
 			row, err := xml.Get(13)
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Errorf("Expected '%v', got '%v'", expect, result)
+				t.Fatalf("Expected '%v', got '%v'", expect, result)
 			}
 			wait.Done()
 		})()
@@ -131,12 +131,12 @@ func TestXmlGet(t *testing.T) {
 	t.Run("from IterateAll", func(t *testing.T) {
 		iterator, end, err := xml.IterateAll()
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		defer func() {
 			err := end()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 		}()
 
@@ -145,7 +145,7 @@ func TestXmlGet(t *testing.T) {
 		for {
 			record, err := iterator()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			if record == nil {
 				break
@@ -157,20 +157,20 @@ func TestXmlGet(t *testing.T) {
 			index++
 		}
 		if secondRow == nil {
-			t.Errorf("Expected a record, got '%v'", secondRow)
+			t.Fatalf("Expected a record, got '%v'", secondRow)
 		}
 
 		record, err := xml.Get(secondRow.Position())
 		if err != nil {
-			t.Errorf("Expected no error, got '%v'", err)
+			t.Fatalf("Expected no error, got '%v'", err)
 		}
 
 		expect := "a1"
 		if result, _ := secondRow.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 		if result, _ := record.Get("a"); result != expect {
-			t.Errorf("Expected '%v', got '%v'", expect, result)
+			t.Fatalf("Expected '%v', got '%v'", expect, result)
 		}
 	})
 }
@@ -180,7 +180,7 @@ func TestXmlSize(t *testing.T) {
 		data := "Hello World!"
 		file, err := createXmlTestFile(t, data)
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		defer file.Close()
 
@@ -202,11 +202,11 @@ func TestXmlSize(t *testing.T) {
 
 		size, err := xml.Size()
 		if err != nil {
-			t.Errorf("Unexpected error: '%+v'", err)
+			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		if size != int64(len(data)) {
-			t.Errorf("Expected to get a size of '%v', got '%+v'", len(data), size)
+			t.Fatalf("Expected to get a size of '%v', got '%+v'", len(data), size)
 		}
 	})
 }
@@ -249,7 +249,7 @@ func TestXmlIterateAll(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			file, err := createXmlTestFile(t, testCase.file)
 			if err != nil {
-				t.Errorf("Unexpected error: '%+v'", err)
+				t.Fatalf("Unexpected error: '%+v'", err)
 			}
 			defer file.Close()
 
@@ -282,12 +282,12 @@ func TestXmlIterateAll(t *testing.T) {
 
 			iterator, end, err := xml.IterateAll()
 			if err != nil {
-				t.Errorf("Expected no error, got '%v'", err)
+				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			defer func() {
 				err := end()
 				if err != nil {
-					t.Errorf("Expected no error, got '%v'", err)
+					t.Fatalf("Expected no error, got '%v'", err)
 				}
 			}()
 
@@ -302,18 +302,18 @@ func TestXmlIterateAll(t *testing.T) {
 					for j, k := range []string{"a", "b"} {
 						result, err := record.Get(k)
 						if err != nil {
-							t.Errorf("Got error '%v', expected '%v' for record %v, property number %v", err, testCase.expectedRows[i][j], i, j)
+							t.Fatalf("Got error '%v', expected '%v' for record %v, property number %v", err, testCase.expectedRows[i][j], i, j)
 							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
 						if !(result == nil && expected == nil) && result != expected {
-							t.Errorf("Received '%v', expected '%v' for record %v, property number %v", result, testCase.expectedRows[i][j], i, j)
+							t.Fatalf("Received '%v', expected '%v' for record %v, property number %v", result, testCase.expectedRows[i][j], i, j)
 						}
 					}
 
 					if got, expect := record.Position(), testCase.expectedPositions[i]; got != expect {
-						t.Errorf("Got position '%v', expected '%v' for record %v", got, expect, i)
+						t.Fatalf("Got position '%v', expected '%v' for record %v", got, expect, i)
 					}
 				}
 
