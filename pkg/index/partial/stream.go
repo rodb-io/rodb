@@ -2,21 +2,16 @@ package partial
 
 import (
 	"fmt"
-	"io"
+	"os"
 )
 
-type ReaderAtWriterAt interface {
-	io.ReaderAt
-	io.WriterAt
-}
-
 type Stream struct {
-	stream     ReaderAtWriterAt
+	stream     *os.File
 	streamSize int64
 }
 
 func NewStream(
-	stream ReaderAtWriterAt,
+	stream *os.File,
 	streamSize int64,
 ) *Stream {
 	return &Stream{
