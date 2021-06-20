@@ -10,7 +10,7 @@ import (
 )
 
 // Current version of the indexing protocol
-const CurrentVersion = 1
+const CurrentVersion = uint16(1)
 
 // Default magic bytes
 const ExpectedMagicBytes = "RODB/INDEX/PARTIAL"
