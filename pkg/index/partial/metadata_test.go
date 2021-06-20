@@ -82,8 +82,7 @@ func TestMetadataNewMetadata(t *testing.T) {
 func TestMetadataLoadMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		stream := createTestStream(t)
-		_, err := stream.Add(append([]byte(ExpectedMagicBytes), []byte{
-			0x41, 0x42, 0x43, // magicBytes
+		err := stream.Replace(0, append([]byte(ExpectedMagicBytes), []byte{
 			0, 0x1, // version
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
@@ -92,7 +91,7 @@ func TestMetadataLoadMetadata(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsets[2]
-		}...)
+		}...))
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -171,8 +170,7 @@ func TestMetadataUnserialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		metadata := Metadata{}
 
-		err := metadata.Unserialize(bytes.NewReader([]byte{
-			0x41, 0x42, 0x43, // magicBytes
+		err := metadata.Unserialize(bytes.NewReader(append([]byte(ExpectedMagicBytes), []byte{
 			0, 0x1, // version
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
@@ -181,12 +179,12 @@ func TestMetadataUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsets[2]
-		}))
+		}...)))
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		if expect, got := "ABC", string(metadata.magicBytes); expect != got {
+		if expect, got := ExpectedMagicBytes, string(metadata.magicBytes); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 		if expect, got := uint16(1), metadata.version; expect != got {
@@ -216,25 +214,25 @@ func TestMetadataUnserialize(t *testing.T) {
 		}
 	})
 	t.Run("from serialize", func(t *testing.T) {
-		serialized, err := Metadata{
-			magicBytes:                []byte("ABC"),
+		serialized, err := (&Metadata{
+			magicBytes:                []byte(ExpectedMagicBytes),
 			version:                   1,
 			inputFileModificationTime: time.Unix(1234, 0),
 			inputFileSize:             42,
 			ignoreCase:                true,
 			rootNodeOffsets:           []TreeNodeOffset{1, 2, 3},
-		}.Serialize()
+		}).Serialize()
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
 		metadata := Metadata{}
-		err := metadata.Unserialize(bytes.NewReader(serialized))
+		err = metadata.Unserialize(bytes.NewReader(serialized))
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		if expect, got := "ABC", string(metadata.magicBytes); expect != got {
+		if expect, got := ExpectedMagicBytes, string(metadata.magicBytes); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 		if expect, got := uint16(1), metadata.version; expect != got {

@@ -1,6 +1,7 @@
 package input
 
 import (
+	"fmt"
 	"github.com/antchfx/xpath"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -8,7 +9,6 @@ import (
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
-	"sync"
 	"testing"
 )
 
@@ -102,31 +102,52 @@ func TestXmlGet(t *testing.T) {
 	})
 	t.Run("parallel", func(t *testing.T) {
 		// Executing two read operations in parallel to test the safety
-		wait := sync.WaitGroup{}
-		wait.Add(2)
+		errorMessages1 := make(chan string)
+		errorMessages2 := make(chan string)
+
 		go (func() {
 			expect := "a1"
 			row, err := xml.Get(46)
 			if err != nil {
-				t.Fatalf("Expected no error, got '%v'", err)
+				errorMessages1 <- fmt.Sprintf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Fatalf("Expected '%v', got '%v'", expect, result)
+				errorMessages1 <- fmt.Sprintf("Expected '%v', got '%v'", expect, result)
 			}
-			wait.Done()
+			close(errorMessages1)
 		})()
 		go (func() {
 			expect := "a0"
 			row, err := xml.Get(13)
 			if err != nil {
-				t.Fatalf("Expected no error, got '%v'", err)
+				errorMessages2 <- fmt.Sprintf("Expected no error, got '%v'", err)
 			}
 			if result, _ := row.Get("a"); result != expect {
-				t.Fatalf("Expected '%v', got '%v'", expect, result)
+				errorMessages2 <- fmt.Sprintf("Expected '%v', got '%v'", expect, result)
 			}
-			wait.Done()
+			close(errorMessages2)
 		})()
-		wait.Wait()
+
+		for {
+			select {
+			case errorMessage, ok := <-errorMessages1:
+				if ok {
+					t.Fatal(errorMessage)
+				} else {
+					errorMessages1 = nil
+				}
+			case errorMessage, ok := <-errorMessages2:
+				if ok {
+					t.Fatal(errorMessage)
+				} else {
+					errorMessages2 = nil
+				}
+			}
+
+			if errorMessages1 == nil && errorMessages2 == nil {
+				break
+			}
+		}
 	})
 	t.Run("from IterateAll", func(t *testing.T) {
 		iterator, end, err := xml.IterateAll()

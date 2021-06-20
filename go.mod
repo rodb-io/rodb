@@ -1,6 +1,6 @@
 module rodb.io
 
-go 1.15
+go 1.16
 
 require (
 	github.com/antchfx/xmlquery v1.3.6

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM golang:1.15-alpine as builder
+FROM golang:1.16-alpine as builder
 
 ENV GOPATH=/go
 ENV GOCACHE=/gocache
