@@ -2,7 +2,7 @@ package index
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/index/partial"
@@ -32,9 +32,19 @@ func NewPartial(
 		input:  input,
 	}
 
-	err := partialIndex.Reindex()
-	if err != nil {
+	_, err := os.Stat(partialIndex.config.Path)
+	if os.IsNotExist(err) {
+		err = partialIndex.createIndex()
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
+	} else {
+		err = partialIndex.loadIndex()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return partialIndex, nil
@@ -44,28 +54,41 @@ func (partialIndex *Partial) Name() string {
 	return partialIndex.config.Name
 }
 
-func (partialIndex *Partial) Reindex() error {
-	indexFile, err := ioutil.TempFile("/", "test-index")
+func (partialIndex *Partial) createIndex() error {
+	indexFile, err := os.Create(partialIndex.config.Path)
 	if err != nil {
 		return err
 	}
 
 	indexStream := partial.NewStream(indexFile, 0)
 
-	// Adding a dummy byte for now, because the process uses zero-values
-	// instead of nil, so an object at offset 0 would cause issues.
-	// In the future, we will have header bytes, so this won't be an issue.
-	_, err = indexStream.Add([]byte{0})
+	inputFileStats, err := partialIndex.input.Stat()
+	if err != nil {
+		return err
+	}
+
+	metadata, err := partial.NewMetadata(indexStream, partial.MetadataInput{
+		InputFileStats: inputFileStats,
+		IgnoreCase:     *partialIndex.config.IgnoreCase,
+		RootNodesCount: len(partialIndex.config.Properties),
+	})
 	if err != nil {
 		return err
 	}
 
 	index := make(map[string]*partial.TreeNode)
-	for _, property := range partialIndex.config.Properties {
+	for propertyIndex, property := range partialIndex.config.Properties {
 		index[property], err = partial.NewEmptyTreeNode(indexStream)
 		if err != nil {
 			return err
 		}
+
+		metadata.SetRootNode(propertyIndex, index[property])
+	}
+
+	err = metadata.Save()
+	if err != nil {
+		return err
 	}
 
 	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
@@ -122,6 +145,51 @@ func (partialIndex *Partial) Reindex() error {
 	}
 
 	partialIndex.config.Logger.WithField("indexSize", indexStat.Size()).Infof("Successfully finished indexing")
+
+	return nil
+}
+
+func (partialIndex *Partial) loadIndex() error {
+	indexFile, err := os.Open(partialIndex.config.Path)
+	if err != nil {
+		return err
+	}
+
+	indexFileStat, err := indexFile.Stat()
+	if err != nil {
+		return err
+	}
+
+	indexStream := partial.NewStream(indexFile, indexFileStat.Size())
+
+	inputFileStats, err := partialIndex.input.Stat()
+	if err != nil {
+		return err
+	}
+
+	metadata, err := partial.LoadMetadata(indexStream)
+	if err != nil {
+		return err
+	}
+
+	err = metadata.AssertValid(partial.MetadataInput{
+		InputFileStats: inputFileStats,
+		IgnoreCase:     *partialIndex.config.IgnoreCase,
+		RootNodesCount: len(partialIndex.config.Properties),
+	})
+	if err != nil {
+		return err
+	}
+
+	index := make(map[string]*partial.TreeNode)
+	for propertyIndex, property := range partialIndex.config.Properties {
+		index[property], err = metadata.GetRootNode(propertyIndex)
+		if err != nil {
+			return err
+		}
+	}
+
+	partialIndex.config.Logger.Infof("Successfully loaded index")
 
 	return nil
 }

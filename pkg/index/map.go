@@ -33,7 +33,7 @@ func NewMap(
 		input:  input,
 	}
 
-	err := mapIndex.Reindex()
+	err := mapIndex.reindex()
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (mapIndex *Map) Name() string {
 	return mapIndex.config.Name
 }
 
-func (mapIndex *Map) Reindex() error {
+func (mapIndex *Map) reindex() error {
 	index := make(map[string]mapPropertyIndex)
 	for _, property := range mapIndex.config.Properties {
 		index[property] = make(mapPropertyIndex)

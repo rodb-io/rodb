@@ -68,8 +68,12 @@ func LoadMetadata(stream *Stream) (*Metadata, error) {
 	return metadata, nil
 }
 
-func (metadata *Metadata) SetRootNodeOffset(index int, offset TreeNodeOffset) {
-	metadata.rootNodeOffsets[index] = offset
+func (metadata *Metadata) SetRootNode(index int, node *TreeNode) {
+	metadata.rootNodeOffsets[index] = node.offset
+}
+
+func (metadata *Metadata) GetRootNode(index int) (*TreeNode, error) {
+	return GetTreeNode(metadata.stream, metadata.rootNodeOffsets[index])
 }
 
 func (metadata *Metadata) Serialize() ([]byte, error) {
