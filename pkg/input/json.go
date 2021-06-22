@@ -10,6 +10,7 @@ import (
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
+	"time"
 )
 
 type Json struct {
@@ -96,6 +97,15 @@ func (jsonInput *Json) Size() (int64, error) {
 	}
 
 	return fileInfo.Size(), nil
+}
+
+func (jsonInput *Json) ModTime() (time.Time, error) {
+	fileInfo, err := os.Stat(jsonInput.config.Path)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return fileInfo.ModTime(), nil
 }
 
 func (jsonInput *Json) open() (io.ReadSeeker, *os.File, error) {

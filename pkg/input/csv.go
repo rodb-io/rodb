@@ -13,6 +13,7 @@ import (
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
+	"time"
 )
 
 type Csv struct {
@@ -122,6 +123,15 @@ func (csvInput *Csv) Size() (int64, error) {
 	}
 
 	return fileInfo.Size(), nil
+}
+
+func (csvInput *Csv) ModTime() (time.Time, error) {
+	fileInfo, err := os.Stat(csvInput.config.Path)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return fileInfo.ModTime(), nil
 }
 
 func (csvInput *Csv) autodetectColumns() error {

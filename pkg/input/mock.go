@@ -4,6 +4,7 @@ import (
 	"errors"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
+	"time"
 )
 
 type Mock struct {
@@ -34,6 +35,10 @@ func (mock *Mock) Get(position record.Position) (record.Record, error) {
 
 func (mock *Mock) Size() (int64, error) {
 	return int64(len(mock.data)), nil
+}
+
+func (mock *Mock) ModTime() (time.Time, error) {
+	return time.Unix(0, 0), nil
 }
 
 func (mock *Mock) IterateAll() (record.Iterator, func() error, error) {

@@ -13,6 +13,7 @@ import (
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
+	"time"
 )
 
 var xmlParserOptions = xmlquery.ParserOptions{
@@ -120,6 +121,15 @@ func (xmlInput *Xml) Size() (int64, error) {
 	}
 
 	return fileInfo.Size(), nil
+}
+
+func (xmlInput *Xml) ModTime() (time.Time, error) {
+	fileInfo, err := os.Stat(xmlInput.config.Path)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return fileInfo.ModTime(), nil
 }
 
 func (xmlInput *Xml) IterateAll() (record.Iterator, func() error, error) {

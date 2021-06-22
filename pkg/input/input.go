@@ -5,12 +5,14 @@ import (
 	configModule "rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
+	"time"
 )
 
 type Input interface {
 	Name() string
 	Get(position record.Position) (record.Record, error)
 	Size() (int64, error)
+	ModTime() (time.Time, error)
 
 	// Iterates all the records in the input, ordered
 	// from the smallest to the biggest position
