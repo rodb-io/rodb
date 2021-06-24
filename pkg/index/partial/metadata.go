@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"os"
+	"rodb.io/pkg/input"
 	"time"
 )
 
@@ -26,18 +26,28 @@ type Metadata struct {
 }
 
 type MetadataInput struct {
-	InputFileStats os.FileInfo
+	Input          input.Input
 	IgnoreCase     bool
 	RootNodesCount int
 }
 
 func NewMetadata(stream *Stream, input MetadataInput) (*Metadata, error) {
+	size, err := input.Input.Size()
+	if err != nil {
+		return nil, err
+	}
+
+	modTime, err := input.Input.ModTime()
+	if err != nil {
+		return nil, err
+	}
+
 	metadata := &Metadata{
 		stream:                    stream,
 		magicBytes:                []byte(ExpectedMagicBytes),
 		version:                   CurrentVersion,
-		inputFileModificationTime: input.InputFileStats.ModTime(),
-		inputFileSize:             input.InputFileStats.Size(),
+		inputFileModificationTime: modTime,
+		inputFileSize:             size,
 		ignoreCase:                input.IgnoreCase,
 		rootNodeOffsets:           make([]TreeNodeOffset, input.RootNodesCount),
 	}
@@ -166,18 +176,31 @@ func (metadata *Metadata) AssertValid(expect MetadataInput) error {
 	if metadata.version != CurrentVersion {
 		return fmt.Errorf("The index file is not compatible with the current version of this software.")
 	}
+
 	if string(metadata.magicBytes) != ExpectedMagicBytes {
 		return fmt.Errorf("The given file is not a partial index.")
 	}
-	if metadata.inputFileModificationTime.Unix() != expect.InputFileStats.ModTime().Unix() {
+
+	modTime, err := expect.Input.ModTime()
+	if err != nil {
+		return err
+	}
+	if metadata.inputFileModificationTime.Unix() != modTime.Unix() {
 		return fmt.Errorf("The input file has been modified since the index generation.")
 	}
-	if metadata.inputFileSize != expect.InputFileStats.Size() {
+
+	size, err := expect.Input.Size()
+	if err != nil {
+		return err
+	}
+	if metadata.inputFileSize != size {
 		return fmt.Errorf("The input file size has changed since the index generation.")
 	}
+
 	if metadata.ignoreCase != expect.IgnoreCase {
 		return fmt.Errorf("The configured ignoreCase value does not match the index file contents.")
 	}
+
 	if len(metadata.rootNodeOffsets) != expect.RootNodesCount {
 		return fmt.Errorf("The configured properties does not match the index file contents.")
 	}

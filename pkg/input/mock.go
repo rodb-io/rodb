@@ -8,8 +8,9 @@ import (
 )
 
 type Mock struct {
-	data   []record.Record
-	parser parser.Parser
+	data    []record.Record
+	parser  parser.Parser
+	modTime time.Time
 }
 
 func NewMock(parser parser.Parser, data []record.Record) *Mock {
@@ -37,8 +38,12 @@ func (mock *Mock) Size() (int64, error) {
 	return int64(len(mock.data)), nil
 }
 
+func (mock *Mock) SetModTime(time time.Time) {
+	mock.modTime = time
+}
+
 func (mock *Mock) ModTime() (time.Time, error) {
-	return time.Unix(0, 0), nil
+	return mock.modTime, nil
 }
 
 func (mock *Mock) IterateAll() (record.Iterator, func() error, error) {

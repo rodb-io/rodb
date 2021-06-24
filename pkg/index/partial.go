@@ -62,13 +62,8 @@ func (partialIndex *Partial) createIndex() error {
 
 	indexStream := partial.NewStream(indexFile, 0)
 
-	inputFileStats, err := partialIndex.input.Stat()
-	if err != nil {
-		return err
-	}
-
 	metadata, err := partial.NewMetadata(indexStream, partial.MetadataInput{
-		InputFileStats: inputFileStats,
+		Input:          partialIndex.input,
 		IgnoreCase:     *partialIndex.config.IgnoreCase,
 		RootNodesCount: len(partialIndex.config.Properties),
 	})
@@ -162,18 +157,13 @@ func (partialIndex *Partial) loadIndex() error {
 
 	indexStream := partial.NewStream(indexFile, indexFileStat.Size())
 
-	inputFileStats, err := partialIndex.input.Stat()
-	if err != nil {
-		return err
-	}
-
 	metadata, err := partial.LoadMetadata(indexStream)
 	if err != nil {
 		return err
 	}
 
 	err = metadata.AssertValid(partial.MetadataInput{
-		InputFileStats: inputFileStats,
+		Input:          partialIndex.input,
 		IgnoreCase:     *partialIndex.config.IgnoreCase,
 		RootNodesCount: len(partialIndex.config.Properties),
 	})

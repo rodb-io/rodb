@@ -3,8 +3,10 @@ package partial
 import (
 	"bytes"
 	"fmt"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/record"
 	"testing"
-	"testing/fstest"
 	"time"
 )
 
@@ -12,17 +14,11 @@ func TestMetadataNewMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		stream := createTestStream(t)
 
-		file := &fstest.MapFile{
-			Data:    make([]byte, 42),
-			ModTime: time.Unix(1234, 0),
-		}
-		fileInfo, err := fstest.MapFS{"file": file}.Stat("file")
-		if err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
+		input := input.NewMock(parser.NewMock(), make([]record.Record, 42))
+		input.SetModTime(time.Unix(1234, 0))
 
 		metadata, err := NewMetadata(stream, MetadataInput{
-			InputFileStats: fileInfo,
+			Input:          input,
 			IgnoreCase:     true,
 			RootNodesCount: 3,
 		})
@@ -303,67 +299,63 @@ func TestMetadataSave(t *testing.T) {
 }
 
 func TestMetadataAssertValid(t *testing.T) {
-	file := &fstest.MapFile{
-		Data:    make([]byte, 42),
-		ModTime: time.Now(),
-	}
-	fileInfo, err := fstest.MapFS{"file": file}.Stat("file")
-	if err != nil {
-		t.Fatalf("Unexpected error: '%+v'", err)
-	}
+	modTime := time.Now()
+	data := make([]record.Record, 42)
+	input := input.NewMock(parser.NewMock(), data)
+	input.SetModTime(modTime)
 
 	metadata := Metadata{
 		magicBytes:                []byte(ExpectedMagicBytes),
 		version:                   CurrentVersion,
-		inputFileModificationTime: file.ModTime,
-		inputFileSize:             int64(len(file.Data)),
+		inputFileModificationTime: modTime,
+		inputFileSize:             int64(len(data)),
 		ignoreCase:                true,
 		rootNodeOffsets:           []TreeNodeOffset{1, 2},
 	}
-	input := MetadataInput{
-		InputFileStats: fileInfo,
+	metadataInput := MetadataInput{
+		Input:          input,
 		IgnoreCase:     true,
 		RootNodesCount: 2,
 	}
 
 	t.Run("valid", func(t *testing.T) {
-		if err := metadata.AssertValid(input); err != nil {
+		if err := metadata.AssertValid(metadataInput); err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
 	})
 	t.Run("wrong version", func(t *testing.T) {
 		metadata.version = CurrentVersion + 1
-		if metadata.AssertValid(input) == nil {
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
 	t.Run("wrong magic bytes", func(t *testing.T) {
 		metadata.magicBytes = []byte("wrong bytes")
-		if metadata.AssertValid(input) == nil {
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
 	t.Run("wrong time", func(t *testing.T) {
 		metadata.inputFileModificationTime = time.Unix(1234, 0)
-		if metadata.AssertValid(input) == nil {
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
 	t.Run("wrong size", func(t *testing.T) {
-		metadata.inputFileSize = int64(len(file.Data) + 1)
-		if metadata.AssertValid(input) == nil {
+		metadata.inputFileSize = int64(len(data) + 1)
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
 	t.Run("wrong ignoreCase", func(t *testing.T) {
-		metadata.ignoreCase = !input.IgnoreCase
-		if metadata.AssertValid(input) == nil {
+		metadata.ignoreCase = !metadataInput.IgnoreCase
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
 	t.Run("wrong rootNodes count", func(t *testing.T) {
 		metadata.rootNodeOffsets = []TreeNodeOffset{1}
-		if metadata.AssertValid(input) == nil {
+		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}
 	})
