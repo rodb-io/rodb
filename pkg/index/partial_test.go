@@ -73,9 +73,12 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 
 func TestPartial(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
+		falseValue := false
 		index, err := NewPartial(
 			&config.PartialIndex{
 				Properties: []string{"col"},
+				Path:       "/tmp/test-index-partial-normal.rodb",
+				IgnoreCase: &falseValue,
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
 			},
@@ -129,7 +132,7 @@ func TestPartial(t *testing.T) {
 }
 
 func TestPartialGetRecordPositions(t *testing.T) {
-	createTestData := func() (*input.Mock, *Partial) {
+	createTestData := func(t *testing.T, testName string) (*input.Mock, *Partial) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANA",
@@ -152,9 +155,12 @@ func TestPartialGetRecordPositions(t *testing.T) {
 				"col2": "col2_b",
 			}, 4),
 		})
+		falseValue := false
 		index, err := NewPartial(
 			&config.PartialIndex{
 				Properties: []string{"col", "col2"},
+				Path:       "/tmp/test-index-partial-get-record-positions" + testName + ".rodb",
+				IgnoreCase: &falseValue,
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
 			},
@@ -170,7 +176,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		mockInput, index := createTestData()
+		mockInput, index := createTestData(t, "normal")
 		for _, testCase := range []struct {
 			expectedLength  int
 			expectedResults record.PositionList
@@ -233,14 +239,14 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("no filters", func(t *testing.T) {
-		mockInput, index := createTestData()
+		mockInput, index := createTestData(t, "no-filters")
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{})
 		if err == nil {
 			t.Fatalf("Expected an error, got %v", err)
 		}
 	})
 	t.Run("wrong property", func(t *testing.T) {
-		mockInput, index := createTestData()
+		mockInput, index := createTestData(t, "wrong-property")
 		_, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"wrong_col": "",
 		})
@@ -249,7 +255,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 
-	createTestDataForIgnoreCase := func(ignoreCase bool) (*input.Mock, *Partial) {
+	createTestDataForIgnoreCase := func(t *testing.T, ignoreCase bool, testName string) (*input.Mock, *Partial) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col": "BANANÉ",
@@ -258,6 +264,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		index, err := NewPartial(
 			&config.PartialIndex{
 				Properties: []string{"col"},
+				Path:       "/tmp/test-index-partial-get-record-positions" + testName + ".rodb",
 				Input:      "input",
 				IgnoreCase: &ignoreCase,
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -274,7 +281,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 	}
 
 	t.Run("IgnoreCase is true, search lower case", func(t *testing.T) {
-		mockInput, index := createTestDataForIgnoreCase(true)
+		mockInput, index := createTestDataForIgnoreCase(t, true, "ignorecase-true-search-lower")
 		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"col": "ané",
 		})
@@ -293,7 +300,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("IgnoreCase is true, search upper case", func(t *testing.T) {
-		mockInput, index := createTestDataForIgnoreCase(true)
+		mockInput, index := createTestDataForIgnoreCase(t, true, "ignorecase-true-search-upper")
 		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"col": "ANÉ",
 		})
@@ -312,7 +319,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("IgnoreCase is false, search lower case", func(t *testing.T) {
-		mockInput, index := createTestDataForIgnoreCase(false)
+		mockInput, index := createTestDataForIgnoreCase(t, false, "ignorecase-false-search-lower")
 
 		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"col": "ané",
@@ -331,7 +338,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 	t.Run("IgnoreCase is false, search upper case", func(t *testing.T) {
-		mockInput, index := createTestDataForIgnoreCase(false)
+		mockInput, index := createTestDataForIgnoreCase(t, false, "ignorecase-false-search-upper")
 
 		iterator, err := index.GetRecordPositions(mockInput, map[string]interface{}{
 			"col": "ANÉ",

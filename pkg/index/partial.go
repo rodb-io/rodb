@@ -36,14 +36,14 @@ func NewPartial(
 	if os.IsNotExist(err) {
 		err = partialIndex.createIndex()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Error while creating the index: %w", err)
 		}
 	} else if err != nil {
 		return nil, err
 	} else {
 		err = partialIndex.loadIndex()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Error while loading the index: %w", err)
 		}
 	}
 
