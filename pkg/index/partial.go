@@ -179,6 +179,8 @@ func (partialIndex *Partial) loadIndex() error {
 		}
 	}
 
+	partialIndex.index = index
+
 	partialIndex.config.Logger.Infof("Successfully loaded index")
 
 	return nil

@@ -72,12 +72,12 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 }
 
 func TestPartial(t *testing.T) {
-	t.Run("normal", func(t *testing.T) {
+	t.Run("create", func(t *testing.T) {
 		falseValue := false
 		index, err := NewPartial(
 			&config.PartialIndex{
 				Properties: []string{"col"},
-				Path:       "/tmp/test-index-partial-normal.rodb",
+				Path:       "/tmp/test-index-partial-create.rodb",
 				IgnoreCase: &falseValue,
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -96,6 +96,71 @@ func TestPartial(t *testing.T) {
 				}),
 			},
 		)
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+
+		expect := strings.Join([]string{
+			">A=1,2,3",
+			">A>N=1,2,3",
+			">A>N>A=1,2",
+			">A>N>A>N=1,2",
+			">A>N>A>N>A=1",
+			">A>N>A>N>O=2",
+			">A>N>O=2",
+			">A>N>T=3",
+			">BANAN=1,2",
+			">BANAN>A=1",
+			">BANAN>O=2",
+			">LANT=3",
+			">N=1,2,3",
+			">N>A=1,2",
+			">N>A>N=1,2",
+			">N>A>N>A=1",
+			">N>A>N>O=2",
+			">N>O=2",
+			">N>T=3",
+			">O=2",
+			">PLANT=3",
+			">T=3",
+		}, "\n")
+		got := stringifyPartialTree(t, index.index["col"])
+		if got != expect {
+			t.Fatalf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
+		}
+	})
+	t.Run("load", func(t *testing.T) {
+		falseValue := false
+		config := &config.PartialIndex{
+			Properties: []string{"col"},
+			Path:       "/tmp/test-index-partial-load.rodb",
+			IgnoreCase: &falseValue,
+			Input:      "input",
+			Logger:     logrus.NewEntry(logrus.StandardLogger()),
+		}
+		inputs := input.List{
+			"input": input.NewMock(parser.NewMock(), []record.Record{
+				record.NewStringPropertiesMock(map[string]string{
+					"col": "BANANA",
+				}, 1),
+				record.NewStringPropertiesMock(map[string]string{
+					"col": "BANANO",
+				}, 2),
+				record.NewStringPropertiesMock(map[string]string{
+					"col": "PLANT",
+				}, 3),
+			}),
+		}
+
+		// Creating the index file, then closing it
+		indexToInitFile, err := NewPartial(config, inputs)
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+		indexToInitFile.Close()
+
+		// Loading the index file
+		index, err := NewPartial(config, inputs)
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}

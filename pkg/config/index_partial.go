@@ -35,7 +35,7 @@ func (config *PartialIndex) validate(rootConfig *Config, log *logrus.Entry) erro
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("partial.path: Error checking the path: %w", err)
 	}
-	if fileInfo.IsDir() {
+	if err == nil && fileInfo.IsDir() {
 		return errors.New("partial.path: This path already exists and is a directory")
 	}
 
