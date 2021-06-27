@@ -132,6 +132,12 @@ func (partialIndex *Partial) createIndex() error {
 		}
 	}
 
+	metadata.SetCompleted(true)
+	err = metadata.Save()
+	if err != nil {
+		return err
+	}
+
 	partialIndex.index = index
 
 	indexStat, err := indexFile.Stat()

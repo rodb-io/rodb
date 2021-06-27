@@ -31,6 +31,7 @@ func TestMetadataNewMetadata(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
 			1,                        // ignoreCase
+			0,                        // completed
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsetCount
 			0, 0, 0, 0, 0, 0, 0, 0, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0, // rootNodeOffsets[1]
@@ -59,6 +60,9 @@ func TestMetadataNewMetadata(t *testing.T) {
 		if expect, got := true, metadata.ignoreCase; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
+		if expect, got := false, metadata.completed; expect != got {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
 
 		if expect, got := 3, len(metadata.rootNodeOffsets); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
@@ -83,6 +87,7 @@ func TestMetadataLoadMetadata(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
 			1,                        // ignoreCase
+			1,                        // completed
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsetCount
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
@@ -112,6 +117,9 @@ func TestMetadataLoadMetadata(t *testing.T) {
 		if expect, got := true, metadata.ignoreCase; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
+		if expect, got := true, metadata.completed; expect != got {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
 
 		if expect, got := 3, len(metadata.rootNodeOffsets); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
@@ -136,6 +144,7 @@ func TestMetadataSerialize(t *testing.T) {
 			inputFileModificationTime: time.Unix(1234, 0),
 			inputFileSize:             42,
 			ignoreCase:                true,
+			completed:                 false,
 			rootNodeOffsets:           []TreeNodeOffset{1, 2, 3},
 		}
 
@@ -145,6 +154,7 @@ func TestMetadataSerialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
 			1,                        // ignoreCase
+			0,                        // completed
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsetCount
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
@@ -171,6 +181,7 @@ func TestMetadataUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
 			1,                        // ignoreCase
+			1,                        // completed
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsetCount
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
@@ -195,6 +206,9 @@ func TestMetadataUnserialize(t *testing.T) {
 		if expect, got := true, metadata.ignoreCase; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
+		if expect, got := true, metadata.completed; expect != got {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
 
 		if expect, got := 3, len(metadata.rootNodeOffsets); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
@@ -216,6 +230,7 @@ func TestMetadataUnserialize(t *testing.T) {
 			inputFileModificationTime: time.Unix(1234, 0),
 			inputFileSize:             42,
 			ignoreCase:                true,
+			completed:                 false,
 			rootNodeOffsets:           []TreeNodeOffset{1, 2, 3},
 		}).Serialize()
 		if err != nil {
@@ -241,6 +256,9 @@ func TestMetadataUnserialize(t *testing.T) {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 		if expect, got := true, metadata.ignoreCase; expect != got {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
+		if expect, got := false, metadata.completed; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 
@@ -270,6 +288,7 @@ func TestMetadataSave(t *testing.T) {
 			inputFileModificationTime: time.Unix(1234, 0),
 			inputFileSize:             42,
 			ignoreCase:                true,
+			completed:                 false,
 			rootNodeOffsets:           []TreeNodeOffset{1, 2, 3},
 		}
 		if err := metadata.Save(); err != nil {
@@ -282,6 +301,7 @@ func TestMetadataSave(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
 			1,                        // ignoreCase
+			0,                        // completed
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsetCount
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
@@ -310,6 +330,7 @@ func TestMetadataAssertValid(t *testing.T) {
 		inputFileModificationTime: modTime,
 		inputFileSize:             int64(len(data)),
 		ignoreCase:                true,
+		completed:                 true,
 		rootNodeOffsets:           []TreeNodeOffset{1, 2},
 	}
 	metadataInput := MetadataInput{
@@ -349,6 +370,12 @@ func TestMetadataAssertValid(t *testing.T) {
 	})
 	t.Run("wrong ignoreCase", func(t *testing.T) {
 		metadata.ignoreCase = !metadataInput.IgnoreCase
+		if metadata.AssertValid(metadataInput) == nil {
+			t.Fatalf("Expected an error, got nil")
+		}
+	})
+	t.Run("not completed", func(t *testing.T) {
+		metadata.completed = false
 		if metadata.AssertValid(metadataInput) == nil {
 			t.Fatalf("Expected an error, got nil")
 		}

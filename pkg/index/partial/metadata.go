@@ -22,6 +22,7 @@ type Metadata struct {
 	inputFileModificationTime time.Time
 	inputFileSize             int64
 	ignoreCase                bool
+	completed                 bool
 	rootNodeOffsets           []TreeNodeOffset
 }
 
@@ -50,6 +51,7 @@ func NewMetadata(stream *Stream, input MetadataInput) (*Metadata, error) {
 		inputFileSize:             size,
 		ignoreCase:                input.IgnoreCase,
 		rootNodeOffsets:           make([]TreeNodeOffset, input.RootNodesCount),
+		completed:                 false,
 	}
 
 	// Saving it first to allocate the required space
@@ -82,6 +84,12 @@ func (metadata *Metadata) SetRootNode(index int, node *TreeNode) {
 	metadata.rootNodeOffsets[index] = node.offset
 }
 
+// Sets the completed flag, which records wether or not the index
+// generation has been finished
+func (metadata *Metadata) SetCompleted(completed bool) {
+	metadata.completed = completed
+}
+
 func (metadata *Metadata) GetRootNode(index int) (*TreeNode, error) {
 	return GetTreeNode(metadata.stream, metadata.rootNodeOffsets[index])
 }
@@ -103,6 +111,9 @@ func (metadata *Metadata) Serialize() ([]byte, error) {
 		return nil, err
 	}
 	if err = binary.Write(buffer, binary.BigEndian, metadata.ignoreCase); err != nil {
+		return nil, err
+	}
+	if err = binary.Write(buffer, binary.BigEndian, metadata.completed); err != nil {
 		return nil, err
 	}
 	if err = binary.Write(buffer, binary.BigEndian, int64(len(metadata.rootNodeOffsets))); err != nil {
@@ -139,6 +150,9 @@ func (metadata *Metadata) Unserialize(data io.Reader) error {
 		return err
 	}
 	if err = binary.Read(data, binary.BigEndian, &metadata.ignoreCase); err != nil {
+		return err
+	}
+	if err = binary.Read(data, binary.BigEndian, &metadata.completed); err != nil {
 		return err
 	}
 
@@ -199,6 +213,9 @@ func (metadata *Metadata) AssertValid(expect MetadataInput) error {
 
 	if metadata.ignoreCase != expect.IgnoreCase {
 		return fmt.Errorf("The configured ignoreCase value does not match the index file contents.")
+	}
+	if !metadata.completed {
+		return fmt.Errorf("The previous indexing process has not ended properly. Please remove the corrupted file and try again.")
 	}
 
 	if len(metadata.rootNodeOffsets) != expect.RootNodesCount {
