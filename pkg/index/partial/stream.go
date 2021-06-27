@@ -34,17 +34,12 @@ func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
 }
 
 func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
-	newOffset := stream.streamSize
-	size, err := stream.stream.WriteAt(bytes, newOffset)
-	if err != nil {
+	offset = stream.streamSize
+	if err = stream.Replace(offset, bytes); err != nil {
 		return 0, err
 	}
-	if size != len(bytes) {
-		return 0, fmt.Errorf("Expected to write %v bytes, wrote %v", len(bytes), size)
-	}
 
-	stream.streamSize += int64(len(bytes))
-	return newOffset, nil
+	return offset, nil
 }
 
 func (stream *Stream) Replace(offset int64, bytes []byte) error {
