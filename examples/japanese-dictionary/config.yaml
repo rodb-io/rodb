@@ -22,7 +22,7 @@ indexes:
       - reading
   - name: indexSearch
     type: partial
-    path: ./indexSearch.rodb
+    path: /index/indexSearch.rodb
     input: dictionary
     properties:
       - translation
