@@ -97,15 +97,14 @@ func TestStreamAdd(t *testing.T) {
 		if expect := int64(5); gotOffset != expect {
 			t.Fatalf("Expected %v, got %v", expect, gotOffset)
 		}
+		if expect, got := int64(12), stream.streamSize; got != expect {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
 
 		gotFile := make([]byte, 12)
 		_, err = file.ReadAt(gotFile, 0)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
-		}
-
-		if expect, got := int64(12), stream.streamSize; got != expect {
-			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 		if expect := "Hello World!"; string(gotFile) != expect {
 			t.Fatalf("Expected %v, got %v", expect, string(gotFile))

@@ -6,9 +6,14 @@ import (
 	"os"
 )
 
+const STREAM_BUFFER_SIZE = 10_000
+
 type Stream struct {
-	stream     *os.File
-	streamSize int64
+	stream       *os.File
+	streamSize   int64
+	bufferOffset int64
+	buffer       []byte
+	readerOffset int64
 }
 
 func NewStream(
@@ -16,22 +21,64 @@ func NewStream(
 	streamSize int64,
 ) *Stream {
 	return &Stream{
-		stream:     stream,
-		streamSize: streamSize,
+		stream:       stream,
+		streamSize:   streamSize,
+		bufferOffset: streamSize,
+		buffer:       make([]byte, 0, STREAM_BUFFER_SIZE),
 	}
 }
 
-func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
-	bytes := make([]byte, bytesCount)
-	size, err := stream.stream.ReadAt(bytes, offset)
-	if err != nil {
-		return nil, err
-	}
-	if size != bytesCount {
-		return nil, fmt.Errorf("Expected to read %v bytes, got %v", bytesCount, size)
+// Forces the internal buffer to be written to the file
+func (stream *Stream) Flush() error {
+	if len(stream.buffer) == 0 {
+		return nil
 	}
 
-	return bytes, nil
+	size, err := stream.stream.WriteAt(stream.buffer, stream.bufferOffset)
+	if err != nil {
+		return err
+	}
+	if size != len(stream.buffer) {
+		return fmt.Errorf("Expected to write %v bytes, wrote %v", len(stream.buffer), size)
+	}
+
+	stream.bufferOffset = stream.streamSize
+	stream.buffer = stream.buffer[:0]
+
+	return nil
+}
+
+func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
+	if offset < stream.bufferOffset && (offset+int64(bytesCount)) > stream.bufferOffset {
+		// Since it would make the process way more complex,
+		// and this case is not expected at all, we just flush
+		// the buffer if it happens
+		err := stream.Flush()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if offset < stream.bufferOffset {
+		bytes := make([]byte, bytesCount)
+		size, err := stream.stream.ReadAt(bytes, offset)
+		if err != nil {
+			return nil, err
+		}
+		if size != bytesCount {
+			return nil, fmt.Errorf("Expected to read %v bytes, got %v", bytesCount, size)
+		}
+
+		return bytes, nil
+	} else {
+		start := offset - stream.bufferOffset
+		end := start + int64(bytesCount)
+		if end > int64(len(stream.buffer)) {
+			return nil, fmt.Errorf("Expected to read %v bytes, got %v", bytesCount, int64(len(stream.buffer))-start)
+		}
+
+		return stream.buffer[start:end], nil
+	}
 }
 
 func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
@@ -44,12 +91,41 @@ func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
 }
 
 func (stream *Stream) Replace(offset int64, bytes []byte) error {
-	size, err := stream.stream.WriteAt(bytes, offset)
-	if err != nil {
-		return err
+	if offset < stream.bufferOffset && (offset+int64(len(bytes))) > stream.bufferOffset {
+		// Since it would make the process way more complex,
+		// and this case is not expected at all, we just flush
+		// the buffer if it happens
+		err := stream.Flush()
+		if err != nil {
+			return err
+		}
 	}
-	if size != len(bytes) {
-		return fmt.Errorf("Expected to write %v bytes, wrote %v", len(bytes), size)
+
+	if offset < stream.bufferOffset {
+		size, err := stream.stream.WriteAt(bytes, offset)
+		if err != nil {
+			return err
+		}
+		if size != len(bytes) {
+			return fmt.Errorf("Expected to write %v bytes, wrote %v", len(bytes), size)
+		}
+	} else {
+		start := int(offset - stream.bufferOffset)
+		for i := 0; i < len(bytes) && (i+start) < len(stream.buffer); i++ {
+			stream.buffer[i+start] = bytes[i]
+		}
+
+		remainingBytes := len(bytes) - (len(stream.buffer) - start)
+		if remainingBytes > 0 {
+			stream.buffer = append(stream.buffer, bytes[(len(bytes)-remainingBytes):]...)
+		}
+
+		if len(stream.buffer) > STREAM_BUFFER_SIZE {
+			err := stream.Flush()
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	endOffset := offset + int64(len(bytes))
@@ -64,7 +140,15 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 // Note: the current implementation is dumb and does not
 // work with concurrent read or writes
 func (stream *Stream) GetReaderFrom(offset int64) (io.Reader, error) {
-	_, err := stream.stream.Seek(offset, io.SeekStart)
+	// TODO
+	// We just assume there is no concurrent read or write to this stream
+	// So by we can return the raw stream because nothing will be buffered
+	err := stream.Flush()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = stream.stream.Seek(offset, io.SeekStart)
 	if err != nil {
 		return nil, err
 	}
