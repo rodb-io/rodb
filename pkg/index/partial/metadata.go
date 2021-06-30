@@ -67,12 +67,12 @@ func LoadMetadata(stream *Stream) (*Metadata, error) {
 		stream: stream,
 	}
 
-	_, err := stream.stream.Seek(0, io.SeekStart)
+	reader, err := stream.GetReaderFrom(0)
 	if err != nil {
 		return nil, err
 	}
 
-	err = metadata.Unserialize(stream.stream)
+	err = metadata.Unserialize(reader)
 	if err != nil {
 		return nil, err
 	}

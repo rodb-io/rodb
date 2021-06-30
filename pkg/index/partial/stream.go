@@ -2,6 +2,7 @@ package partial
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -57,4 +58,16 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 	}
 
 	return nil
+}
+
+// Returns a reader from the given position
+// Note: the current implementation is dumb and does not
+// work with concurrent read or writes
+func (stream *Stream) GetReaderFrom(offset int64) (io.Reader, error) {
+	_, err := stream.stream.Seek(offset, io.SeekStart)
+	if err != nil {
+		return nil, err
+	}
+
+	return stream.stream, nil
 }
