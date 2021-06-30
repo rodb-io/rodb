@@ -203,24 +203,20 @@ func (service *Http) getHandlerFunc() http.HandlerFunc {
 		}
 
 		params := service.getParams(route, request.URL)
-		err = route.output.Handle(
-			params,
-			payload,
-			func(err error) error {
-				status := http.StatusInternalServerError
-				if errors.Is(err, record.RecordNotFoundError) {
-					status = http.StatusNotFound
-				}
+		sendError := func(err error) error {
+			status := http.StatusInternalServerError
+			if errors.Is(err, record.RecordNotFoundError) {
+				status = http.StatusNotFound
+			}
 
-				return service.sendErrorResponse(response, status, err)
-			},
-			func() io.Writer {
-				response.Header().Set("Content-Type", route.output.ResponseType()+"; charset=UTF-8")
-				response.WriteHeader(http.StatusOK)
-				return io.Writer(response)
-			},
-		)
-		if err != nil {
+			return service.sendErrorResponse(response, status, err)
+		}
+		sendSuccess := func() io.Writer {
+			response.Header().Set("Content-Type", route.output.ResponseType()+"; charset=UTF-8")
+			response.WriteHeader(http.StatusOK)
+			return io.Writer(response)
+		}
+		if err := route.output.Handle(params, payload, sendError, sendSuccess); err != nil {
 			service.config.Logger.Errorf("Unhandled error while handling the route '%v': %v", route.config.Path, err)
 		}
 
@@ -317,15 +313,13 @@ func (service *Http) Wait() error {
 
 func (service *Http) Close() error {
 	if service.config.Http != nil {
-		err := service.httpServer.Shutdown(context.Background())
-		if err != nil {
+		if err := service.httpServer.Shutdown(context.Background()); err != nil {
 			return err
 		}
 	}
 
 	if service.config.Https != nil {
-		err := service.httpsServer.Shutdown(context.Background())
-		if err != nil {
+		if err := service.httpsServer.Shutdown(context.Background()); err != nil {
 			return err
 		}
 	}

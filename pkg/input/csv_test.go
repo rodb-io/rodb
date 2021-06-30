@@ -140,8 +140,7 @@ func TestCsvGet(t *testing.T) {
 			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		defer func() {
-			err := end()
-			if err != nil {
+			if err := end(); err != nil {
 				t.Fatalf("Expected no error, got '%v'", err)
 			}
 		}()
@@ -300,8 +299,7 @@ func TestCsvIterateAll(t *testing.T) {
 				t.Fatalf("Expected no error, got '%v'", err)
 			}
 			defer func() {
-				err := end()
-				if err != nil {
+				if err := end(); err != nil {
 					t.Fatalf("Expected no error, got '%v'", err)
 				}
 			}()
@@ -461,8 +459,7 @@ func TestCsvOpen(t *testing.T) {
 			t.Fatalf("Expected to receive '%v', got '%+v'", data, string(content))
 		}
 
-		err = file.Close()
-		if err != nil {
+		if err := file.Close(); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 	})

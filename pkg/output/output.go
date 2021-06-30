@@ -67,8 +67,7 @@ func NewFromConfigs(
 
 func Close(outputs List) error {
 	for _, output := range outputs {
-		err := output.Close()
-		if err != nil {
+		if err := output.Close(); err != nil {
 			return err
 		}
 	}

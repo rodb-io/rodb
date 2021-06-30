@@ -39,8 +39,7 @@ func TestSetBufferedReaderOffset(t *testing.T) {
 		reader := strings.NewReader("abcdef")
 		buffer := bufio.NewReader(reader)
 		buffer.Read(make([]byte, 5))
-		err := SetBufferedReaderOffset(reader, buffer, 1)
-		if err != nil {
+		if err := SetBufferedReaderOffset(reader, buffer, 1); err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
 

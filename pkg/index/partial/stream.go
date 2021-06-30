@@ -36,7 +36,7 @@ func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
 
 func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
 	offset = stream.streamSize
-	if err = stream.Replace(offset, bytes); err != nil {
+	if err := stream.Replace(offset, bytes); err != nil {
 		return 0, err
 	}
 

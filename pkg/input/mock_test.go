@@ -60,8 +60,7 @@ func TestMockIterateAll(t *testing.T) {
 			t.Fatalf("Expected no error, got '%v'", err)
 		}
 		defer func() {
-			err := end()
-			if err != nil {
+			if err := end(); err != nil {
 				t.Fatalf("Expected no error, got '%v'", err)
 			}
 		}()

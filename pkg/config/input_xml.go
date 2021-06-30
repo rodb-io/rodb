@@ -77,8 +77,7 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	alreadyExistingNames := make(map[string]bool)
 	for propertyIndex, property := range config.Properties {
 		logPrefix := fmt.Sprintf("xml.properties[%v].", propertyIndex)
-		err := property.validate(rootConfig, true, log, logPrefix)
-		if err != nil {
+		if err := property.validate(rootConfig, true, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -144,8 +143,7 @@ func (config *XmlInputProperty) validate(
 		}
 
 		itemsLogPrefix := fmt.Sprintf("%vitems.", logPrefix)
-		err := config.Items.validate(rootConfig, false, log, itemsLogPrefix)
-		if err != nil {
+		if err := config.Items.validate(rootConfig, false, log, itemsLogPrefix); err != nil {
 			return fmt.Errorf("items.%w", err)
 		}
 	case XmlInputPropertyTypeObject:
@@ -164,8 +162,7 @@ func (config *XmlInputProperty) validate(
 		alreadyExistingNames := make(map[string]bool)
 		for propertyIndex, property := range config.Properties {
 			propertyLogPrefix := fmt.Sprintf("%vproperties[%v].", logPrefix, propertyIndex)
-			err := property.validate(rootConfig, true, log, propertyLogPrefix)
-			if err != nil {
+			if err := property.validate(rootConfig, true, log, propertyLogPrefix); err != nil {
 				return fmt.Errorf("properties[%v].%w", propertyIndex, err)
 			}
 

@@ -79,8 +79,7 @@ func NewXml(
 		return nil, err
 	}
 
-	err = xmlInput.watcher.Add(config.Path)
-	if err != nil {
+	if err := xmlInput.watcher.Add(config.Path); err != nil {
 		return nil, err
 	}
 
@@ -95,12 +94,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 	xmlInput.readerLock.Lock()
 	defer xmlInput.readerLock.Unlock()
 
-	err := util.SetBufferedReaderOffset(
-		xmlInput.reader,
-		xmlInput.readerBuffer,
-		position,
-	)
-	if err != nil {
+	if err := util.SetBufferedReaderOffset(xmlInput.reader, xmlInput.readerBuffer, position); err != nil {
 		return nil, err
 	}
 
@@ -184,18 +178,15 @@ func (xmlInput *Xml) IterateAll() (record.Iterator, func() error, error) {
 }
 
 func (xmlInput *Xml) Close() error {
-	err := xmlInput.watcher.Remove(xmlInput.config.Path)
-	if err != nil {
+	if err := xmlInput.watcher.Remove(xmlInput.config.Path); err != nil {
 		return err
 	}
 
-	err = xmlInput.watcher.Close()
-	if err != nil {
+	if err := xmlInput.watcher.Close(); err != nil {
 		return err
 	}
 
-	err = xmlInput.xmlFile.Close()
-	if err != nil {
+	if err := xmlInput.xmlFile.Close(); err != nil {
 		return err
 	}
 

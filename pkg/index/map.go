@@ -33,8 +33,7 @@ func NewMap(
 		input:  input,
 	}
 
-	err := mapIndex.reindex()
-	if err != nil {
+	if err := mapIndex.reindex(); err != nil {
 		return nil, err
 	}
 
@@ -58,8 +57,7 @@ func (mapIndex *Map) reindex() error {
 		return err
 	}
 	defer func() {
-		err := end()
-		if err != nil {
+		if err := end(); err != nil {
 			mapIndex.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
@@ -85,8 +83,7 @@ func (mapIndex *Map) reindex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = mapIndex.addValueToIndex(index, property, value, record.Position())
-			if err != nil {
+			if err := mapIndex.addValueToIndex(index, property, value, record.Position()); err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
@@ -106,8 +103,7 @@ func (mapIndex *Map) addValueToIndex(
 ) error {
 	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
 		for _, valueArrayValue := range valueArray {
-			err := mapIndex.addValueToIndex(index, property, valueArrayValue, position)
-			if err != nil {
+			if err := mapIndex.addValueToIndex(index, property, valueArrayValue, position); err != nil {
 				return err
 			}
 		}

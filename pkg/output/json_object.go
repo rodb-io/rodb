@@ -52,12 +52,7 @@ func NewJsonObject(
 	}
 
 	for _, relationship := range jsonObject.config.Relationships {
-		err := checkRelationshipMatches(
-			jsonObject.inputs,
-			relationship,
-			jsonObject.input,
-		)
-		if err != nil {
+		if err := checkRelationshipMatches(jsonObject.inputs, relationship, jsonObject.input); err != nil {
 			return nil, err
 		}
 	}

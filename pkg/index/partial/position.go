@@ -32,8 +32,7 @@ func NewPositionLinkedList(
 		nextPositionOffset: 0,
 	}
 
-	err := node.Save()
-	if err != nil {
+	if err := node.Save(); err != nil {
 		return nil, err
 	}
 
@@ -61,8 +60,7 @@ func NewPositionLinkedListFromArray(
 		}
 
 		current.nextPositionOffset = newCurrent.offset
-		err = current.Save()
-		if err != nil {
+		if err := current.Save(); err != nil {
 			return nil, err
 		}
 
@@ -90,8 +88,7 @@ func GetPositionLinkedList(
 		offset: offset,
 	}
 
-	err = position.Unserialize(serialized)
-	if err != nil {
+	if err := position.Unserialize(serialized); err != nil {
 		return nil, err
 	}
 
@@ -99,13 +96,12 @@ func GetPositionLinkedList(
 }
 
 func (list *PositionLinkedList) Serialize() ([]byte, error) {
-	var err error
 	buffer := &bytes.Buffer{}
 
-	if err = binary.Write(buffer, binary.BigEndian, list.Position); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, list.Position); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, list.nextPositionOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, list.nextPositionOffset); err != nil {
 		return nil, err
 	}
 
@@ -113,13 +109,12 @@ func (list *PositionLinkedList) Serialize() ([]byte, error) {
 }
 
 func (list *PositionLinkedList) Unserialize(data []byte) error {
-	var err error
 	buffer := bytes.NewBuffer(data)
 
-	if err = binary.Read(buffer, binary.BigEndian, &list.Position); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &list.Position); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &list.nextPositionOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &list.nextPositionOffset); err != nil {
 		return err
 	}
 
@@ -139,8 +134,7 @@ func (list *PositionLinkedList) Save() error {
 		}
 		list.offset = PositionLinkedListOffset(newOffset)
 	} else {
-		err := list.stream.Replace(int64(list.offset), serialized)
-		if err != nil {
+		if err := list.stream.Replace(int64(list.offset), serialized); err != nil {
 			return err
 		}
 	}
@@ -188,8 +182,7 @@ func (list *PositionLinkedList) Copy() (
 		}
 
 		last.nextPositionOffset = newCurrent.offset
-		err = last.Save()
-		if err != nil {
+		if err := last.Save(); err != nil {
 			return nil, nil, err
 		}
 

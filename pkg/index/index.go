@@ -54,8 +54,7 @@ func NewFromConfigs(
 
 func Close(indexes List) error {
 	for _, index := range indexes {
-		err := index.Close()
-		if err != nil {
+		if err := index.Close(); err != nil {
 			return err
 		}
 	}

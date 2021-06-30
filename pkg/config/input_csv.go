@@ -83,8 +83,7 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.ColumnIndexByName = make(map[string]int)
 	for columnIndex, column := range config.Columns {
 		logPrefix := fmt.Sprintf("csv.columns[%v].", columnIndex)
-		err := column.validate(rootConfig, log, logPrefix)
-		if err != nil {
+		if err := column.validate(rootConfig, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 

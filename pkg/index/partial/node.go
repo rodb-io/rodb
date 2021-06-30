@@ -37,8 +37,7 @@ func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 		lastPositionOffset:  0,
 	}
 
-	err := node.Save()
-	if err != nil {
+	if err := node.Save(); err != nil {
 		return nil, err
 	}
 
@@ -63,8 +62,7 @@ func GetTreeNode(
 		offset: offset,
 	}
 
-	err = node.Unserialize(serialized)
-	if err != nil {
+	if err := node.Unserialize(serialized); err != nil {
 		return nil, err
 	}
 
@@ -96,28 +94,27 @@ func (node *TreeNode) Value() ([]byte, error) {
 }
 
 func (node *TreeNode) Serialize() ([]byte, error) {
-	var err error
 	buffer := &bytes.Buffer{}
 
-	if err = binary.Write(buffer, binary.BigEndian, node.valueOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.valueOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.valueLength); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.valueLength); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.nextSiblingOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.nextSiblingOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.firstChildOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.firstChildOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.lastChildOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.lastChildOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.firstPositionOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.firstPositionOffset); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, node.lastPositionOffset); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, node.lastPositionOffset); err != nil {
 		return nil, err
 	}
 
@@ -125,28 +122,27 @@ func (node *TreeNode) Serialize() ([]byte, error) {
 }
 
 func (node *TreeNode) Unserialize(data []byte) error {
-	var err error
 	buffer := bytes.NewBuffer(data)
 
-	if err = binary.Read(buffer, binary.BigEndian, &node.valueOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.valueOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.valueLength); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.valueLength); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.nextSiblingOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.nextSiblingOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.firstChildOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.firstChildOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.lastChildOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.lastChildOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.firstPositionOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.firstPositionOffset); err != nil {
 		return err
 	}
-	if err = binary.Read(buffer, binary.BigEndian, &node.lastPositionOffset); err != nil {
+	if err := binary.Read(buffer, binary.BigEndian, &node.lastPositionOffset); err != nil {
 		return err
 	}
 
@@ -166,8 +162,7 @@ func (node *TreeNode) Save() error {
 		}
 		node.offset = TreeNodeOffset(newOffset)
 	} else {
-		err := node.stream.Replace(int64(node.offset), serialized)
-		if err != nil {
+		if err := node.stream.Replace(int64(node.offset), serialized); err != nil {
 			return err
 		}
 	}
@@ -253,8 +248,7 @@ func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error 
 	}
 	if nodeLastPosition.Position != position {
 		nodeLastPosition.nextPositionOffset = positionNode.offset
-		err = nodeLastPosition.Save()
-		if err != nil {
+		if err := nodeLastPosition.Save(); err != nil {
 			return err
 		}
 
@@ -281,8 +275,7 @@ func (node *TreeNode) AddAllSequences(bytes []byte, position record.Position) er
 	}
 
 	for i := 0; i < len(bytes); i++ {
-		err := node.addSequence(bytes[i:], bytesOffset+int64(i), position)
-		if err != nil {
+		if err := node.addSequence(bytes[i:], bytesOffset+int64(i), position); err != nil {
 			return err
 		}
 	}
@@ -327,13 +320,11 @@ func (node *TreeNode) addSequence(
 			newNode.lastChildOffset = 0
 			newNode.firstPositionOffset = positionList.offset
 			newNode.lastPositionOffset = positionList.offset
-			err = newNode.Save()
-			if err != nil {
+			if err := newNode.Save(); err != nil {
 				return err
 			}
 
-			err = parentNode.AppendChild(newNode)
-			if err != nil {
+			if err := parentNode.AppendChild(newNode); err != nil {
 				return err
 			}
 			break
@@ -363,22 +354,19 @@ func (node *TreeNode) addSequence(
 			newChild.lastChildOffset = existingNode.lastChildOffset
 			newChild.firstPositionOffset = newChildFirstPosition.offset
 			newChild.lastPositionOffset = newChildLastPosition.offset
-			err = newChild.Save()
-			if err != nil {
+			if err := newChild.Save(); err != nil {
 				return err
 			}
 
 			existingNode.firstChildOffset = newChild.offset
 			existingNode.lastChildOffset = newChild.offset
 			existingNode.valueLength = commonBytes
-			err = existingNode.Save()
-			if err != nil {
+			if err := existingNode.Save(); err != nil {
 				return err
 			}
 		}
 
-		err = existingNode.AppendPositionIfNotExists(position)
-		if err != nil {
+		if err := existingNode.AppendPositionIfNotExists(position); err != nil {
 			return err
 		}
 		parentNode = existingNode

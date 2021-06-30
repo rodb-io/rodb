@@ -33,8 +33,7 @@ func TestStartFilesystemWatchProcess(t *testing.T) {
 
 		StartFilesystemWatchProcess(watcher, true, logger)
 
-		err = watcher.Add(file.Name())
-		if err != nil {
+		if err := watcher.Add(file.Name()); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -56,8 +55,7 @@ func TestStartFilesystemWatchProcess(t *testing.T) {
 			t.Fatalf("Expected the process to exit, got '%v' calls to Exit", dieCount)
 		}
 
-		err = watcher.Close()
-		if err != nil {
+		if err := watcher.Close(); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 

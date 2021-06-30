@@ -34,15 +34,13 @@ func NewPartial(
 
 	_, err := os.Stat(partialIndex.config.Path)
 	if os.IsNotExist(err) {
-		err = partialIndex.createIndex()
-		if err != nil {
+		if err := partialIndex.createIndex(); err != nil {
 			return nil, fmt.Errorf("Error while creating the index: %w", err)
 		}
 	} else if err != nil {
 		return nil, err
 	} else {
-		err = partialIndex.loadIndex()
-		if err != nil {
+		if err := partialIndex.loadIndex(); err != nil {
 			return nil, fmt.Errorf("Error while loading the index: %w", err)
 		}
 	}
@@ -81,8 +79,7 @@ func (partialIndex *Partial) createIndex() error {
 		metadata.SetRootNode(propertyIndex, index[property])
 	}
 
-	err = metadata.Save()
-	if err != nil {
+	if err := metadata.Save(); err != nil {
 		return err
 	}
 
@@ -93,8 +90,7 @@ func (partialIndex *Partial) createIndex() error {
 		return err
 	}
 	defer func() {
-		err := end()
-		if err != nil {
+		if err := end(); err != nil {
 			partialIndex.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
@@ -120,21 +116,14 @@ func (partialIndex *Partial) createIndex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			err = partialIndex.addValueToIndex(
-				index,
-				property,
-				value,
-				record.Position(),
-			)
-			if err != nil {
+			if err := partialIndex.addValueToIndex(index, property, value, record.Position()); err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
 	}
 
 	metadata.SetCompleted(true)
-	err = metadata.Save()
-	if err != nil {
+	if err := metadata.Save(); err != nil {
 		return err
 	}
 
@@ -168,12 +157,12 @@ func (partialIndex *Partial) loadIndex() error {
 		return err
 	}
 
-	err = metadata.AssertValid(partial.MetadataInput{
+	input := partial.MetadataInput{
 		Input:          partialIndex.input,
 		IgnoreCase:     *partialIndex.config.IgnoreCase,
 		RootNodesCount: len(partialIndex.config.Properties),
-	})
-	if err != nil {
+	}
+	if err := metadata.AssertValid(input); err != nil {
 		return err
 	}
 
@@ -200,8 +189,7 @@ func (partialIndex *Partial) addValueToIndex(
 ) error {
 	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
 		for _, valueArrayValue := range valueArray {
-			err := partialIndex.addValueToIndex(index, property, valueArrayValue, position)
-			if err != nil {
+			if err := partialIndex.addValueToIndex(index, property, valueArrayValue, position); err != nil {
 				return err
 			}
 		}
@@ -218,8 +206,7 @@ func (partialIndex *Partial) addValueToIndex(
 
 	root := index[property]
 	bytes := []byte(stringValue)
-	err := root.AddAllSequences(bytes, position)
-	if err != nil {
+	if err := root.AddAllSequences(bytes, position); err != nil {
 		return err
 	}
 

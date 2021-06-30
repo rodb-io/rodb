@@ -46,20 +46,17 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	err := config.Limit.validate(rootConfig, log)
-	if err != nil {
+	if err := config.Limit.validate(rootConfig, log); err != nil {
 		return err
 	}
 
-	err = config.Offset.validate(rootConfig, log)
-	if err != nil {
+	if err := config.Offset.validate(rootConfig, log); err != nil {
 		return err
 	}
 
 	for configParamName, configParam := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonArray.parameters.%v.", configParamName)
-		err := configParam.validate(rootConfig, log, logPrefix, input)
-		if err != nil {
+		if err := configParam.validate(rootConfig, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -73,8 +70,7 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonArray.relationships.%v.", relationshipIndex)
-		err := relationship.validate(rootConfig, log, logPrefix)
-		if err != nil {
+		if err := relationship.validate(rootConfig, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}

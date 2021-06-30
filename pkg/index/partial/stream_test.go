@@ -127,8 +127,7 @@ func TestStreamReplace(t *testing.T) {
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		err := stream.Replace(6, []byte("World!"))
-		if err != nil {
+		if err := stream.Replace(6, []byte("World!")); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -146,8 +145,7 @@ func TestStreamReplace(t *testing.T) {
 		}
 	})
 	t.Run("longer", func(t *testing.T) {
-		err := stream.Replace(6, []byte("World!!"))
-		if err != nil {
+		if err := stream.Replace(6, []byte("World!!")); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 

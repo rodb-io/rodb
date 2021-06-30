@@ -44,12 +44,7 @@ func NewJsonArray(
 	}
 
 	for _, relationship := range jsonArray.config.Relationships {
-		err := checkRelationshipMatches(
-			jsonArray.inputs,
-			relationship,
-			jsonArray.input,
-		)
-		if err != nil {
+		if err := checkRelationshipMatches(jsonArray.inputs, relationship, jsonArray.input); err != nil {
 			return nil, err
 		}
 	}

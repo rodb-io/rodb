@@ -44,8 +44,7 @@ func (config *Relationship) validate(
 
 	alreadyExistingSortProperties := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
-		err := sort.validate(rootConfig, input, log, "jsonObject.relationships[].sort.")
-		if err != nil {
+		if err := sort.validate(rootConfig, input, log, "jsonObject.relationships[].sort."); err != nil {
 			return fmt.Errorf("sort.%v.%w", sortIndex, err)
 		}
 
@@ -58,13 +57,7 @@ func (config *Relationship) validate(
 	alreadyExistingChildProperty := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		logPrefix := fmt.Sprintf("match.%v.", matchIndex)
-		err := match.validate(
-			rootConfig,
-			log,
-			logPrefix,
-			input,
-		)
-		if err != nil {
+		if err := match.validate(rootConfig, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -76,8 +69,7 @@ func (config *Relationship) validate(
 
 	for relationshipName, relationship := range config.Relationships {
 		newPrefix := fmt.Sprintf("relationships.%v.", relationshipName)
-		err := relationship.validate(rootConfig, log, logPrefix+newPrefix)
-		if err != nil {
+		if err := relationship.validate(rootConfig, log, logPrefix+newPrefix); err != nil {
 			return fmt.Errorf("%v%w", newPrefix, err)
 		}
 	}

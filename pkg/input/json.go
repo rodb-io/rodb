@@ -52,8 +52,7 @@ func NewJson(config *configModule.JsonInput) (*Json, error) {
 		return nil, err
 	}
 
-	err = jsonInput.watcher.Add(config.Path)
-	if err != nil {
+	if err := jsonInput.watcher.Add(config.Path); err != nil {
 		return nil, err
 	}
 
@@ -78,8 +77,7 @@ func (jsonInput *Json) Get(position record.Position) (record.Record, error) {
 	jsonDecoder := json.NewDecoder(jsonInput.reader)
 
 	var data map[string]interface{}
-	err = jsonDecoder.Decode(&data)
-	if err != nil {
+	if err := jsonDecoder.Decode(&data); err != nil {
 		return nil, fmt.Errorf("Cannot read json data: %w", err)
 	}
 
@@ -137,8 +135,7 @@ func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
 		position := jsonDecoder.InputOffset()
 
 		var data map[string]interface{}
-		err = jsonDecoder.Decode(&data)
-		if err == io.EOF {
+		if err := jsonDecoder.Decode(&data); err == io.EOF {
 			return nil, nil
 		} else if err != nil {
 			return nil, fmt.Errorf("Cannot read json data: %w", err)
@@ -161,18 +158,15 @@ func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
 }
 
 func (jsonInput *Json) Close() error {
-	err := jsonInput.watcher.Remove(jsonInput.config.Path)
-	if err != nil {
+	if err := jsonInput.watcher.Remove(jsonInput.config.Path); err != nil {
 		return err
 	}
 
-	err = jsonInput.watcher.Close()
-	if err != nil {
+	if err := jsonInput.watcher.Close(); err != nil {
 		return err
 	}
 
-	err = jsonInput.jsonFile.Close()
-	if err != nil {
+	if err := jsonInput.jsonFile.Close(); err != nil {
 		return err
 	}
 

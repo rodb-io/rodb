@@ -33,8 +33,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 	yamlConfigWithEnv := []byte(os.ExpandEnv(string(configData)))
 
 	parsedConfig := &configParser{}
-	err = yaml.UnmarshalStrict(yamlConfigWithEnv, parsedConfig)
-	if err != nil {
+	if err := yaml.UnmarshalStrict(yamlConfigWithEnv, parsedConfig); err != nil {
 		return nil, fmt.Errorf("Cannot parse config file %v: %w", configPath, err)
 	}
 
@@ -45,8 +44,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 	config.addDefaultConfigs(log)
 
-	err = config.validate(config, log)
-	if err != nil {
+	if err := config.validate(config, log); err != nil {
 		return nil, err
 	}
 

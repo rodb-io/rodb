@@ -6,8 +6,7 @@ import (
 
 func GetTypeFromConfigUnmarshaler(unmarshal func(interface{}) error) (string, error) {
 	asMap := map[string]interface{}{}
-	err := unmarshal(asMap)
-	if err != nil {
+	if err := unmarshal(asMap); err != nil {
 		return "", err
 	}
 

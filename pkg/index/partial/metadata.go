@@ -72,8 +72,7 @@ func LoadMetadata(stream *Stream) (*Metadata, error) {
 		return nil, err
 	}
 
-	err = metadata.Unserialize(reader)
-	if err != nil {
+	if err := metadata.Unserialize(reader); err != nil {
 		return nil, err
 	}
 
@@ -95,32 +94,31 @@ func (metadata *Metadata) GetRootNode(index int) (*TreeNode, error) {
 }
 
 func (metadata *Metadata) Serialize() ([]byte, error) {
-	var err error
 	buffer := &bytes.Buffer{}
 
-	if err = binary.Write(buffer, binary.BigEndian, metadata.magicBytes); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, metadata.magicBytes); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, metadata.version); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, metadata.version); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, int64(metadata.inputFileModificationTime.Unix())); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, int64(metadata.inputFileModificationTime.Unix())); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, metadata.inputFileSize); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, metadata.inputFileSize); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, metadata.ignoreCase); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, metadata.ignoreCase); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, metadata.completed); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, metadata.completed); err != nil {
 		return nil, err
 	}
-	if err = binary.Write(buffer, binary.BigEndian, int64(len(metadata.rootNodeOffsets))); err != nil {
+	if err := binary.Write(buffer, binary.BigEndian, int64(len(metadata.rootNodeOffsets))); err != nil {
 		return nil, err
 	}
 	for _, offset := range metadata.rootNodeOffsets {
-		if err = binary.Write(buffer, binary.BigEndian, offset); err != nil {
+		if err := binary.Write(buffer, binary.BigEndian, offset); err != nil {
 			return nil, err
 		}
 	}
@@ -129,40 +127,38 @@ func (metadata *Metadata) Serialize() ([]byte, error) {
 }
 
 func (metadata *Metadata) Unserialize(data io.Reader) error {
-	var err error
-
 	metadata.magicBytes = make([]byte, len(ExpectedMagicBytes))
-	if err = binary.Read(data, binary.BigEndian, &metadata.magicBytes); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &metadata.magicBytes); err != nil {
 		return err
 	}
 
-	if err = binary.Read(data, binary.BigEndian, &metadata.version); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &metadata.version); err != nil {
 		return err
 	}
 
 	var inputFileModificationTimeUnix int64
-	if err = binary.Read(data, binary.BigEndian, &inputFileModificationTimeUnix); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &inputFileModificationTimeUnix); err != nil {
 		return err
 	}
 	metadata.inputFileModificationTime = time.Unix(inputFileModificationTimeUnix, 0)
 
-	if err = binary.Read(data, binary.BigEndian, &metadata.inputFileSize); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &metadata.inputFileSize); err != nil {
 		return err
 	}
-	if err = binary.Read(data, binary.BigEndian, &metadata.ignoreCase); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &metadata.ignoreCase); err != nil {
 		return err
 	}
-	if err = binary.Read(data, binary.BigEndian, &metadata.completed); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &metadata.completed); err != nil {
 		return err
 	}
 
 	var rootNodeOffsetCount int64
-	if err = binary.Read(data, binary.BigEndian, &rootNodeOffsetCount); err != nil {
+	if err := binary.Read(data, binary.BigEndian, &rootNodeOffsetCount); err != nil {
 		return err
 	}
 	metadata.rootNodeOffsets = make([]TreeNodeOffset, int(rootNodeOffsetCount))
 	for i := int64(0); i < rootNodeOffsetCount; i++ {
-		if err = binary.Read(data, binary.BigEndian, &metadata.rootNodeOffsets[i]); err != nil {
+		if err := binary.Read(data, binary.BigEndian, &metadata.rootNodeOffsets[i]); err != nil {
 			return err
 		}
 	}
@@ -176,8 +172,7 @@ func (metadata *Metadata) Save() error {
 		return err
 	}
 
-	err = metadata.stream.Replace(0, serialized)
-	if err != nil {
+	if err := metadata.stream.Replace(0, serialized); err != nil {
 		return err
 	}
 

@@ -40,16 +40,14 @@ func (config *JsonObjectOutput) validate(rootConfig *Config, log *logrus.Entry) 
 
 	for parameterName, parameter := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonObject.parameters.%v.", parameterName)
-		err := parameter.validate(rootConfig, log, logPrefix, input)
-		if err != nil {
+		if err := parameter.validate(rootConfig, log, logPrefix, input); err != nil {
 			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterName, err)
 		}
 	}
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonObject.relationships.%v.", relationshipIndex)
-		err := relationship.validate(rootConfig, log, logPrefix)
-		if err != nil {
+		if err := relationship.validate(rootConfig, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}

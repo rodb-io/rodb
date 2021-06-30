@@ -80,8 +80,7 @@ func TestJsonArrayHandler(t *testing.T) {
 		}
 
 		data := []interface{}{}
-		err = json.Unmarshal(bytesOutput, &data)
-		if err != nil {
+		if err := json.Unmarshal(bytesOutput, &data); err != nil {
 			return nil, err
 		}
 

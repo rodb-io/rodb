@@ -57,14 +57,12 @@ func NewCsv(
 	csvInput.csvFile = file
 	csvInput.csvReader = csvReader
 
-	err = csvInput.watcher.Add(config.Path)
-	if err != nil {
+	if err := csvInput.watcher.Add(config.Path); err != nil {
 		return nil, err
 	}
 
 	if config.AutodetectColumns {
-		err := csvInput.autodetectColumns()
-		if err != nil {
+		if err := csvInput.autodetectColumns(); err != nil {
 			return nil, err
 		}
 	}
@@ -89,12 +87,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	csvInput.readerLock.Lock()
 	defer csvInput.readerLock.Unlock()
 
-	err := util.SetBufferedReaderOffset(
-		csvInput.reader,
-		csvInput.readerBuffer,
-		position,
-	)
-	if err != nil {
+	if err := util.SetBufferedReaderOffset(csvInput.reader, csvInput.readerBuffer, position); err != nil {
 		return nil, err
 	}
 
@@ -102,7 +95,6 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 	if err != nil {
 		if errors.Is(err, csv.ErrFieldCount) {
 			csvInput.config.Logger.Warnf("Expected %v columns in csv, got %+v", len(csvInput.config.Columns), row)
-			err = nil
 		} else {
 			return nil, fmt.Errorf("Cannot read csv data: %w", err)
 		}
@@ -230,18 +222,15 @@ func (csvInput *Csv) IterateAll() (record.Iterator, func() error, error) {
 }
 
 func (csvInput *Csv) Close() error {
-	err := csvInput.watcher.Remove(csvInput.config.Path)
-	if err != nil {
+	if err := csvInput.watcher.Remove(csvInput.config.Path); err != nil {
 		return err
 	}
 
-	err = csvInput.watcher.Close()
-	if err != nil {
+	if err := csvInput.watcher.Close(); err != nil {
 		return err
 	}
 
-	err = csvInput.csvFile.Close()
-	if err != nil {
+	if err := csvInput.csvFile.Close(); err != nil {
 		return err
 	}
 

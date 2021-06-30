@@ -49,8 +49,7 @@ func NewFromConfigs(
 
 func Wait(services List) error {
 	for serviceName, service := range services {
-		err := service.Wait()
-		if err != nil {
+		if err := service.Wait(); err != nil {
 			return fmt.Errorf("%v service: %w", serviceName, err)
 		}
 	}
@@ -60,8 +59,7 @@ func Wait(services List) error {
 
 func Close(services List) error {
 	for _, service := range services {
-		err := service.Close()
-		if err != nil {
+		if err := service.Close(); err != nil {
 			return err
 		}
 	}

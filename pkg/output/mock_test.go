@@ -105,8 +105,7 @@ func TestMockClose(t *testing.T) {
 		parser := parser.NewMock()
 		mock := NewMock(parser)
 
-		err := mock.Close()
-		if err != nil {
+		if err := mock.Close(); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 	})

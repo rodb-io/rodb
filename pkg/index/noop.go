@@ -84,8 +84,7 @@ func (noop *Noop) GetRecordPositions(
 		}
 
 		closed = true
-		err := end()
-		if err != nil {
+		if err := end(); err != nil {
 			return nil, fmt.Errorf("Error while closing input iterator: %w", err)
 		}
 

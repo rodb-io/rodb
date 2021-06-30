@@ -89,8 +89,7 @@ func TestHttp(t *testing.T) {
 		}
 
 		jsonBody := map[string]string{}
-		err = json.Unmarshal(body, &jsonBody)
-		if err != nil {
+		if err := json.Unmarshal(body, &jsonBody); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 

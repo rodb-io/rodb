@@ -20,12 +20,7 @@ func checkRelationshipMatches(
 			return fmt.Errorf("Input '%v' not found in inputs list.", relationship.Input)
 		}
 
-		err := checkRelationshipMatches(
-			inputs,
-			relationship,
-			relationshipInput,
-		)
-		if err != nil {
+		if err := checkRelationshipMatches(inputs, relationship, relationshipInput); err != nil {
 			return err
 		}
 	}

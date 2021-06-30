@@ -96,8 +96,7 @@ func TestJsonObjectHandler(t *testing.T) {
 		}
 
 		data := map[string]interface{}{}
-		err = json.Unmarshal(bytesOutput, &data)
-		if err != nil {
+		if err := json.Unmarshal(bytesOutput, &data); err != nil {
 			return nil, err
 		}
 

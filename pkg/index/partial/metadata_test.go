@@ -82,7 +82,7 @@ func TestMetadataNewMetadata(t *testing.T) {
 func TestMetadataLoadMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		stream := createTestStream(t)
-		err := stream.Replace(0, append([]byte(ExpectedMagicBytes), []byte{
+		data := append([]byte(ExpectedMagicBytes), []byte{
 			0, 0x1, // version
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
@@ -92,8 +92,8 @@ func TestMetadataLoadMetadata(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsets[2]
-		}...))
-		if err != nil {
+		}...)
+		if err := stream.Replace(0, data); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -176,7 +176,7 @@ func TestMetadataUnserialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		metadata := Metadata{}
 
-		err := metadata.Unserialize(bytes.NewReader(append([]byte(ExpectedMagicBytes), []byte{
+		data := bytes.NewReader(append([]byte(ExpectedMagicBytes), []byte{
 			0, 0x1, // version
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2, // inputFileModificationTime
 			0, 0, 0, 0, 0, 0, 0, 0x2A, // inputFileSize
@@ -186,8 +186,8 @@ func TestMetadataUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x1, // rootNodeOffsets[0]
 			0, 0, 0, 0, 0, 0, 0, 0x2, // rootNodeOffsets[1]
 			0, 0, 0, 0, 0, 0, 0, 0x3, // rootNodeOffsets[2]
-		}...)))
-		if err != nil {
+		}...))
+		if err := metadata.Unserialize(data); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -238,8 +238,7 @@ func TestMetadataUnserialize(t *testing.T) {
 		}
 
 		metadata := Metadata{}
-		err = metadata.Unserialize(bytes.NewReader(serialized))
-		if err != nil {
+		if err := metadata.Unserialize(bytes.NewReader(serialized)); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 

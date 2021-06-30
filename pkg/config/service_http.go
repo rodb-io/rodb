@@ -53,22 +53,19 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		return errors.New("At least one of the http or https property is required.")
 	}
 	if config.Http != nil {
-		err := config.Http.validate(rootConfig, log)
-		if err != nil {
+		if err := config.Http.validate(rootConfig, log); err != nil {
 			return fmt.Errorf("http.%w", err)
 		}
 	}
 	if config.Https != nil {
-		err := config.Https.validate(rootConfig, log)
-		if err != nil {
+		if err := config.Https.validate(rootConfig, log); err != nil {
 			return fmt.Errorf("https.%w", err)
 		}
 	}
 
 	alreadyExistingPaths := make(map[string]bool)
 	for i, routeConfig := range config.Routes {
-		err := routeConfig.validate(rootConfig, log)
-		if err != nil {
+		if err := routeConfig.validate(rootConfig, log); err != nil {
 			return fmt.Errorf("http.route[%v].%w", i, err)
 		}
 

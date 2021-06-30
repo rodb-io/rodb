@@ -40,8 +40,7 @@ func main() {
 		return
 	}
 	defer (func() {
-		err := parser.Close(parsers)
-		if err != nil {
+		if err := parser.Close(parsers); err != nil {
 			log.Errorf("Error closing parsers: %v", err)
 		}
 	})()
@@ -52,8 +51,7 @@ func main() {
 		return
 	}
 	defer (func() {
-		err := input.Close(inputs)
-		if err != nil {
+		if err := input.Close(inputs); err != nil {
 			log.Errorf("Error closing inputs: %v", err)
 		}
 	})()
@@ -64,8 +62,7 @@ func main() {
 		return
 	}
 	defer (func() {
-		err := index.Close(indexes)
-		if err != nil {
+		if err := index.Close(indexes); err != nil {
 			log.Errorf("Error closing inputs: %v", err)
 		}
 	})()
@@ -76,8 +73,7 @@ func main() {
 		return
 	}
 	defer (func() {
-		err := output.Close(outputs)
-		if err != nil {
+		if err := output.Close(outputs); err != nil {
 			log.Errorf("Error closing outputs: %v", err)
 		}
 	})()
@@ -93,14 +89,12 @@ func main() {
 		signal := <-signals
 		log.Printf("Received signal '%v'. Shutting down...", signal.String())
 
-		err := service.Close(services)
-		if err != nil {
+		if err := service.Close(services); err != nil {
 			log.Errorf("Error closing services: %v", err)
 		}
 	})()
 
-	err = service.Wait(services)
-	if err != nil {
+	if err := service.Wait(services); err != nil {
 		log.Error(err)
 		return
 	}

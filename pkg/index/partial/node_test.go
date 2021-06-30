@@ -108,7 +108,7 @@ func TestTreeNodeSerialize(t *testing.T) {
 func TestTreeNodeUnserialize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		node := TreeNode{}
-		err := node.Unserialize([]byte{
+		data := []byte{
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0, 0x02,
 			0, 0, 0, 0, 0, 0, 0, 0x03,
@@ -116,8 +116,8 @@ func TestTreeNodeUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0xFF,
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
-		})
-		if err != nil {
+		}
+		if err := node.Unserialize(data); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 		if expect, got := TreeNodeValueOffset(1), node.valueOffset; expect != got {
@@ -158,8 +158,7 @@ func TestTreeNodeUnserialize(t *testing.T) {
 		}
 
 		list2 := TreeNode{}
-		err = list2.Unserialize(serialized)
-		if err != nil {
+		if err := list2.Unserialize(serialized); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -290,8 +289,7 @@ func TestTreeNodeAppendChild(t *testing.T) {
 		node := createTestNode(t, stream, []byte("A"))
 		newChild := createTestNode(t, stream, []byte("B"))
 
-		err := node.AppendChild(newChild)
-		if err != nil {
+		if err := node.AppendChild(newChild); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -320,8 +318,7 @@ func TestTreeNodeAppendChild(t *testing.T) {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		err := node.AppendChild(newChild)
-		if err != nil {
+		if err := node.AppendChild(newChild); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -332,7 +329,7 @@ func TestTreeNodeAppendChild(t *testing.T) {
 			t.Fatalf("Expected to have C as last child offset, got %+v", node.lastChildOffset)
 		}
 
-		child, err = node.FirstChild()
+		child, err := node.FirstChild()
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -434,8 +431,7 @@ func TestTreeNodeAppendPositionIfNotExists(t *testing.T) {
 	t.Run("no positions", func(t *testing.T) {
 		stream := createTestStream(t)
 		node := createTestNode(t, stream, []byte(""))
-		err := node.AppendPositionIfNotExists(1)
-		if err != nil {
+		if err := node.AppendPositionIfNotExists(1); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -468,8 +464,7 @@ func TestTreeNodeAppendPositionIfNotExists(t *testing.T) {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		err = node.AppendPositionIfNotExists(2)
-		if err != nil {
+		if err := node.AppendPositionIfNotExists(2); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -510,8 +505,7 @@ func TestTreeNodeAppendPositionIfNotExists(t *testing.T) {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		err = node.AppendPositionIfNotExists(1)
-		if err != nil {
+		if err := node.AppendPositionIfNotExists(1); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -538,8 +532,7 @@ func TestTreeNodeAddSingleSequence(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
 
-		err := root.AddSingleSequence([]byte("FOO"), 1)
-		if err != nil {
+		if err := root.AddSingleSequence([]byte("FOO"), 1); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -575,12 +568,10 @@ func TestTreeNodeAddSingleSequence(t *testing.T) {
 	t.Run("new suffix to existing node", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
-		err := root.AddSingleSequence([]byte("FOO"), 1)
-		if err != nil {
+		if err := root.AddSingleSequence([]byte("FOO"), 1); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
-		err = root.AddSingleSequence([]byte("FOOT"), 2)
-		if err != nil {
+		if err := root.AddSingleSequence([]byte("FOOT"), 2); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
@@ -637,12 +628,10 @@ func TestTreeNodeAddSingleSequence(t *testing.T) {
 	t.Run("splitting existing node", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
-		err := root.AddSingleSequence([]byte("FOO"), 1)
-		if err != nil {
+		if err := root.AddSingleSequence([]byte("FOO"), 1); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
-		err = root.AddSingleSequence([]byte("FORMAT"), 2)
-		if err != nil {
+		if err := root.AddSingleSequence([]byte("FORMAT"), 2); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
