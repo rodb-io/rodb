@@ -265,13 +265,36 @@ func (node *TreeNode) AppendPositionIfNotExists(position record.Position) error 
 	return nil
 }
 
-func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error {
-	// TODO should not add this everytime
+func (node *TreeNode) AddSingleSequence(bytes []byte, position record.Position) error {
 	bytesOffset, err := node.stream.Add(bytes)
 	if err != nil {
 		return err
 	}
 
+	return node.addSequence(bytes, bytesOffset, position)
+}
+
+func (node *TreeNode) AddAllSequences(bytes []byte, position record.Position) error {
+	bytesOffset, err := node.stream.Add(bytes)
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(bytes); i++ {
+		err := node.addSequence(bytes[i:], bytesOffset+int64(i), position)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (node *TreeNode) addSequence(
+	bytes []byte,
+	bytesOffsetInStream int64,
+	position record.Position,
+) error {
 	parentNode := node
 	currentPosition := int64(0)
 	for {
@@ -297,7 +320,7 @@ func (node *TreeNode) AddSequence(bytes []byte, position record.Position) error 
 				return err
 			}
 
-			newNode.valueOffset = TreeNodeValueOffset(bytesOffset + int64(currentPosition))
+			newNode.valueOffset = TreeNodeValueOffset(bytesOffsetInStream + int64(currentPosition))
 			newNode.valueLength = int64(len(remainingBytes))
 			newNode.nextSiblingOffset = 0
 			newNode.firstChildOffset = 0

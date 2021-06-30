@@ -533,12 +533,12 @@ func TestTreeNodeAppendPositionIfNotExists(t *testing.T) {
 	})
 }
 
-func TestTreeNodeAddSequence(t *testing.T) {
+func TestTreeNodeAddSingleSequence(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
 
-		err := root.AddSequence([]byte("FOO"), 1)
+		err := root.AddSingleSequence([]byte("FOO"), 1)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -575,11 +575,11 @@ func TestTreeNodeAddSequence(t *testing.T) {
 	t.Run("new suffix to existing node", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
-		err := root.AddSequence([]byte("FOO"), 1)
+		err := root.AddSingleSequence([]byte("FOO"), 1)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
-		err = root.AddSequence([]byte("FOOT"), 2)
+		err = root.AddSingleSequence([]byte("FOOT"), 2)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -637,11 +637,11 @@ func TestTreeNodeAddSequence(t *testing.T) {
 	t.Run("splitting existing node", func(t *testing.T) {
 		stream := createTestStream(t)
 		root := createTestNode(t, stream, []byte(""))
-		err := root.AddSequence([]byte("FOO"), 1)
+		err := root.AddSingleSequence([]byte("FOO"), 1)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
-		err = root.AddSequence([]byte("FORMAT"), 2)
+		err = root.AddSingleSequence([]byte("FORMAT"), 2)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -744,7 +744,7 @@ func TestTreeNodeGetSequence(t *testing.T) {
 
 	addSequences := func(t *testing.T, bytes []byte, position record.Position) {
 		for i := 0; i < len(bytes); i++ {
-			if err := root.AddSequence(bytes[i:], position); err != nil {
+			if err := root.AddSingleSequence(bytes[i:], position); err != nil {
 				t.Fatalf("Unexpected error: '%+v'", err)
 			}
 		}
