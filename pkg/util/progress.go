@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"math"
 	"time"
@@ -27,7 +28,11 @@ func TrackProgress(
 		if totalSize != 0 {
 			if now := time.Now(); now.After(nextProgress) {
 				progress := float64(position) / float64(totalSize)
-				logger.Infof("Indexing progress: %d%%", int(math.Floor(progress*100)))
+				progressPercent := fmt.Sprintf("%d%%", int(math.Floor(progress*100)))
+				logger.
+					WithField("progress", progressPercent).
+					WithField("offset", position).
+					Infof("Indexing...")
 				nextProgress = now.Add(time.Second)
 			}
 		}
