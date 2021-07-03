@@ -8,7 +8,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
@@ -17,7 +17,7 @@ import (
 )
 
 type Csv struct {
-	config        *configModule.CsvInput
+	config        *configPackage.CsvInput
 	reader        io.ReadSeeker
 	readerLock    sync.Mutex
 	csvFile       *os.File
@@ -28,7 +28,7 @@ type Csv struct {
 }
 
 func NewCsv(
-	config *configModule.CsvInput,
+	config *configPackage.CsvInput,
 	parsers parser.List,
 ) (*Csv, error) {
 	watcher, err := fsnotify.NewWatcher()
@@ -133,7 +133,7 @@ func (csvInput *Csv) autodetectColumns() error {
 	}
 
 	alreadyExistingNames := make(map[string]bool)
-	csvInput.config.Columns = make([]*configModule.CsvInputColumn, len(firstRow))
+	csvInput.config.Columns = make([]*configPackage.CsvInputColumn, len(firstRow))
 	csvInput.config.ColumnIndexByName = make(map[string]int)
 	for columnIndex, columnName := range firstRow {
 		if columnName == "" {
@@ -145,7 +145,7 @@ func (csvInput *Csv) autodetectColumns() error {
 		}
 		alreadyExistingNames[columnName] = true
 
-		csvInput.config.Columns[columnIndex] = &configModule.CsvInputColumn{
+		csvInput.config.Columns[columnIndex] = &configPackage.CsvInputColumn{
 			Name:   columnName,
 			Parser: "string",
 		}

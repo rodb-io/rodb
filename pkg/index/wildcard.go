@@ -5,7 +5,7 @@ import (
 	"os"
 	"reflect"
 	"rodb.io/pkg/config"
-	wildcardModule "rodb.io/pkg/index/wildcard"
+	wildcardPackage "rodb.io/pkg/index/wildcard"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
@@ -15,7 +15,7 @@ import (
 type Wildcard struct {
 	config *config.WildcardIndex
 	input  input.Input
-	index  map[string]*wildcardModule.TreeNode
+	index  map[string]*wildcardPackage.TreeNode
 }
 
 func NewWildcard(
@@ -58,9 +58,9 @@ func (wildcard *Wildcard) createIndex() error {
 		return err
 	}
 
-	indexStream := wildcardModule.NewStream(indexFile, 0)
+	indexStream := wildcardPackage.NewStream(indexFile, 0)
 
-	metadata, err := wildcardModule.NewMetadata(indexStream, wildcardModule.MetadataInput{
+	metadata, err := wildcardPackage.NewMetadata(indexStream, wildcardPackage.MetadataInput{
 		Input:          wildcard.input,
 		IgnoreCase:     *wildcard.config.IgnoreCase,
 		RootNodesCount: len(wildcard.config.Properties),
@@ -69,9 +69,9 @@ func (wildcard *Wildcard) createIndex() error {
 		return err
 	}
 
-	index := make(map[string]*wildcardModule.TreeNode)
+	index := make(map[string]*wildcardPackage.TreeNode)
 	for propertyIndex, property := range wildcard.config.Properties {
-		index[property], err = wildcardModule.NewEmptyTreeNode(indexStream)
+		index[property], err = wildcardPackage.NewEmptyTreeNode(indexStream)
 		if err != nil {
 			return err
 		}
@@ -150,14 +150,14 @@ func (wildcard *Wildcard) loadIndex() error {
 		return err
 	}
 
-	indexStream := wildcardModule.NewStream(indexFile, indexFileStat.Size())
+	indexStream := wildcardPackage.NewStream(indexFile, indexFileStat.Size())
 
-	metadata, err := wildcardModule.LoadMetadata(indexStream)
+	metadata, err := wildcardPackage.LoadMetadata(indexStream)
 	if err != nil {
 		return err
 	}
 
-	input := wildcardModule.MetadataInput{
+	input := wildcardPackage.MetadataInput{
 		Input:          wildcard.input,
 		IgnoreCase:     *wildcard.config.IgnoreCase,
 		RootNodesCount: len(wildcard.config.Properties),
@@ -166,7 +166,7 @@ func (wildcard *Wildcard) loadIndex() error {
 		return err
 	}
 
-	index := make(map[string]*wildcardModule.TreeNode)
+	index := make(map[string]*wildcardPackage.TreeNode)
 	for propertyIndex, property := range wildcard.config.Properties {
 		index[property], err = metadata.GetRootNode(propertyIndex)
 		if err != nil {
@@ -182,7 +182,7 @@ func (wildcard *Wildcard) loadIndex() error {
 }
 
 func (wildcard *Wildcard) addValueToIndex(
-	index map[string]*wildcardModule.TreeNode,
+	index map[string]*wildcardPackage.TreeNode,
 	property string,
 	value interface{},
 	position record.Position,

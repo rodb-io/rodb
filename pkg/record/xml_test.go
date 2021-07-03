@@ -5,21 +5,21 @@ import (
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
 	"rodb.io/pkg/config"
-	parserModule "rodb.io/pkg/parser"
+	parserPackage "rodb.io/pkg/parser"
 	"testing"
 )
 
 func TestXmlAll(t *testing.T) {
-	booleanParser := parserModule.NewBoolean(&config.BooleanParser{
+	booleanParser := parserPackage.NewBoolean(&config.BooleanParser{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
 	})
-	floatParser := parserModule.NewFloat(&config.FloatParser{
+	floatParser := parserPackage.NewFloat(&config.FloatParser{
 		DecimalSeparator: ".",
 	})
-	integerParser := parserModule.NewInteger(&config.IntegerParser{})
-	jsonParser := parserModule.NewJson(&config.JsonParser{})
-	stringParser, err := parserModule.NewString(&config.StringParser{})
+	integerParser := parserPackage.NewInteger(&config.IntegerParser{})
+	jsonParser := parserPackage.NewJson(&config.JsonParser{})
+	stringParser, err := parserPackage.NewString(&config.StringParser{})
 	if err != nil {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
@@ -133,7 +133,7 @@ func TestXmlAll(t *testing.T) {
 		},
 	}
 
-	parsers := parserModule.List{
+	parsers := parserPackage.List{
 		"string":  stringParser,
 		"json":    jsonParser,
 		"boolean": booleanParser,
@@ -204,17 +204,17 @@ func TestXmlAll(t *testing.T) {
 }
 
 func TestXmlGet(t *testing.T) {
-	booleanParser := parserModule.NewBoolean(&config.BooleanParser{
+	booleanParser := parserPackage.NewBoolean(&config.BooleanParser{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
 	})
-	floatParser := parserModule.NewFloat(&config.FloatParser{
+	floatParser := parserPackage.NewFloat(&config.FloatParser{
 		DecimalSeparator: ".",
 	})
-	integerParser := parserModule.NewInteger(&config.IntegerParser{})
-	jsonParser := parserModule.NewJson(&config.JsonParser{})
-	mockParser := parserModule.NewMock()
-	stringParser, err := parserModule.NewString(&config.StringParser{})
+	integerParser := parserPackage.NewInteger(&config.IntegerParser{})
+	jsonParser := parserPackage.NewJson(&config.JsonParser{})
+	mockParser := parserPackage.NewMock()
+	stringParser, err := parserPackage.NewString(&config.StringParser{})
 	if err != nil {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
@@ -223,7 +223,7 @@ func TestXmlGet(t *testing.T) {
 	createRecord := func(
 		data []byte,
 		config *config.XmlInput,
-		parsers parserModule.List,
+		parsers parserPackage.List,
 	) *Xml {
 		node, err := xmlquery.Parse(bytes.NewReader(data))
 		if err != nil {
@@ -251,7 +251,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": mockParser},
+			parserPackage.List{"parser": mockParser},
 		)
 
 		got, err := record.Get(colName)
@@ -275,7 +275,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName)
@@ -299,7 +299,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": floatParser},
+			parserPackage.List{"parser": floatParser},
 		)
 
 		got, err := record.Get(colName)
@@ -323,7 +323,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": booleanParser},
+			parserPackage.List{"parser": booleanParser},
 		)
 
 		got, err := record.Get(colName)
@@ -347,7 +347,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName)
@@ -371,7 +371,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": floatParser},
+			parserPackage.List{"parser": floatParser},
 		)
 
 		got, err := record.Get(colName)
@@ -395,7 +395,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": mockParser},
+			parserPackage.List{"parser": mockParser},
 		)
 
 		_, err := record.Get(colName)
@@ -416,7 +416,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": booleanParser},
+			parserPackage.List{"parser": booleanParser},
 		)
 
 		got, err := record.Get(colName)
@@ -440,7 +440,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		_, err := record.Get(colName)
@@ -461,7 +461,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": mockParser},
+			parserPackage.List{"parser": mockParser},
 		)
 
 		_, err := record.Get(colName)
@@ -482,7 +482,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": mockParser},
+			parserPackage.List{"parser": mockParser},
 		)
 
 		_, err := record.Get("not_" + colName)
@@ -511,7 +511,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName + ".1")
@@ -546,7 +546,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName + ".prop")
@@ -577,7 +577,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": mockParser},
+			parserPackage.List{"parser": mockParser},
 		)
 
 		_, err := record.Get(colName)
@@ -605,7 +605,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		result, err := record.Get(colName)
@@ -647,7 +647,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		result, err := record.Get(colName)
@@ -674,7 +674,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": jsonParser},
+			parserPackage.List{"parser": jsonParser},
 		)
 
 		result, err := record.Get(colName + ".1")
@@ -700,7 +700,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": jsonParser},
+			parserPackage.List{"parser": jsonParser},
 		)
 
 		result, err := record.Get(colName + ".prop")
@@ -726,7 +726,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": jsonParser},
+			parserPackage.List{"parser": jsonParser},
 		)
 
 		result, err := record.Get(colName)
@@ -759,7 +759,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": jsonParser},
+			parserPackage.List{"parser": jsonParser},
 		)
 
 		result, err := record.Get(colName)
@@ -801,7 +801,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName + ".prop.1")
@@ -843,7 +843,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": integerParser},
+			parserPackage.List{"parser": integerParser},
 		)
 
 		got, err := record.Get(colName + ".1.prop")
@@ -870,7 +870,7 @@ func TestXmlGet(t *testing.T) {
 					},
 				},
 			},
-			parserModule.List{"parser": stringParser},
+			parserPackage.List{"parser": stringParser},
 		)
 
 		result, err := record.Get(colName)

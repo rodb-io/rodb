@@ -3,7 +3,7 @@ package output
 import (
 	"fmt"
 	"io"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
@@ -27,7 +27,7 @@ type Output interface {
 type List = map[string]Output
 
 func NewFromConfig(
-	config configModule.Output,
+	config configPackage.Output,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,
@@ -38,17 +38,17 @@ func NewFromConfig(
 	}
 
 	switch config.(type) {
-	case *configModule.JsonObjectOutput:
-		return NewJsonObject(config.(*configModule.JsonObjectOutput), inputs, defaultIndex, indexes, parsers)
-	case *configModule.JsonArrayOutput:
-		return NewJsonArray(config.(*configModule.JsonArrayOutput), inputs, defaultIndex, indexes, parsers)
+	case *configPackage.JsonObjectOutput:
+		return NewJsonObject(config.(*configPackage.JsonObjectOutput), inputs, defaultIndex, indexes, parsers)
+	case *configPackage.JsonArrayOutput:
+		return NewJsonArray(config.(*configPackage.JsonArrayOutput), inputs, defaultIndex, indexes, parsers)
 	default:
 		return nil, fmt.Errorf("Unknown output config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configModule.Output,
+	configs map[string]configPackage.Output,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,

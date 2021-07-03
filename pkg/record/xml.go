@@ -5,7 +5,7 @@ import (
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
 	"rodb.io/pkg/config"
-	parserModule "rodb.io/pkg/parser"
+	parserPackage "rodb.io/pkg/parser"
 	"strconv"
 	"strings"
 )
@@ -13,14 +13,14 @@ import (
 type Xml struct {
 	config   *config.XmlInput
 	node     *xmlquery.Node
-	parsers  parserModule.List
+	parsers  parserPackage.List
 	position Position
 }
 
 func NewXml(
 	config *config.XmlInput,
 	node *xmlquery.Node,
-	parsers parserModule.List,
+	parsers parserPackage.List,
 	position Position,
 ) (*Xml, error) {
 	return &Xml{
@@ -131,7 +131,7 @@ func (record *Xml) handleNodeIteratorValue(config *config.XmlInputProperty, node
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
 	}
 
-	if _, parserIsString := parser.(*parserModule.String); !parserIsString {
+	if _, parserIsString := parser.(*parserPackage.String); !parserIsString {
 		return nil, record.xpathError(config, fmt.Sprintf("got XML node(s), but the property does not have the appropriate configuration or a string parser"))
 	}
 
@@ -188,9 +188,9 @@ func (record *Xml) handleNumericValue(config *config.XmlInputProperty, value flo
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
 	}
 
-	if _, isFloatParser := parser.(*parserModule.Float); isFloatParser {
+	if _, isFloatParser := parser.(*parserPackage.Float); isFloatParser {
 		return value, nil
-	} else if _, isIntegerParser := parser.(*parserModule.Integer); isIntegerParser {
+	} else if _, isIntegerParser := parser.(*parserPackage.Integer); isIntegerParser {
 		return int(value), nil
 	} else {
 		return nil, record.xpathError(config, fmt.Sprintf("got a numeric value, but the property does not have a numeric parser"))
@@ -203,7 +203,7 @@ func (record *Xml) handleBoolValue(config *config.XmlInputProperty, value bool) 
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
 	}
 
-	if _, isBooleanParser := parser.(*parserModule.Boolean); isBooleanParser {
+	if _, isBooleanParser := parser.(*parserPackage.Boolean); isBooleanParser {
 		return value, nil
 	} else {
 		return nil, record.xpathError(config, fmt.Sprintf("got a boolean value, but the property does not have a boolean parser"))

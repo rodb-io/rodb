@@ -2,7 +2,7 @@ package index
 
 import (
 	"fmt"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 )
@@ -21,23 +21,23 @@ type Index interface {
 type List = map[string]Index
 
 func NewFromConfig(
-	config configModule.Index,
+	config configPackage.Index,
 	inputs input.List,
 ) (Index, error) {
 	switch config.(type) {
-	case *configModule.MapIndex:
-		return NewMap(config.(*configModule.MapIndex), inputs)
-	case *configModule.WildcardIndex:
-		return NewWildcard(config.(*configModule.WildcardIndex), inputs)
-	case *configModule.NoopIndex:
-		return NewNoop(config.(*configModule.NoopIndex), inputs), nil
+	case *configPackage.MapIndex:
+		return NewMap(config.(*configPackage.MapIndex), inputs)
+	case *configPackage.WildcardIndex:
+		return NewWildcard(config.(*configPackage.WildcardIndex), inputs)
+	case *configPackage.NoopIndex:
+		return NewNoop(config.(*configPackage.NoopIndex), inputs), nil
 	default:
 		return nil, fmt.Errorf("Unknown index config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configModule.Index,
+	configs map[string]configPackage.Index,
 	inputs input.List,
 ) (List, error) {
 	indexes := make(List)

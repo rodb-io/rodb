@@ -8,7 +8,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
@@ -23,7 +23,7 @@ var xmlParserOptions = xmlquery.ParserOptions{
 }
 
 type Xml struct {
-	config       *configModule.XmlInput
+	config       *configPackage.XmlInput
 	reader       io.ReadSeeker
 	readerBuffer *bufio.Reader
 	readerLock   sync.Mutex
@@ -40,7 +40,7 @@ type xmlTempRecordNode struct {
 }
 
 func NewXml(
-	config *configModule.XmlInput,
+	config *configPackage.XmlInput,
 	parsers parser.List,
 ) (*Xml, error) {
 	watcher, err := fsnotify.NewWatcher()

@@ -6,7 +6,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
@@ -14,14 +14,14 @@ import (
 )
 
 type Json struct {
-	config     *configModule.JsonInput
+	config     *configPackage.JsonInput
 	reader     io.ReadSeeker
 	readerLock sync.Mutex
 	jsonFile   *os.File
 	watcher    *fsnotify.Watcher
 }
 
-func NewJson(config *configModule.JsonInput) (*Json, error) {
+func NewJson(config *configPackage.JsonInput) (*Json, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, err

@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	configModule "rodb.io/pkg/config"
+	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/output"
 )
 
@@ -17,19 +17,19 @@ type Service interface {
 type List = map[string]Service
 
 func NewFromConfig(
-	config configModule.Service,
+	config configPackage.Service,
 	outputs map[string]output.Output,
 ) (Service, error) {
 	switch config.(type) {
-	case *configModule.HttpService:
-		return NewHttp(config.(*configModule.HttpService), outputs)
+	case *configPackage.HttpService:
+		return NewHttp(config.(*configPackage.HttpService), outputs)
 	default:
 		return nil, fmt.Errorf("Unknown service config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configModule.Service,
+	configs map[string]configPackage.Service,
 	outputs map[string]output.Output,
 	log *logrus.Logger,
 ) (List, error) {

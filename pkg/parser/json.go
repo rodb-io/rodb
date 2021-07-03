@@ -1,7 +1,7 @@
 package parser
 
 import (
-	jsonModule "encoding/json"
+	jsonPackage "encoding/json"
 	"rodb.io/pkg/config"
 )
 
@@ -31,6 +31,6 @@ func (json *Json) GetRegexpPattern() string {
 
 func (json *Json) Parse(value string) (interface{}, error) {
 	var data interface{}
-	err := jsonModule.Unmarshal([]byte(value), &data)
+	err := jsonPackage.Unmarshal([]byte(value), &data)
 	return data, err
 }

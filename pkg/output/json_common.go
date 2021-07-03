@@ -3,16 +3,16 @@ package output
 import (
 	"errors"
 	"fmt"
-	configModule "rodb.io/pkg/config"
-	indexModule "rodb.io/pkg/index"
-	inputModule "rodb.io/pkg/input"
-	recordModule "rodb.io/pkg/record"
+	configPackage "rodb.io/pkg/config"
+	indexPackage "rodb.io/pkg/index"
+	inputPackage "rodb.io/pkg/input"
+	recordPackage "rodb.io/pkg/record"
 )
 
 func checkRelationshipMatches(
-	inputs inputModule.List,
-	relationship *configModule.Relationship,
-	parentInput inputModule.Input,
+	inputs inputPackage.List,
+	relationship *configPackage.Relationship,
+	parentInput inputPackage.Input,
 ) error {
 	for _, relationship := range relationship.Relationships {
 		relationshipInput, inputExists := inputs[relationship.Input]
@@ -30,7 +30,7 @@ func checkRelationshipMatches(
 
 func getRelationshipFiltersPerIndex(
 	data map[string]interface{},
-	matchConfig []*configModule.RelationshipMatch,
+	matchConfig []*configPackage.RelationshipMatch,
 	relationshipName string,
 ) (map[string]map[string]interface{}, error) {
 	filtersPerIndex := map[string]map[string]interface{}{}
@@ -53,11 +53,11 @@ func getRelationshipFiltersPerIndex(
 }
 
 func getFilteredRecordPositionsPerIndex(
-	defaultIndex indexModule.Index,
-	indexes indexModule.List,
-	input inputModule.Input,
+	defaultIndex indexPackage.Index,
+	indexes indexPackage.List,
+	input inputPackage.Input,
 	filtersPerIndex map[string]map[string]interface{},
-) ([]recordModule.PositionIterator, error) {
+) ([]recordPackage.PositionIterator, error) {
 	if len(filtersPerIndex) == 0 {
 		iterator, err := defaultIndex.GetRecordPositions(
 			input,
@@ -67,10 +67,10 @@ func getFilteredRecordPositionsPerIndex(
 			return nil, err
 		}
 
-		return []recordModule.PositionIterator{iterator}, nil
+		return []recordPackage.PositionIterator{iterator}, nil
 	}
 
-	iterators := make([]recordModule.PositionIterator, 0, len(filtersPerIndex))
+	iterators := make([]recordPackage.PositionIterator, 0, len(filtersPerIndex))
 	for indexName, filters := range filtersPerIndex {
 		index, indexExists := indexes[indexName]
 		if !indexExists {
@@ -90,10 +90,10 @@ func getFilteredRecordPositionsPerIndex(
 
 func loadRelationships(
 	data map[string]interface{},
-	relationships map[string]*configModule.Relationship,
-	defaultIndex indexModule.Index,
-	indexes indexModule.List,
-	inputs inputModule.List,
+	relationships map[string]*configPackage.Relationship,
+	defaultIndex indexPackage.Index,
+	indexes indexPackage.List,
+	inputs inputPackage.List,
 	rootInput string,
 ) (map[string]interface{}, error) {
 	for relationshipName, relationshipConfig := range relationships {
@@ -126,9 +126,9 @@ func loadRelationships(
 			return nil, fmt.Errorf("Input '%v' not found in inputs list.", relationshipConfig.Input)
 		}
 
-		relationshipRecordPositionsIterator := recordModule.JoinPositionIterators(relationshipRecordPositionsPerFilter...)
+		relationshipRecordPositionsIterator := recordPackage.JoinPositionIterators(relationshipRecordPositionsPerFilter...)
 
-		relationshipRecords := make(recordModule.List, 0)
+		relationshipRecords := make(recordPackage.List, 0)
 		for {
 			relationshipRecordPosition, err := relationshipRecordPositionsIterator()
 			if err != nil {
@@ -202,11 +202,11 @@ func loadRelationships(
 }
 
 func getDataFromPosition(
-	position recordModule.Position,
-	relationships map[string]*configModule.Relationship,
-	defaultIndex indexModule.Index,
-	indexes indexModule.List,
-	inputs inputModule.List,
+	position recordPackage.Position,
+	relationships map[string]*configPackage.Relationship,
+	defaultIndex indexPackage.Index,
+	indexes indexPackage.List,
+	inputs inputPackage.List,
 	rootInput string,
 ) (map[string]interface{}, error) {
 	input, inputExists := inputs[rootInput]

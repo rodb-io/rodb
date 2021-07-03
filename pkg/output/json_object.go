@@ -5,30 +5,30 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	configModule "rodb.io/pkg/config"
-	indexModule "rodb.io/pkg/index"
-	inputModule "rodb.io/pkg/input"
-	parserModule "rodb.io/pkg/parser"
-	recordModule "rodb.io/pkg/record"
+	configPackage "rodb.io/pkg/config"
+	indexPackage "rodb.io/pkg/index"
+	inputPackage "rodb.io/pkg/input"
+	parserPackage "rodb.io/pkg/parser"
+	recordPackage "rodb.io/pkg/record"
 )
 
 type JsonObject struct {
-	config       *configModule.JsonObjectOutput
-	inputs       inputModule.List
-	input        inputModule.Input
-	defaultIndex indexModule.Index
-	indexes      indexModule.List
-	paramParsers map[string]parserModule.Parser
+	config       *configPackage.JsonObjectOutput
+	inputs       inputPackage.List
+	input        inputPackage.Input
+	defaultIndex indexPackage.Index
+	indexes      indexPackage.List
+	paramParsers map[string]parserPackage.Parser
 }
 
 func NewJsonObject(
-	config *configModule.JsonObjectOutput,
-	inputs inputModule.List,
-	defaultIndex indexModule.Index,
-	indexes indexModule.List,
-	parsers parserModule.List,
+	config *configPackage.JsonObjectOutput,
+	inputs inputPackage.List,
+	defaultIndex indexPackage.Index,
+	indexes indexPackage.List,
+	parsers parserPackage.List,
 ) (*JsonObject, error) {
-	paramParsers := make(map[string]parserModule.Parser)
+	paramParsers := make(map[string]parserPackage.Parser)
 	for paramName, param := range config.Parameters {
 		parser, parserExists := parsers[param.Parser]
 		if !parserExists {
@@ -93,7 +93,7 @@ func (jsonObject *JsonObject) Handle(
 		return sendError(err)
 	}
 
-	nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+	nextPosition := recordPackage.JoinPositionIterators(positionsPerIndex...)
 
 	position, err := nextPosition()
 	if err != nil {
@@ -101,7 +101,7 @@ func (jsonObject *JsonObject) Handle(
 	}
 
 	if position == nil {
-		return sendError(recordModule.RecordNotFoundError)
+		return sendError(recordPackage.RecordNotFoundError)
 	}
 
 	data, err := getDataFromPosition(
@@ -143,7 +143,7 @@ func (jsonObject *JsonObject) HasParameter(paramName string) bool {
 	return paramExists
 }
 
-func (jsonObject *JsonObject) GetParameterParser(paramName string) (parserModule.Parser, error) {
+func (jsonObject *JsonObject) GetParameterParser(paramName string) (parserPackage.Parser, error) {
 	parser, parserExists := jsonObject.paramParsers[paramName]
 	if !parserExists {
 		return nil, errors.New("Parameter '" + paramName + "' does not exist")

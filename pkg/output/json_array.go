@@ -5,29 +5,29 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	configModule "rodb.io/pkg/config"
-	indexModule "rodb.io/pkg/index"
-	inputModule "rodb.io/pkg/input"
-	parserModule "rodb.io/pkg/parser"
-	recordModule "rodb.io/pkg/record"
+	configPackage "rodb.io/pkg/config"
+	indexPackage "rodb.io/pkg/index"
+	inputPackage "rodb.io/pkg/input"
+	parserPackage "rodb.io/pkg/parser"
+	recordPackage "rodb.io/pkg/record"
 	"strconv"
 )
 
 type JsonArray struct {
-	config       *configModule.JsonArrayOutput
-	inputs       inputModule.List
-	input        inputModule.Input
-	defaultIndex indexModule.Index
-	indexes      indexModule.List
-	parsers      parserModule.List
+	config       *configPackage.JsonArrayOutput
+	inputs       inputPackage.List
+	input        inputPackage.Input
+	defaultIndex indexPackage.Index
+	indexes      indexPackage.List
+	parsers      parserPackage.List
 }
 
 func NewJsonArray(
-	config *configModule.JsonArrayOutput,
-	inputs inputModule.List,
-	defaultIndex indexModule.Index,
-	indexes indexModule.List,
-	parsers parserModule.List,
+	config *configPackage.JsonArrayOutput,
+	inputs inputPackage.List,
+	defaultIndex indexPackage.Index,
+	indexes indexPackage.List,
+	parsers parserPackage.List,
 ) (*JsonArray, error) {
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
@@ -95,7 +95,7 @@ func (jsonArray *JsonArray) Handle(
 		return sendError(err)
 	}
 
-	nextPosition := recordModule.JoinPositionIterators(positionsPerIndex...)
+	nextPosition := recordPackage.JoinPositionIterators(positionsPerIndex...)
 
 	// Skipping rows depending on the offset
 	for i := uint(0); i < offset; i++ {
@@ -206,7 +206,7 @@ func (jsonArray *JsonArray) HasParameter(paramName string) bool {
 	return paramExists
 }
 
-func (jsonArray *JsonArray) GetParameterParser(paramName string) (parserModule.Parser, error) {
+func (jsonArray *JsonArray) GetParameterParser(paramName string) (parserPackage.Parser, error) {
 	parameter, parameterExists := jsonArray.config.Parameters[paramName]
 	if !parameterExists {
 		return nil, errors.New("Parameter '" + paramName + "' does not exist")

@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"regexp"
 	"rodb.io/pkg/config"
-	outputModule "rodb.io/pkg/output"
+	outputPackage "rodb.io/pkg/output"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"strings"
@@ -30,8 +30,8 @@ func TestHttp(t *testing.T) {
 		},
 	}
 	parser := parser.NewMock()
-	output := outputModule.NewMock(parser)
-	outputs := outputModule.List{
+	output := outputPackage.NewMock(parser)
+	outputs := outputPackage.List{
 		"mock": output,
 	}
 	server, err := NewHttp(config, outputs)
@@ -118,11 +118,11 @@ func TestHttpOutputList(t *testing.T) {
 	}
 
 	parser := parser.NewMock()
-	outputFoo := outputModule.NewMock(parser)
-	outputBar := outputModule.NewMock(parser)
-	outputBaz := outputModule.NewMock(parser)
+	outputFoo := outputPackage.NewMock(parser)
+	outputBar := outputPackage.NewMock(parser)
+	outputBaz := outputPackage.NewMock(parser)
 
-	server, err := NewHttp(config, outputModule.List{
+	server, err := NewHttp(config, outputPackage.List{
 		"foo": outputFoo,
 		"bar": outputBar,
 		"baz": outputBaz,
@@ -147,21 +147,21 @@ func TestHttpGetMatchingRoute(t *testing.T) {
 	payloadType := "application/json"
 	parser := parser.NewMock()
 
-	getFooOutput := outputModule.NewMock(parser)
+	getFooOutput := outputPackage.NewMock(parser)
 	getFooOutput.MockPayloadType = nil
 	getFooRegexp, err := regexp.Compile("^/foo$")
 	if err != nil {
 		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
-	postBarOutput := outputModule.NewMock(parser)
+	postBarOutput := outputPackage.NewMock(parser)
 	postBarOutput.MockPayloadType = &payloadType
 	postBarRegexp, err := regexp.Compile("^/bar$")
 	if err != nil {
 		t.Fatalf("Unexpected error: '%+v'", err)
 	}
 
-	getBarOutput := outputModule.NewMock(parser)
+	getBarOutput := outputPackage.NewMock(parser)
 	getBarOutput.MockPayloadType = nil
 	getBarRegexp, err := regexp.Compile("^/bar$")
 	if err != nil {
@@ -264,7 +264,7 @@ func TestHttpGetPayload(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		payloadType := "text/plain"
 		parser := parser.NewMock()
-		output := outputModule.NewMock(parser)
+		output := outputPackage.NewMock(parser)
 		output.MockPayloadType = &payloadType
 
 		server := &Http{}
@@ -282,7 +282,7 @@ func TestHttpGetPayload(t *testing.T) {
 	})
 	t.Run("no expected payload", func(t *testing.T) {
 		parser := parser.NewMock()
-		output := outputModule.NewMock(parser)
+		output := outputPackage.NewMock(parser)
 		output.MockPayloadType = nil
 
 		server := &Http{}
@@ -300,7 +300,7 @@ func TestHttpGetPayload(t *testing.T) {
 func TestHttpCreatePathRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		parser := parser.NewMock()
-		output := outputModule.NewMock(parser)
+		output := outputPackage.NewMock(parser)
 		server := &Http{}
 
 		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
@@ -337,7 +337,7 @@ func TestHttpCreatePathRegexp(t *testing.T) {
 	})
 	t.Run("no params", func(t *testing.T) {
 		parser := parser.NewMock()
-		output := outputModule.NewMock(parser)
+		output := outputPackage.NewMock(parser)
 		server := &Http{}
 
 		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
