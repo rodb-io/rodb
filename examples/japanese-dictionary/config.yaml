@@ -21,7 +21,7 @@ indexes:
       - writing
       - reading
   - name: indexSearch
-    type: partial
+    type: wildcard
     path: /index/indexSearch.rodb
     input: dictionary
     properties:

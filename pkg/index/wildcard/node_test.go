@@ -1,4 +1,4 @@
-package partial
+package wildcard
 
 import (
 	"fmt"
@@ -381,7 +381,7 @@ func TestTreeNodeFindChildByPrefix(t *testing.T) {
 			t.Fatalf("Expected to get length %v, got %v", expectLength, gotLength)
 		}
 	})
-	t.Run("found partial", func(t *testing.T) {
+	t.Run("found wildcard", func(t *testing.T) {
 		stream := createTestStream(t)
 		secondChild := createTestNode(t, stream, []byte("CDE"))
 		child := createTestNode(t, stream, []byte("B"))
@@ -795,7 +795,7 @@ func TestTreeNodeGetSequence(t *testing.T) {
 	t.Run("suffix and prefix", func(t *testing.T) {
 		checkList(t, getSequence(root, []byte("T")), []record.Position{2, 3})
 	})
-	t.Run("partially matches the end", func(t *testing.T) {
+	t.Run("only matches the end", func(t *testing.T) {
 		checkList(t, getSequence(root, []byte("FO")), []record.Position{1, 2})
 	})
 }

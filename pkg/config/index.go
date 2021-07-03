@@ -20,8 +20,8 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 	case "map":
 		config.index = &MapIndex{}
 		return unmarshal(config.index)
-	case "partial":
-		config.index = &PartialIndex{}
+	case "wildcard":
+		config.index = &WildcardIndex{}
 		return unmarshal(config.index)
 	case "noop":
 		config.index = &NoopIndex{}

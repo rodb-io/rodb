@@ -5,73 +5,73 @@ import (
 	"os"
 	"reflect"
 	"rodb.io/pkg/config"
-	"rodb.io/pkg/index/partial"
+	wildcardModule "rodb.io/pkg/index/wildcard"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"strings"
 )
 
-type Partial struct {
-	config *config.PartialIndex
+type Wildcard struct {
+	config *config.WildcardIndex
 	input  input.Input
-	index  map[string]*partial.TreeNode
+	index  map[string]*wildcardModule.TreeNode
 }
 
-func NewPartial(
-	config *config.PartialIndex,
+func NewWildcard(
+	config *config.WildcardIndex,
 	inputs input.List,
-) (*Partial, error) {
+) (*Wildcard, error) {
 	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
 	}
 
-	partialIndex := &Partial{
+	wildcard := &Wildcard{
 		config: config,
 		input:  input,
 	}
 
-	_, err := os.Stat(partialIndex.config.Path)
+	_, err := os.Stat(wildcard.config.Path)
 	if os.IsNotExist(err) {
-		if err := partialIndex.createIndex(); err != nil {
+		if err := wildcard.createIndex(); err != nil {
 			return nil, fmt.Errorf("Error while creating the index: %w", err)
 		}
 	} else if err != nil {
 		return nil, err
 	} else {
-		if err := partialIndex.loadIndex(); err != nil {
+		if err := wildcard.loadIndex(); err != nil {
 			return nil, fmt.Errorf("Error while loading the index: %w", err)
 		}
 	}
 
-	return partialIndex, nil
+	return wildcard, nil
 }
 
-func (partialIndex *Partial) Name() string {
-	return partialIndex.config.Name
+func (wildcard *Wildcard) Name() string {
+	return wildcard.config.Name
 }
 
-func (partialIndex *Partial) createIndex() error {
-	indexFile, err := os.Create(partialIndex.config.Path)
+func (wildcard *Wildcard) createIndex() error {
+	indexFile, err := os.Create(wildcard.config.Path)
 	if err != nil {
 		return err
 	}
 
-	indexStream := partial.NewStream(indexFile, 0)
+	indexStream := wildcardModule.NewStream(indexFile, 0)
 
-	metadata, err := partial.NewMetadata(indexStream, partial.MetadataInput{
-		Input:          partialIndex.input,
-		IgnoreCase:     *partialIndex.config.IgnoreCase,
-		RootNodesCount: len(partialIndex.config.Properties),
+	metadata, err := wildcardModule.NewMetadata(indexStream, wildcardModule.MetadataInput{
+		Input:          wildcard.input,
+		IgnoreCase:     *wildcard.config.IgnoreCase,
+		RootNodesCount: len(wildcard.config.Properties),
 	})
 	if err != nil {
 		return err
 	}
 
-	index := make(map[string]*partial.TreeNode)
-	for propertyIndex, property := range partialIndex.config.Properties {
-		index[property], err = partial.NewEmptyTreeNode(indexStream)
+	index := make(map[string]*wildcardModule.TreeNode)
+	for propertyIndex, property := range wildcard.config.Properties {
+		index[property], err = wildcardModule.NewEmptyTreeNode(indexStream)
 		if err != nil {
 			return err
 		}
@@ -83,15 +83,15 @@ func (partialIndex *Partial) createIndex() error {
 		return err
 	}
 
-	updateProgress := util.TrackProgress(partialIndex.input, partialIndex.config.Logger)
+	updateProgress := util.TrackProgress(wildcard.input, wildcard.config.Logger)
 
-	inputIterator, end, err := partialIndex.input.IterateAll()
+	inputIterator, end, err := wildcard.input.IterateAll()
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err := end(); err != nil {
-			partialIndex.config.Logger.Errorf("Error while closing the input iterator: %v", err)
+			wildcard.config.Logger.Errorf("Error while closing the input iterator: %v", err)
 		}
 	}()
 
@@ -106,7 +106,7 @@ func (partialIndex *Partial) createIndex() error {
 
 		updateProgress(record.Position())
 
-		for _, property := range partialIndex.config.Properties {
+		for _, property := range wildcard.config.Properties {
 			value, err := record.Get(property)
 			if err != nil {
 				return err
@@ -116,7 +116,7 @@ func (partialIndex *Partial) createIndex() error {
 				value = reflect.ValueOf(value).Interface()
 			}
 
-			if err := partialIndex.addValueToIndex(index, property, value, record.Position()); err != nil {
+			if err := wildcard.addValueToIndex(index, property, value, record.Position()); err != nil {
 				return fmt.Errorf("Cannot index the property '%v': ", property)
 			}
 		}
@@ -127,20 +127,20 @@ func (partialIndex *Partial) createIndex() error {
 		return err
 	}
 
-	partialIndex.index = index
+	wildcard.index = index
 
 	indexStat, err := indexFile.Stat()
 	if err != nil {
 		return err
 	}
 
-	partialIndex.config.Logger.WithField("indexSize", indexStat.Size()).Infof("Successfully finished indexing")
+	wildcard.config.Logger.WithField("indexSize", indexStat.Size()).Infof("Successfully finished indexing")
 
 	return nil
 }
 
-func (partialIndex *Partial) loadIndex() error {
-	indexFile, err := os.Open(partialIndex.config.Path)
+func (wildcard *Wildcard) loadIndex() error {
+	indexFile, err := os.Open(wildcard.config.Path)
 	if err != nil {
 		return err
 	}
@@ -150,46 +150,46 @@ func (partialIndex *Partial) loadIndex() error {
 		return err
 	}
 
-	indexStream := partial.NewStream(indexFile, indexFileStat.Size())
+	indexStream := wildcardModule.NewStream(indexFile, indexFileStat.Size())
 
-	metadata, err := partial.LoadMetadata(indexStream)
+	metadata, err := wildcardModule.LoadMetadata(indexStream)
 	if err != nil {
 		return err
 	}
 
-	input := partial.MetadataInput{
-		Input:          partialIndex.input,
-		IgnoreCase:     *partialIndex.config.IgnoreCase,
-		RootNodesCount: len(partialIndex.config.Properties),
+	input := wildcardModule.MetadataInput{
+		Input:          wildcard.input,
+		IgnoreCase:     *wildcard.config.IgnoreCase,
+		RootNodesCount: len(wildcard.config.Properties),
 	}
 	if err := metadata.AssertValid(input); err != nil {
 		return err
 	}
 
-	index := make(map[string]*partial.TreeNode)
-	for propertyIndex, property := range partialIndex.config.Properties {
+	index := make(map[string]*wildcardModule.TreeNode)
+	for propertyIndex, property := range wildcard.config.Properties {
 		index[property], err = metadata.GetRootNode(propertyIndex)
 		if err != nil {
 			return err
 		}
 	}
 
-	partialIndex.index = index
+	wildcard.index = index
 
-	partialIndex.config.Logger.Infof("Successfully loaded index")
+	wildcard.config.Logger.Infof("Successfully loaded index")
 
 	return nil
 }
 
-func (partialIndex *Partial) addValueToIndex(
-	index map[string]*partial.TreeNode,
+func (wildcard *Wildcard) addValueToIndex(
+	index map[string]*wildcardModule.TreeNode,
 	property string,
 	value interface{},
 	position record.Position,
 ) error {
 	if valueArray, valueIsArray := value.([]interface{}); valueIsArray {
 		for _, valueArrayValue := range valueArray {
-			if err := partialIndex.addValueToIndex(index, property, valueArrayValue, position); err != nil {
+			if err := wildcard.addValueToIndex(index, property, valueArrayValue, position); err != nil {
 				return err
 			}
 		}
@@ -200,7 +200,7 @@ func (partialIndex *Partial) addValueToIndex(
 		return fmt.Errorf("Cannot index the value '%v' from property '%v' because it is not a string.", value, property)
 	}
 
-	if partialIndex.config.ShouldIgnoreCase() {
+	if wildcard.config.ShouldIgnoreCase() {
 		stringValue = strings.ToLower(stringValue)
 	}
 
@@ -213,11 +213,11 @@ func (partialIndex *Partial) addValueToIndex(
 	return nil
 }
 
-func (partialIndex *Partial) GetRecordPositions(
+func (wildcard *Wildcard) GetRecordPositions(
 	input input.Input,
 	filters map[string]interface{},
 ) (record.PositionIterator, error) {
-	if input != partialIndex.input {
+	if input != wildcard.input {
 		return nil, fmt.Errorf("This index does not handle the input '%v'.", input.Name())
 	}
 
@@ -227,11 +227,11 @@ func (partialIndex *Partial) GetRecordPositions(
 
 	individualFiltersResults := make([]record.PositionIterator, 0, len(filters))
 	for propertyName, filter := range filters {
-		if !partialIndex.config.DoesHandleProperty(propertyName) {
+		if !wildcard.config.DoesHandleProperty(propertyName) {
 			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
 		}
 
-		indexedTree, foundIndexedValues := partialIndex.index[propertyName]
+		indexedTree, foundIndexedValues := wildcard.index[propertyName]
 		if !foundIndexedValues {
 			return record.EmptyIterator, nil
 		}
@@ -241,7 +241,7 @@ func (partialIndex *Partial) GetRecordPositions(
 			return nil, fmt.Errorf("Cannot filter the value '%v' from property '%v' because it is not a string.", filter, propertyName)
 		}
 
-		if partialIndex.config.ShouldIgnoreCase() {
+		if wildcard.config.ShouldIgnoreCase() {
 			stringFilter = strings.ToLower(stringFilter)
 		}
 
@@ -259,6 +259,6 @@ func (partialIndex *Partial) GetRecordPositions(
 	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
-func (partialIndex *Partial) Close() error {
+func (wildcardIndex *Wildcard) Close() error {
 	return nil
 }

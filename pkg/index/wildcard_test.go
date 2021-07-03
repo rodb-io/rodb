@@ -3,7 +3,7 @@ package index
 import (
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/config"
-	"rodb.io/pkg/index/partial"
+	"rodb.io/pkg/index/wildcard"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
@@ -13,8 +13,8 @@ import (
 	"testing"
 )
 
-func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
-	positionsToString := func(positions *partial.PositionLinkedList) string {
+func stringifyWildcardTree(t *testing.T, root *wildcard.TreeNode) string {
+	positionsToString := func(positions *wildcard.PositionLinkedList) string {
 		result := ""
 		currentPosition := positions
 		var err error
@@ -35,8 +35,8 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 
 	results := make([]string, 0)
 
-	var stringify func(prefix string, node *partial.TreeNode)
-	stringify = func(prefix string, node *partial.TreeNode) {
+	var stringify func(prefix string, node *wildcard.TreeNode)
+	stringify = func(prefix string, node *wildcard.TreeNode) {
 		child, err := node.FirstChild()
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
@@ -71,13 +71,13 @@ func stringifyPartialTree(t *testing.T, root *partial.TreeNode) string {
 	return strings.Join(results, "\n")
 }
 
-func TestPartial(t *testing.T) {
+func TestWildcard(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		falseValue := false
-		index, err := NewPartial(
-			&config.PartialIndex{
+		index, err := NewWildcard(
+			&config.WildcardIndex{
 				Properties: []string{"col"},
-				Path:       "/tmp/test-index-partial-create.rodb",
+				Path:       "/tmp/test-index-wildcard-create.rodb",
 				IgnoreCase: &falseValue,
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -124,16 +124,16 @@ func TestPartial(t *testing.T) {
 			">PLANT=3",
 			">T=3",
 		}, "\n")
-		got := stringifyPartialTree(t, index.index["col"])
+		got := stringifyWildcardTree(t, index.index["col"])
 		if got != expect {
 			t.Fatalf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
 	})
 	t.Run("load", func(t *testing.T) {
 		falseValue := false
-		config := &config.PartialIndex{
+		config := &config.WildcardIndex{
 			Properties: []string{"col"},
-			Path:       "/tmp/test-index-partial-load.rodb",
+			Path:       "/tmp/test-index-wildcard-load.rodb",
 			IgnoreCase: &falseValue,
 			Input:      "input",
 			Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -153,7 +153,7 @@ func TestPartial(t *testing.T) {
 		}
 
 		// Creating the index file, then closing it
-		indexToInitFile, err := NewPartial(config, inputs)
+		indexToInitFile, err := NewWildcard(config, inputs)
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
@@ -162,7 +162,7 @@ func TestPartial(t *testing.T) {
 		}
 
 		// Loading the index file
-		index, err := NewPartial(config, inputs)
+		index, err := NewWildcard(config, inputs)
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
@@ -191,15 +191,15 @@ func TestPartial(t *testing.T) {
 			">PLANT=3",
 			">T=3",
 		}, "\n")
-		got := stringifyPartialTree(t, index.index["col"])
+		got := stringifyWildcardTree(t, index.index["col"])
 		if got != expect {
 			t.Fatalf("Unexpected list of results. Expected :\n=====\n%v\n=====\nbut got:\n=====\n%v\n", expect, got)
 		}
 	})
 }
 
-func TestPartialGetRecordPositions(t *testing.T) {
-	createTestData := func(t *testing.T, testName string) (*input.Mock, *Partial) {
+func TestWildcardGetRecordPositions(t *testing.T) {
+	createTestData := func(t *testing.T, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANA",
@@ -223,10 +223,10 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			}, 4),
 		})
 		falseValue := false
-		index, err := NewPartial(
-			&config.PartialIndex{
+		index, err := NewWildcard(
+			&config.WildcardIndex{
 				Properties: []string{"col", "col2"},
-				Path:       "/tmp/test-index-partial-get-record-positions" + testName + ".rodb",
+				Path:       "/tmp/test-index-wildcard-get-record-positions" + testName + ".rodb",
 				IgnoreCase: &falseValue,
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -322,16 +322,16 @@ func TestPartialGetRecordPositions(t *testing.T) {
 		}
 	})
 
-	createTestDataForIgnoreCase := func(t *testing.T, ignoreCase bool, testName string) (*input.Mock, *Partial) {
+	createTestDataForIgnoreCase := func(t *testing.T, ignoreCase bool, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
 			record.NewStringPropertiesMock(map[string]string{
 				"col": "BANANÉ",
 			}, 42),
 		})
-		index, err := NewPartial(
-			&config.PartialIndex{
+		index, err := NewWildcard(
+			&config.WildcardIndex{
 				Properties: []string{"col"},
-				Path:       "/tmp/test-index-partial-get-record-positions" + testName + ".rodb",
+				Path:       "/tmp/test-index-wildcard-get-record-positions" + testName + ".rodb",
 				Input:      "input",
 				IgnoreCase: &ignoreCase,
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),

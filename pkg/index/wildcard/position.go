@@ -1,4 +1,4 @@
-package partial
+package wildcard
 
 import (
 	"bytes"

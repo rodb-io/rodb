@@ -98,9 +98,9 @@ indexes:
     properties:
       - id
       - name
-  - name: defaultIndexPartial
-    type: partial
-    path: ./partialIndex.rodb
+  - name: defaultIndexWildcard
+    type: wildcard
+    path: ./wildcard.rodb
     input: defaultInput
     ignoreCase: true
     properties:

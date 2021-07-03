@@ -1,4 +1,4 @@
-package partial
+package wildcard
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 const CurrentVersion = uint16(1)
 
 // Default magic bytes
-const ExpectedMagicBytes = "RODB/INDEX/PARTIAL"
+const ExpectedMagicBytes = "RODB/INDEX/WILDCARD"
 
 type Metadata struct {
 	stream                    *Stream
@@ -179,7 +179,7 @@ func (metadata *Metadata) Save() error {
 	return nil
 }
 
-// Validates that the metadata of the file is an RODB partial index
+// Validates that the metadata of the file is an RODB wildcard index
 // and matches the given configuration as well as the current version
 func (metadata *Metadata) AssertValid(expect MetadataInput) error {
 	if metadata.version != CurrentVersion {
@@ -187,7 +187,7 @@ func (metadata *Metadata) AssertValid(expect MetadataInput) error {
 	}
 
 	if string(metadata.magicBytes) != ExpectedMagicBytes {
-		return fmt.Errorf("The given file is not a partial index.")
+		return fmt.Errorf("The given file is not a wildcard index.")
 	}
 
 	modTime, err := expect.Input.ModTime()

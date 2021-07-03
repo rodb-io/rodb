@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-type PartialIndex struct {
+type WildcardIndex struct {
 	Name       string   `yaml:"name"`
 	Type       string   `yaml:"type"`
 	Path       string   `yaml:"path"`
@@ -17,43 +17,43 @@ type PartialIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *PartialIndex) ShouldIgnoreCase() bool {
+func (config *WildcardIndex) ShouldIgnoreCase() bool {
 	return config.IgnoreCase != nil && *config.IgnoreCase
 }
 
-func (config *PartialIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *WildcardIndex) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
-		return errors.New("partial.name is required")
+		return errors.New("wildcard.name is required")
 	}
 
 	if config.Path == "" {
-		return errors.New("partial.path is required")
+		return errors.New("wildcard.path is required")
 	}
 	fileInfo, err := os.Stat(config.Path)
 	if err != nil && !os.IsNotExist(err) {
-		return fmt.Errorf("partial.path: Error checking the path: %w", err)
+		return fmt.Errorf("wildcard.path: Error checking the path: %w", err)
 	}
 	if err == nil && fileInfo.IsDir() {
-		return errors.New("partial.path: This path already exists and is a directory")
+		return errors.New("wildcard.path: This path already exists and is a directory")
 	}
 
 	_, inputExists := rootConfig.Inputs[config.Input]
 	if !inputExists {
-		return fmt.Errorf("partial.input: Input '%v' not found in inputs list.", config.Input)
+		return fmt.Errorf("wildcard.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	alreadyExistingProperties := make(map[string]bool)
 	for _, propertyName := range config.Properties {
 		if _, alreadyExists := alreadyExistingProperties[propertyName]; alreadyExists {
-			return fmt.Errorf("partial.properties: Duplicate property '%v' in array.", propertyName)
+			return fmt.Errorf("wildcard.properties: Duplicate property '%v' in array.", propertyName)
 		}
 		alreadyExistingProperties[propertyName] = true
 	}
 
 	if config.IgnoreCase == nil {
-		log.Debug("partial.ignoreCase not set. Assuming false")
+		log.Debug("wildcard.ignoreCase not set. Assuming false")
 		falseValue := false
 		config.IgnoreCase = &falseValue
 	}
@@ -63,11 +63,11 @@ func (config *PartialIndex) validate(rootConfig *Config, log *logrus.Entry) erro
 	return nil
 }
 
-func (config *PartialIndex) GetName() string {
+func (config *WildcardIndex) GetName() string {
 	return config.Name
 }
 
-func (config *PartialIndex) DoesHandleProperty(property string) bool {
+func (config *WildcardIndex) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
 		if property == handledProperty {
@@ -79,6 +79,6 @@ func (config *PartialIndex) DoesHandleProperty(property string) bool {
 	return isHandled
 }
 
-func (config *PartialIndex) DoesHandleInput(input Input) bool {
+func (config *WildcardIndex) DoesHandleInput(input Input) bool {
 	return input.GetName() == config.Input
 }
