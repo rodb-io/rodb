@@ -10,7 +10,9 @@ func TestGetBufferedReaderOffset(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		reader := strings.NewReader("abcdef")
 		buffer := bufio.NewReader(reader)
-		buffer.Read(make([]byte, 3))
+		if _, err := buffer.Read(make([]byte, 3)); err != nil {
+			t.Fatalf("Unexpected error: '%v'", err)
+		}
 		offset, err := GetBufferedReaderOffset(reader, buffer)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
@@ -38,13 +40,17 @@ func TestSetBufferedReaderOffset(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		reader := strings.NewReader("abcdef")
 		buffer := bufio.NewReader(reader)
-		buffer.Read(make([]byte, 5))
+		if _, err := buffer.Read(make([]byte, 5)); err != nil {
+			t.Fatalf("Unexpected error: '%v'", err)
+		}
 		if err := SetBufferedReaderOffset(reader, buffer, 1); err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
 
 		data := make([]byte, 2)
-		buffer.Read(data)
+		if _, err := buffer.Read(data); err != nil {
+			t.Fatalf("Unexpected error: '%v'", err)
+		}
 
 		if expect := "bc"; string(data) != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, string(data))

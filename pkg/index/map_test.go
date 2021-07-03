@@ -35,7 +35,7 @@ func TestMap(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		for col, expectedValues := range map[string]map[string]int{
@@ -108,7 +108,7 @@ func TestMapGetRecordPositions(t *testing.T) {
 		},
 	)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	t.Run("normal", func(t *testing.T) {

@@ -60,7 +60,7 @@ func TestCsvGet(t *testing.T) {
 
 	csv, err := NewCsv(config, parsers)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	t.Run("normal", func(t *testing.T) {
@@ -207,7 +207,7 @@ func TestCsvSize(t *testing.T) {
 
 		csv, err := NewCsv(config, parsers)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		size, err := csv.Size()
@@ -291,7 +291,7 @@ func TestCsvIterateAll(t *testing.T) {
 			}
 			csv, err := NewCsv(config, parsers)
 			if err != nil {
-				t.Error(err)
+				t.Fatal(err)
 			}
 
 			iterator, end, err := csv.IterateAll()
@@ -306,7 +306,7 @@ func TestCsvIterateAll(t *testing.T) {
 
 			for i := 0; i < len(testCase.expectedRows); i++ {
 				if record, err := iterator(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				} else {
 					if record == nil {
 						break
@@ -316,7 +316,6 @@ func TestCsvIterateAll(t *testing.T) {
 						result, err := record.Get(k)
 						if err != nil {
 							t.Fatalf("Got error '%v', expected '%v' for cell [%v][%v]", err, testCase.expectedRows[i][j], i, j)
-							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
@@ -331,7 +330,9 @@ func TestCsvIterateAll(t *testing.T) {
 				}
 
 				// Asserts that IterateAll does not fail with concurrent accesses
-				csv.reader.Seek(0, io.SeekStart)
+				if _, err := csv.reader.Seek(0, io.SeekStart); err != nil {
+					t.Fatalf("Got error '%v'", err)
+				}
 			}
 		})
 	}
@@ -358,7 +359,7 @@ func TestCsvAutodetectColumns(t *testing.T) {
 		config.Path = file.Name()
 		csv, err := NewCsv(config, parsers)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		for index, name := range map[int]string{
@@ -442,7 +443,7 @@ func TestCsvOpen(t *testing.T) {
 
 		csv, err := NewCsv(config, parsers)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		reader, _, _, file, err := csv.open()

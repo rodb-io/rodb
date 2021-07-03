@@ -181,7 +181,9 @@ func (node *TreeNode) AppendChild(child *TreeNode) error {
 			return err
 		}
 		lastChild.nextSiblingOffset = child.offset
-		lastChild.Save()
+		if err := lastChild.Save(); err != nil {
+			return err
+		}
 
 		node.lastChildOffset = child.offset
 		return node.Save()

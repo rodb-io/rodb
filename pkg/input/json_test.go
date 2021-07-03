@@ -245,7 +245,7 @@ func TestJsonIterateAll(t *testing.T) {
 		expectedPositions := []int64{0, 10, 21}
 		for i := 0; i < len(expectedVals); i++ {
 			if record, err := iterator(); err != nil {
-				t.Error(err)
+				t.Fatal(err)
 			} else {
 				if record == nil {
 					break
@@ -254,7 +254,6 @@ func TestJsonIterateAll(t *testing.T) {
 				result, err := record.Get("val")
 				if err != nil {
 					t.Fatalf("Got error '%v', expected '%v' for record %v", err, expectedVals[i], i)
-					continue
 				}
 
 				expected := expectedVals[i]
@@ -268,7 +267,9 @@ func TestJsonIterateAll(t *testing.T) {
 			}
 
 			// Asserts that IterateAll does not fail with concurrent accesses
-			json.reader.Seek(0, io.SeekStart)
+			if _, err := json.reader.Seek(0, io.SeekStart); err != nil {
+				t.Fatalf("Got error '%v'", err)
+			}
 		}
 	})
 }

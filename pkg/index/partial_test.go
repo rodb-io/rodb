@@ -157,7 +157,9 @@ func TestPartial(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		indexToInitFile.Close()
+		if err := indexToInitFile.Close(); err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
 
 		// Loading the index file
 		index, err := NewPartial(config, inputs)
@@ -234,7 +236,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		return mockInput, index
@@ -339,7 +341,7 @@ func TestPartialGetRecordPositions(t *testing.T) {
 			},
 		)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		return mockInput, index

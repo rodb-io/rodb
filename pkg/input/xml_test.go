@@ -67,7 +67,7 @@ func TestXmlGet(t *testing.T) {
 
 	xml, err := NewXml(config, parsers)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	t.Run("normal", func(t *testing.T) {
@@ -217,7 +217,7 @@ func TestXmlSize(t *testing.T) {
 
 		xml, err := NewXml(config, parsers)
 		if err != nil {
-			t.Error(err)
+			t.Fatal(err)
 		}
 
 		size, err := xml.Size()
@@ -297,7 +297,7 @@ func TestXmlIterateAll(t *testing.T) {
 			}
 			xml, err := NewXml(config, parsers)
 			if err != nil {
-				t.Error(err)
+				t.Fatal(err)
 			}
 
 			iterator, end, err := xml.IterateAll()
@@ -312,7 +312,7 @@ func TestXmlIterateAll(t *testing.T) {
 
 			for i := 0; i < len(testCase.expectedRows); i++ {
 				if record, err := iterator(); err != nil {
-					t.Error(err)
+					t.Fatal(err)
 				} else {
 					if record == nil {
 						break
@@ -322,7 +322,6 @@ func TestXmlIterateAll(t *testing.T) {
 						result, err := record.Get(k)
 						if err != nil {
 							t.Fatalf("Got error '%v', expected '%v' for record %v, property number %v", err, testCase.expectedRows[i][j], i, j)
-							continue
 						}
 
 						expected := testCase.expectedRows[i][j]
@@ -337,7 +336,9 @@ func TestXmlIterateAll(t *testing.T) {
 				}
 
 				// Asserts that IterateAll does not fail with concurrent accesses
-				xml.reader.Seek(0, io.SeekStart)
+				if _, err := xml.reader.Seek(0, io.SeekStart); err != nil {
+					t.Fatalf("Got error '%v'", err)
+				}
 			}
 		})
 	}
