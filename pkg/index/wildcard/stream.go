@@ -51,35 +51,60 @@ func (stream *Stream) Flush() error {
 }
 
 func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
-	if offset < stream.bufferOffset && (offset+int64(bytesCount)) > stream.bufferOffset {
-		// Since it would make the process way more complex,
-		// and this case is not expected at all, we just flush
-		// the buffer if it happens
-		if err := stream.Flush(); err != nil {
-			return nil, err
-		}
-	}
+	bytes := make([]byte, 0, bytesCount)
+	remainingBytesCount := bytesCount
+	currentOffset := offset
 
-	if offset < stream.bufferOffset {
-		bytes := make([]byte, bytesCount)
-		size, err := stream.stream.ReadAt(bytes, offset)
+	if currentOffset < stream.bufferOffset {
+		bytesToReadFromFile := int64(remainingBytesCount)
+		if currentOffset+bytesToReadFromFile > stream.bufferOffset {
+			bytesToReadFromFile = stream.bufferOffset - currentOffset
+		}
+
+		bytesFromFile := make([]byte, bytesToReadFromFile)
+		size, err := stream.stream.ReadAt(bytesFromFile, currentOffset)
 		if err != nil {
 			return nil, err
 		}
-		if size != bytesCount {
-			return nil, fmt.Errorf("Expected to read %v bytes, got %v", bytesCount, size)
+		if int64(size) != bytesToReadFromFile {
+			return nil, fmt.Errorf("Expected to read %v bytes from file, got %v", remainingBytesCount, size)
 		}
 
-		return bytes, nil
-	} else {
-		start := offset - stream.bufferOffset
-		end := start + int64(bytesCount)
-		if end > int64(len(stream.buffer)) {
-			return nil, fmt.Errorf("Expected to read %v bytes, got %v", bytesCount, int64(len(stream.buffer))-start)
-		}
+		if bytesToReadFromFile < int64(remainingBytesCount) {
+			for _, currentByte := range bytesFromFile {
+				bytes = append(bytes, currentByte)
+			}
 
-		return stream.buffer[start:end], nil
+			// Updating values so that we can handle both cases in the next condition
+			currentOffset = stream.bufferOffset
+			remainingBytesCount -= int(bytesToReadFromFile)
+		} else {
+			return bytesFromFile, nil
+		}
 	}
+
+	if currentOffset >= stream.bufferOffset {
+		start := currentOffset - stream.bufferOffset
+		end := start + int64(remainingBytesCount)
+		if end > int64(len(stream.buffer)) {
+			return nil, fmt.Errorf("Expected to read %v bytes from buffer, got %v", remainingBytesCount, int64(len(stream.buffer))-start)
+		}
+
+		if len(bytes) > 0 {
+			// Adding to the previous part we got from the file
+			for _, currentByte := range stream.buffer[start:end] {
+				bytes = append(bytes, currentByte)
+			}
+		} else {
+			return stream.buffer[start:end], nil
+		}
+	}
+
+	if len(bytes) != bytesCount {
+		return nil, fmt.Errorf("Expected to end-up with %v bytes, got %v", bytesCount, len(bytes))
+	}
+
+	return bytes, nil
 }
 
 func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
@@ -92,34 +117,39 @@ func (stream *Stream) Add(bytes []byte) (offset int64, err error) {
 }
 
 func (stream *Stream) Replace(offset int64, bytes []byte) error {
-	if offset < stream.bufferOffset && (offset+int64(len(bytes))) > stream.bufferOffset {
-		// Since it would make the process way more complex,
-		// and this case is not expected at all, we just flush
-		// the buffer if it happens
-		if err := stream.Flush(); err != nil {
-			return err
+	currentOffset := offset
+	remainingBytes := bytes
+
+	if currentOffset < stream.bufferOffset {
+		bytesToWriteToFile := int64(len(remainingBytes))
+		if currentOffset+bytesToWriteToFile > stream.bufferOffset {
+			bytesToWriteToFile = stream.bufferOffset - currentOffset
 		}
-	}
 
-	// TODO will bug if replace a longer string that overflows in the buffer
-
-	if offset < stream.bufferOffset {
-		size, err := stream.stream.WriteAt(bytes, offset)
+		size, err := stream.stream.WriteAt(remainingBytes[:bytesToWriteToFile], currentOffset)
 		if err != nil {
 			return err
 		}
-		if size != len(bytes) {
-			return fmt.Errorf("Expected to write %v bytes, wrote %v", len(bytes), size)
-		}
-	} else {
-		start := int(offset - stream.bufferOffset)
-		for i := 0; i < len(bytes) && (i+start) < len(stream.buffer); i++ {
-			stream.buffer[i+start] = bytes[i]
+		if int64(size) != bytesToWriteToFile {
+			return fmt.Errorf("Expected to write %v bytes, wrote %v", len(remainingBytes), size)
 		}
 
-		remainingBytes := len(bytes) - (len(stream.buffer) - start)
-		if remainingBytes > 0 {
-			stream.buffer = append(stream.buffer, bytes[(len(bytes)-remainingBytes):]...)
+		if bytesToWriteToFile < int64(len(remainingBytes)) {
+			// Updating values so that we can handle both cases in the next condition
+			currentOffset = stream.bufferOffset
+			remainingBytes = remainingBytes[bytesToWriteToFile:]
+		}
+	}
+
+	if currentOffset >= stream.bufferOffset {
+		start := int(currentOffset - stream.bufferOffset)
+		for i := 0; i < len(remainingBytes) && (i+start) < len(stream.buffer); i++ {
+			stream.buffer[i+start] = remainingBytes[i]
+		}
+
+		remainingBytesCount := len(remainingBytes) - (len(stream.buffer) - start)
+		if remainingBytesCount > 0 {
+			stream.buffer = append(stream.buffer, remainingBytes[(len(remainingBytes)-remainingBytesCount):]...)
 		}
 
 		if int64(len(stream.buffer)) > stream.bufferMaxSize {
