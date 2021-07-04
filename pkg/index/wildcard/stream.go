@@ -151,17 +151,17 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 		if remainingBytesCount > 0 {
 			stream.buffer = append(stream.buffer, remainingBytes[(len(remainingBytes)-remainingBytesCount):]...)
 		}
-
-		if int64(len(stream.buffer)) > stream.bufferMaxSize {
-			if err := stream.Flush(); err != nil {
-				return err
-			}
-		}
 	}
 
 	endOffset := offset + int64(len(bytes))
 	if endOffset > stream.streamSize {
 		stream.streamSize = endOffset
+	}
+
+	if int64(len(stream.buffer)) > stream.bufferMaxSize {
+		if err := stream.Flush(); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -171,9 +171,9 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 // Note: the current implementation is dumb and does not
 // work with concurrent read or writes
 func (stream *Stream) GetReaderFrom(offset int64) (io.Reader, error) {
-	// TODO
 	// We just assume there is no concurrent read or write to this stream
-	// So by we can return the raw stream because nothing will be buffered
+	// So that we can return the raw stream because nothing will be buffered
+	// This is only acceptable because this is only used by the metadata, which is not written very often
 	if err := stream.Flush(); err != nil {
 		return nil, err
 	}
