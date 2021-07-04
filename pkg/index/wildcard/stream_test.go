@@ -189,19 +189,58 @@ func TestStreamGet(t *testing.T) {
 }
 
 func TestStreamAdd(t *testing.T) {
-	file, err := ioutil.TempFile("/tmp", "test-stream")
-	if err != nil {
-		t.Fatalf("Unexpected error: '%+v'", err)
-	}
-
-	data := []byte("Hello")
-	stream := NewStream(file, int64(len(data)))
-	_, err = file.WriteAt(data, 0)
-	if err != nil {
-		t.Fatalf("Unexpected error: '%+v'", err)
-	}
-
 	t.Run("normal", func(t *testing.T) {
+		file, err := ioutil.TempFile("/tmp", "test-stream")
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		data := []byte("Hello")
+		stream := NewStream(file, int64(len(data)))
+		_, err = file.WriteAt(data, 0)
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		gotOffset, err := stream.Add([]byte(" World!"))
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		if expect := int64(5); gotOffset != expect {
+			t.Fatalf("Expected %v, got %v", expect, gotOffset)
+		}
+		if expect, got := int64(12), stream.streamSize; got != expect {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
+
+		gotFile := make([]byte, 5)
+		_, err = file.ReadAt(gotFile, 0)
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+		if expect := "Hello"; string(gotFile) != expect {
+			t.Fatalf("Expected %v, got %v", expect, string(gotFile))
+		}
+
+		if expect, got := " World!", string(stream.buffer); got != expect {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("exceeds buffer size", func(t *testing.T) {
+		file, err := ioutil.TempFile("/tmp", "test-stream")
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		data := []byte("Hello")
+		stream := NewStream(file, int64(len(data)))
+		stream.bufferMaxSize = 1
+		_, err = file.WriteAt(data, 0)
+		if err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
 		gotOffset, err := stream.Add([]byte(" World!"))
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)

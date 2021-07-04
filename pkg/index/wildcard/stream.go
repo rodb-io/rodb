@@ -9,11 +9,12 @@ import (
 const STREAM_BUFFER_SIZE = 10_000
 
 type Stream struct {
-	stream       *os.File
-	streamSize   int64
-	bufferOffset int64
-	buffer       []byte
-	readerOffset int64
+	stream        *os.File
+	streamSize    int64
+	bufferOffset  int64
+	bufferMaxSize int64
+	buffer        []byte
+	readerOffset  int64
 }
 
 func NewStream(
@@ -21,10 +22,11 @@ func NewStream(
 	streamSize int64,
 ) *Stream {
 	return &Stream{
-		stream:       stream,
-		streamSize:   streamSize,
-		bufferOffset: streamSize,
-		buffer:       make([]byte, 0, STREAM_BUFFER_SIZE),
+		stream:        stream,
+		streamSize:    streamSize,
+		bufferOffset:  streamSize,
+		bufferMaxSize: STREAM_BUFFER_SIZE,
+		buffer:        make([]byte, 0, STREAM_BUFFER_SIZE),
 	}
 }
 
@@ -53,8 +55,7 @@ func (stream *Stream) Get(offset int64, bytesCount int) ([]byte, error) {
 		// Since it would make the process way more complex,
 		// and this case is not expected at all, we just flush
 		// the buffer if it happens
-		err := stream.Flush()
-		if err != nil {
+		if err := stream.Flush(); err != nil {
 			return nil, err
 		}
 	}
@@ -95,11 +96,12 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 		// Since it would make the process way more complex,
 		// and this case is not expected at all, we just flush
 		// the buffer if it happens
-		err := stream.Flush()
-		if err != nil {
+		if err := stream.Flush(); err != nil {
 			return err
 		}
 	}
+
+	// TODO will bug if replace a longer string that overflows in the buffer
 
 	if offset < stream.bufferOffset {
 		size, err := stream.stream.WriteAt(bytes, offset)
@@ -120,9 +122,8 @@ func (stream *Stream) Replace(offset int64, bytes []byte) error {
 			stream.buffer = append(stream.buffer, bytes[(len(bytes)-remainingBytes):]...)
 		}
 
-		if len(stream.buffer) > STREAM_BUFFER_SIZE {
-			err := stream.Flush()
-			if err != nil {
+		if int64(len(stream.buffer)) > stream.bufferMaxSize {
+			if err := stream.Flush(); err != nil {
 				return err
 			}
 		}
@@ -143,13 +144,11 @@ func (stream *Stream) GetReaderFrom(offset int64) (io.Reader, error) {
 	// TODO
 	// We just assume there is no concurrent read or write to this stream
 	// So by we can return the raw stream because nothing will be buffered
-	err := stream.Flush()
-	if err != nil {
+	if err := stream.Flush(); err != nil {
 		return nil, err
 	}
 
-	_, err = stream.stream.Seek(offset, io.SeekStart)
-	if err != nil {
+	if _, err := stream.stream.Seek(offset, io.SeekStart); err != nil {
 		return nil, err
 	}
 
