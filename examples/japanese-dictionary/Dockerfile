@@ -19,9 +19,9 @@ RUN chmod a+r-w -R /etc/ssl/certs/rodb.*
 
 FROM localhost/rodb:latest
 
-COPY ./config.yaml /
-COPY --from=data /JMdict /JMdict.xml
-COPY --from=data /etc/ssl/certs/rodb.key /
-COPY --from=data /etc/ssl/certs/rodb.crt /
+COPY ./config.yaml /etc/rodb.yaml
+COPY --from=data /JMdict /srv/JMdict.xml
+COPY --from=data /etc/ssl/certs/rodb.key /etc
+COPY --from=data /etc/ssl/certs/rodb.crt /etc
 
-ENTRYPOINT ["/rodb", "--config=/config.yaml", "--verbose"]
+CMD ["--config=/etc/rodb.yaml", "--verbose"]

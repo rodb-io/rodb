@@ -1,6 +1,6 @@
 FROM localhost/rodb:latest
 
-COPY ./config.yaml /
-COPY ./*.csv /
+COPY ./config.yaml /etc/rodb.yaml
+COPY ./*.csv /var
 
-ENTRYPOINT ["/rodb", "--config=/config.yaml", "--verbose"]
+CMD ["--config=/etc/rodb.yaml", "--verbose"]

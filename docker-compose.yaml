@@ -7,16 +7,20 @@ services:
     build:
       context: .
       dockerfile: ./build/docker/service.Dockerfile
+    volumes:
+      - $PWD/configs:/etc/configs
+    command: --config=/etc/configs/default.yaml --verbose
   japanese-dictionary:
     tty: true
     build:
       context: ./examples/japanese-dictionary
       dockerfile: ./Dockerfile
+    user: root:root
     ports:
       - "3001:80"
       - "3002:443"
     volumes:
-      - generatedIndexes:/index
+      - generatedIndexes:/var
   zip-codes-tokyo:
     tty: true
     build:

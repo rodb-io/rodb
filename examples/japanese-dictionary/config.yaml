@@ -1,7 +1,7 @@
 inputs:
   - name: dictionary
     type: xml
-    path: ./JMdict.xml
+    path: /srv/JMdict.xml
     recordXpath: "//entry"
     properties:
       - name: writing
@@ -22,7 +22,7 @@ indexes:
       - reading
   - name: indexSearch
     type: wildcard
-    path: /index/indexSearch.rodb
+    path: /var/indexSearch.rodb
     input: dictionary
     properties:
       - translation
@@ -46,8 +46,8 @@ services:
       listen: ":80"
     https:
       listen: ":443"
-      certificatePath: "/rodb.crt"
-      privateKeyPath: "/rodb.key"
+      certificatePath: "/etc/rodb.crt"
+      privateKeyPath: "/etc/rodb.key"
     errorsType: application/json
     routes:
       - path: "/"
