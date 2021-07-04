@@ -21,6 +21,95 @@ func createTestStream(t *testing.T) *Stream {
 	return stream
 }
 
+func TestStreamFlush(t *testing.T) {
+	file, err := ioutil.TempFile("/tmp", "test-stream")
+	if err != nil {
+		t.Fatalf("Unexpected error: '%+v'", err)
+	}
+
+	t.Run("normal", func(t *testing.T) {
+		fileData := []byte("Hello ")
+		bufferData := []byte("World!")
+
+		if _, err = file.WriteAt(fileData, 0); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		stream := NewStream(file, int64(len(fileData)))
+		stream.bufferOffset = int64(len(fileData))
+		stream.buffer = append([]byte{}, bufferData...)
+
+		if err := stream.Flush(); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		got := make([]byte, len(fileData)+len(bufferData))
+		if _, err := file.ReadAt(got, 0); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 0, len(stream.buffer); got != expect {
+			t.Fatalf("Expected the buffer to have len %v, got %v", expect, got)
+		}
+
+		if expect := string(fileData) + string(bufferData); string(got) != expect {
+			t.Fatalf("Expected %v, got %v", expect, string(got))
+		}
+	})
+	t.Run("empty file", func(t *testing.T) {
+		bufferData := []byte("Hello World!")
+
+		stream := NewStream(file, 0)
+		stream.bufferOffset = 0
+		stream.buffer = append([]byte{}, bufferData...)
+
+		if err := stream.Flush(); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		got := make([]byte, len(bufferData))
+		if _, err := file.ReadAt(got, 0); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 0, len(stream.buffer); got != expect {
+			t.Fatalf("Expected the buffer to have len %v, got %v", expect, got)
+		}
+
+		if expect := string(bufferData); string(got) != expect {
+			t.Fatalf("Expected %v, got %v", expect, string(got))
+		}
+	})
+	t.Run("empty buffer", func(t *testing.T) {
+		fileData := []byte("Hello World!")
+
+		if _, err = file.WriteAt(fileData, 0); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		stream := NewStream(file, int64(len(fileData)))
+		stream.bufferOffset = int64(len(fileData))
+		stream.buffer = []byte{}
+
+		if err := stream.Flush(); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		got := make([]byte, len(fileData))
+		if _, err := file.ReadAt(got, 0); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := 0, len(stream.buffer); got != expect {
+			t.Fatalf("Expected the buffer to have len %v, got %v", expect, got)
+		}
+
+		if expect := string(fileData); string(got) != expect {
+			t.Fatalf("Expected %v, got %v", expect, string(got))
+		}
+	})
+}
+
 func TestStreamGet(t *testing.T) {
 	file, err := ioutil.TempFile("/tmp", "test-stream")
 	if err != nil {
