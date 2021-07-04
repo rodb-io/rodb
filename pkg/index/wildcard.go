@@ -127,6 +127,10 @@ func (wildcard *Wildcard) createIndex() error {
 		return err
 	}
 
+	if err := indexStream.Flush(); err != nil {
+		return err
+	}
+
 	wildcard.index = index
 
 	indexStat, err := indexFile.Stat()
