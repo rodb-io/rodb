@@ -162,6 +162,30 @@ func TestStreamGet(t *testing.T) {
 			t.Fatalf("Expected error, got nil")
 		}
 	})
+	t.Run("from buffer", func(t *testing.T) {
+		stream.bufferOffset = stream.streamSize
+		stream.buffer = []byte("Hello World 2!")
+
+		gotBytes, err := stream.Get(18, 7)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+		if expect, got := "World 2", string(gotBytes); got != expect {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
+	})
+	t.Run("from file and buffer", func(t *testing.T) {
+		stream.bufferOffset = stream.streamSize
+		stream.buffer = []byte("Hello World 2!")
+
+		gotBytes, err := stream.Get(6, 11)
+		if err != nil {
+			t.Fatalf("Expected no error, got %v", err)
+		}
+		if expect, got := "World!Hello", string(gotBytes); got != expect {
+			t.Fatalf("Expected %v, got %v", expect, got)
+		}
+	})
 }
 
 func TestStreamAdd(t *testing.T) {
