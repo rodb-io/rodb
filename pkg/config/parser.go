@@ -41,7 +41,7 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 }
 
 type Parser interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
+	validate(parsers map[string]Parser, log *logrus.Entry) error
 	GetName() string
 	Primitive() bool
 }

@@ -33,7 +33,7 @@ func (config *CsvInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *CsvInput) validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -83,7 +83,7 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	config.ColumnIndexByName = make(map[string]int)
 	for columnIndex, column := range config.Columns {
 		logPrefix := fmt.Sprintf("csv.columns[%v].", columnIndex)
-		if err := column.validate(rootConfig, log, logPrefix); err != nil {
+		if err := column.validate(parsers, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -96,8 +96,8 @@ func (config *CsvInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	return nil
 }
 
-func (config *CsvInputColumn) validate(rootConfig *Config, log *logrus.Entry, logPrefix string) error {
-	_, parserExists := rootConfig.Parsers[config.Parser]
+func (config *CsvInputColumn) validate(parsers map[string]Parser, log *logrus.Entry, logPrefix string) error {
+	_, parserExists := parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}

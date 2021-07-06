@@ -31,7 +31,12 @@ func (config *JsonArrayOutput) GetName() string {
 	return config.Name
 }
 
-func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *JsonArrayOutput) validate(
+	inputs map[string]Input,
+	indexes map[string]Index,
+	parsers map[string]Parser,
+	log *logrus.Entry,
+) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -41,22 +46,22 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	if config.Input == "" {
 		return errors.New("jsonArray.input is empty. This field is required.")
 	}
-	input, inputExists := rootConfig.Inputs[config.Input]
+	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	if err := config.Limit.validate(rootConfig, log); err != nil {
+	if err := config.Limit.validate(log); err != nil {
 		return err
 	}
 
-	if err := config.Offset.validate(rootConfig, log); err != nil {
+	if err := config.Offset.validate(log); err != nil {
 		return err
 	}
 
 	for configParamName, configParam := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonArray.parameters.%v.", configParamName)
-		if err := configParam.validate(rootConfig, log, logPrefix, input); err != nil {
+		if err := configParam.validate(indexes, parsers, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -70,7 +75,7 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonArray.relationships.%v.", relationshipIndex)
-		if err := relationship.validate(rootConfig, log, logPrefix); err != nil {
+		if err := relationship.validate(indexes, inputs, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}
@@ -78,7 +83,7 @@ func (config *JsonArrayOutput) validate(rootConfig *Config, log *logrus.Entry) e
 	return nil
 }
 
-func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *JsonArrayOutputLimit) validate(log *logrus.Entry) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")
 		config.Default = 100
@@ -97,7 +102,7 @@ func (config *JsonArrayOutputLimit) validate(rootConfig *Config, log *logrus.Ent
 	return nil
 }
 
-func (config *JsonArrayOutputOffset) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *JsonArrayOutputOffset) validate(log *logrus.Entry) error {
 	if config.Parameter == "" {
 		log.Debug("jsonArray.offset.parameter not set. Assuming 'offset'")
 		config.Parameter = "offset"

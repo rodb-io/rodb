@@ -14,14 +14,14 @@ type MapIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *MapIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *MapIndex) validate(inputs map[string]Input, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
 		return errors.New("map.name is required")
 	}
 
-	_, inputExists := rootConfig.Inputs[config.Input]
+	_, inputExists := inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("map.input: Input '%v' not found in inputs list.", config.Input)
 	}

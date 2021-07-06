@@ -13,7 +13,8 @@ type Parameter struct {
 }
 
 func (config *Parameter) validate(
-	rootConfig *Config,
+	indexes map[string]Index,
+	parsers map[string]Parser,
 	log *logrus.Entry,
 	logPrefix string,
 	input Input,
@@ -26,7 +27,7 @@ func (config *Parameter) validate(
 		log.Debugf(logPrefix + "index is empty. Assuming 'default'.\n")
 		config.Index = "default"
 	}
-	index, indexExists := rootConfig.Indexes[config.Index]
+	index, indexExists := indexes[config.Index]
 	if !indexExists {
 		return fmt.Errorf("index: Index '%v' not found in indexes list.", config.Index)
 	}
@@ -41,7 +42,7 @@ func (config *Parameter) validate(
 		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 		config.Parser = "string"
 	}
-	parser, parserExists := rootConfig.Parsers[config.Parser]
+	parser, parserExists := parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}

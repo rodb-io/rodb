@@ -32,7 +32,7 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 }
 
 type Index interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
+	validate(inputs map[string]Input, log *logrus.Entry) error
 	GetName() string
 	DoesHandleProperty(property string) bool
 	DoesHandleInput(input Input) bool

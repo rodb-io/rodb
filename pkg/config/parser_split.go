@@ -32,7 +32,7 @@ func (config *SplitParser) GetDelimiter() string {
 	return *config.Delimiter
 }
 
-func (config *SplitParser) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *SplitParser) validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -57,7 +57,7 @@ func (config *SplitParser) validate(rootConfig *Config, log *logrus.Entry) error
 		}
 	}
 
-	_, parserExists := rootConfig.Parsers[config.Parser]
+	_, parserExists := parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("Parser '%v' not found in parsers list.", config.Parser)
 	}

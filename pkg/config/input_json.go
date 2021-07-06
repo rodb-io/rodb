@@ -22,7 +22,7 @@ func (config *JsonInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *JsonInput) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *JsonInput) validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

@@ -37,7 +37,7 @@ func (config *HttpService) GetName() string {
 	return config.Name
 }
 
-func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *HttpService) validate(outputs map[string]Output, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -53,19 +53,19 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 		return errors.New("At least one of the http or https property is required.")
 	}
 	if config.Http != nil {
-		if err := config.Http.validate(rootConfig, log); err != nil {
+		if err := config.Http.validate(log); err != nil {
 			return fmt.Errorf("http.%w", err)
 		}
 	}
 	if config.Https != nil {
-		if err := config.Https.validate(rootConfig, log); err != nil {
+		if err := config.Https.validate(log); err != nil {
 			return fmt.Errorf("https.%w", err)
 		}
 	}
 
 	alreadyExistingPaths := make(map[string]bool)
 	for i, routeConfig := range config.Routes {
-		if err := routeConfig.validate(rootConfig, log); err != nil {
+		if err := routeConfig.validate(outputs, log); err != nil {
 			return fmt.Errorf("http.route[%v].%w", i, err)
 		}
 
@@ -84,7 +84,7 @@ func (config *HttpService) validate(rootConfig *Config, log *logrus.Entry) error
 	return nil
 }
 
-func (config *HttpServiceHttp) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *HttpServiceHttp) validate(log *logrus.Entry) error {
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
 	}
@@ -92,7 +92,7 @@ func (config *HttpServiceHttp) validate(rootConfig *Config, log *logrus.Entry) e
 	return nil
 }
 
-func (config *HttpServiceHttps) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *HttpServiceHttps) validate(log *logrus.Entry) error {
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
 	}
@@ -122,7 +122,7 @@ func (config *HttpServiceHttps) validate(rootConfig *Config, log *logrus.Entry) 
 	return nil
 }
 
-func (config *HttpServiceRoute) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *HttpServiceRoute) validate(outputs map[string]Output, log *logrus.Entry) error {
 	if config.Output == "" {
 		return fmt.Errorf("output is empty. This field is required")
 	}
@@ -131,7 +131,7 @@ func (config *HttpServiceRoute) validate(rootConfig *Config, log *logrus.Entry) 
 		return fmt.Errorf("path is empty. This field is required")
 	}
 
-	_, outputExists := rootConfig.Outputs[config.Output]
+	_, outputExists := outputs[config.Output]
 	if !outputExists {
 		return fmt.Errorf("output '%v' not found in outputs list.", config.Output)
 	}

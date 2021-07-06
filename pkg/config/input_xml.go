@@ -44,7 +44,7 @@ func (config *XmlInput) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *XmlInput) validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -77,7 +77,7 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 	alreadyExistingNames := make(map[string]bool)
 	for propertyIndex, property := range config.Properties {
 		logPrefix := fmt.Sprintf("xml.properties[%v].", propertyIndex)
-		if err := property.validate(rootConfig, true, log, logPrefix); err != nil {
+		if err := property.validate(parsers, true, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -91,7 +91,7 @@ func (config *XmlInput) validate(rootConfig *Config, log *logrus.Entry) error {
 }
 
 func (config *XmlInputProperty) validate(
-	rootConfig *Config,
+	parsers map[string]Parser,
 	nameRequired bool,
 	log *logrus.Entry,
 	logPrefix string,
@@ -118,7 +118,7 @@ func (config *XmlInputProperty) validate(
 			config.Parser = "string"
 		}
 
-		_, parserExists := rootConfig.Parsers[config.Parser]
+		_, parserExists := parsers[config.Parser]
 		if !parserExists {
 			return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 		}
@@ -143,7 +143,7 @@ func (config *XmlInputProperty) validate(
 		}
 
 		itemsLogPrefix := fmt.Sprintf("%vitems.", logPrefix)
-		if err := config.Items.validate(rootConfig, false, log, itemsLogPrefix); err != nil {
+		if err := config.Items.validate(parsers, false, log, itemsLogPrefix); err != nil {
 			return fmt.Errorf("items.%w", err)
 		}
 	case XmlInputPropertyTypeObject:
@@ -162,7 +162,7 @@ func (config *XmlInputProperty) validate(
 		alreadyExistingNames := make(map[string]bool)
 		for propertyIndex, property := range config.Properties {
 			propertyLogPrefix := fmt.Sprintf("%vproperties[%v].", logPrefix, propertyIndex)
-			if err := property.validate(rootConfig, true, log, propertyLogPrefix); err != nil {
+			if err := property.validate(parsers, true, log, propertyLogPrefix); err != nil {
 				return fmt.Errorf("properties[%v].%w", propertyIndex, err)
 			}
 

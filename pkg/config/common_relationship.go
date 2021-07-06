@@ -21,7 +21,8 @@ type RelationshipMatch struct {
 }
 
 func (config *Relationship) validate(
-	rootConfig *Config,
+	indexes map[string]Index,
+	inputs map[string]Input,
 	log *logrus.Entry,
 	logPrefix string,
 ) error {
@@ -37,14 +38,14 @@ func (config *Relationship) validate(
 		return fmt.Errorf("sort: You can only sort a relationship when isArray = 'true'.")
 	}
 
-	input, inputExists := rootConfig.Inputs[config.Input]
+	input, inputExists := inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("map.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	alreadyExistingSortProperties := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
-		if err := sort.validate(rootConfig, input, log, "jsonObject.relationships[].sort."); err != nil {
+		if err := sort.validate(log, "jsonObject.relationships[].sort."); err != nil {
 			return fmt.Errorf("sort.%v.%w", sortIndex, err)
 		}
 
@@ -57,7 +58,7 @@ func (config *Relationship) validate(
 	alreadyExistingChildProperty := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		logPrefix := fmt.Sprintf("match.%v.", matchIndex)
-		if err := match.validate(rootConfig, log, logPrefix, input); err != nil {
+		if err := match.validate(indexes, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -69,7 +70,7 @@ func (config *Relationship) validate(
 
 	for relationshipName, relationship := range config.Relationships {
 		newPrefix := fmt.Sprintf("relationships.%v.", relationshipName)
-		if err := relationship.validate(rootConfig, log, logPrefix+newPrefix); err != nil {
+		if err := relationship.validate(indexes, inputs, log, logPrefix+newPrefix); err != nil {
 			return fmt.Errorf("%v%w", newPrefix, err)
 		}
 	}
@@ -78,7 +79,7 @@ func (config *Relationship) validate(
 }
 
 func (config *RelationshipMatch) validate(
-	rootConfig *Config,
+	indexes map[string]Index,
 	log *logrus.Entry,
 	logPrefix string,
 	input Input,
@@ -90,7 +91,7 @@ func (config *RelationshipMatch) validate(
 		config.ChildIndex = "default"
 	}
 
-	childIndex, childIndexExists := rootConfig.Indexes[config.ChildIndex]
+	childIndex, childIndexExists := indexes[config.ChildIndex]
 	if !childIndexExists {
 		return fmt.Errorf("childIndex: Index '%v' not found in indexes list.", config.ChildIndex)
 	}

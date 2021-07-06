@@ -12,7 +12,7 @@ type IntegerParser struct {
 	Logger           *logrus.Entry
 }
 
-func (config *IntegerParser) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *IntegerParser) validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

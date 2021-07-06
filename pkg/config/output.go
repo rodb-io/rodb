@@ -32,6 +32,11 @@ func (config *outputParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 }
 
 type Output interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
+	validate(
+		inputs map[string]Input,
+		indexes map[string]Index,
+		parsers map[string]Parser,
+		log *logrus.Entry,
+	) error
 	GetName() string
 }

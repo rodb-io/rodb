@@ -15,7 +15,12 @@ func (config *GraphQLOutput) GetName() string {
 	return config.Name
 }
 
-func (config *GraphQLOutput) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *GraphQLOutput) validate(
+	inputs map[string]Input,
+	indexes map[string]Index,
+	parsers map[string]Parser,
+	log *logrus.Entry,
+) error {
 	config.Logger = log
 
 	if config.Name == "" {

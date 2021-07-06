@@ -21,7 +21,7 @@ func (config *WildcardIndex) ShouldIgnoreCase() bool {
 	return config.IgnoreCase != nil && *config.IgnoreCase
 }
 
-func (config *WildcardIndex) validate(rootConfig *Config, log *logrus.Entry) error {
+func (config *WildcardIndex) validate(inputs map[string]Input, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -39,7 +39,7 @@ func (config *WildcardIndex) validate(rootConfig *Config, log *logrus.Entry) err
 		return errors.New("wildcard.path: This path already exists and is a directory")
 	}
 
-	_, inputExists := rootConfig.Inputs[config.Input]
+	_, inputExists := inputs[config.Input]
 	if !inputExists {
 		return fmt.Errorf("wildcard.input: Input '%v' not found in inputs list.", config.Input)
 	}
