@@ -19,7 +19,7 @@ func (config *JsonObjectOutput) GetName() string {
 	return config.Name
 }
 
-func (config *JsonObjectOutput) validate(
+func (config *JsonObjectOutput) Validate(
 	inputs map[string]Input,
 	indexes map[string]Index,
 	parsers map[string]Parser,
@@ -45,14 +45,14 @@ func (config *JsonObjectOutput) validate(
 
 	for parameterName, parameter := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonObject.parameters.%v.", parameterName)
-		if err := parameter.validate(indexes, parsers, log, logPrefix, input); err != nil {
+		if err := parameter.Validate(indexes, parsers, log, logPrefix, input); err != nil {
 			return fmt.Errorf("jsonObject.parameters.%v.%w", parameterName, err)
 		}
 	}
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonObject.relationships.%v.", relationshipIndex)
-		if err := relationship.validate(indexes, inputs, log, logPrefix); err != nil {
+		if err := relationship.Validate(indexes, inputs, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}

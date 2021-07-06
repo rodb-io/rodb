@@ -12,7 +12,7 @@ type Parameter struct {
 	Parser   string `yaml:"parser"`
 }
 
-func (config *Parameter) validate(
+func (config *Parameter) Validate(
 	indexes map[string]Index,
 	parsers map[string]Parser,
 	log *logrus.Entry,

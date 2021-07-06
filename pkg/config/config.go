@@ -44,7 +44,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 	config.addDefaultConfigs(log)
 
-	if err := config.validate(log); err != nil {
+	if err := config.Validate(log); err != nil {
 		return nil, err
 	}
 
@@ -139,33 +139,33 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 	}
 }
 
-func (config *Config) validate(log *logrus.Logger) error {
+func (config *Config) Validate(log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Parsers {
-		if err := subConfig.validate(config.Parsers, log.WithField("object", "parsers."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Parsers, log.WithField("object", "parsers."+subConfigName)); err != nil {
 			return fmt.Errorf("parsers.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Inputs {
-		if err := subConfig.validate(config.Parsers, log.WithField("object", "inputs."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Parsers, log.WithField("object", "inputs."+subConfigName)); err != nil {
 			return fmt.Errorf("inputs.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Indexes {
-		if err := subConfig.validate(config.Inputs, log.WithField("object", "indexes."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Inputs, log.WithField("object", "indexes."+subConfigName)); err != nil {
 			return fmt.Errorf("indexes.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Services {
-		if err := subConfig.validate(config.Outputs, log.WithField("object", "services."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Outputs, log.WithField("object", "services."+subConfigName)); err != nil {
 			return fmt.Errorf("services.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Outputs {
-		if err := subConfig.validate(config.Inputs, config.Indexes, config.Parsers, log.WithField("object", "outputs."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Inputs, config.Indexes, config.Parsers, log.WithField("object", "outputs."+subConfigName)); err != nil {
 			return fmt.Errorf("outputs.%v: %w", subConfigName, err)
 		}
 	}

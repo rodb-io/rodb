@@ -20,7 +20,7 @@ type RelationshipMatch struct {
 	ChildIndex     string `yaml:"childIndex"`
 }
 
-func (config *Relationship) validate(
+func (config *Relationship) Validate(
 	indexes map[string]Index,
 	inputs map[string]Input,
 	log *logrus.Entry,
@@ -45,7 +45,7 @@ func (config *Relationship) validate(
 
 	alreadyExistingSortProperties := make(map[string]bool)
 	for sortIndex, sort := range config.Sort {
-		if err := sort.validate(log, "jsonObject.relationships[].sort."); err != nil {
+		if err := sort.Validate(log, "jsonObject.relationships[].sort."); err != nil {
 			return fmt.Errorf("sort.%v.%w", sortIndex, err)
 		}
 
@@ -58,7 +58,7 @@ func (config *Relationship) validate(
 	alreadyExistingChildProperty := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		logPrefix := fmt.Sprintf("match.%v.", matchIndex)
-		if err := match.validate(indexes, log, logPrefix, input); err != nil {
+		if err := match.Validate(indexes, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -70,7 +70,7 @@ func (config *Relationship) validate(
 
 	for relationshipName, relationship := range config.Relationships {
 		newPrefix := fmt.Sprintf("relationships.%v.", relationshipName)
-		if err := relationship.validate(indexes, inputs, log, logPrefix+newPrefix); err != nil {
+		if err := relationship.Validate(indexes, inputs, log, logPrefix+newPrefix); err != nil {
 			return fmt.Errorf("%v%w", newPrefix, err)
 		}
 	}
@@ -78,7 +78,7 @@ func (config *Relationship) validate(
 	return nil
 }
 
-func (config *RelationshipMatch) validate(
+func (config *RelationshipMatch) Validate(
 	indexes map[string]Index,
 	log *logrus.Entry,
 	logPrefix string,

@@ -21,7 +21,7 @@ func (config *WildcardIndex) ShouldIgnoreCase() bool {
 	return config.IgnoreCase != nil && *config.IgnoreCase
 }
 
-func (config *WildcardIndex) validate(inputs map[string]Input, log *logrus.Entry) error {
+func (config *WildcardIndex) Validate(inputs map[string]Input, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

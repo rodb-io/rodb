@@ -14,7 +14,7 @@ type MapIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *MapIndex) validate(inputs map[string]Input, log *logrus.Entry) error {
+func (config *MapIndex) Validate(inputs map[string]Input, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

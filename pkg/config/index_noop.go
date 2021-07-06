@@ -11,7 +11,7 @@ type NoopIndex struct {
 	Logger *logrus.Entry
 }
 
-func (config *NoopIndex) validate(inputs map[string]Input, log *logrus.Entry) error {
+func (config *NoopIndex) Validate(inputs map[string]Input, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

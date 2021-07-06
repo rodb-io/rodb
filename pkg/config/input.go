@@ -32,7 +32,7 @@ func (config *inputParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 }
 
 type Input interface {
-	validate(parsers map[string]Parser, log *logrus.Entry) error
+	Validate(parsers map[string]Parser, log *logrus.Entry) error
 	GetName() string
 	ShouldDieOnInputChange() bool
 }

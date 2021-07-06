@@ -14,7 +14,7 @@ func (config *Sort) IsAscending() bool {
 	return config.Ascending == nil || *config.Ascending
 }
 
-func (config *Sort) validate(
+func (config *Sort) Validate(
 	log *logrus.Entry,
 	logPrefix string,
 ) error {

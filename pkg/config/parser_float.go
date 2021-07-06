@@ -13,7 +13,7 @@ type FloatParser struct {
 	Logger           *logrus.Entry
 }
 
-func (config *FloatParser) validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *FloatParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

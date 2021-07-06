@@ -32,7 +32,7 @@ func (config *outputParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 }
 
 type Output interface {
-	validate(
+	Validate(
 		inputs map[string]Input,
 		indexes map[string]Index,
 		parsers map[string]Parser,

@@ -31,7 +31,7 @@ func (config *JsonArrayOutput) GetName() string {
 	return config.Name
 }
 
-func (config *JsonArrayOutput) validate(
+func (config *JsonArrayOutput) Validate(
 	inputs map[string]Input,
 	indexes map[string]Index,
 	parsers map[string]Parser,
@@ -51,17 +51,17 @@ func (config *JsonArrayOutput) validate(
 		return fmt.Errorf("jsonObject.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
-	if err := config.Limit.validate(log); err != nil {
+	if err := config.Limit.Validate(log); err != nil {
 		return err
 	}
 
-	if err := config.Offset.validate(log); err != nil {
+	if err := config.Offset.Validate(log); err != nil {
 		return err
 	}
 
 	for configParamName, configParam := range config.Parameters {
 		logPrefix := fmt.Sprintf("jsonArray.parameters.%v.", configParamName)
-		if err := configParam.validate(indexes, parsers, log, logPrefix, input); err != nil {
+		if err := configParam.Validate(indexes, parsers, log, logPrefix, input); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 
@@ -75,7 +75,7 @@ func (config *JsonArrayOutput) validate(
 
 	for relationshipIndex, relationship := range config.Relationships {
 		logPrefix := fmt.Sprintf("jsonArray.relationships.%v.", relationshipIndex)
-		if err := relationship.validate(indexes, inputs, log, logPrefix); err != nil {
+		if err := relationship.Validate(indexes, inputs, log, logPrefix); err != nil {
 			return fmt.Errorf("%v%w", logPrefix, err)
 		}
 	}
@@ -83,7 +83,7 @@ func (config *JsonArrayOutput) validate(
 	return nil
 }
 
-func (config *JsonArrayOutputLimit) validate(log *logrus.Entry) error {
+func (config *JsonArrayOutputLimit) Validate(log *logrus.Entry) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")
 		config.Default = 100
@@ -102,7 +102,7 @@ func (config *JsonArrayOutputLimit) validate(log *logrus.Entry) error {
 	return nil
 }
 
-func (config *JsonArrayOutputOffset) validate(log *logrus.Entry) error {
+func (config *JsonArrayOutputOffset) Validate(log *logrus.Entry) error {
 	if config.Parameter == "" {
 		log.Debug("jsonArray.offset.parameter not set. Assuming 'offset'")
 		config.Parameter = "offset"

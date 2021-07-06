@@ -13,7 +13,7 @@ type BooleanParser struct {
 	Logger      *logrus.Entry
 }
 
-func (config *BooleanParser) validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *BooleanParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

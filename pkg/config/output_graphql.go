@@ -15,7 +15,7 @@ func (config *GraphQLOutput) GetName() string {
 	return config.Name
 }
 
-func (config *GraphQLOutput) validate(
+func (config *GraphQLOutput) Validate(
 	inputs map[string]Input,
 	indexes map[string]Index,
 	parsers map[string]Parser,

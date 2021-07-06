@@ -26,6 +26,6 @@ func (config *serviceParser) UnmarshalYAML(unmarshal func(interface{}) error) er
 }
 
 type Service interface {
-	validate(outputs map[string]Output, log *logrus.Entry) error
+	Validate(outputs map[string]Output, log *logrus.Entry) error
 	GetName() string
 }
