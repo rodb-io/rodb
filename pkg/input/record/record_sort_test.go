@@ -9,15 +9,15 @@ func TestRecordListSort(t *testing.T) {
 	// Only testing with strings because parser.Compare is already tested
 	trueValue, falseValue := true, false
 	records := List{
-		NewStringPropertiesMock(map[string]string{
+		NewStringPropertiesMockRecord(map[string]string{
 			"a": "3",
 			"b": "1",
 		}, 0),
-		NewStringPropertiesMock(map[string]string{
+		NewStringPropertiesMockRecord(map[string]string{
 			"a": "2",
 			"b": "1",
 		}, 1),
-		NewStringPropertiesMock(map[string]string{
+		NewStringPropertiesMockRecord(map[string]string{
 			"a": "1",
 			"b": "2",
 		}, 2),

@@ -23,19 +23,19 @@ type jsonDataForTests struct {
 
 func mockJsonDataForTests() jsonDataForTests {
 	mockResults := []record.Record{
-		input.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "1",
 			"belongs_to": "0",
 		}, 0),
-		input.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
 		}, 1),
-		input.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
 		}, 2),
-		input.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
 		}, 3),

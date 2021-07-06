@@ -8,7 +8,7 @@ import (
 
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := input.NewStringPropertiesMock(map[string]string{
+		expectedRecord := input.NewStringPropertiesMockRecord(map[string]string{
 			"col": "value",
 		}, 0)
 		mock := NewMock(parser.NewMock(), []input.Record{expectedRecord})
@@ -26,7 +26,7 @@ func TestMockGet(t *testing.T) {
 
 func TestMockSize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := input.NewStringPropertiesMock(map[string]string{
+		expectedRecord := input.NewStringPropertiesMockRecord(map[string]string{
 			"col": "value",
 		}, 0)
 		data := []input.Record{expectedRecord}
@@ -46,10 +46,10 @@ func TestMockSize(t *testing.T) {
 func TestMockIterateAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := []input.Record{
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col": "value",
 			}, 0),
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col": "value",
 			}, 1),
 		}

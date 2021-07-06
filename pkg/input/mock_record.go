@@ -29,7 +29,7 @@ func NewMockRecord(
 	}
 }
 
-func NewStringPropertiesMock(
+func NewStringPropertiesMockRecord(
 	values map[string]string,
 	position record.Position,
 ) *MockRecord {

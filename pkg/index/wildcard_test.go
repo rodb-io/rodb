@@ -83,13 +83,13 @@ func TestWildcard(t *testing.T) {
 			},
 			input.List{
 				"input": input.NewMock(parser.NewMock(), []record.Record{
-					input.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMockRecord(map[string]string{
 						"col": "BANANA",
 					}, 1),
-					input.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMockRecord(map[string]string{
 						"col": "BANANO",
 					}, 2),
-					input.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMockRecord(map[string]string{
 						"col": "PLANT",
 					}, 3),
 				}),
@@ -139,13 +139,13 @@ func TestWildcard(t *testing.T) {
 		}
 		inputs := input.List{
 			"input": input.NewMock(parser.NewMock(), []record.Record{
-				input.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMockRecord(map[string]string{
 					"col": "BANANA",
 				}, 1),
-				input.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMockRecord(map[string]string{
 					"col": "BANANO",
 				}, 2),
-				input.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMockRecord(map[string]string{
 					"col": "PLANT",
 				}, 3),
 			}),
@@ -200,23 +200,23 @@ func TestWildcard(t *testing.T) {
 func TestWildcardGetRecordPositions(t *testing.T) {
 	createTestData := func(t *testing.T, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col":  "BANANA",
 				"col2": "col2_b",
 			}, 0),
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col":  "BANANT",
 				"col2": "col2_a",
 			}, 1),
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col":  "PLANT",
 				"col2": "col2_a",
 			}, 2),
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col":  "BANANA",
 				"col2": "col2_a",
 			}, 3),
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col":  "PLANT",
 				"col2": "col2_b",
 			}, 4),
@@ -323,7 +323,7 @@ func TestWildcardGetRecordPositions(t *testing.T) {
 
 	createTestDataForIgnoreCase := func(t *testing.T, ignoreCase bool, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
-			input.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMockRecord(map[string]string{
 				"col": "BANANÉ",
 			}, 42),
 		})
