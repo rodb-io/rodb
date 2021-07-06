@@ -4,7 +4,7 @@ import (
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"testing"
 )
 

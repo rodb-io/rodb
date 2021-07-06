@@ -6,7 +6,7 @@ import (
 	configPackage "rodb.io/pkg/config"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
-	recordPackage "rodb.io/pkg/record"
+	recordPackage "rodb.io/pkg/input/record"
 )
 
 func checkRelationshipMatches(

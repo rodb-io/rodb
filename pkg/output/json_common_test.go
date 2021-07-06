@@ -5,7 +5,7 @@ import (
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"testing"
 )
 
@@ -23,19 +23,19 @@ type jsonDataForTests struct {
 
 func mockJsonDataForTests() jsonDataForTests {
 	mockResults := []record.Record{
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"id":         "1",
 			"belongs_to": "0",
 		}, 0),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
 		}, 1),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
 		}, 2),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
 		}, 3),

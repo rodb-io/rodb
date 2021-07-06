@@ -3,7 +3,7 @@ package wildcard
 import (
 	"bytes"
 	"encoding/binary"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 )
 
 type TreeNodeOffset int64

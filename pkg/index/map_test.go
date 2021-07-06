@@ -5,7 +5,7 @@ import (
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"testing"
 )
 
@@ -19,15 +19,15 @@ func TestMap(t *testing.T) {
 			},
 			input.List{
 				"input": input.NewMock(parser.NewMock(), []record.Record{
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col":  "value_a",
 						"col2": "value_2",
 					}, 0),
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col":  "value_b",
 						"col2": "value_2",
 					}, 0),
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col":  "value_b",
 						"col2": "value_2",
 					}, 1),
@@ -76,23 +76,23 @@ func TestMap(t *testing.T) {
 
 func TestMapGetRecordPositions(t *testing.T) {
 	mockInput := input.NewMock(parser.NewMock(), []record.Record{
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",
 		}, 0),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 1),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_a",
 		}, 2),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 3),
-		record.NewStringPropertiesMock(map[string]string{
+		input.NewStringPropertiesMock(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_b",
 		}, 4),

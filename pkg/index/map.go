@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 )
 

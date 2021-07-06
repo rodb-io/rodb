@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 )
 
 // A noop index is able to search into any data,

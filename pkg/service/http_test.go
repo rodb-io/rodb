@@ -10,7 +10,7 @@ import (
 	"rodb.io/pkg/config"
 	outputPackage "rodb.io/pkg/output"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"strings"
 	"testing"
 )

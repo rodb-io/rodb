@@ -3,7 +3,7 @@ package input
 import (
 	"fmt"
 	"rodb.io/pkg/parser"
-	recordPackage "rodb.io/pkg/record"
+	recordPackage "rodb.io/pkg/input/record"
 	"strings"
 )
 

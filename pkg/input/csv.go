@@ -9,7 +9,7 @@ import (
 	"io"
 	"os"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 	"sync"
 	"time"

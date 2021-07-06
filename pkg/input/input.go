@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"time"
 )
 

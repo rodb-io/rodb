@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"rodb.io/pkg/config"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"testing"
 )
 

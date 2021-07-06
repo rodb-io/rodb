@@ -15,7 +15,7 @@ import (
 	"regexp"
 	"rodb.io/pkg/config"
 	"rodb.io/pkg/output"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 	"sync"
 )

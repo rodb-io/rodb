@@ -4,7 +4,7 @@ import (
 	"fmt"
 	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 )
 
 type Index interface {

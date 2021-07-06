@@ -2,7 +2,7 @@ package input
 
 import (
 	"fmt"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 )
 
 type MockRecord struct {
