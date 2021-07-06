@@ -100,7 +100,7 @@ func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	defaultIndex := &NoopIndex{
+	defaultIndex := &NoopConfig{
 		Name: "default",
 	}
 	if _, exists := config.Indexes[defaultIndex.GetName()]; exists {

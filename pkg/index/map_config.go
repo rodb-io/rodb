@@ -1,12 +1,13 @@
-package config
+package index
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/input"
 )
 
-type MapIndex struct {
+type MapConfig struct {
 	Name       string   `yaml:"name"`
 	Type       string   `yaml:"type"`
 	Input      string   `yaml:"input"`
@@ -14,7 +15,7 @@ type MapIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *MapIndex) Validate(inputs map[string]Input, log *logrus.Entry) error {
+func (config *MapConfig) Validate(inputs map[string]input.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -39,11 +40,11 @@ func (config *MapIndex) Validate(inputs map[string]Input, log *logrus.Entry) err
 	return nil
 }
 
-func (config *MapIndex) GetName() string {
+func (config *MapConfig) GetName() string {
 	return config.Name
 }
 
-func (config *MapIndex) DoesHandleProperty(property string) bool {
+func (config *MapConfig) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
 		if property == handledProperty {
@@ -55,6 +56,6 @@ func (config *MapIndex) DoesHandleProperty(property string) bool {
 	return isHandled
 }
 
-func (config *MapIndex) DoesHandleInput(input Input) bool {
+func (config *MapConfig) DoesHandleInput(input input.Config) bool {
 	return input.GetName() == config.Input
 }

@@ -3,7 +3,6 @@ package index
 import (
 	"fmt"
 	"reflect"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/input/record"
 )
@@ -11,12 +10,12 @@ import (
 // A noop index is able to search into any data,
 // but very inefficiently. It does not index anything.
 type Noop struct {
-	config *config.NoopIndex
+	config *NoopConfig
 	inputs input.List
 }
 
 func NewNoop(
-	config *config.NoopIndex,
+	config *NoopConfig,
 	inputs input.List,
 ) *Noop {
 	return &Noop{

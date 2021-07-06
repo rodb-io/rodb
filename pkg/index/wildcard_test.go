@@ -2,7 +2,6 @@ package index
 
 import (
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/index/wildcard"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
@@ -75,7 +74,7 @@ func TestWildcard(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		falseValue := false
 		index, err := NewWildcard(
-			&config.WildcardIndex{
+			&WildcardConfig{
 				Properties: []string{"col"},
 				Path:       "/tmp/test-index-wildcard-create.rodb",
 				IgnoreCase: &falseValue,
@@ -84,13 +83,13 @@ func TestWildcard(t *testing.T) {
 			},
 			input.List{
 				"input": input.NewMock(parser.NewMock(), []record.Record{
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col": "BANANA",
 					}, 1),
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col": "BANANO",
 					}, 2),
-					record.NewStringPropertiesMock(map[string]string{
+					input.NewStringPropertiesMock(map[string]string{
 						"col": "PLANT",
 					}, 3),
 				}),
@@ -131,7 +130,7 @@ func TestWildcard(t *testing.T) {
 	})
 	t.Run("load", func(t *testing.T) {
 		falseValue := false
-		config := &config.WildcardIndex{
+		config := &WildcardConfig{
 			Properties: []string{"col"},
 			Path:       "/tmp/test-index-wildcard-load.rodb",
 			IgnoreCase: &falseValue,
@@ -140,13 +139,13 @@ func TestWildcard(t *testing.T) {
 		}
 		inputs := input.List{
 			"input": input.NewMock(parser.NewMock(), []record.Record{
-				record.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMock(map[string]string{
 					"col": "BANANA",
 				}, 1),
-				record.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMock(map[string]string{
 					"col": "BANANO",
 				}, 2),
-				record.NewStringPropertiesMock(map[string]string{
+				input.NewStringPropertiesMock(map[string]string{
 					"col": "PLANT",
 				}, 3),
 			}),
@@ -201,30 +200,30 @@ func TestWildcard(t *testing.T) {
 func TestWildcardGetRecordPositions(t *testing.T) {
 	createTestData := func(t *testing.T, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANA",
 				"col2": "col2_b",
 			}, 0),
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANT",
 				"col2": "col2_a",
 			}, 1),
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col":  "PLANT",
 				"col2": "col2_a",
 			}, 2),
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col":  "BANANA",
 				"col2": "col2_a",
 			}, 3),
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col":  "PLANT",
 				"col2": "col2_b",
 			}, 4),
 		})
 		falseValue := false
 		index, err := NewWildcard(
-			&config.WildcardIndex{
+			&WildcardConfig{
 				Properties: []string{"col", "col2"},
 				Path:       "/tmp/test-index-wildcard-get-record-positions" + testName + ".rodb",
 				IgnoreCase: &falseValue,
@@ -324,12 +323,12 @@ func TestWildcardGetRecordPositions(t *testing.T) {
 
 	createTestDataForIgnoreCase := func(t *testing.T, ignoreCase bool, testName string) (*input.Mock, *Wildcard) {
 		mockInput := input.NewMock(parser.NewMock(), []record.Record{
-			record.NewStringPropertiesMock(map[string]string{
+			input.NewStringPropertiesMock(map[string]string{
 				"col": "BANANÉ",
 			}, 42),
 		})
 		index, err := NewWildcard(
-			&config.WildcardIndex{
+			&WildcardConfig{
 				Properties: []string{"col"},
 				Path:       "/tmp/test-index-wildcard-get-record-positions" + testName + ".rodb",
 				Input:      "input",

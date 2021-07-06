@@ -2,7 +2,6 @@ package index
 
 import (
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/input/record"
@@ -12,7 +11,7 @@ import (
 func TestMap(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		index, err := NewMap(
-			&config.MapIndex{
+			&MapConfig{
 				Properties: []string{"col", "col2"},
 				Input:      "input",
 				Logger:     logrus.NewEntry(logrus.StandardLogger()),
@@ -98,7 +97,7 @@ func TestMapGetRecordPositions(t *testing.T) {
 		}, 4),
 	})
 	index, err := NewMap(
-		&config.MapIndex{
+		&MapConfig{
 			Properties: []string{"col", "col2"},
 			Input:      "input",
 			Logger:     logrus.NewEntry(logrus.StandardLogger()),

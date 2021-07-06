@@ -2,7 +2,7 @@ package index
 
 import (
 	"fmt"
-	configPackage "rodb.io/pkg/config"
+	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/input/record"
 )
@@ -18,26 +18,33 @@ type Index interface {
 	Close() error
 }
 
+type Config interface {
+	Validate(inputs map[string]input.Config, log *logrus.Entry) error
+	GetName() string
+	DoesHandleProperty(property string) bool
+	DoesHandleInput(input input.Config) bool
+}
+
 type List = map[string]Index
 
 func NewFromConfig(
-	config configPackage.Index,
+	config Config,
 	inputs input.List,
 ) (Index, error) {
 	switch config.(type) {
-	case *configPackage.MapIndex:
-		return NewMap(config.(*configPackage.MapIndex), inputs)
-	case *configPackage.WildcardIndex:
-		return NewWildcard(config.(*configPackage.WildcardIndex), inputs)
-	case *configPackage.NoopIndex:
-		return NewNoop(config.(*configPackage.NoopIndex), inputs), nil
+	case *MapConfig:
+		return NewMap(config.(*MapConfig), inputs)
+	case *WildcardConfig:
+		return NewWildcard(config.(*WildcardConfig), inputs)
+	case *NoopConfig:
+		return NewNoop(config.(*NoopConfig), inputs), nil
 	default:
 		return nil, fmt.Errorf("Unknown index config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configPackage.Index,
+	configs map[string]Config,
 	inputs input.List,
 ) (List, error) {
 	indexes := make(List)

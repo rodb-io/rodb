@@ -18,22 +18,15 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 
 	switch objectType {
 	case "map":
-		config.index = &MapIndex{}
+		config.index = &MapConfig{}
 		return unmarshal(config.index)
 	case "wildcard":
-		config.index = &WildcardIndex{}
+		config.index = &WildcardConfig{}
 		return unmarshal(config.index)
 	case "noop":
-		config.index = &NoopIndex{}
+		config.index = &NoopConfig{}
 		return unmarshal(config.index)
 	default:
 		return fmt.Errorf("Error in index config: Unknown type '%v'", objectType)
 	}
-}
-
-type Index interface {
-	Validate(inputs map[string]Input, log *logrus.Entry) error
-	GetName() string
-	DoesHandleProperty(property string) bool
-	DoesHandleInput(input Input) bool
 }

@@ -1,13 +1,14 @@
-package config
+package index
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
+	"rodb.io/pkg/input"
 )
 
-type WildcardIndex struct {
+type WildcardConfig struct {
 	Name       string   `yaml:"name"`
 	Type       string   `yaml:"type"`
 	Path       string   `yaml:"path"`
@@ -17,11 +18,11 @@ type WildcardIndex struct {
 	Logger     *logrus.Entry
 }
 
-func (config *WildcardIndex) ShouldIgnoreCase() bool {
+func (config *WildcardConfig) ShouldIgnoreCase() bool {
 	return config.IgnoreCase != nil && *config.IgnoreCase
 }
 
-func (config *WildcardIndex) Validate(inputs map[string]Input, log *logrus.Entry) error {
+func (config *WildcardConfig) Validate(inputs map[string]input.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -63,11 +64,11 @@ func (config *WildcardIndex) Validate(inputs map[string]Input, log *logrus.Entry
 	return nil
 }
 
-func (config *WildcardIndex) GetName() string {
+func (config *WildcardConfig) GetName() string {
 	return config.Name
 }
 
-func (config *WildcardIndex) DoesHandleProperty(property string) bool {
+func (config *WildcardConfig) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
 		if property == handledProperty {
@@ -79,6 +80,6 @@ func (config *WildcardIndex) DoesHandleProperty(property string) bool {
 	return isHandled
 }
 
-func (config *WildcardIndex) DoesHandleInput(input Input) bool {
+func (config *WildcardConfig) DoesHandleInput(input input.Config) bool {
 	return input.GetName() == config.Input
 }
