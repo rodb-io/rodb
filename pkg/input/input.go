@@ -2,7 +2,7 @@ package input
 
 import (
 	"fmt"
-	configPackage "rodb.io/pkg/config"
+	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"time"
@@ -23,10 +23,16 @@ type Input interface {
 	Close() error
 }
 
+type Config interface {
+	Validate(parsers map[string]parser.Config, log *logrus.Entry) error
+	GetName() string
+	ShouldDieOnInputChange() bool
+}
+
 type List = map[string]Input
 
 func NewFromConfig(
-	config configPackage.Input,
+	config Config,
 	parsers parser.List,
 ) (Input, error) {
 	switch config.(type) {
@@ -42,7 +48,7 @@ func NewFromConfig(
 }
 
 func NewFromConfigs(
-	configs map[string]configPackage.Input,
+	configs map[string]Config,
 	parsers parser.List,
 ) (List, error) {
 	inputs := make(List)

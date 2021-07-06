@@ -5,7 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/record"
 	"testing"
 )

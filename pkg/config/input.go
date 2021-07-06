@@ -30,9 +30,3 @@ func (config *inputParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 		return fmt.Errorf("Error in input config: Unknown type '%v'", objectType)
 	}
 }
-
-type Input interface {
-	Validate(parsers map[string]Parser, log *logrus.Entry) error
-	GetName() string
-	ShouldDieOnInputChange() bool
-}

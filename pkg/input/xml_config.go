@@ -6,6 +6,7 @@ import (
 	"github.com/antchfx/xpath"
 	"github.com/sirupsen/logrus"
 	"os"
+	"rodb.io/pkg/parser"
 )
 
 type XmlInputPropertyType string
@@ -44,7 +45,7 @@ func (config *XmlConfig) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *XmlConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *XmlConfig) Validate(parsers map[string]parser.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -91,7 +92,7 @@ func (config *XmlConfig) Validate(parsers map[string]Parser, log *logrus.Entry) 
 }
 
 func (config *XmlPropertyConfig) Validate(
-	parsers map[string]Parser,
+	parsers map[string]parser.Config,
 	nameRequired bool,
 	log *logrus.Entry,
 	logPrefix string,

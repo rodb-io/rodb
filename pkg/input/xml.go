@@ -8,7 +8,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"

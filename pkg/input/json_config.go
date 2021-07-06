@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/sirupsen/logrus"
 	"os"
+	"rodb.io/pkg/parser"
 )
 
 type JsonConfig struct {
@@ -22,7 +23,7 @@ func (config *JsonConfig) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *JsonConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *JsonConfig) Validate(parsers map[string]parser.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
