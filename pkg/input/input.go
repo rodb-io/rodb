@@ -30,12 +30,12 @@ func NewFromConfig(
 	parsers parser.List,
 ) (Input, error) {
 	switch config.(type) {
-	case *configPackage.CsvInput:
-		return NewCsv(config.(*configPackage.CsvInput), parsers)
-	case *configPackage.XmlInput:
-		return NewXml(config.(*configPackage.XmlInput), parsers)
-	case *configPackage.JsonInput:
-		return NewJson(config.(*configPackage.JsonInput))
+	case *CsvConfig:
+		return NewCsv(config.(*CsvConfig), parsers)
+	case *XmlConfig:
+		return NewXml(config.(*XmlConfig), parsers)
+	case *JsonConfig:
+		return NewJson(config.(*JsonConfig))
 	default:
 		return nil, fmt.Errorf("Unknown input config type: %#v", config)
 	}

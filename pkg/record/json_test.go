@@ -2,7 +2,6 @@ package record
 
 import (
 	"fmt"
-	"rodb.io/pkg/config"
 	"testing"
 )
 
@@ -11,7 +10,7 @@ func TestJsonAll(t *testing.T) {
 		data := map[string]interface{}{
 			"test": 123,
 		}
-		record := NewJson(&config.JsonInput{}, data, 0)
+		record := NewJson(&JsonConfig{}, data, 0)
 		got, err := record.All()
 		if err != nil {
 			t.Fatalf("Got error: '%v'", err)
@@ -139,7 +138,7 @@ func TestJsonGet(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			record := NewJson(&config.JsonInput{}, testCase.data, 0)
+			record := NewJson(&JsonConfig{}, testCase.data, 0)
 
 			got, err := record.Get(testCase.path)
 			if testCase.expectError {

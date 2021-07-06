@@ -2,21 +2,20 @@ package record
 
 import (
 	"fmt"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"strconv"
 	"strings"
 )
 
 type Json struct {
-	config        *config.JsonInput
+	config        *JsonConfig
 	columnParsers []parser.Parser
 	data          map[string]interface{}
 	position      Position
 }
 
 func NewJson(
-	config *config.JsonInput,
+	config *JsonConfig,
 	data map[string]interface{},
 	position Position,
 ) *Json {

@@ -9,7 +9,7 @@ func TestSplitParse(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		delimiter := "//"
 		falseValue := false
-		config := &StringConfig{
+		config := &SplitConfig{
 			Delimiter:         &delimiter,
 			DelimiterIsRegexp: &falseValue,
 			Parser:            "integer",
@@ -51,7 +51,7 @@ func TestSplitParse(t *testing.T) {
 	t.Run("regexp", func(t *testing.T) {
 		delimiter := "[^0-9]+"
 		trueValue := true
-		config := &StringConfig{
+		config := &SplitConfig{
 			Delimiter:         &delimiter,
 			DelimiterIsRegexp: &trueValue,
 			DelimiterRegexp:   regexp.MustCompile(delimiter),

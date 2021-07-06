@@ -23,7 +23,7 @@ var xmlParserOptions = xmlquery.ParserOptions{
 }
 
 type Xml struct {
-	config       *configPackage.XmlInput
+	config       *XmlConfig
 	reader       io.ReadSeeker
 	readerBuffer *bufio.Reader
 	readerLock   sync.Mutex
@@ -40,7 +40,7 @@ type xmlTempRecordNode struct {
 }
 
 func NewXml(
-	config *configPackage.XmlInput,
+	config *XmlConfig,
 	parsers parser.List,
 ) (*Xml, error) {
 	watcher, err := fsnotify.NewWatcher()

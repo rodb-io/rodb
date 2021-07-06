@@ -2,20 +2,19 @@ package record
 
 import (
 	"fmt"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"strings"
 )
 
 type Csv struct {
-	config        *config.CsvInput
+	config        *CsvConfig
 	columnParsers []parser.Parser
 	data          []string
 	position      Position
 }
 
 func NewCsv(
-	config *config.CsvInput,
+	config *CsvConfig,
 	columnParsers []parser.Parser,
 	data []string,
 	position Position,

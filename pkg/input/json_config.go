@@ -1,4 +1,4 @@
-package config
+package input
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-type JsonInput struct {
+type JsonConfig struct {
 	Name             string `yaml:"name"`
 	Type             string `yaml:"type"`
 	Path             string `yaml:"path"`
@@ -14,15 +14,15 @@ type JsonInput struct {
 	Logger           *logrus.Entry
 }
 
-func (config *JsonInput) GetName() string {
+func (config *JsonConfig) GetName() string {
 	return config.Name
 }
 
-func (config *JsonInput) ShouldDieOnInputChange() bool {
+func (config *JsonConfig) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *JsonInput) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *JsonConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

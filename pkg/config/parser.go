@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/util"
 )
 
@@ -40,8 +39,3 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 }
 
-type Parser interface {
-	Validate(parsers map[string]Parser, log *logrus.Entry) error
-	GetName() string
-	Primitive() bool
-}

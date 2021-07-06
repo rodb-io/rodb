@@ -45,19 +45,19 @@ func TestXmlGet(t *testing.T) {
 	parsers := parser.List{"mock": parser.NewMock()}
 
 	falseValue := false
-	config := &config.XmlInput{
+	config := &XmlConfig{
 		Path:             file.Name(),
 		DieOnInputChange: &falseValue,
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),
 		RecordXPath:      "//item",
-		Properties: []*config.XmlInputProperty{
+		Properties: []*XmlPropertyConfig{
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "a",
 				Parser:        "mock",
 				CompiledXPath: xpath.MustCompile("string(/@a)"),
 			}, {
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "b",
 				Parser:        "mock",
 				CompiledXPath: xpath.MustCompile("string(/b)"),
@@ -207,12 +207,12 @@ func TestXmlSize(t *testing.T) {
 		parsers := parser.List{"mock": parser.NewMock()}
 
 		falseValue := false
-		config := &config.XmlInput{
+		config := &XmlConfig{
 			Path:             file.Name(),
 			DieOnInputChange: &falseValue,
 			RecordXPath:      "test",
 			Logger:           logrus.NewEntry(logrus.StandardLogger()),
-			Properties:       []*config.XmlInputProperty{},
+			Properties:       []*XmlPropertyConfig{},
 		}
 
 		xml, err := NewXml(config, parsers)
@@ -276,19 +276,19 @@ func TestXmlIterateAll(t *testing.T) {
 			parsers := parser.List{"mock": parser.NewMock()}
 
 			falseValue := false
-			config := &config.XmlInput{
+			config := &XmlConfig{
 				Path:             file.Name(),
 				DieOnInputChange: &falseValue,
 				RecordXPath:      "//item",
 				Logger:           logrus.NewEntry(logrus.StandardLogger()),
-				Properties: []*config.XmlInputProperty{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          "a",
 						Parser:        "mock",
 						CompiledXPath: xpath.MustCompile("string(/@a)"),
 					}, {
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          "b",
 						Parser:        "mock",
 						CompiledXPath: xpath.MustCompile("string(/b)"),

@@ -35,7 +35,7 @@ func createJsonTestInput(t *testing.T, data string) (*os.File, *Json, error) {
 	defer file.Close()
 
 	falseValue := false
-	jsonConfig := &config.JsonInput{
+	jsonConfig := &JsonConfig{
 		Path:             file.Name(),
 		DieOnInputChange: &falseValue,
 		Logger:           logrus.NewEntry(logrus.StandardLogger()),

@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	configPackage "rodb.io/pkg/config"
+	"github.com/sirupsen/logrus"
 )
 
 type Parser interface {
@@ -12,10 +12,16 @@ type Parser interface {
 	Parse(value string) (interface{}, error)
 }
 
+type Config interface {
+	Validate(parsers map[string]Parser, log *logrus.Entry) error
+	GetName() string
+	Primitive() bool
+}
+
 type List = map[string]Parser
 
 func NewFromConfig(
-	config configPackage.Parser,
+	config Config,
 	parsers List,
 ) (Parser, error) {
 	switch config.(type) {
@@ -37,7 +43,7 @@ func NewFromConfig(
 }
 
 func NewFromConfigs(
-	configs map[string]configPackage.Parser,
+	configs map[string]Config,
 ) (List, error) {
 	parsers := make(List)
 	for parserName, parserConfig := range configs {

@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"rodb.io/pkg/config"
 	"testing"
 )
 

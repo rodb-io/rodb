@@ -8,8 +8,8 @@ import (
 )
 
 func TestCsvAll(t *testing.T) {
-	var testConfig *config.CsvInput = &config.CsvInput{
-		Columns: []*config.CsvInputColumn{
+	var testConfig *CsvConfig = &config.CsvConfig{
+		Columns: []*CsvColumnConfig{
 			{Name: "col_a"},
 			{Name: "col_b"},
 		},
@@ -59,8 +59,8 @@ func TestCsvAll(t *testing.T) {
 }
 
 func TestCsvGet(t *testing.T) {
-	var testConfig *config.CsvInput = &config.CsvInput{
-		Columns: []*config.CsvInputColumn{
+	var testConfig *CsvConfig = &CsvConfig{
+		Columns: []*CsvColumnConfig{
 			{Name: "col"},
 		},
 		ColumnIndexByName: map[string]int{

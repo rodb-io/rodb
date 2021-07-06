@@ -2,7 +2,6 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"testing"
 )
 

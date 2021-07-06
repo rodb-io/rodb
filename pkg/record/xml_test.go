@@ -52,55 +52,55 @@ func TestXmlAll(t *testing.T) {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
 
-	config := &config.XmlInput{
-		Properties: []*config.XmlInputProperty{
+	config := &XmlConfig{
+		Properties: []*XmlPropertyConfig{
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "integer",
 				Parser:        "integer",
 				CompiledXPath: xpath.MustCompile("number(/root/integer)"),
 			},
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "float",
 				Parser:        "float",
 				CompiledXPath: xpath.MustCompile("number(/root/float)"),
 			},
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "boolean",
 				Parser:        "boolean",
 				CompiledXPath: xpath.MustCompile("boolean(/root/boolean[text()='true'])"),
 			},
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "json",
 				Parser:        "json",
 				CompiledXPath: xpath.MustCompile("string(/root/json)"),
 			},
 			{
-				Type:          config.XmlInputPropertyTypeArray,
+				Type:          XmlInputPropertyTypeArray,
 				Name:          "array",
 				CompiledXPath: xpath.MustCompile("/root/array/item"),
-				Items: &config.XmlInputProperty{
-					Type:          config.XmlInputPropertyTypePrimitive,
+				Items: &XmlPropertyConfig{
+					Type:          XmlInputPropertyTypePrimitive,
 					CompiledXPath: xpath.MustCompile("string(/)"),
 					Parser:        "string",
 				},
 			},
 			{
-				Type:          config.XmlInputPropertyTypeObject,
+				Type:          XmlInputPropertyTypeObject,
 				Name:          "object",
 				CompiledXPath: xpath.MustCompile("/root/object"),
-				Properties: []*config.XmlInputProperty{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						CompiledXPath: xpath.MustCompile("string(/prop_a)"),
 						Name:          "prop_a",
 						Parser:        "string",
 					},
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						CompiledXPath: xpath.MustCompile("string(/prop_b)"),
 						Name:          "prop_b",
 						Parser:        "string",
@@ -108,15 +108,15 @@ func TestXmlAll(t *testing.T) {
 				},
 			},
 			{
-				Type:          config.XmlInputPropertyTypeArray,
+				Type:          XmlInputPropertyTypeArray,
 				Name:          "arrayOfObjects",
 				CompiledXPath: xpath.MustCompile("/root/arrayOfObjects/object"),
-				Items: &config.XmlInputProperty{
-					Type:          config.XmlInputPropertyTypeObject,
+				Items: &XmlPropertyConfig{
+					Type:          XmlInputPropertyTypeObject,
 					CompiledXPath: xpath.MustCompile("/"),
-					Properties: []*config.XmlInputProperty{
+					Properties: []*XmlPropertyConfig{
 						{
-							Type:          config.XmlInputPropertyTypePrimitive,
+							Type:          XmlInputPropertyTypePrimitive,
 							CompiledXPath: xpath.MustCompile("string(/prop)"),
 							Name:          "prop",
 							Parser:        "string",
@@ -125,7 +125,7 @@ func TestXmlAll(t *testing.T) {
 				},
 			},
 			{
-				Type:          config.XmlInputPropertyTypePrimitive,
+				Type:          XmlInputPropertyTypePrimitive,
 				Name:          "nodeAsString",
 				Parser:        "string",
 				CompiledXPath: xpath.MustCompile("/root/integer"),
@@ -222,7 +222,7 @@ func TestXmlGet(t *testing.T) {
 	colName := "col_a"
 	createRecord := func(
 		data []byte,
-		config *config.XmlInput,
+		config *XmlConfig,
 		parsers parserPackage.List,
 	) *Xml {
 		node, err := xmlquery.Parse(bytes.NewReader(data))
@@ -241,10 +241,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("string xpath", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>Hello World!</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
@@ -265,10 +265,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("string xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
@@ -289,10 +289,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("string xpath on float property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42.1</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
@@ -313,10 +313,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("string xpath on boolean property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>true</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
@@ -337,10 +337,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("number xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("number(/root/a)"),
@@ -361,10 +361,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("number xpath on float property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42.1</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("number(/root/a)"),
@@ -385,10 +385,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("number xpath on string property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>42</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("number(/root/a)"),
@@ -406,10 +406,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("boolean xpath", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("boolean(/root/a[text()='a'])"),
@@ -430,10 +430,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("boolean xpath on integer property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("/root/a[text()='a']"),
@@ -451,10 +451,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("node xpath", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("/root/a"),
@@ -472,10 +472,10 @@ func TestXmlGet(t *testing.T) {
 	t.Run("missing property", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Name:          colName,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("/root/a"),
@@ -497,14 +497,14 @@ func TestXmlGet(t *testing.T) {
 				<a>42</a>
 				<a>3</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeArray,
+						Type:          XmlInputPropertyTypeArray,
 						CompiledXPath: xpath.MustCompile("/root/a"),
 						Name:          colName,
-						Items: &config.XmlInputProperty{
-							Type:          config.XmlInputPropertyTypePrimitive,
+						Items: &XmlPropertyConfig{
+							Type:          XmlInputPropertyTypePrimitive,
 							CompiledXPath: xpath.MustCompile("string(/)"),
 							Parser:        "parser",
 						},
@@ -529,15 +529,15 @@ func TestXmlGet(t *testing.T) {
 					<a>42</a>
 				</sub>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeObject,
+						Type:          XmlInputPropertyTypeObject,
 						CompiledXPath: xpath.MustCompile("/root/sub"),
 						Name:          colName,
-						Properties: []*config.XmlInputProperty{
+						Properties: []*XmlPropertyConfig{
 							{
-								Type:          config.XmlInputPropertyTypePrimitive,
+								Type:          XmlInputPropertyTypePrimitive,
 								CompiledXPath: xpath.MustCompile("string(/a)"),
 								Name:          "prop",
 								Parser:        "parser",
@@ -560,15 +560,15 @@ func TestXmlGet(t *testing.T) {
 	t.Run("object type, but multiple results", func(t *testing.T) {
 		record := createRecord(
 			[]byte("<root><a>a1</a><a>a2</a></root>"),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeObject,
+						Type:          XmlInputPropertyTypeObject,
 						CompiledXPath: xpath.MustCompile("/root/a"),
 						Name:          colName,
-						Properties: []*config.XmlInputProperty{
+						Properties: []*XmlPropertyConfig{
 							{
-								Type:          config.XmlInputPropertyTypePrimitive,
+								Type:          XmlInputPropertyTypePrimitive,
 								CompiledXPath: xpath.MustCompile("string(/a)"),
 								Name:          "prop",
 								Parser:        "parser",
@@ -591,14 +591,14 @@ func TestXmlGet(t *testing.T) {
 				<a>1</a>
 				<a>42</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeArray,
+						Type:          XmlInputPropertyTypeArray,
 						CompiledXPath: xpath.MustCompile("/root/a"),
 						Name:          colName,
-						Items: &config.XmlInputProperty{
-							Type:          config.XmlInputPropertyTypePrimitive,
+						Items: &XmlPropertyConfig{
+							Type:          XmlInputPropertyTypePrimitive,
 							CompiledXPath: xpath.MustCompile("string(/)"),
 							Parser:        "parser",
 						},
@@ -630,15 +630,15 @@ func TestXmlGet(t *testing.T) {
 					<a>42</a>
 				</sub>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeObject,
+						Type:          XmlInputPropertyTypeObject,
 						CompiledXPath: xpath.MustCompile("/root/sub"),
 						Name:          colName,
-						Properties: []*config.XmlInputProperty{
+						Properties: []*XmlPropertyConfig{
 							{
-								Type:          config.XmlInputPropertyTypePrimitive,
+								Type:          XmlInputPropertyTypePrimitive,
 								CompiledXPath: xpath.MustCompile("string(/a)"),
 								Name:          "prop",
 								Parser:        "parser",
@@ -664,10 +664,10 @@ func TestXmlGet(t *testing.T) {
 			[]byte(`<root>
 				<a>[1, 42]</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
@@ -690,10 +690,10 @@ func TestXmlGet(t *testing.T) {
 			[]byte(`<root>
 				<a>{"prop": 42}</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 						Parser:        "parser",
@@ -716,10 +716,10 @@ func TestXmlGet(t *testing.T) {
 			[]byte(`<root>
 				<a>[1, 42]</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						Parser:        "parser",
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
@@ -749,10 +749,10 @@ func TestXmlGet(t *testing.T) {
 			[]byte(`<root>
 				<a>{"prop": 42}</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						CompiledXPath: xpath.MustCompile("string(/root/a)"),
 						Name:          colName,
 						Parser:        "parser",
@@ -780,19 +780,19 @@ func TestXmlGet(t *testing.T) {
 					<a>3</a>
 				</sub>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeObject,
+						Type:          XmlInputPropertyTypeObject,
 						CompiledXPath: xpath.MustCompile("/root/sub"),
 						Name:          colName,
-						Properties: []*config.XmlInputProperty{
+						Properties: []*XmlPropertyConfig{
 							{
-								Type:          config.XmlInputPropertyTypeArray,
+								Type:          XmlInputPropertyTypeArray,
 								CompiledXPath: xpath.MustCompile("/a"),
 								Name:          "prop",
-								Items: &config.XmlInputProperty{
-									Type:          config.XmlInputPropertyTypePrimitive,
+								Items: &XmlPropertyConfig{
+									Type:          XmlInputPropertyTypePrimitive,
 									CompiledXPath: xpath.MustCompile("string(/)"),
 									Parser:        "parser",
 								},
@@ -822,18 +822,18 @@ func TestXmlGet(t *testing.T) {
 					<a>42</a>
 				</sub>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypeArray,
+						Type:          XmlInputPropertyTypeArray,
 						CompiledXPath: xpath.MustCompile("/root/sub"),
 						Name:          colName,
-						Items: &config.XmlInputProperty{
-							Type:          config.XmlInputPropertyTypeObject,
+						Items: &XmlPropertyConfig{
+							Type:          XmlInputPropertyTypeObject,
 							CompiledXPath: xpath.MustCompile("/a"),
-							Properties: []*config.XmlInputProperty{
+							Properties: []*XmlPropertyConfig{
 								{
-									Type:          config.XmlInputPropertyTypePrimitive,
+									Type:          XmlInputPropertyTypePrimitive,
 									CompiledXPath: xpath.MustCompile("string(/)"),
 									Name:          "prop",
 									Parser:        "parser",
@@ -860,10 +860,10 @@ func TestXmlGet(t *testing.T) {
 				<a>a1</a>
 				<a>a2</a>
 			</root>`),
-			&config.XmlInput{
-				Properties: []*config.XmlInputProperty{
+			&XmlConfig{
+				Properties: []*XmlPropertyConfig{
 					{
-						Type:          config.XmlInputPropertyTypePrimitive,
+						Type:          XmlInputPropertyTypePrimitive,
 						CompiledXPath: xpath.MustCompile("/root/a"),
 						Name:          colName,
 						Parser:        "parser",

@@ -18,13 +18,13 @@ func (config *inputParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 
 	switch objectType {
 	case "csv":
-		config.input = &CsvInput{}
+		config.input = &CsvConfig{}
 		return unmarshal(config.input)
 	case "xml":
-		config.input = &XmlInput{}
+		config.input = &XmlConfig{}
 		return unmarshal(config.input)
 	case "json":
-		config.input = &JsonInput{}
+		config.input = &JsonConfig{}
 		return unmarshal(config.input)
 	default:
 		return fmt.Errorf("Error in input config: Unknown type '%v'", objectType)

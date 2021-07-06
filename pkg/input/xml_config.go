@@ -1,4 +1,4 @@
-package config
+package input
 
 import (
 	"errors"
@@ -16,35 +16,35 @@ const (
 	XmlInputPropertyTypeObject    = XmlInputPropertyType("object")
 )
 
-type XmlInput struct {
+type XmlConfig struct {
 	Name             string              `yaml:"name"`
 	Type             string              `yaml:"type"`
 	Path             string              `yaml:"path"`
 	DieOnInputChange *bool               `yaml:"dieOnInputChange"`
-	Properties       []*XmlInputProperty `yaml:"properties"`
+	Properties       []*XmlPropertyConfig `yaml:"properties"`
 	RecordXPath      string              `yaml:"recordXpath"`
 	Logger           *logrus.Entry
 }
 
-type XmlInputProperty struct {
+type XmlPropertyConfig struct {
 	Name          string               `yaml:"name"`
 	Type          XmlInputPropertyType `yaml:"type"`
 	Parser        string               `yaml:"parser"`
 	XPath         string               `yaml:"xpath"`
-	Items         *XmlInputProperty    `yaml:"items"`
-	Properties    []*XmlInputProperty  `yaml:"properties"`
+	Items         *XmlPropertyConfig    `yaml:"items"`
+	Properties    []*XmlPropertyConfig  `yaml:"properties"`
 	CompiledXPath *xpath.Expr
 }
 
-func (config *XmlInput) GetName() string {
+func (config *XmlConfig) GetName() string {
 	return config.Name
 }
 
-func (config *XmlInput) ShouldDieOnInputChange() bool {
+func (config *XmlConfig) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *XmlInput) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *XmlConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -90,7 +90,7 @@ func (config *XmlInput) Validate(parsers map[string]Parser, log *logrus.Entry) e
 	return nil
 }
 
-func (config *XmlInputProperty) Validate(
+func (config *XmlPropertyConfig) Validate(
 	parsers map[string]Parser,
 	nameRequired bool,
 	log *logrus.Entry,

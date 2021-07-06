@@ -1,13 +1,14 @@
-package config
+package input
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
+	"rodb.io/pkg/parser"
 )
 
-type CsvInput struct {
+type CsvConfig struct {
 	Name              string            `yaml:"name"`
 	Type              string            `yaml:"type"`
 	Path              string            `yaml:"path"`
@@ -15,25 +16,25 @@ type CsvInput struct {
 	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
 	AutodetectColumns bool              `yaml:"autodetectColumns"`
 	Delimiter         string            `yaml:"delimiter"`
-	Columns           []*CsvInputColumn `yaml:"columns"`
+	Columns           []*CsvColumnConfig `yaml:"columns"`
 	ColumnIndexByName map[string]int
 	Logger            *logrus.Entry
 }
 
-type CsvInputColumn struct {
+type CsvColumnConfig struct {
 	Name   string `yaml:"name"`
 	Parser string `yaml:"parser"`
 }
 
-func (config *CsvInput) GetName() string {
+func (config *CsvConfig) GetName() string {
 	return config.Name
 }
 
-func (config *CsvInput) ShouldDieOnInputChange() bool {
+func (config *CsvConfig) ShouldDieOnInputChange() bool {
 	return config.DieOnInputChange == nil || *config.DieOnInputChange
 }
 
-func (config *CsvInput) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *CsvConfig) Validate(parsers map[string]parser.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -52,7 +53,7 @@ func (config *CsvInput) Validate(parsers map[string]Parser, log *logrus.Entry) e
 		}
 
 		if config.Columns == nil {
-			config.Columns = make([]*CsvInputColumn, 0)
+			config.Columns = make([]*CsvColumnConfig, 0)
 		}
 		if len(config.Columns) != 0 {
 			return errors.New("A csv input with 'autodetectColumns' set to 'true' must not define columns.")
@@ -96,7 +97,7 @@ func (config *CsvInput) Validate(parsers map[string]Parser, log *logrus.Entry) e
 	return nil
 }
 
-func (config *CsvInputColumn) Validate(parsers map[string]Parser, log *logrus.Entry, logPrefix string) error {
+func (config *CsvColumnConfig) Validate(parsers map[string]parser.Config, log *logrus.Entry, logPrefix string) error {
 	_, parserExists := parsers[config.Parser]
 	if !parserExists {
 		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)

@@ -6,7 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"rodb.io/pkg/record"
 	"testing"
@@ -42,13 +41,13 @@ func TestCsvGet(t *testing.T) {
 	logger.Level = logrus.ErrorLevel
 
 	falseValue := false
-	config := &config.CsvInput{
+	config := &CsvConfig{
 		Path:             file.Name(),
 		IgnoreFirstRow:   false,
 		DieOnInputChange: &falseValue,
 		Delimiter:        ",",
 		Logger:           logrus.NewEntry(logger),
-		Columns: []*config.CsvInputColumn{
+		Columns: []*CsvColumnConfig{
 			{Name: "a", Parser: "mock"},
 			{Name: "b", Parser: "mock"},
 		},
@@ -191,13 +190,13 @@ func TestCsvSize(t *testing.T) {
 		parsers := parser.List{"mock": parser.NewMock()}
 
 		falseValue := false
-		config := &config.CsvInput{
+		config := &CsvConfig{
 			Path:             file.Name(),
 			IgnoreFirstRow:   false,
 			DieOnInputChange: &falseValue,
 			Delimiter:        ",",
 			Logger:           logrus.NewEntry(logrus.StandardLogger()),
-			Columns: []*config.CsvInputColumn{
+			Columns: []*CsvColumnConfig{
 				{Name: "a", Parser: "mock"},
 			},
 			ColumnIndexByName: map[string]int{
@@ -274,13 +273,13 @@ func TestCsvIterateAll(t *testing.T) {
 			logger.Level = logrus.ErrorLevel
 
 			falseValue := false
-			config := &config.CsvInput{
+			config := &CsvConfig{
 				Path:             file.Name(),
 				IgnoreFirstRow:   false,
 				DieOnInputChange: &falseValue,
 				Delimiter:        ",",
 				Logger:           logrus.NewEntry(logger),
-				Columns: []*config.CsvInputColumn{
+				Columns: []*CsvColumnConfig{
 					{Name: "a", Parser: "mock"},
 					{Name: "b", Parser: "mock"},
 				},
@@ -341,7 +340,7 @@ func TestCsvIterateAll(t *testing.T) {
 func TestCsvAutodetectColumns(t *testing.T) {
 	parsers := parser.List{"string": parser.NewMock()}
 	falseValue := false
-	config := &config.CsvInput{
+	config := &CsvConfig{
 		IgnoreFirstRow:    true,
 		DieOnInputChange:  &falseValue,
 		AutodetectColumns: true,
@@ -427,13 +426,13 @@ func TestCsvOpen(t *testing.T) {
 		parsers := parser.List{"mock": parser.NewMock()}
 
 		falseValue := false
-		config := &config.CsvInput{
+		config := &CsvConfig{
 			Path:             file.Name(),
 			IgnoreFirstRow:   false,
 			DieOnInputChange: &falseValue,
 			Delimiter:        ",",
 			Logger:           logrus.NewEntry(logrus.StandardLogger()),
-			Columns: []*config.CsvInputColumn{
+			Columns: []*CsvColumnConfig{
 				{Name: "a", Parser: "mock"},
 			},
 			ColumnIndexByName: map[string]int{
