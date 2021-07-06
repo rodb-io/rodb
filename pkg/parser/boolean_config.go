@@ -1,11 +1,11 @@
-package config
+package parser
 
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
 )
 
-type BooleanParser struct {
+type BooleanConfig struct {
 	Name        string   `yaml:"name"`
 	Type        string   `yaml:"type"`
 	TrueValues  []string `yaml:"trueValues"`
@@ -13,7 +13,7 @@ type BooleanParser struct {
 	Logger      *logrus.Entry
 }
 
-func (config *BooleanParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *BooleanConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -30,10 +30,10 @@ func (config *BooleanParser) Validate(parsers map[string]Parser, log *logrus.Ent
 	return nil
 }
 
-func (config *BooleanParser) GetName() string {
+func (config *BooleanConfig) GetName() string {
 	return config.Name
 }
 
-func (config *BooleanParser) Primitive() bool {
+func (config *BooleanConfig) Primitive() bool {
 	return true
 }

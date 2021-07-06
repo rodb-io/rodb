@@ -1,18 +1,18 @@
-package config
+package parser
 
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
 )
 
-type IntegerParser struct {
+type IntegerConfig struct {
 	Name             string `yaml:"name"`
 	Type             string `yaml:"type"`
 	IgnoreCharacters string `yaml:"ignoreCharacters"`
 	Logger           *logrus.Entry
 }
 
-func (config *IntegerParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *IntegerConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -22,10 +22,10 @@ func (config *IntegerParser) Validate(parsers map[string]Parser, log *logrus.Ent
 	return nil
 }
 
-func (config *IntegerParser) GetName() string {
+func (config *IntegerConfig) GetName() string {
 	return config.Name
 }
 
-func (config *IntegerParser) Primitive() bool {
+func (config *IntegerConfig) Primitive() bool {
 	return true
 }

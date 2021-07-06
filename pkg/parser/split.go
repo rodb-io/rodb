@@ -2,17 +2,16 @@ package parser
 
 import (
 	"fmt"
-	"rodb.io/pkg/config"
 	"strings"
 )
 
 type Split struct {
-	config  *config.SplitParser
+	config  *SplitConfig
 	parsers List
 }
 
 func NewSplit(
-	config *config.SplitParser,
+	config *SplitConfig,
 	parsers List,
 ) *Split {
 	return &Split{

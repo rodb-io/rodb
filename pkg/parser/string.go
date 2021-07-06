@@ -5,17 +5,16 @@ import (
 	"golang.org/x/text/encoding/ianaindex"
 	"golang.org/x/text/transform"
 	"io/ioutil"
-	"rodb.io/pkg/config"
 	"strings"
 )
 
 type String struct {
-	config  *config.StringParser
+	config  *StringConfig
 	decoder *encoding.Decoder
 }
 
 func NewString(
-	config *config.StringParser,
+	config *StringConfig,
 ) (*String, error) {
 	var decoder *encoding.Decoder = nil
 	if config.ConvertFromCharset != "" {

@@ -3,17 +3,16 @@ package parser
 import (
 	"fmt"
 	"regexp"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/util"
 	"strings"
 )
 
 type Boolean struct {
-	config *config.BooleanParser
+	config *BooleanConfig
 }
 
 func NewBoolean(
-	config *config.BooleanParser,
+	config *BooleanConfig,
 ) *Boolean {
 	return &Boolean{
 		config: config,

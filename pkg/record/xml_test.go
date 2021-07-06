@@ -10,16 +10,16 @@ import (
 )
 
 func TestXmlAll(t *testing.T) {
-	booleanParser := parserPackage.NewBoolean(&config.BooleanParser{
+	booleanParser := parserPackage.NewBoolean(&parserPackage.BooleanConfig{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
 	})
-	floatParser := parserPackage.NewFloat(&config.FloatParser{
+	floatParser := parserPackage.NewFloat(&parserPackage.FloatConfig{
 		DecimalSeparator: ".",
 	})
-	integerParser := parserPackage.NewInteger(&config.IntegerParser{})
-	jsonParser := parserPackage.NewJson(&config.JsonParser{})
-	stringParser, err := parserPackage.NewString(&config.StringParser{})
+	integerParser := parserPackage.NewInteger(&parserPackage.IntegerConfig{})
+	jsonParser := parserPackage.NewJson(&parserPackage.JsonConfig{})
+	stringParser, err := parserPackage.NewString(&parserPackage.StringConfig{})
 	if err != nil {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
@@ -204,17 +204,17 @@ func TestXmlAll(t *testing.T) {
 }
 
 func TestXmlGet(t *testing.T) {
-	booleanParser := parserPackage.NewBoolean(&config.BooleanParser{
+	booleanParser := parserPackage.NewBoolean(&parserPackage.BooleanConfig{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
 	})
-	floatParser := parserPackage.NewFloat(&config.FloatParser{
+	floatParser := parserPackage.NewFloat(&parserPackage.FloatConfig{
 		DecimalSeparator: ".",
 	})
-	integerParser := parserPackage.NewInteger(&config.IntegerParser{})
-	jsonParser := parserPackage.NewJson(&config.JsonParser{})
+	integerParser := parserPackage.NewInteger(&parserPackage.IntegerConfig{})
+	jsonParser := parserPackage.NewJson(&parserPackage.JsonConfig{})
 	mockParser := parserPackage.NewMock()
-	stringParser, err := parserPackage.NewString(&config.StringParser{})
+	stringParser, err := parserPackage.NewString(&parserPackage.StringConfig{})
 	if err != nil {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}

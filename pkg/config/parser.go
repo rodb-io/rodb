@@ -18,22 +18,22 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 	switch objectType {
 	case "integer":
-		config.parser = &IntegerParser{}
+		config.parser = &IntegerConfig{}
 		return unmarshal(config.parser)
 	case "float":
-		config.parser = &FloatParser{}
+		config.parser = &FloatConfig{}
 		return unmarshal(config.parser)
 	case "boolean":
-		config.parser = &BooleanParser{}
+		config.parser = &BooleanConfig{}
 		return unmarshal(config.parser)
 	case "string":
-		config.parser = &StringParser{}
+		config.parser = &StringConfig{}
 		return unmarshal(config.parser)
 	case "json":
-		config.parser = &JsonParser{}
+		config.parser = &JsonConfig{}
 		return unmarshal(config.parser)
 	case "split":
-		config.parser = &SplitParser{}
+		config.parser = &SplitConfig{}
 		return unmarshal(config.parser)
 	default:
 		return fmt.Errorf("Error in parser config: Unknown type '%v'", objectType)

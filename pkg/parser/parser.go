@@ -19,18 +19,18 @@ func NewFromConfig(
 	parsers List,
 ) (Parser, error) {
 	switch config.(type) {
-	case *configPackage.StringParser:
-		return NewString(config.(*configPackage.StringParser))
-	case *configPackage.IntegerParser:
-		return NewInteger(config.(*configPackage.IntegerParser)), nil
-	case *configPackage.FloatParser:
-		return NewFloat(config.(*configPackage.FloatParser)), nil
-	case *configPackage.BooleanParser:
-		return NewBoolean(config.(*configPackage.BooleanParser)), nil
-	case *configPackage.JsonParser:
-		return NewJson(config.(*configPackage.JsonParser)), nil
-	case *configPackage.SplitParser:
-		return NewSplit(config.(*configPackage.SplitParser), parsers), nil
+	case *StringConfig:
+		return NewString(config.(*StringConfig))
+	case *IntegerConfig:
+		return NewInteger(config.(*IntegerConfig)), nil
+	case *FloatConfig:
+		return NewFloat(config.(*FloatConfig)), nil
+	case *BooleanConfig:
+		return NewBoolean(config.(*BooleanConfig)), nil
+	case *JsonConfig:
+		return NewJson(config.(*JsonConfig)), nil
+	case *SplitConfig:
+		return NewSplit(config.(*SplitConfig), parsers), nil
 	default:
 		return nil, fmt.Errorf("Unknown parser config type: %#v", config)
 	}

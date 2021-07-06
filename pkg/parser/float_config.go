@@ -1,11 +1,11 @@
-package config
+package parser
 
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
 )
 
-type FloatParser struct {
+type FloatConfig struct {
 	Name             string `yaml:"name"`
 	Type             string `yaml:"type"`
 	DecimalSeparator string `yaml:"decimalSeparator"`
@@ -13,7 +13,7 @@ type FloatParser struct {
 	Logger           *logrus.Entry
 }
 
-func (config *FloatParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *FloatConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -27,10 +27,10 @@ func (config *FloatParser) Validate(parsers map[string]Parser, log *logrus.Entry
 	return nil
 }
 
-func (config *FloatParser) GetName() string {
+func (config *FloatConfig) GetName() string {
 	return config.Name
 }
 
-func (config *FloatParser) Primitive() bool {
+func (config *FloatConfig) Primitive() bool {
 	return true
 }

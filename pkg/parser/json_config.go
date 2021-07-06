@@ -1,17 +1,17 @@
-package config
+package parser
 
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
 )
 
-type JsonParser struct {
+type JsonConfig struct {
 	Name   string `yaml:"name"`
 	Type   string `yaml:"type"`
 	Logger *logrus.Entry
 }
 
-func (config *JsonParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *JsonConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -21,10 +21,10 @@ func (config *JsonParser) Validate(parsers map[string]Parser, log *logrus.Entry)
 	return nil
 }
 
-func (config *JsonParser) GetName() string {
+func (config *JsonConfig) GetName() string {
 	return config.Name
 }
 
-func (config *JsonParser) Primitive() bool {
+func (config *JsonConfig) Primitive() bool {
 	return false
 }

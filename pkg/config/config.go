@@ -110,24 +110,24 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 	}
 
 	for _, parserConfig := range []Parser{
-		&StringParser{
+		&StringConfig{
 			Name: "string",
 		},
-		&IntegerParser{
+		&IntegerConfig{
 			Name:             "integer",
 			IgnoreCharacters: "",
 		},
-		&FloatParser{
+		&FloatConfig{
 			Name:             "float",
 			DecimalSeparator: ".",
 			IgnoreCharacters: "",
 		},
-		&BooleanParser{
+		&BooleanConfig{
 			Name:        "boolean",
 			TrueValues:  []string{"true", "1", "TRUE"},
 			FalseValues: []string{"false", "0", "FALSE"},
 		},
-		&JsonParser{
+		&JsonConfig{
 			Name: "json",
 		},
 	} {

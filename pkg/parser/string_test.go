@@ -13,7 +13,7 @@ func TestStringParse(t *testing.T) {
 		"":    "",
 	} {
 		t.Run(value, func(t *testing.T) {
-			config := &config.StringParser{}
+			config := &StringConfig{}
 			stringParser, err := NewString(config)
 			if err != nil {
 				t.Fatalf("Expected no error, got '%v'", err)
@@ -36,7 +36,7 @@ func TestStringParse(t *testing.T) {
 	}
 
 	t.Run("convertFromCharset", func(t *testing.T) {
-		config := &config.StringParser{
+		config := &StringConfig{
 			ConvertFromCharset: "Shift_JIS",
 		}
 		stringParser, err := NewString(config)
@@ -59,7 +59,7 @@ func TestStringParse(t *testing.T) {
 }
 
 func TestStringGetRegexpPattern(t *testing.T) {
-	config := &config.StringParser{}
+	config := &StringConfig{}
 	stringParser, err := NewString(config)
 	if err != nil {
 		t.Fatalf("Expected no error, got '%v'", err)

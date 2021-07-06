@@ -21,7 +21,7 @@ func TestCsvAll(t *testing.T) {
 
 	parsers := []parser.Parser{
 		parser.NewMock(),
-		parser.NewJson(&config.JsonParser{}),
+		parser.NewJson(&parser.JsonConfig{}),
 	}
 
 	t.Run("normal", func(t *testing.T) {
@@ -69,7 +69,7 @@ func TestCsvGet(t *testing.T) {
 	}
 
 	parsers := []parser.Parser{
-		parser.NewJson(&config.JsonParser{}),
+		parser.NewJson(&parser.JsonConfig{}),
 	}
 
 	testCases := []struct {

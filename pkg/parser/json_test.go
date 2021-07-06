@@ -7,7 +7,7 @@ import (
 
 func TestJsonParse(t *testing.T) {
 	t.Run("object", func(t *testing.T) {
-		config := &config.JsonParser{}
+		config := &JsonConfig{}
 		jsonParser := NewJson(config)
 
 		data, err := jsonParser.Parse(`{
@@ -60,7 +60,7 @@ func TestJsonParse(t *testing.T) {
 		}
 	})
 	t.Run("array", func(t *testing.T) {
-		config := &config.JsonParser{}
+		config := &JsonConfig{}
 		jsonParser := NewJson(config)
 
 		data, err := jsonParser.Parse(`["baz"]`)
@@ -87,7 +87,7 @@ func TestJsonParse(t *testing.T) {
 		}
 	})
 	t.Run("primitive", func(t *testing.T) {
-		config := &config.JsonParser{}
+		config := &JsonConfig{}
 		jsonParser := NewJson(config)
 
 		data, err := jsonParser.Parse(`42`)

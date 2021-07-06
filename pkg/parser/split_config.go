@@ -1,4 +1,4 @@
-package config
+package parser
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"regexp"
 )
 
-type SplitParser struct {
+type SplitConfig struct {
 	Name              string  `yaml:"name"`
 	Type              string  `yaml:"type"`
 	Delimiter         *string `yaml:"delimiter"`
@@ -17,22 +17,22 @@ type SplitParser struct {
 	DelimiterRegexp   *regexp.Regexp
 }
 
-func (config *SplitParser) GetName() string {
+func (config *SplitConfig) GetName() string {
 	return config.Name
 }
 
-func (config *SplitParser) IsDelimiterARegexp() bool {
+func (config *SplitConfig) IsDelimiterARegexp() bool {
 	return config.DelimiterIsRegexp != nil && *config.DelimiterIsRegexp
 }
 
-func (config *SplitParser) GetDelimiter() string {
+func (config *SplitConfig) GetDelimiter() string {
 	// Purposefully not checking the pointer because we want
 	// to panic if it's nil since the field is required and
 	// checked at validation time
 	return *config.Delimiter
 }
 
-func (config *SplitParser) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *SplitConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -65,6 +65,6 @@ func (config *SplitParser) Validate(parsers map[string]Parser, log *logrus.Entry
 	return nil
 }
 
-func (config *SplitParser) Primitive() bool {
+func (config *SplitConfig) Primitive() bool {
 	return false
 }

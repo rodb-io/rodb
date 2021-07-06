@@ -2,15 +2,14 @@ package parser
 
 import (
 	jsonPackage "encoding/json"
-	"rodb.io/pkg/config"
 )
 
 type Json struct {
-	config *config.JsonParser
+	config *JsonConfig
 }
 
 func NewJson(
-	config *config.JsonParser,
+	config *JsonConfig,
 ) *Json {
 	return &Json{
 		config: config,
