@@ -1,13 +1,13 @@
-package record
+package input
 
 import (
 	"fmt"
 	"testing"
 )
 
-func TestMockGet(t *testing.T) {
+func TestMockRecordGet(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
-		record := NewMock(
+		record := NewMockRecord(
 			map[string]string{
 				"col_a": "string",
 			},
@@ -26,7 +26,7 @@ func TestMockGet(t *testing.T) {
 		}
 	})
 	t.Run("integer", func(t *testing.T) {
-		record := NewMock(
+		record := NewMockRecord(
 			map[string]string{},
 			map[string]int{
 				"col_a": 42,
@@ -45,7 +45,7 @@ func TestMockGet(t *testing.T) {
 		}
 	})
 	t.Run("float", func(t *testing.T) {
-		record := NewMock(
+		record := NewMockRecord(
 			map[string]string{},
 			map[string]int{},
 			map[string]float64{
@@ -64,7 +64,7 @@ func TestMockGet(t *testing.T) {
 		}
 	})
 	t.Run("boolean", func(t *testing.T) {
-		record := NewMock(
+		record := NewMockRecord(
 			map[string]string{},
 			map[string]int{},
 			map[string]float64{},

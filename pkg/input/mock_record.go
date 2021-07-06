@@ -1,25 +1,26 @@
-package record
+package input
 
 import (
 	"fmt"
+	"rodb.io/pkg/record"
 )
 
-type Mock struct {
+type MockRecord struct {
 	strings  map[string]string
 	integers map[string]int
 	floats   map[string]float64
 	booleans map[string]bool
-	position Position
+	position record.Position
 }
 
-func NewMock(
+func NewMockRecord(
 	strings map[string]string,
 	integers map[string]int,
 	floats map[string]float64,
 	booleans map[string]bool,
-	position Position,
-) *Mock {
-	return &Mock{
+	position record.Position,
+) *MockRecord {
+	return &MockRecord{
 		strings:  strings,
 		integers: integers,
 		floats:   floats,
@@ -30,9 +31,9 @@ func NewMock(
 
 func NewStringPropertiesMock(
 	values map[string]string,
-	position Position,
-) *Mock {
-	return NewMock(
+	position record.Position,
+) *MockRecord {
+	return NewMockRecord(
 		values,
 		map[string]int{},
 		map[string]float64{},
@@ -41,7 +42,7 @@ func NewStringPropertiesMock(
 	)
 }
 
-func (record *Mock) All() (map[string]interface{}, error) {
+func (record *MockRecord) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 
 	for field, value := range record.strings {
@@ -60,7 +61,7 @@ func (record *Mock) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
-func (record *Mock) Get(path string) (interface{}, error) {
+func (record *MockRecord) Get(path string) (interface{}, error) {
 	if value, ok := record.strings[path]; ok {
 		return value, nil
 	}
@@ -77,6 +78,6 @@ func (record *Mock) Get(path string) (interface{}, error) {
 	return nil, fmt.Errorf("Property '%v' does not exist in mocked record", path)
 }
 
-func (record *Mock) Position() Position {
+func (record *MockRecord) Position() record.Position {
 	return record.position
 }

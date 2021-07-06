@@ -99,7 +99,7 @@ func (csvInput *Csv) Get(position record.Position) (record.Record, error) {
 		}
 	}
 
-	return record.NewCsv(
+	return NewCsvRecord(
 		csvInput.config,
 		csvInput.columnParsers,
 		row,
@@ -203,7 +203,7 @@ func (csvInput *Csv) IterateAll() (record.Iterator, func() error, error) {
 			return nil, fmt.Errorf("Cannot read csv data: %w", err)
 		}
 
-		record := record.NewCsv(
+		record := NewCsvRecord(
 			csvInput.config,
 			csvInput.columnParsers,
 			row,

@@ -1,36 +1,37 @@
-package record
+package input
 
 import (
 	"fmt"
 	"rodb.io/pkg/parser"
+	"rodb.io/pkg/record"
 	"strconv"
 	"strings"
 )
 
-type Json struct {
+type JsonRecord struct {
 	config        *JsonConfig
 	columnParsers []parser.Parser
 	data          map[string]interface{}
-	position      Position
+	position      record.Position
 }
 
-func NewJson(
+func NewJsonRecord(
 	config *JsonConfig,
 	data map[string]interface{},
-	position Position,
-) *Json {
-	return &Json{
+	position record.Position,
+) *JsonRecord {
+	return &JsonRecord{
 		config:   config,
 		data:     data,
 		position: position,
 	}
 }
 
-func (record *Json) All() (map[string]interface{}, error) {
+func (record *JsonRecord) All() (map[string]interface{}, error) {
 	return record.data, nil
 }
 
-func (record *Json) Get(path string) (interface{}, error) {
+func (record *JsonRecord) Get(path string) (interface{}, error) {
 	if path == "" {
 		return nil, fmt.Errorf("Cannot get the property '%v' because it's path is empty.", path)
 	}
@@ -40,7 +41,7 @@ func (record *Json) Get(path string) (interface{}, error) {
 	return record.getSubValue(record.data, pathArray)
 }
 
-func (record *Json) getSubValue(data interface{}, path []string) (interface{}, error) {
+func (record *JsonRecord) getSubValue(data interface{}, path []string) (interface{}, error) {
 	if len(path) == 0 {
 		return data, nil
 	}
@@ -72,6 +73,6 @@ func (record *Json) getSubValue(data interface{}, path []string) (interface{}, e
 	}
 }
 
-func (record *Json) Position() Position {
+func (record *JsonRecord) Position() record.Position {
 	return record.position
 }

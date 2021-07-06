@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func getSubValue(value interface{}, path []string) (interface{}, error) {
+func GetSubValue(value interface{}, path []string) (interface{}, error) {
 	if len(path) == 0 {
 		return value, nil
 	}
@@ -19,7 +19,7 @@ func getSubValue(value interface{}, path []string) (interface{}, error) {
 			return nil, nil
 		}
 
-		return getSubValue(mapValue, path[1:])
+		return GetSubValue(mapValue, path[1:])
 	case []interface{}:
 		index, err := strconv.Atoi(path[0])
 		if err != nil {
@@ -33,7 +33,7 @@ func getSubValue(value interface{}, path []string) (interface{}, error) {
 			return nil, nil
 		}
 
-		return getSubValue(valueArray[index], path[1:])
+		return GetSubValue(valueArray[index], path[1:])
 	default:
 		return nil, fmt.Errorf("Cannot get sub-path '%v' because the value is primitive or unknown: '%#v'", path, value)
 	}

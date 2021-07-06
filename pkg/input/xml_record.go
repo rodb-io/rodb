@@ -1,28 +1,29 @@
-package record
+package input
 
 import (
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
 	parserPackage "rodb.io/pkg/parser"
+	recordPackage "rodb.io/pkg/record"
 	"strconv"
 	"strings"
 )
 
-type Xml struct {
+type XmlRecord struct {
 	config   *XmlConfig
 	node     *xmlquery.Node
 	parsers  parserPackage.List
-	position Position
+	position recordPackage.Position
 }
 
-func NewXml(
+func NewXmlRecord(
 	config *XmlConfig,
 	node *xmlquery.Node,
 	parsers parserPackage.List,
-	position Position,
-) (*Xml, error) {
-	return &Xml{
+	position recordPackage.Position,
+) (*XmlRecord, error) {
+	return &XmlRecord{
 		config:   config,
 		node:     node,
 		parsers:  parsers,
@@ -30,7 +31,7 @@ func NewXml(
 	}, nil
 }
 
-func (record *Xml) All() (map[string]interface{}, error) {
+func (record *XmlRecord) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	for _, property := range record.config.Properties {
 		value, err := record.getAllValues(record.node, property)
@@ -44,7 +45,7 @@ func (record *Xml) All() (map[string]interface{}, error) {
 	return result, nil
 }
 
-func (record *Xml) nodeIteratorToArray(
+func (record *XmlRecord) nodeIteratorToArray(
 	nodes []*xmlquery.Node,
 	config *XmlPropertyConfig,
 ) ([]interface{}, error) {
@@ -61,7 +62,7 @@ func (record *Xml) nodeIteratorToArray(
 	return values, nil
 }
 
-func (record *Xml) nodeIteratorToObject(
+func (record *XmlRecord) nodeIteratorToObject(
 	nodes []*xmlquery.Node,
 	config *XmlPropertyConfig,
 ) (interface{}, error) {
@@ -85,7 +86,7 @@ func (record *Xml) nodeIteratorToObject(
 	return values, nil
 }
 
-func (record *Xml) getAllValues(
+func (record *XmlRecord) getAllValues(
 	node *xmlquery.Node,
 	currentConfig *XmlPropertyConfig,
 ) (interface{}, error) {
@@ -122,16 +123,16 @@ func (record *Xml) getAllValues(
 	return nil, record.xpathError(currentConfig, fmt.Sprintf("returned an unexpected type: %#v", result))
 }
 
-// Converts a node iterator result into a string containing the raw XML,
+// Converts a node iterator result into a string containing the raw XmlRecord,
 // to facilitate debugging and setting-up the configuration
-func (record *Xml) handleNodeIteratorValue(config *XmlPropertyConfig, nodeIterator *xpath.NodeIterator) (interface{}, error) {
+func (record *XmlRecord) handleNodeIteratorValue(config *XmlPropertyConfig, nodeIterator *xpath.NodeIterator) (interface{}, error) {
 	parser, parserExists := record.parsers[config.Parser]
 	if !parserExists {
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
 	}
 
 	if _, parserIsString := parser.(*parserPackage.String); !parserIsString {
-		return nil, record.xpathError(config, fmt.Sprintf("got XML node(s), but the property does not have the appropriate configuration or a string parser"))
+		return nil, record.xpathError(config, fmt.Sprintf("got XmlRecord node(s), but the property does not have the appropriate configuration or a string parser"))
 	}
 
 	result := ""
@@ -156,7 +157,7 @@ func (record *Xml) handleNodeIteratorValue(config *XmlPropertyConfig, nodeIterat
 	return result, nil
 }
 
-func (record *Xml) Get(path string) (interface{}, error) {
+func (record *XmlRecord) Get(path string) (interface{}, error) {
 	if path == "" {
 		return nil, fmt.Errorf("Cannot get the property '%v' because it's path is empty.", path)
 	}
@@ -172,7 +173,7 @@ func (record *Xml) Get(path string) (interface{}, error) {
 	return nil, fmt.Errorf("The path '%v' does not exist in this record.", path)
 }
 
-func (record *Xml) handleStringValue(config *XmlPropertyConfig, value string) (interface{}, error) {
+func (record *XmlRecord) handleStringValue(config *XmlPropertyConfig, value string) (interface{}, error) {
 	parser, parserExists := record.parsers[config.Parser]
 	if !parserExists {
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
@@ -181,7 +182,7 @@ func (record *Xml) handleStringValue(config *XmlPropertyConfig, value string) (i
 	return parser.Parse(value)
 }
 
-func (record *Xml) handleNumericValue(config *XmlPropertyConfig, value float64) (interface{}, error) {
+func (record *XmlRecord) handleNumericValue(config *XmlPropertyConfig, value float64) (interface{}, error) {
 	parser, parserExists := record.parsers[config.Parser]
 	if !parserExists {
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
@@ -196,7 +197,7 @@ func (record *Xml) handleNumericValue(config *XmlPropertyConfig, value float64) 
 	}
 }
 
-func (record *Xml) handleBoolValue(config *XmlPropertyConfig, value bool) (interface{}, error) {
+func (record *XmlRecord) handleBoolValue(config *XmlPropertyConfig, value bool) (interface{}, error) {
 	parser, parserExists := record.parsers[config.Parser]
 	if !parserExists {
 		return nil, fmt.Errorf("The parser '%v' was not found.", config.Parser)
@@ -209,7 +210,7 @@ func (record *Xml) handleBoolValue(config *XmlPropertyConfig, value bool) (inter
 	}
 }
 
-func (record *Xml) getSubArrayValue(
+func (record *XmlRecord) getSubArrayValue(
 	nodes []*xmlquery.Node,
 	config *XmlPropertyConfig,
 	path []string,
@@ -233,7 +234,7 @@ func (record *Xml) getSubArrayValue(
 	return record.getSubValue(nodes[requestedIndex], config.Items, path[1:])
 }
 
-func (record *Xml) getSubObjectValue(
+func (record *XmlRecord) getSubObjectValue(
 	nodes []*xmlquery.Node,
 	config *XmlPropertyConfig,
 	path []string,
@@ -261,7 +262,7 @@ func (record *Xml) getSubObjectValue(
 	return nil, nil
 }
 
-func (record *Xml) getSubValue(
+func (record *XmlRecord) getSubValue(
 	node *xmlquery.Node,
 	currentConfig *XmlPropertyConfig,
 	path []string,
@@ -291,7 +292,7 @@ func (record *Xml) getSubValue(
 			return nil, err
 		}
 
-		return getSubValue(value, path)
+		return recordPackage.GetSubValue(value, path)
 	}
 
 	// Now we only have to handle the non-parseable primitive types
@@ -313,7 +314,7 @@ func (record *Xml) getSubValue(
 	return nil, record.xpathError(currentConfig, fmt.Sprintf("returned an unexpected type: %#v", result))
 }
 
-func (record *Xml) xpathError(config *XmlPropertyConfig, message string) error {
+func (record *XmlRecord) xpathError(config *XmlPropertyConfig, message string) error {
 	return fmt.Errorf(
 		"xpath '%v' for property '%v': %v",
 		config.CompiledXPath.String(),
@@ -322,6 +323,6 @@ func (record *Xml) xpathError(config *XmlPropertyConfig, message string) error {
 	)
 }
 
-func (record *Xml) Position() Position {
+func (record *XmlRecord) Position() recordPackage.Position {
 	return record.position
 }

@@ -1,16 +1,16 @@
-package record
+package input
 
 import (
 	"fmt"
 	"testing"
 )
 
-func TestJsonAll(t *testing.T) {
+func TestJsonRecordAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		data := map[string]interface{}{
 			"test": 123,
 		}
-		record := NewJson(&JsonConfig{}, data, 0)
+		record := NewJsonRecord(&JsonConfig{}, data, 0)
 		got, err := record.All()
 		if err != nil {
 			t.Fatalf("Got error: '%v'", err)
@@ -22,7 +22,7 @@ func TestJsonAll(t *testing.T) {
 	})
 }
 
-func TestJsonGet(t *testing.T) {
+func TestJsonRecordGet(t *testing.T) {
 	testCases := []struct {
 		name        string
 		data        map[string]interface{}
@@ -138,7 +138,7 @@ func TestJsonGet(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			record := NewJson(&JsonConfig{}, testCase.data, 0)
+			record := NewJsonRecord(&JsonConfig{}, testCase.data, 0)
 
 			got, err := record.Get(testCase.path)
 			if testCase.expectError {

@@ -104,7 +104,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read xml data: %w", err)
 	}
 
-	return record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
+	return NewXmlRecord(xmlInput.config, node, xmlInput.parsers, position)
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -161,7 +161,7 @@ func (xmlInput *Xml) IterateAll() (record.Iterator, func() error, error) {
 			return nil, fmt.Errorf("Cannot read xml data: %w", err)
 		}
 
-		record, err := record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
+		record, err := NewXmlRecord(xmlInput.config, node, xmlInput.parsers, position)
 		if err != nil {
 			return nil, fmt.Errorf("Error when creating record after position %v: %v", position, err)
 		}

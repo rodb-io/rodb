@@ -1,14 +1,13 @@
-package record
+package input
 
 import (
 	"fmt"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"testing"
 )
 
 func TestCsvAll(t *testing.T) {
-	var testConfig *CsvConfig = &config.CsvConfig{
+	var testConfig *CsvConfig = &CsvConfig{
 		Columns: []*CsvColumnConfig{
 			{Name: "col_a"},
 			{Name: "col_b"},
@@ -25,7 +24,7 @@ func TestCsvAll(t *testing.T) {
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		record := NewCsv(testConfig, parsers, []string{"string_a", `{"b": "string_b"}`}, 0)
+		record := NewCsvRecord(testConfig, parsers, []string{"string_a", `{"b": "string_b"}`}, 0)
 		data, err := record.All()
 		if err != nil {
 			t.Fatalf("Got error: '%v'", err)
@@ -40,14 +39,14 @@ func TestCsvAll(t *testing.T) {
 		}
 	})
 	t.Run("error if col does not exist", func(t *testing.T) {
-		record := NewCsv(testConfig, parsers, []string{}, 0)
+		record := NewCsvRecord(testConfig, parsers, []string{}, 0)
 		got, err := record.Get("col_0")
 		if err == nil {
 			t.Fatalf("Expected error, got '%v'", got)
 		}
 	})
 	t.Run("col not found", func(t *testing.T) {
-		record := NewCsv(testConfig, parsers, []string{}, 0)
+		record := NewCsvRecord(testConfig, parsers, []string{}, 0)
 		got, err := record.Get("col_a")
 		if err != nil {
 			t.Fatalf("Expected no error, got '%v'", err)
@@ -58,7 +57,7 @@ func TestCsvAll(t *testing.T) {
 	})
 }
 
-func TestCsvGet(t *testing.T) {
+func TestCsvRecordGet(t *testing.T) {
 	var testConfig *CsvConfig = &CsvConfig{
 		Columns: []*CsvColumnConfig{
 			{Name: "col"},
@@ -182,7 +181,7 @@ func TestCsvGet(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			record := NewCsv(testConfig, parsers, []string{testCase.json}, 0)
+			record := NewCsvRecord(testConfig, parsers, []string{testCase.json}, 0)
 
 			got, err := record.Get(testCase.path)
 			if testCase.expectError {

@@ -1,25 +1,26 @@
-package record
+package input
 
 import (
 	"fmt"
 	"rodb.io/pkg/parser"
+	recordPackage "rodb.io/pkg/record"
 	"strings"
 )
 
-type Csv struct {
+type CsvRecord struct {
 	config        *CsvConfig
 	columnParsers []parser.Parser
 	data          []string
-	position      Position
+	position      recordPackage.Position
 }
 
-func NewCsv(
+func NewCsvRecord(
 	config *CsvConfig,
 	columnParsers []parser.Parser,
 	data []string,
-	position Position,
-) *Csv {
-	return &Csv{
+	position recordPackage.Position,
+) *CsvRecord {
+	return &CsvRecord{
 		config:        config,
 		columnParsers: columnParsers,
 		data:          data,
@@ -27,7 +28,7 @@ func NewCsv(
 	}
 }
 
-func (record *Csv) All() (map[string]interface{}, error) {
+func (record *CsvRecord) All() (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	for _, column := range record.config.Columns {
 		value, err := record.getColumn(column.Name)
@@ -42,7 +43,7 @@ func (record *Csv) All() (map[string]interface{}, error) {
 }
 
 // Gets the value of the column (no dot-separated names, only the column content itself)
-func (record *Csv) getColumn(columnName string) (interface{}, error) {
+func (record *CsvRecord) getColumn(columnName string) (interface{}, error) {
 	fieldIndex, exists := record.config.ColumnIndexByName[columnName]
 	if !exists {
 		return nil, fmt.Errorf("The column '%v' does not exist.", columnName)
@@ -61,7 +62,7 @@ func (record *Csv) getColumn(columnName string) (interface{}, error) {
 	return value, nil
 }
 
-func (record *Csv) Get(path string) (interface{}, error) {
+func (record *CsvRecord) Get(path string) (interface{}, error) {
 	if path == "" {
 		return nil, fmt.Errorf("Cannot get the property '%v' because it's path is empty.", path)
 	}
@@ -73,9 +74,9 @@ func (record *Csv) Get(path string) (interface{}, error) {
 		return nil, err
 	}
 
-	return getSubValue(value, pathArray[1:])
+	return recordPackage.GetSubValue(value, pathArray[1:])
 }
 
-func (record *Csv) Position() Position {
+func (record *CsvRecord) Position() recordPackage.Position {
 	return record.position
 }

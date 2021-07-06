@@ -1,15 +1,14 @@
-package record
+package input
 
 import (
 	"bytes"
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
-	"rodb.io/pkg/config"
 	parserPackage "rodb.io/pkg/parser"
 	"testing"
 )
 
-func TestXmlAll(t *testing.T) {
+func TestXmlRecordAll(t *testing.T) {
 	booleanParser := parserPackage.NewBoolean(&parserPackage.BooleanConfig{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
@@ -141,7 +140,7 @@ func TestXmlAll(t *testing.T) {
 		"integer": integerParser,
 	}
 
-	record, err := NewXml(config, node, parsers, 0)
+	record, err := NewXmlRecord(config, node, parsers, 0)
 	if err != nil {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
@@ -203,7 +202,7 @@ func TestXmlAll(t *testing.T) {
 	}
 }
 
-func TestXmlGet(t *testing.T) {
+func TestXmlRecordGet(t *testing.T) {
 	booleanParser := parserPackage.NewBoolean(&parserPackage.BooleanConfig{
 		TrueValues:  []string{"true"},
 		FalseValues: []string{"false"},
@@ -224,13 +223,13 @@ func TestXmlGet(t *testing.T) {
 		data []byte,
 		config *XmlConfig,
 		parsers parserPackage.List,
-	) *Xml {
+	) *XmlRecord {
 		node, err := xmlquery.Parse(bytes.NewReader(data))
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
 
-		record, err := NewXml(config, node, parsers, 0)
+		record, err := NewXmlRecord(config, node, parsers, 0)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}

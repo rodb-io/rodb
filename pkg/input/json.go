@@ -80,7 +80,7 @@ func (jsonInput *Json) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read json data: %w", err)
 	}
 
-	return record.NewJson(
+	return NewJsonRecord(
 		jsonInput.config,
 		data,
 		position,
@@ -140,7 +140,7 @@ func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
 			return nil, fmt.Errorf("Cannot read json data: %w", err)
 		}
 
-		record := record.NewJson(
+		record := NewJsonRecord(
 			jsonInput.config,
 			data,
 			position,

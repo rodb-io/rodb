@@ -158,7 +158,7 @@ func TestGetSubValue(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			got, err := getSubValue(testCase.data, testCase.path)
+			got, err := GetSubValue(testCase.data, testCase.path)
 			if testCase.expectError {
 				if err == nil {
 					t.Fatalf("Expected error, got: '%v'", err)
