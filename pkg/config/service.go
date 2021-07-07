@@ -18,14 +18,9 @@ func (config *serviceParser) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	switch objectType {
 	case "http":
-		config.service = &HttpService{}
+		config.service = &HttpConfig{}
 		return unmarshal(config.service)
 	default:
 		return fmt.Errorf("Error in service config: Unknown type '%v'", objectType)
 	}
-}
-
-type Service interface {
-	Validate(outputs map[string]Output, log *logrus.Entry) error
-	GetName() string
 }

@@ -1,4 +1,4 @@
-package config
+package service
 
 import (
 	"errors"
@@ -6,38 +6,39 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"rodb.io/pkg/util"
+	"rodb.io/pkg/output"
 )
 
-type HttpService struct {
+type HttpConfig struct {
 	Name       string             `yaml:"name"`
 	Type       string             `yaml:"type"`
-	Http       *HttpServiceHttp   `yaml:"http"`
-	Https      *HttpServiceHttps  `yaml:"https"`
+	Http       *HttpHttpConfig   `yaml:"http"`
+	Https      *HttpHttpsConfig  `yaml:"https"`
 	ErrorsType string             `yaml:"errorsType"`
-	Routes     []HttpServiceRoute `yaml:"routes"`
+	Routes     []HttpRouteConfig `yaml:"routes"`
 	Logger     *logrus.Entry
 }
 
-type HttpServiceHttp struct {
+type HttpHttpConfig struct {
 	Listen string `yaml:"listen"`
 }
 
-type HttpServiceHttps struct {
+type HttpHttpsConfig struct {
 	Listen          string `yaml:"listen"`
 	CertificatePath string `yaml:"certificatePath"`
 	PrivateKeyPath  string `yaml:"privateKeyPath"`
 }
 
-type HttpServiceRoute struct {
+type HttpRouteConfig struct {
 	Output string `yaml:"output"`
 	Path   string `yaml:"path"`
 }
 
-func (config *HttpService) GetName() string {
+func (config *HttpConfig) GetName() string {
 	return config.Name
 }
 
-func (config *HttpService) Validate(outputs map[string]Output, log *logrus.Entry) error {
+func (config *HttpConfig) Validate(outputs map[string]output.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
@@ -84,7 +85,7 @@ func (config *HttpService) Validate(outputs map[string]Output, log *logrus.Entry
 	return nil
 }
 
-func (config *HttpServiceHttp) Validate(log *logrus.Entry) error {
+func (config *HttpHttpConfig) Validate(log *logrus.Entry) error {
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
 	}
@@ -92,7 +93,7 @@ func (config *HttpServiceHttp) Validate(log *logrus.Entry) error {
 	return nil
 }
 
-func (config *HttpServiceHttps) Validate(log *logrus.Entry) error {
+func (config *HttpHttpsConfig) Validate(log *logrus.Entry) error {
 	if config.Listen == "" {
 		config.Listen = "127.0.0.1:0"
 	}
@@ -122,7 +123,7 @@ func (config *HttpServiceHttps) Validate(log *logrus.Entry) error {
 	return nil
 }
 
-func (config *HttpServiceRoute) Validate(outputs map[string]Output, log *logrus.Entry) error {
+func (config *HttpRouteConfig) Validate(outputs map[string]output.Config, log *logrus.Entry) error {
 	if config.Output == "" {
 		return fmt.Errorf("output is empty. This field is required")
 	}

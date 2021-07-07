@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/output"
 	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
@@ -21,7 +20,7 @@ import (
 )
 
 type Http struct {
-	config         *config.HttpService
+	config         *HttpConfig
 	httpListener   net.Listener
 	httpsListener  net.Listener
 	httpServer     *http.Server
@@ -33,14 +32,14 @@ type Http struct {
 }
 
 type httpRoute struct {
-	config     config.HttpServiceRoute
+	config     HttpRouteConfig
 	path       *regexp.Regexp
 	parameters []string
 	output     output.Output
 }
 
 func NewHttp(
-	config *config.HttpService,
+	config *HttpConfig,
 	outputs map[string]output.Output,
 ) (*Http, error) {
 	service := &Http{
@@ -138,7 +137,7 @@ func (service *Http) Address() string {
 // Returns a regular expression to match a string, and the list of param names
 // (matching the sub-expressions of the regexp)
 func (service *Http) createPathRegexp(
-	routeConfig config.HttpServiceRoute,
+	routeConfig HttpRouteConfig,
 	output output.Output,
 ) (*regexp.Regexp, []string, error) {
 	paramRegexp, err := regexp.Compile("{([^}]+)}")
