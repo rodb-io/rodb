@@ -4,20 +4,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	parameterPackage "rodb.io/pkg/output/parameter"
-	relationshipPackage "rodb.io/pkg/output/relationship"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
+	parameterPackage "rodb.io/pkg/output/parameter"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	parserPackage "rodb.io/pkg/parser"
 )
 
 type JsonArrayConfig struct {
-	Name          string                                 `yaml:"name"`
-	Type          string                                 `yaml:"type"`
-	Input         string                                 `yaml:"input"`
-	Limit         JsonArrayLimitConfig                   `yaml:"limit"`
-	Offset        JsonArrayOffsetConfig                  `yaml:"offset"`
-	Parameters    map[string]parameterPackage.ParameterConfig     `yaml:"parameters"`
+	Name          string                                             `yaml:"name"`
+	Type          string                                             `yaml:"type"`
+	Input         string                                             `yaml:"input"`
+	Limit         JsonArrayLimitConfig                               `yaml:"limit"`
+	Offset        JsonArrayOffsetConfig                              `yaml:"offset"`
+	Parameters    map[string]parameterPackage.ParameterConfig        `yaml:"parameters"`
 	Relationships map[string]*relationshipPackage.RelationshipConfig `yaml:"relationships"`
 	Logger        *logrus.Entry
 }

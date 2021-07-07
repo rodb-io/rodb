@@ -3,8 +3,8 @@ package index
 import (
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/parser"
 	"rodb.io/pkg/input/record"
+	"rodb.io/pkg/parser"
 	"testing"
 )
 

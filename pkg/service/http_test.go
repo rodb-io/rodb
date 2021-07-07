@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"rodb.io/pkg/input/record"
 	outputPackage "rodb.io/pkg/output"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/input/record"
 	"strings"
 	"testing"
 )

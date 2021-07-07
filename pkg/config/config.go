@@ -6,11 +6,11 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"rodb.io/pkg/parser"
-	"rodb.io/pkg/input"
 	"rodb.io/pkg/index"
-	"rodb.io/pkg/service"
+	"rodb.io/pkg/input"
 	"rodb.io/pkg/output"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/service"
 )
 
 type configParser struct {

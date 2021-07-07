@@ -9,13 +9,13 @@ import (
 )
 
 type CsvConfig struct {
-	Name              string            `yaml:"name"`
-	Type              string            `yaml:"type"`
-	Path              string            `yaml:"path"`
-	DieOnInputChange  *bool             `yaml:"dieOnInputChange"`
-	IgnoreFirstRow    bool              `yaml:"ignoreFirstRow"`
-	AutodetectColumns bool              `yaml:"autodetectColumns"`
-	Delimiter         string            `yaml:"delimiter"`
+	Name              string             `yaml:"name"`
+	Type              string             `yaml:"type"`
+	Path              string             `yaml:"path"`
+	DieOnInputChange  *bool              `yaml:"dieOnInputChange"`
+	IgnoreFirstRow    bool               `yaml:"ignoreFirstRow"`
+	AutodetectColumns bool               `yaml:"autodetectColumns"`
+	Delimiter         string             `yaml:"delimiter"`
 	Columns           []*CsvColumnConfig `yaml:"columns"`
 	ColumnIndexByName map[string]int
 	Logger            *logrus.Entry

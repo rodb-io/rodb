@@ -1,8 +1,8 @@
 package input
 
 import (
-	"rodb.io/pkg/parser"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
 	"testing"
 )
 

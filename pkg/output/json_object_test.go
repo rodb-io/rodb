@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"rodb.io/pkg/input/record"
 	parameterPackage "rodb.io/pkg/output/parameter"
 	relationshipPackage "rodb.io/pkg/output/relationship"
-	"rodb.io/pkg/input/record"
 	"testing"
 )
 

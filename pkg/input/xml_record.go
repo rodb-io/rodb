@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/antchfx/xmlquery"
 	"github.com/antchfx/xpath"
-	parserPackage "rodb.io/pkg/parser"
 	recordPackage "rodb.io/pkg/input/record"
+	parserPackage "rodb.io/pkg/parser"
 	"strconv"
 	"strings"
 )

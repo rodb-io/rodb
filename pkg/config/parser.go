@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"rodb.io/pkg/util"
 	"rodb.io/pkg/parser"
+	"rodb.io/pkg/util"
 )
 
 type parserParser struct {
@@ -39,4 +39,3 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 		return fmt.Errorf("Error in parser config: Unknown type '%v'", objectType)
 	}
 }
-

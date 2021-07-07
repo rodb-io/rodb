@@ -13,8 +13,8 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"rodb.io/pkg/output"
 	"rodb.io/pkg/input/record"
+	"rodb.io/pkg/output"
 	"rodb.io/pkg/util"
 	"sync"
 )

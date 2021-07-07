@@ -7,8 +7,8 @@ import (
 	"io"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
-	parserPackage "rodb.io/pkg/parser"
 	recordPackage "rodb.io/pkg/input/record"
+	parserPackage "rodb.io/pkg/parser"
 	"strconv"
 )
 

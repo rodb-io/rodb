@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/index"
-	"rodb.io/pkg/parser"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/parser"
 )
 
 type ParameterConfig struct {

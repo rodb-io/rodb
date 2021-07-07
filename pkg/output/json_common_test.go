@@ -3,9 +3,9 @@ package output
 import (
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/parser"
 	"rodb.io/pkg/input/record"
 	relationshipPackage "rodb.io/pkg/output/relationship"
+	"rodb.io/pkg/parser"
 	"testing"
 )
 

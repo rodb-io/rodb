@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
-	"rodb.io/pkg/util"
 	"rodb.io/pkg/output"
+	"rodb.io/pkg/util"
 )
 
 type HttpConfig struct {
-	Name       string             `yaml:"name"`
-	Type       string             `yaml:"type"`
+	Name       string            `yaml:"name"`
+	Type       string            `yaml:"type"`
 	Http       *HttpHttpConfig   `yaml:"http"`
 	Https      *HttpHttpsConfig  `yaml:"https"`
-	ErrorsType string             `yaml:"errorsType"`
+	ErrorsType string            `yaml:"errorsType"`
 	Routes     []HttpRouteConfig `yaml:"routes"`
 	Logger     *logrus.Entry
 }

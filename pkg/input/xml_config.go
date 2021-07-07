@@ -18,12 +18,12 @@ const (
 )
 
 type XmlConfig struct {
-	Name             string              `yaml:"name"`
-	Type             string              `yaml:"type"`
-	Path             string              `yaml:"path"`
-	DieOnInputChange *bool               `yaml:"dieOnInputChange"`
+	Name             string               `yaml:"name"`
+	Type             string               `yaml:"type"`
+	Path             string               `yaml:"path"`
+	DieOnInputChange *bool                `yaml:"dieOnInputChange"`
 	Properties       []*XmlPropertyConfig `yaml:"properties"`
-	RecordXPath      string              `yaml:"recordXpath"`
+	RecordXPath      string               `yaml:"recordXpath"`
 	Logger           *logrus.Entry
 }
 
@@ -32,8 +32,8 @@ type XmlPropertyConfig struct {
 	Type          XmlInputPropertyType `yaml:"type"`
 	Parser        string               `yaml:"parser"`
 	XPath         string               `yaml:"xpath"`
-	Items         *XmlPropertyConfig    `yaml:"items"`
-	Properties    []*XmlPropertyConfig  `yaml:"properties"`
+	Items         *XmlPropertyConfig   `yaml:"items"`
+	Properties    []*XmlPropertyConfig `yaml:"properties"`
 	CompiledXPath *xpath.Expr
 }
 

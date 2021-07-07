@@ -3,16 +3,16 @@ package relationship
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/input/record"
 )
 
 type RelationshipConfig struct {
-	Input         string                   `yaml:"input"`
-	IsArray       bool                     `yaml:"isArray"`
-	Limit         uint                     `yaml:"limit"`
-	Sort          []*record.SortConfig     `yaml:"sort"`
+	Input         string                         `yaml:"input"`
+	IsArray       bool                           `yaml:"isArray"`
+	Limit         uint                           `yaml:"limit"`
+	Sort          []*record.SortConfig           `yaml:"sort"`
 	Match         []*RelationshipMatchConfig     `yaml:"match"`
 	Relationships map[string]*RelationshipConfig `yaml:"relationships"`
 }
