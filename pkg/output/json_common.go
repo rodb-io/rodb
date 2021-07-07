@@ -3,7 +3,7 @@ package output
 import (
 	"errors"
 	"fmt"
-	configPackage "rodb.io/pkg/config"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
 	recordPackage "rodb.io/pkg/input/record"
@@ -11,7 +11,7 @@ import (
 
 func checkRelationshipMatches(
 	inputs inputPackage.List,
-	relationship *configPackage.Relationship,
+	relationship *relationshipPackage.RelationshipConfig,
 	parentInput inputPackage.Input,
 ) error {
 	for _, relationship := range relationship.Relationships {
@@ -30,7 +30,7 @@ func checkRelationshipMatches(
 
 func getRelationshipFiltersPerIndex(
 	data map[string]interface{},
-	matchConfig []*configPackage.RelationshipMatch,
+	matchConfig []*relationshipPackage.RelationshipMatchConfig,
 	relationshipName string,
 ) (map[string]map[string]interface{}, error) {
 	filtersPerIndex := map[string]map[string]interface{}{}
@@ -90,7 +90,7 @@ func getFilteredRecordPositionsPerIndex(
 
 func loadRelationships(
 	data map[string]interface{},
-	relationships map[string]*configPackage.Relationship,
+	relationships map[string]*relationshipPackage.RelationshipConfig,
 	defaultIndex indexPackage.Index,
 	indexes indexPackage.List,
 	inputs inputPackage.List,
@@ -203,7 +203,7 @@ func loadRelationships(
 
 func getDataFromPosition(
 	position recordPackage.Position,
-	relationships map[string]*configPackage.Relationship,
+	relationships map[string]*relationshipPackage.RelationshipConfig,
 	defaultIndex indexPackage.Index,
 	indexes indexPackage.List,
 	inputs inputPackage.List,

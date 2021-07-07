@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"io"
-	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"

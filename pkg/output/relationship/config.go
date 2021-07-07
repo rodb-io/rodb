@@ -1,28 +1,31 @@
-package config
+package relationship
 
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/input/record"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/input"
 )
 
-type Relationship struct {
+type RelationshipConfig struct {
 	Input         string                   `yaml:"input"`
 	IsArray       bool                     `yaml:"isArray"`
 	Limit         uint                     `yaml:"limit"`
-	Sort          []*Sort                  `yaml:"sort"`
-	Match         []*RelationshipMatch     `yaml:"match"`
-	Relationships map[string]*Relationship `yaml:"relationships"`
+	Sort          []*record.SortConfig     `yaml:"sort"`
+	Match         []*RelationshipMatchConfig     `yaml:"match"`
+	Relationships map[string]*RelationshipConfig `yaml:"relationships"`
 }
 
-type RelationshipMatch struct {
+type RelationshipMatchConfig struct {
 	ParentProperty string `yaml:"parentProperty"`
 	ChildProperty  string `yaml:"childProperty"`
 	ChildIndex     string `yaml:"childIndex"`
 }
 
-func (config *Relationship) Validate(
-	indexes map[string]Index,
-	inputs map[string]Input,
+func (config *RelationshipConfig) Validate(
+	indexes map[string]index.Config,
+	inputs map[string]input.Config,
 	log *logrus.Entry,
 	logPrefix string,
 ) error {
@@ -31,7 +34,7 @@ func (config *Relationship) Validate(
 	}
 
 	if config.Sort == nil {
-		config.Sort = make([]*Sort, 0)
+		config.Sort = make([]*record.SortConfig, 0)
 	}
 
 	if len(config.Sort) > 0 && !config.IsArray {
@@ -78,11 +81,11 @@ func (config *Relationship) Validate(
 	return nil
 }
 
-func (config *RelationshipMatch) Validate(
-	indexes map[string]Index,
+func (config *RelationshipMatchConfig) Validate(
+	indexes map[string]index.Config,
 	log *logrus.Entry,
 	logPrefix string,
-	input Input,
+	input input.Config,
 ) error {
 	// The parentProperty and childProperty will be validated at runtime (must be validated against the input and not the index)
 

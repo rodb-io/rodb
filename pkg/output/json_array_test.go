@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"rodb.io/pkg/config"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	"testing"
 )
 
@@ -40,11 +41,11 @@ func TestJsonArrayHandler(t *testing.T) {
 				Index:    "mock",
 			},
 		},
-		Relationships: map[string]*config.Relationship{
+		Relationships: map[string]*relationshipPackage.RelationshipConfig{
 			"child": {
 				Input:   "mock",
 				IsArray: false,
-				Match: []*config.RelationshipMatch{
+				Match: []*relationshipPackage.RelationshipMatchConfig{
 					{
 						ParentProperty: "belongs_to",
 						ChildProperty:  "id",
