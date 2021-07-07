@@ -1,17 +1,17 @@
 package input
 
 import (
-	"rodb.io/pkg/input"
+	recordPackage "rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
 	"testing"
 )
 
 func TestMockGet(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := input.NewStringPropertiesMockRecord(map[string]string{
+		expectedRecord := recordPackage.NewStringPropertiesMockRecord(map[string]string{
 			"col": "value",
 		}, 0)
-		mock := NewMock(parser.NewMock(), []input.Record{expectedRecord})
+		mock := NewMock(parser.NewMock(), []recordPackage.Record{expectedRecord})
 
 		record, err := mock.Get(0)
 		if err != nil {
@@ -26,10 +26,10 @@ func TestMockGet(t *testing.T) {
 
 func TestMockSize(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		expectedRecord := input.NewStringPropertiesMockRecord(map[string]string{
+		expectedRecord := recordPackage.NewStringPropertiesMockRecord(map[string]string{
 			"col": "value",
 		}, 0)
-		data := []input.Record{expectedRecord}
+		data := []recordPackage.Record{expectedRecord}
 		mock := NewMock(parser.NewMock(), data)
 
 		size, err := mock.Size()
@@ -45,11 +45,11 @@ func TestMockSize(t *testing.T) {
 
 func TestMockIterateAll(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		data := []input.Record{
-			input.NewStringPropertiesMockRecord(map[string]string{
+		data := []recordPackage.Record{
+			recordPackage.NewStringPropertiesMockRecord(map[string]string{
 				"col": "value",
 			}, 0),
-			input.NewStringPropertiesMockRecord(map[string]string{
+			recordPackage.NewStringPropertiesMockRecord(map[string]string{
 				"col": "value",
 			}, 1),
 		}

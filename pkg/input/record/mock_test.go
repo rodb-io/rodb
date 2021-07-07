@@ -1,4 +1,4 @@
-package input
+package record
 
 import (
 	"fmt"
