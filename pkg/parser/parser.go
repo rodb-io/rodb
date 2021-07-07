@@ -20,6 +20,25 @@ type Config interface {
 
 type List = map[string]Parser
 
+func NewConfigFromType(objectType string) (Config, error) {
+	switch objectType {
+	case "integer":
+		return &IntegerConfig{}, nil
+	case "float":
+		return &FloatConfig{}, nil
+	case "boolean":
+		return &BooleanConfig{}, nil
+	case "string":
+		return &StringConfig{}, nil
+	case "json":
+		return &JsonConfig{}, nil
+	case "split":
+		return &SplitConfig{}, nil
+	default:
+		return nil, fmt.Errorf("Unknown type '%v'", objectType)
+	}
+}
+
 func NewFromConfig(
 	config Config,
 	parsers List,
