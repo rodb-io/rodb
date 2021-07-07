@@ -1,23 +1,26 @@
-package config
+package parameter
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/input"
 )
 
-type Parameter struct {
+type ParameterConfig struct {
 	Property string `yaml:"property"`
 	Index    string `yaml:"index"`
 	Parser   string `yaml:"parser"`
 }
 
-func (config *Parameter) Validate(
-	indexes map[string]Index,
-	parsers map[string]Parser,
+func (config *ParameterConfig) Validate(
+	indexes map[string]index.Config,
+	parsers map[string]parser.Config,
 	log *logrus.Entry,
 	logPrefix string,
-	input Input,
+	input input.Config,
 ) error {
 	if config.Property == "" {
 		return errors.New("property is empty")

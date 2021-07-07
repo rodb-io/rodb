@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	configPackage "rodb.io/pkg/config"
+	parameterPackage "rodb.io/pkg/output/parameter"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	inputPackage "rodb.io/pkg/input"
 	parserPackage "rodb.io/pkg/parser"
 	indexPackage "rodb.io/pkg/index"
@@ -14,8 +15,8 @@ type JsonObjectConfig struct {
 	Name          string                                 `yaml:"name"`
 	Type          string                                 `yaml:"type"`
 	Input         string                                 `yaml:"input"`
-	Parameters    map[string]*configPackage.Parameter    `yaml:"parameters"`
-	Relationships map[string]*configPackage.Relationship `yaml:"relationships"`
+	Parameters    map[string]*parameterPackage.ParameterConfig    `yaml:"parameters"`
+	Relationships map[string]*relationshipPackage.RelationshipConfig `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 

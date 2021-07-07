@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"rodb.io/pkg/config"
+	parameterPackage "rodb.io/pkg/output/parameter"
 	relationshipPackage "rodb.io/pkg/output/relationship"
 	"rodb.io/pkg/input/record"
 	"testing"
@@ -28,7 +28,7 @@ func TestJsonObjectHandler(t *testing.T) {
 	trueValue := true
 	jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 		Input: "mock",
-		Parameters: map[string]*config.Parameter{
+		Parameters: map[string]*parameterPackage.ParameterConfig{
 			"foo_id": {
 				Property: "id",
 				Parser:   "mock",
@@ -177,7 +177,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		_, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
-			Parameters: map[string]*config.Parameter{
+			Parameters: map[string]*parameterPackage.ParameterConfig{
 				"foo_id": {
 					Property: "foo",
 					Parser:   "mock",
@@ -200,7 +200,7 @@ func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
-			Parameters: map[string]*config.Parameter{
+			Parameters: map[string]*parameterPackage.ParameterConfig{
 				"foo_id": {
 					Property: "foo",
 					Parser:   "mock",
