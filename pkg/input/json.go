@@ -6,22 +6,21 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configPackage "rodb.io/pkg/config"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 	"sync"
 	"time"
 )
 
 type Json struct {
-	config     *configPackage.JsonInput
+	config     *JsonConfig
 	reader     io.ReadSeeker
 	readerLock sync.Mutex
 	jsonFile   *os.File
 	watcher    *fsnotify.Watcher
 }
 
-func NewJson(config *configPackage.JsonInput) (*Json, error) {
+func NewJson(config *JsonConfig) (*Json, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, err
@@ -81,7 +80,7 @@ func (jsonInput *Json) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read json data: %w", err)
 	}
 
-	return record.NewJson(
+	return NewJsonRecord(
 		jsonInput.config,
 		data,
 		position,
@@ -141,7 +140,7 @@ func (jsonInput *Json) IterateAll() (record.Iterator, func() error, error) {
 			return nil, fmt.Errorf("Cannot read json data: %w", err)
 		}
 
-		record := record.NewJson(
+		record := NewJsonRecord(
 			jsonInput.config,
 			data,
 			position,

@@ -2,9 +2,9 @@ package input
 
 import (
 	"fmt"
-	configPackage "rodb.io/pkg/config"
+	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"time"
 )
 
@@ -23,26 +23,32 @@ type Input interface {
 	Close() error
 }
 
+type Config interface {
+	Validate(parsers map[string]parser.Config, log *logrus.Entry) error
+	GetName() string
+	ShouldDieOnInputChange() bool
+}
+
 type List = map[string]Input
 
 func NewFromConfig(
-	config configPackage.Input,
+	config Config,
 	parsers parser.List,
 ) (Input, error) {
 	switch config.(type) {
-	case *configPackage.CsvInput:
-		return NewCsv(config.(*configPackage.CsvInput), parsers)
-	case *configPackage.XmlInput:
-		return NewXml(config.(*configPackage.XmlInput), parsers)
-	case *configPackage.JsonInput:
-		return NewJson(config.(*configPackage.JsonInput))
+	case *CsvConfig:
+		return NewCsv(config.(*CsvConfig), parsers)
+	case *XmlConfig:
+		return NewXml(config.(*XmlConfig), parsers)
+	case *JsonConfig:
+		return NewJson(config.(*JsonConfig))
 	default:
 		return nil, fmt.Errorf("Unknown input config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configPackage.Input,
+	configs map[string]Config,
 	parsers parser.List,
 ) (List, error) {
 	inputs := make(List)

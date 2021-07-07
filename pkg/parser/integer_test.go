@@ -2,12 +2,11 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"testing"
 )
 
 func TestIntegerParse(t *testing.T) {
-	config := &config.IntegerParser{
+	config := &IntegerConfig{
 		IgnoreCharacters: "$ ,",
 	}
 	integer := NewInteger(config)
@@ -38,7 +37,7 @@ func TestIntegerParse(t *testing.T) {
 }
 
 func TestIntegerGetRegexpPattern(t *testing.T) {
-	config := &config.IntegerParser{
+	config := &IntegerConfig{
 		IgnoreCharacters: "$ ,",
 	}
 	integer := NewInteger(config)

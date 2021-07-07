@@ -1,42 +1,38 @@
 package index
 
 import (
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"testing"
 )
 
 func TestNoopGetRecordPositions(t *testing.T) {
 	mockInput := input.NewMock(parser.NewMock(), []record.Record{
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_b",
 		}, 0),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 1),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_a",
 		}, 2),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"col":  "col_a",
 			"col2": "col2_a",
 		}, 3),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"col":  "col_b",
 			"col2": "col2_b",
 		}, 4),
 	})
-	index := NewNoop(
-		&config.NoopIndex{},
-		map[string]input.Input{
-			"input": mockInput,
-		},
-	)
+	index := NewNoop(&NoopConfig{}, map[string]input.Input{
+		"input": mockInput,
+	})
 
 	t.Run("normal", func(t *testing.T) {
 		for _, testCase := range []struct {

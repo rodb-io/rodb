@@ -8,9 +8,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	configPackage "rodb.io/pkg/config"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"rodb.io/pkg/util"
 	"sync"
 	"time"
@@ -23,7 +22,7 @@ var xmlParserOptions = xmlquery.ParserOptions{
 }
 
 type Xml struct {
-	config       *configPackage.XmlInput
+	config       *XmlConfig
 	reader       io.ReadSeeker
 	readerBuffer *bufio.Reader
 	readerLock   sync.Mutex
@@ -40,7 +39,7 @@ type xmlTempRecordNode struct {
 }
 
 func NewXml(
-	config *configPackage.XmlInput,
+	config *XmlConfig,
 	parsers parser.List,
 ) (*Xml, error) {
 	watcher, err := fsnotify.NewWatcher()
@@ -105,7 +104,7 @@ func (xmlInput *Xml) Get(position record.Position) (record.Record, error) {
 		return nil, fmt.Errorf("Cannot read xml data: %w", err)
 	}
 
-	return record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
+	return NewXmlRecord(xmlInput.config, node, xmlInput.parsers, position)
 }
 
 func (xmlInput *Xml) Size() (int64, error) {
@@ -162,7 +161,7 @@ func (xmlInput *Xml) IterateAll() (record.Iterator, func() error, error) {
 			return nil, fmt.Errorf("Cannot read xml data: %w", err)
 		}
 
-		record, err := record.NewXml(xmlInput.config, node, xmlInput.parsers, position)
+		record, err := NewXmlRecord(xmlInput.config, node, xmlInput.parsers, position)
 		if err != nil {
 			return nil, fmt.Errorf("Error when creating record after position %v: %v", position, err)
 		}

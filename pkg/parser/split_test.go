@@ -2,7 +2,6 @@ package parser
 
 import (
 	"regexp"
-	configPackage "rodb.io/pkg/config"
 	"testing"
 )
 
@@ -10,13 +9,13 @@ func TestSplitParse(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		delimiter := "//"
 		falseValue := false
-		config := &configPackage.SplitParser{
+		config := &SplitConfig{
 			Delimiter:         &delimiter,
 			DelimiterIsRegexp: &falseValue,
 			Parser:            "integer",
 		}
 		splitParser := NewSplit(config, List{
-			"integer": NewInteger(&configPackage.IntegerParser{}),
+			"integer": NewInteger(&IntegerConfig{}),
 		})
 
 		data, err := splitParser.Parse(`1//42`)
@@ -52,14 +51,14 @@ func TestSplitParse(t *testing.T) {
 	t.Run("regexp", func(t *testing.T) {
 		delimiter := "[^0-9]+"
 		trueValue := true
-		config := &configPackage.SplitParser{
+		config := &SplitConfig{
 			Delimiter:         &delimiter,
 			DelimiterIsRegexp: &trueValue,
 			DelimiterRegexp:   regexp.MustCompile(delimiter),
 			Parser:            "integer",
 		}
 		splitParser := NewSplit(config, List{
-			"integer": NewInteger(&configPackage.IntegerParser{}),
+			"integer": NewInteger(&IntegerConfig{}),
 		})
 
 		data, err := splitParser.Parse(`1//42`)

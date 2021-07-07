@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/service"
 	"rodb.io/pkg/util"
 )
 
 type serviceParser struct {
-	service Service
+	service service.Config
 }
 
 func (config *serviceParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -18,14 +18,9 @@ func (config *serviceParser) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	switch objectType {
 	case "http":
-		config.service = &HttpService{}
+		config.service = &service.HttpConfig{}
 		return unmarshal(config.service)
 	default:
 		return fmt.Errorf("Error in service config: Unknown type '%v'", objectType)
 	}
-}
-
-type Service interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
-	GetName() string
 }

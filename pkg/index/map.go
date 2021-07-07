@@ -4,9 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 )
 
@@ -14,13 +13,13 @@ import (
 type mapPropertyIndex = map[interface{}]record.PositionList
 
 type Map struct {
-	config *config.MapIndex
+	config *MapConfig
 	input  input.Input
 	index  map[string]mapPropertyIndex
 }
 
 func NewMap(
-	config *config.MapIndex,
+	config *MapConfig,
 	inputs input.List,
 ) (*Map, error) {
 	input, inputExists := inputs[config.Input]

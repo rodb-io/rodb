@@ -4,22 +4,21 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"rodb.io/pkg/config"
 	wildcardPackage "rodb.io/pkg/index/wildcard"
 	"rodb.io/pkg/input"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/util"
 	"strings"
 )
 
 type Wildcard struct {
-	config *config.WildcardIndex
+	config *WildcardConfig
 	input  input.Input
 	index  map[string]*wildcardPackage.TreeNode
 }
 
 func NewWildcard(
-	config *config.WildcardIndex,
+	config *WildcardConfig,
 	inputs input.List,
 ) (*Wildcard, error) {
 	input, inputExists := inputs[config.Input]

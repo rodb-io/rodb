@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/index"
 	"rodb.io/pkg/util"
 )
 
 type indexParser struct {
-	index Index
+	index index.Config
 }
 
 func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -18,22 +18,15 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 
 	switch objectType {
 	case "map":
-		config.index = &MapIndex{}
+		config.index = &index.MapConfig{}
 		return unmarshal(config.index)
 	case "wildcard":
-		config.index = &WildcardIndex{}
+		config.index = &index.WildcardConfig{}
 		return unmarshal(config.index)
 	case "noop":
-		config.index = &NoopIndex{}
+		config.index = &index.NoopConfig{}
 		return unmarshal(config.index)
 	default:
 		return fmt.Errorf("Error in index config: Unknown type '%v'", objectType)
 	}
-}
-
-type Index interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
-	GetName() string
-	DoesHandleProperty(property string) bool
-	DoesHandleInput(input Input) bool
 }

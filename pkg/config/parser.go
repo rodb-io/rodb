@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/parser"
 	"rodb.io/pkg/util"
 )
 
 type parserParser struct {
-	parser Parser
+	parser parser.Config
 }
 
 func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -18,30 +18,24 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 	switch objectType {
 	case "integer":
-		config.parser = &IntegerParser{}
+		config.parser = &parser.IntegerConfig{}
 		return unmarshal(config.parser)
 	case "float":
-		config.parser = &FloatParser{}
+		config.parser = &parser.FloatConfig{}
 		return unmarshal(config.parser)
 	case "boolean":
-		config.parser = &BooleanParser{}
+		config.parser = &parser.BooleanConfig{}
 		return unmarshal(config.parser)
 	case "string":
-		config.parser = &StringParser{}
+		config.parser = &parser.StringConfig{}
 		return unmarshal(config.parser)
 	case "json":
-		config.parser = &JsonParser{}
+		config.parser = &parser.JsonConfig{}
 		return unmarshal(config.parser)
 	case "split":
-		config.parser = &SplitParser{}
+		config.parser = &parser.SplitConfig{}
 		return unmarshal(config.parser)
 	default:
 		return fmt.Errorf("Error in parser config: Unknown type '%v'", objectType)
 	}
-}
-
-type Parser interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
-	GetName() string
-	Primitive() bool
 }

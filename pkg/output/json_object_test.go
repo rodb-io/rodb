@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"rodb.io/pkg/config"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
+	parameterPackage "rodb.io/pkg/output/parameter"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	"testing"
 )
 
-func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error) {
+func mockJsonObjectForTests(config *JsonObjectConfig) (*JsonObject, error) {
 	dataForTests := mockJsonDataForTests()
 	jsonObject, err := NewJsonObject(
 		config,
@@ -25,38 +26,38 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error
 
 func TestJsonObjectHandler(t *testing.T) {
 	trueValue := true
-	jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+	jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 		Input: "mock",
-		Parameters: map[string]*config.Parameter{
+		Parameters: map[string]*parameterPackage.ParameterConfig{
 			"foo_id": {
 				Property: "id",
 				Parser:   "mock",
 				Index:    "mock",
 			},
 		},
-		Relationships: map[string]*config.Relationship{
+		Relationships: map[string]*relationshipPackage.RelationshipConfig{
 			"child": {
 				Input:   "mock",
 				IsArray: false,
-				Match: []*config.RelationshipMatch{
+				Match: []*relationshipPackage.RelationshipMatchConfig{
 					{
 						ParentProperty: "belongs_to",
 						ChildProperty:  "id",
 						ChildIndex:     "mock",
 					},
 				},
-				Relationships: map[string]*config.Relationship{
+				Relationships: map[string]*relationshipPackage.RelationshipConfig{
 					"subchild": {
 						Input:   "mock",
 						IsArray: true,
 						Limit:   2,
-						Sort: []*config.Sort{
+						Sort: []*record.SortConfig{
 							{
 								Property:  "id",
 								Ascending: &trueValue,
 							},
 						},
-						Match: []*config.RelationshipMatch{
+						Match: []*relationshipPackage.RelationshipMatchConfig{
 							{
 								ParentProperty: "id",
 								ChildProperty:  "belongs_to",
@@ -174,9 +175,9 @@ func TestJsonObjectHandler(t *testing.T) {
 
 func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		_, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		_, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
-			Parameters: map[string]*config.Parameter{
+			Parameters: map[string]*parameterPackage.ParameterConfig{
 				"foo_id": {
 					Property: "foo",
 					Parser:   "mock",
@@ -197,9 +198,9 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 
 func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
-			Parameters: map[string]*config.Parameter{
+			Parameters: map[string]*parameterPackage.ParameterConfig{
 				"foo_id": {
 					Property: "foo",
 					Parser:   "mock",

@@ -2,7 +2,7 @@ package wildcard
 
 import (
 	"fmt"
-	"rodb.io/pkg/record"
+	"rodb.io/pkg/input/record"
 	"strconv"
 	"strings"
 	"testing"

@@ -1,11 +1,11 @@
 package output
 
 import (
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/input/record"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"testing"
 )
 
@@ -23,27 +23,27 @@ type jsonDataForTests struct {
 
 func mockJsonDataForTests() jsonDataForTests {
 	mockResults := []record.Record{
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "1",
 			"belongs_to": "0",
 		}, 0),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "2",
 			"belongs_to": "1",
 		}, 1),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "3",
 			"belongs_to": "1",
 		}, 2),
-		record.NewStringPropertiesMock(map[string]string{
+		record.NewStringPropertiesMockRecord(map[string]string{
 			"id":         "4",
 			"belongs_to": "1",
 		}, 3),
 	}
 
 	mockInput := input.NewMock(parser.NewMock(), mockResults)
-	mockIndex := index.NewNoop(&config.NoopIndex{}, input.List{"mock": mockInput})
-	mockIndex2 := index.NewNoop(&config.NoopIndex{}, input.List{"mock": mockInput})
+	mockIndex := index.NewNoop(&index.NoopConfig{}, input.List{"mock": mockInput})
+	mockIndex2 := index.NewNoop(&index.NoopConfig{}, input.List{"mock": mockInput})
 	mockParser := parser.NewMock()
 	mockParserPrefix := parser.NewMockWithPrefix("prefix_")
 
@@ -71,7 +71,7 @@ func TestJsonObjectGetRelationshipFiltersPerIndex(t *testing.T) {
 				"foo": "3",
 				"bar": "1",
 			},
-			[]*config.RelationshipMatch{
+			[]*relationshipPackage.RelationshipMatchConfig{
 				{
 					ParentProperty: "foo",
 					ChildProperty:  "foo",
@@ -209,29 +209,29 @@ func TestJsonObjectLoadRelationships(t *testing.T) {
 		jsonDataForTests := mockJsonDataForTests()
 
 		falseValue := false
-		relationshipsConfig := map[string]*config.Relationship{
+		relationshipsConfig := map[string]*relationshipPackage.RelationshipConfig{
 			"children": {
 				Input:   "mock",
 				IsArray: true,
 				Limit:   2,
-				Sort: []*config.Sort{
+				Sort: []*record.SortConfig{
 					{
 						Property:  "id",
 						Ascending: &falseValue,
 					},
 				},
-				Match: []*config.RelationshipMatch{
+				Match: []*relationshipPackage.RelationshipMatchConfig{
 					{
 						ParentProperty: "id",
 						ChildProperty:  "belongs_to",
 						ChildIndex:     "mock",
 					},
 				},
-				Relationships: map[string]*config.Relationship{
+				Relationships: map[string]*relationshipPackage.RelationshipConfig{
 					"subchild": {
 						Input:   "mock",
 						IsArray: false,
-						Match: []*config.RelationshipMatch{
+						Match: []*relationshipPackage.RelationshipMatchConfig{
 							{
 								ParentProperty: "belongs_to",
 								ChildProperty:  "id",

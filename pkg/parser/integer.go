@@ -2,17 +2,16 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/util"
 	"strconv"
 )
 
 type Integer struct {
-	config *config.IntegerParser
+	config *IntegerConfig
 }
 
 func NewInteger(
-	config *config.IntegerParser,
+	config *IntegerConfig,
 ) *Integer {
 	return &Integer{
 		config: config,

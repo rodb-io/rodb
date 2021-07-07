@@ -2,18 +2,17 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/util"
 	"strconv"
 	"strings"
 )
 
 type Float struct {
-	config *config.FloatParser
+	config *FloatConfig
 }
 
 func NewFloat(
-	config *config.FloatParser,
+	config *FloatConfig,
 ) *Float {
 	return &Float{
 		config: config,

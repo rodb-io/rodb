@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"rodb.io/pkg/input"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"testing"
 	"time"
 )

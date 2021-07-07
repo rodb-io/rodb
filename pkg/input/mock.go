@@ -2,8 +2,8 @@ package input
 
 import (
 	"errors"
+	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"time"
 )
 

@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"rodb.io/pkg/config"
+	parameterPackage "rodb.io/pkg/output/parameter"
+	relationshipPackage "rodb.io/pkg/output/relationship"
 	"testing"
 )
 
-func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, error) {
+func mockJsonArrayForTests(config *JsonArrayConfig) (*JsonArray, error) {
 	dataForTests := mockJsonDataForTests()
 	jsonArray, err := NewJsonArray(
 		config,
@@ -23,28 +24,28 @@ func mockJsonArrayForTests(config *config.JsonArrayOutput) (*JsonArray, error) {
 }
 
 func TestJsonArrayHandler(t *testing.T) {
-	jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+	jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 		Input: "mock",
-		Limit: *&config.JsonArrayOutputLimit{
+		Limit: *&JsonArrayLimitConfig{
 			Max:       100,
 			Default:   10,
 			Parameter: "limit",
 		},
-		Offset: *&config.JsonArrayOutputOffset{
+		Offset: *&JsonArrayOffsetConfig{
 			Parameter: "offset",
 		},
-		Parameters: map[string]config.Parameter{
+		Parameters: map[string]parameterPackage.ParameterConfig{
 			"belongs_to_param": {
 				Property: "belongs_to",
 				Parser:   "mock",
 				Index:    "mock",
 			},
 		},
-		Relationships: map[string]*config.Relationship{
+		Relationships: map[string]*relationshipPackage.RelationshipConfig{
 			"child": {
 				Input:   "mock",
 				IsArray: false,
-				Match: []*config.RelationshipMatch{
+				Match: []*relationshipPackage.RelationshipMatchConfig{
 					{
 						ParentProperty: "belongs_to",
 						ChildProperty:  "id",
@@ -222,9 +223,9 @@ func TestJsonArrayHandler(t *testing.T) {
 
 func TestJsonArrayGetLimit(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Limit: config.JsonArrayOutputLimit{
+			Limit: JsonArrayLimitConfig{
 				Default:   10,
 				Max:       150,
 				Parameter: "testlimit",
@@ -246,9 +247,9 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("max", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Limit: config.JsonArrayOutputLimit{
+			Limit: JsonArrayLimitConfig{
 				Default:   10,
 				Max:       50,
 				Parameter: "testlimit",
@@ -270,9 +271,9 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("default", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Limit: config.JsonArrayOutputLimit{
+			Limit: JsonArrayLimitConfig{
 				Default:   12,
 				Max:       50,
 				Parameter: "testlimit",
@@ -292,9 +293,9 @@ func TestJsonArrayGetLimit(t *testing.T) {
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Limit: config.JsonArrayOutputLimit{
+			Limit: JsonArrayLimitConfig{
 				Default:   10,
 				Max:       50,
 				Parameter: "testlimit",
@@ -315,9 +316,9 @@ func TestJsonArrayGetLimit(t *testing.T) {
 
 func TestJsonArrayGetOffset(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Offset: config.JsonArrayOutputOffset{
+			Offset: JsonArrayOffsetConfig{
 				Parameter: "testoffset",
 			},
 		})
@@ -337,9 +338,9 @@ func TestJsonArrayGetOffset(t *testing.T) {
 		}
 	})
 	t.Run("negative", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Offset: config.JsonArrayOutputOffset{
+			Offset: JsonArrayOffsetConfig{
 				Parameter: "testoffset",
 			},
 		})
@@ -358,9 +359,9 @@ func TestJsonArrayGetOffset(t *testing.T) {
 
 func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonArray, err := mockJsonArrayForTests(&config.JsonArrayOutput{
+		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Parameters: map[string]config.Parameter{
+			Parameters: map[string]parameterPackage.ParameterConfig{
 				"a": {
 					Property: "a",
 					Index:    "a",

@@ -7,22 +7,21 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"rodb.io/pkg/config"
+	"rodb.io/pkg/input/record"
 	outputPackage "rodb.io/pkg/output"
 	"rodb.io/pkg/parser"
-	"rodb.io/pkg/record"
 	"strings"
 	"testing"
 )
 
 func TestHttp(t *testing.T) {
-	config := &config.HttpService{
-		Http: &config.HttpServiceHttp{
+	config := &HttpConfig{
+		Http: &HttpHttpConfig{
 			Listen: ":0", // Auto-assign port
 		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Routes: []config.HttpServiceRoute{
+		Routes: []HttpRouteConfig{
 			{
 				Path:   "/foo",
 				Output: "mock",
@@ -101,13 +100,13 @@ func TestHttp(t *testing.T) {
 }
 
 func TestHttpOutputList(t *testing.T) {
-	config := &config.HttpService{
-		Http: &config.HttpServiceHttp{
+	config := &HttpConfig{
+		Http: &HttpHttpConfig{
 			Listen: ":0", // Auto-assign port
 		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Routes: []config.HttpServiceRoute{
+		Routes: []HttpRouteConfig{
 			{
 				Output: "foo",
 			},
@@ -303,7 +302,7 @@ func TestHttpCreatePathRegexp(t *testing.T) {
 		output := outputPackage.NewMock(parser)
 		server := &Http{}
 
-		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
+		regexp, params, err := server.createPathRegexp(HttpRouteConfig{
 			Path: "/foo/{foo_id}/bar-{bar}-id",
 		}, output)
 		if err != nil {
@@ -340,7 +339,7 @@ func TestHttpCreatePathRegexp(t *testing.T) {
 		output := outputPackage.NewMock(parser)
 		server := &Http{}
 
-		regexp, params, err := server.createPathRegexp(config.HttpServiceRoute{
+		regexp, params, err := server.createPathRegexp(HttpRouteConfig{
 			Path: "/foo",
 		}, output)
 		if err != nil {

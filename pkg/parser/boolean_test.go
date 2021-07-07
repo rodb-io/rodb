@@ -2,12 +2,11 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"testing"
 )
 
 func TestBooleanParse(t *testing.T) {
-	config := &config.BooleanParser{
+	config := &BooleanConfig{
 		TrueValues:  []string{"true", "yes"},
 		FalseValues: []string{"false", "no"},
 	}
@@ -42,7 +41,7 @@ func TestBooleanParse(t *testing.T) {
 }
 
 func TestBooleanGetRegexpPattern(t *testing.T) {
-	config := &config.BooleanParser{
+	config := &BooleanConfig{
 		TrueValues:  []string{"true", "yes"},
 		FalseValues: []string{"false", "no"},
 	}

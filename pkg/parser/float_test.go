@@ -2,12 +2,11 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/config"
 	"testing"
 )
 
 func TestFloatParse(t *testing.T) {
-	config := &config.FloatParser{
+	config := &FloatConfig{
 		DecimalSeparator: ".",
 		IgnoreCharacters: "$ ,",
 	}
@@ -40,7 +39,7 @@ func TestFloatParse(t *testing.T) {
 }
 
 func TestFloatGetRegexpPattern(t *testing.T) {
-	config := &config.FloatParser{
+	config := &FloatConfig{
 		DecimalSeparator: ".",
 		IgnoreCharacters: "$ ,",
 	}

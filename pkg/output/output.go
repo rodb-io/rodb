@@ -2,8 +2,8 @@ package output
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
-	configPackage "rodb.io/pkg/config"
 	"rodb.io/pkg/index"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/parser"
@@ -24,10 +24,20 @@ type Output interface {
 	Close() error
 }
 
+type Config interface {
+	Validate(
+		inputs map[string]input.Config,
+		indexes map[string]index.Config,
+		parsers map[string]parser.Config,
+		log *logrus.Entry,
+	) error
+	GetName() string
+}
+
 type List = map[string]Output
 
 func NewFromConfig(
-	config configPackage.Output,
+	config Config,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,
@@ -38,17 +48,17 @@ func NewFromConfig(
 	}
 
 	switch config.(type) {
-	case *configPackage.JsonObjectOutput:
-		return NewJsonObject(config.(*configPackage.JsonObjectOutput), inputs, defaultIndex, indexes, parsers)
-	case *configPackage.JsonArrayOutput:
-		return NewJsonArray(config.(*configPackage.JsonArrayOutput), inputs, defaultIndex, indexes, parsers)
+	case *JsonObjectConfig:
+		return NewJsonObject(config.(*JsonObjectConfig), inputs, defaultIndex, indexes, parsers)
+	case *JsonArrayConfig:
+		return NewJsonArray(config.(*JsonArrayConfig), inputs, defaultIndex, indexes, parsers)
 	default:
 		return nil, fmt.Errorf("Unknown output config type: %#v", config)
 	}
 }
 
 func NewFromConfigs(
-	configs map[string]configPackage.Output,
+	configs map[string]Config,
 	inputs input.List,
 	indexes index.List,
 	parsers parser.List,

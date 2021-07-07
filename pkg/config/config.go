@@ -6,6 +6,11 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/output"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/service"
 )
 
 type configParser struct {
@@ -17,11 +22,11 @@ type configParser struct {
 }
 
 type Config struct {
-	Parsers  map[string]Parser
-	Inputs   map[string]Input
-	Indexes  map[string]Index
-	Services map[string]Service
-	Outputs  map[string]Output
+	Parsers  map[string]parser.Config
+	Inputs   map[string]input.Config
+	Indexes  map[string]index.Config
+	Services map[string]service.Config
+	Outputs  map[string]output.Config
 }
 
 func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
@@ -44,7 +49,7 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 	config.addDefaultConfigs(log)
 
-	if err := config.validate(config, log); err != nil {
+	if err := config.Validate(log); err != nil {
 		return nil, err
 	}
 
@@ -53,11 +58,11 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 	config := &Config{
-		Parsers:  map[string]Parser{},
-		Inputs:   map[string]Input{},
-		Indexes:  map[string]Index{},
-		Services: map[string]Service{},
-		Outputs:  map[string]Output{},
+		Parsers:  map[string]parser.Config{},
+		Inputs:   map[string]input.Config{},
+		Indexes:  map[string]index.Config{},
+		Services: map[string]service.Config{},
+		Outputs:  map[string]output.Config{},
 	}
 
 	for _, parser := range parsedConfig.Parsers {
@@ -100,7 +105,7 @@ func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	defaultIndex := &NoopIndex{
+	defaultIndex := &index.NoopConfig{
 		Name: "default",
 	}
 	if _, exists := config.Indexes[defaultIndex.GetName()]; exists {
@@ -109,25 +114,25 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 		config.Indexes[defaultIndex.GetName()] = defaultIndex
 	}
 
-	for _, parserConfig := range []Parser{
-		&StringParser{
+	for _, parserConfig := range []parser.Config{
+		&parser.StringConfig{
 			Name: "string",
 		},
-		&IntegerParser{
+		&parser.IntegerConfig{
 			Name:             "integer",
 			IgnoreCharacters: "",
 		},
-		&FloatParser{
+		&parser.FloatConfig{
 			Name:             "float",
 			DecimalSeparator: ".",
 			IgnoreCharacters: "",
 		},
-		&BooleanParser{
+		&parser.BooleanConfig{
 			Name:        "boolean",
 			TrueValues:  []string{"true", "1", "TRUE"},
 			FalseValues: []string{"false", "0", "FALSE"},
 		},
-		&JsonParser{
+		&parser.JsonConfig{
 			Name: "json",
 		},
 	} {
@@ -139,33 +144,33 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 	}
 }
 
-func (config *Config) validate(rootConfig *Config, log *logrus.Logger) error {
+func (config *Config) Validate(log *logrus.Logger) error {
 	for subConfigName, subConfig := range config.Parsers {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "parsers."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Parsers, log.WithField("object", "parsers."+subConfigName)); err != nil {
 			return fmt.Errorf("parsers.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Inputs {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "inputs."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Parsers, log.WithField("object", "inputs."+subConfigName)); err != nil {
 			return fmt.Errorf("inputs.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Indexes {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "indexes."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Inputs, log.WithField("object", "indexes."+subConfigName)); err != nil {
 			return fmt.Errorf("indexes.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Services {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "services."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Outputs, log.WithField("object", "services."+subConfigName)); err != nil {
 			return fmt.Errorf("services.%v: %w", subConfigName, err)
 		}
 	}
 
 	for subConfigName, subConfig := range config.Outputs {
-		if err := subConfig.validate(rootConfig, log.WithField("object", "outputs."+subConfigName)); err != nil {
+		if err := subConfig.Validate(config.Inputs, config.Indexes, config.Parsers, log.WithField("object", "outputs."+subConfigName)); err != nil {
 			return fmt.Errorf("outputs.%v: %w", subConfigName, err)
 		}
 	}

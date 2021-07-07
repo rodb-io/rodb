@@ -5,15 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	configPackage "rodb.io/pkg/config"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
+	recordPackage "rodb.io/pkg/input/record"
 	parserPackage "rodb.io/pkg/parser"
-	recordPackage "rodb.io/pkg/record"
 )
 
 type JsonObject struct {
-	config       *configPackage.JsonObjectOutput
+	config       *JsonObjectConfig
 	inputs       inputPackage.List
 	input        inputPackage.Input
 	defaultIndex indexPackage.Index
@@ -22,7 +21,7 @@ type JsonObject struct {
 }
 
 func NewJsonObject(
-	config *configPackage.JsonObjectOutput,
+	config *JsonObjectConfig,
 	inputs inputPackage.List,
 	defaultIndex indexPackage.Index,
 	indexes indexPackage.List,

@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"rodb.io/pkg/output"
 	"rodb.io/pkg/util"
 )
 
 type outputParser struct {
-	output Output
+	output output.Config
 }
 
 func (config *outputParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -18,20 +18,15 @@ func (config *outputParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 	switch objectType {
 	case "graphql":
-		config.output = &GraphQLOutput{}
+		config.output = &output.GraphQLConfig{}
 		return unmarshal(config.output)
 	case "jsonArray":
-		config.output = &JsonArrayOutput{}
+		config.output = &output.JsonArrayConfig{}
 		return unmarshal(config.output)
 	case "jsonObject":
-		config.output = &JsonObjectOutput{}
+		config.output = &output.JsonObjectConfig{}
 		return unmarshal(config.output)
 	default:
 		return fmt.Errorf("Error in output config: Unknown type '%v'", objectType)
 	}
-}
-
-type Output interface {
-	validate(rootConfig *Config, log *logrus.Entry) error
-	GetName() string
 }
