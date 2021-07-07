@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error) {
+func mockJsonObjectForTests(config *JsonObjectConfig) (*JsonObject, error) {
 	dataForTests := mockJsonDataForTests()
 	jsonObject, err := NewJsonObject(
 		config,
@@ -25,7 +25,7 @@ func mockJsonObjectForTests(config *config.JsonObjectOutput) (*JsonObject, error
 
 func TestJsonObjectHandler(t *testing.T) {
 	trueValue := true
-	jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+	jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 		Input: "mock",
 		Parameters: map[string]*config.Parameter{
 			"foo_id": {
@@ -174,7 +174,7 @@ func TestJsonObjectHandler(t *testing.T) {
 
 func TestJsonObjectEndpointRegexp(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		_, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		_, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {
@@ -197,7 +197,7 @@ func TestJsonObjectEndpointRegexp(t *testing.T) {
 
 func TestJsonObjectGetEndpointFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		jsonObject, err := mockJsonObjectForTests(&config.JsonObjectOutput{
+		jsonObject, err := mockJsonObjectForTests(&JsonObjectConfig{
 			Input: "mock",
 			Parameters: map[string]*config.Parameter{
 				"foo_id": {

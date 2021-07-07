@@ -1,40 +1,44 @@
-package config
+package output
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	configPackage "rodb.io/pkg/config"
+	indexPackage "rodb.io/pkg/index"
+	inputPackage "rodb.io/pkg/input"
+	parserPackage "rodb.io/pkg/parser"
 )
 
-type JsonArrayOutput struct {
-	Name          string                   `yaml:"name"`
-	Type          string                   `yaml:"type"`
-	Input         string                   `yaml:"input"`
-	Limit         JsonArrayOutputLimit     `yaml:"limit"`
-	Offset        JsonArrayOutputOffset    `yaml:"offset"`
-	Parameters    map[string]Parameter     `yaml:"parameters"`
-	Relationships map[string]*Relationship `yaml:"relationships"`
+type JsonArrayConfig struct {
+	Name          string                                 `yaml:"name"`
+	Type          string                                 `yaml:"type"`
+	Input         string                                 `yaml:"input"`
+	Limit         JsonArrayLimitConfig                   `yaml:"limit"`
+	Offset        JsonArrayOffsetConfig                  `yaml:"offset"`
+	Parameters    map[string]configPackage.Parameter     `yaml:"parameters"`
+	Relationships map[string]*configPackage.Relationship `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
-type JsonArrayOutputLimit struct {
+type JsonArrayLimitConfig struct {
 	Default   uint   `yaml:"default"`
 	Max       uint   `yaml:"max"`
 	Parameter string `yaml:"parameter"`
 }
 
-type JsonArrayOutputOffset struct {
+type JsonArrayOffsetConfig struct {
 	Parameter string `yaml:"parameter"`
 }
 
-func (config *JsonArrayOutput) GetName() string {
+func (config *JsonArrayConfig) GetName() string {
 	return config.Name
 }
 
-func (config *JsonArrayOutput) Validate(
-	inputs map[string]Input,
-	indexes map[string]Index,
-	parsers map[string]Parser,
+func (config *JsonArrayConfig) Validate(
+	inputs map[string]inputPackage.Config,
+	indexes map[string]indexPackage.Config,
+	parsers map[string]parserPackage.Config,
 	log *logrus.Entry,
 ) error {
 	config.Logger = log
@@ -83,7 +87,7 @@ func (config *JsonArrayOutput) Validate(
 	return nil
 }
 
-func (config *JsonArrayOutputLimit) Validate(log *logrus.Entry) error {
+func (config *JsonArrayLimitConfig) Validate(log *logrus.Entry) error {
 	if config.Default == 0 {
 		log.Debug("jsonArray.limit.default not set. Assuming '100'")
 		config.Default = 100
@@ -102,7 +106,7 @@ func (config *JsonArrayOutputLimit) Validate(log *logrus.Entry) error {
 	return nil
 }
 
-func (config *JsonArrayOutputOffset) Validate(log *logrus.Entry) error {
+func (config *JsonArrayOffsetConfig) Validate(log *logrus.Entry) error {
 	if config.Parameter == "" {
 		log.Debug("jsonArray.offset.parameter not set. Assuming 'offset'")
 		config.Parameter = "offset"

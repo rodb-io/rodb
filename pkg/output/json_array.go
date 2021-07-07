@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	configPackage "rodb.io/pkg/config"
 	indexPackage "rodb.io/pkg/index"
 	inputPackage "rodb.io/pkg/input"
 	parserPackage "rodb.io/pkg/parser"
@@ -14,7 +13,7 @@ import (
 )
 
 type JsonArray struct {
-	config       *configPackage.JsonArrayOutput
+	config       *JsonArrayConfig
 	inputs       inputPackage.List
 	input        inputPackage.Input
 	defaultIndex indexPackage.Index
@@ -23,7 +22,7 @@ type JsonArray struct {
 }
 
 func NewJsonArray(
-	config *configPackage.JsonArrayOutput,
+	config *JsonArrayConfig,
 	inputs inputPackage.List,
 	defaultIndex indexPackage.Index,
 	indexes indexPackage.List,

@@ -1,28 +1,32 @@
-package config
+package output
 
 import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	configPackage "rodb.io/pkg/config"
+	inputPackage "rodb.io/pkg/input"
+	parserPackage "rodb.io/pkg/parser"
+	indexPackage "rodb.io/pkg/index"
 )
 
-type JsonObjectOutput struct {
-	Name          string                   `yaml:"name"`
-	Type          string                   `yaml:"type"`
-	Input         string                   `yaml:"input"`
-	Parameters    map[string]*Parameter    `yaml:"parameters"`
-	Relationships map[string]*Relationship `yaml:"relationships"`
+type JsonObjectConfig struct {
+	Name          string                                 `yaml:"name"`
+	Type          string                                 `yaml:"type"`
+	Input         string                                 `yaml:"input"`
+	Parameters    map[string]*configPackage.Parameter    `yaml:"parameters"`
+	Relationships map[string]*configPackage.Relationship `yaml:"relationships"`
 	Logger        *logrus.Entry
 }
 
-func (config *JsonObjectOutput) GetName() string {
+func (config *JsonObjectConfig) GetName() string {
 	return config.Name
 }
 
-func (config *JsonObjectOutput) Validate(
-	inputs map[string]Input,
-	indexes map[string]Index,
-	parsers map[string]Parser,
+func (config *JsonObjectConfig) Validate(
+	inputs map[string]inputPackage.Config,
+	indexes map[string]indexPackage.Config,
+	parsers map[string]parserPackage.Config,
 	log *logrus.Entry,
 ) error {
 	config.Logger = log
