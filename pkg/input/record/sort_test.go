@@ -1,7 +1,7 @@
 package record
 
 import (
-	"rodb.io/pkg/config"
+	inputPackage "rodb.io/pkg/input"
 	"testing"
 )
 
@@ -9,22 +9,22 @@ func TestRecordListSort(t *testing.T) {
 	// Only testing with strings because parser.Compare is already tested
 	trueValue, falseValue := true, false
 	records := List{
-		NewStringPropertiesMockRecord(map[string]string{
+		inputPackage.NewStringPropertiesMockRecord(map[string]string{
 			"a": "3",
 			"b": "1",
 		}, 0),
-		NewStringPropertiesMockRecord(map[string]string{
+		inputPackage.NewStringPropertiesMockRecord(map[string]string{
 			"a": "2",
 			"b": "1",
 		}, 1),
-		NewStringPropertiesMockRecord(map[string]string{
+		inputPackage.NewStringPropertiesMockRecord(map[string]string{
 			"a": "1",
 			"b": "2",
 		}, 2),
 	}
 
 	t.Run("normal", func(t *testing.T) {
-		result := records.Sort([]*config.Sort{
+		result := records.Sort([]*SortConfig{
 			{
 				Property:  "b",
 				Ascending: &falseValue,

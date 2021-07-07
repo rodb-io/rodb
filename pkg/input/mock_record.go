@@ -2,7 +2,7 @@ package input
 
 import (
 	"fmt"
-	"rodb.io/pkg/input/record"
+	recordPackage "rodb.io/pkg/input/record"
 )
 
 type MockRecord struct {
@@ -10,7 +10,7 @@ type MockRecord struct {
 	integers map[string]int
 	floats   map[string]float64
 	booleans map[string]bool
-	position record.Position
+	position recordPackage.Position
 }
 
 func NewMockRecord(
@@ -18,7 +18,7 @@ func NewMockRecord(
 	integers map[string]int,
 	floats map[string]float64,
 	booleans map[string]bool,
-	position record.Position,
+	position recordPackage.Position,
 ) *MockRecord {
 	return &MockRecord{
 		strings:  strings,
@@ -31,7 +31,7 @@ func NewMockRecord(
 
 func NewStringPropertiesMockRecord(
 	values map[string]string,
-	position record.Position,
+	position recordPackage.Position,
 ) *MockRecord {
 	return NewMockRecord(
 		values,
@@ -78,6 +78,6 @@ func (record *MockRecord) Get(path string) (interface{}, error) {
 	return nil, fmt.Errorf("Property '%v' does not exist in mocked record", path)
 }
 
-func (record *MockRecord) Position() record.Position {
+func (record *MockRecord) Position() recordPackage.Position {
 	return record.position
 }

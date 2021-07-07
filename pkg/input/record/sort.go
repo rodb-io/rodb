@@ -1,12 +1,11 @@
 package record
 
 import (
-	"rodb.io/pkg/config"
 	"rodb.io/pkg/parser"
 	"sort"
 )
 
-func (records List) Sort(config []*config.Sort) List {
+func (records List) Sort(config []*SortConfig) List {
 	sorter := &recordListSorter{records, config}
 	sort.Sort(sorter)
 	return sorter.records
@@ -15,7 +14,7 @@ func (records List) Sort(config []*config.Sort) List {
 // Implementing sort.Interface
 type recordListSorter struct {
 	records List
-	config  []*config.Sort
+	config  []*SortConfig
 }
 
 func (sorter *recordListSorter) Len() int {

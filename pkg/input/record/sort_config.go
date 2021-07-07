@@ -1,20 +1,20 @@
-package config
+package record
 
 import (
 	"github.com/sirupsen/logrus"
 )
 
-type Sort struct {
+type SortConfig struct {
 	Logger    *logrus.Entry
 	Property  string `yaml:"property"`
 	Ascending *bool  `yaml:"ascending"`
 }
 
-func (config *Sort) IsAscending() bool {
+func (config *SortConfig) IsAscending() bool {
 	return config.Ascending == nil || *config.Ascending
 }
 
-func (config *Sort) Validate(
+func (config *SortConfig) Validate(
 	log *logrus.Entry,
 	logPrefix string,
 ) error {
