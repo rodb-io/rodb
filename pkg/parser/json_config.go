@@ -11,7 +11,7 @@ type JsonConfig struct {
 	Logger *logrus.Entry
 }
 
-func (config *JsonConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *JsonConfig) Validate(parsers map[string]Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"rodb.io/pkg/util"
+	"rodb.io/pkg/input"
 )
 
 type inputParser struct {
-	input Input
+	input input.Config
 }
 
 func (config *inputParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -18,13 +18,13 @@ func (config *inputParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 
 	switch objectType {
 	case "csv":
-		config.input = &CsvConfig{}
+		config.input = &input.CsvConfig{}
 		return unmarshal(config.input)
 	case "xml":
-		config.input = &XmlConfig{}
+		config.input = &input.XmlConfig{}
 		return unmarshal(config.input)
 	case "json":
-		config.input = &JsonConfig{}
+		config.input = &input.JsonConfig{}
 		return unmarshal(config.input)
 	default:
 		return fmt.Errorf("Error in input config: Unknown type '%v'", objectType)

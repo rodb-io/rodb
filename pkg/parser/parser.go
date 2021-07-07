@@ -13,7 +13,7 @@ type Parser interface {
 }
 
 type Config interface {
-	Validate(parsers map[string]Parser, log *logrus.Entry) error
+	Validate(parsers map[string]Config, log *logrus.Entry) error
 	GetName() string
 	Primitive() bool
 }

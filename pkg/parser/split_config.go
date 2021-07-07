@@ -32,7 +32,7 @@ func (config *SplitConfig) GetDelimiter() string {
 	return *config.Delimiter
 }
 
-func (config *SplitConfig) Validate(parsers map[string]Parser, log *logrus.Entry) error {
+func (config *SplitConfig) Validate(parsers map[string]Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {

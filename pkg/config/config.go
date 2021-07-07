@@ -6,6 +6,11 @@ import (
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+	"rodb.io/pkg/parser"
+	"rodb.io/pkg/input"
+	"rodb.io/pkg/index"
+	"rodb.io/pkg/service"
+	"rodb.io/pkg/output"
 )
 
 type configParser struct {
@@ -17,11 +22,11 @@ type configParser struct {
 }
 
 type Config struct {
-	Parsers  map[string]Parser
-	Inputs   map[string]Input
-	Indexes  map[string]Index
-	Services map[string]Service
-	Outputs  map[string]Output
+	Parsers  map[string]parser.Config
+	Inputs   map[string]input.Config
+	Indexes  map[string]index.Config
+	Services map[string]service.Config
+	Outputs  map[string]output.Config
 }
 
 func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, error) {
@@ -53,11 +58,11 @@ func NewConfigFromYamlFile(configPath string, log *logrus.Logger) (*Config, erro
 
 func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 	config := &Config{
-		Parsers:  map[string]Parser{},
-		Inputs:   map[string]Input{},
-		Indexes:  map[string]Index{},
-		Services: map[string]Service{},
-		Outputs:  map[string]Output{},
+		Parsers:  map[string]parser.Config{},
+		Inputs:   map[string]input.Config{},
+		Indexes:  map[string]index.Config{},
+		Services: map[string]service.Config{},
+		Outputs:  map[string]output.Config{},
 	}
 
 	for _, parser := range parsedConfig.Parsers {
@@ -100,7 +105,7 @@ func NewConfigFromParsedConfig(parsedConfig *configParser) (*Config, error) {
 }
 
 func (config *Config) addDefaultConfigs(log *logrus.Logger) {
-	defaultIndex := &NoopConfig{
+	defaultIndex := &index.NoopConfig{
 		Name: "default",
 	}
 	if _, exists := config.Indexes[defaultIndex.GetName()]; exists {
@@ -109,25 +114,25 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 		config.Indexes[defaultIndex.GetName()] = defaultIndex
 	}
 
-	for _, parserConfig := range []Parser{
-		&StringConfig{
+	for _, parserConfig := range []parser.Config{
+		&parser.StringConfig{
 			Name: "string",
 		},
-		&IntegerConfig{
+		&parser.IntegerConfig{
 			Name:             "integer",
 			IgnoreCharacters: "",
 		},
-		&FloatConfig{
+		&parser.FloatConfig{
 			Name:             "float",
 			DecimalSeparator: ".",
 			IgnoreCharacters: "",
 		},
-		&BooleanConfig{
+		&parser.BooleanConfig{
 			Name:        "boolean",
 			TrueValues:  []string{"true", "1", "TRUE"},
 			FalseValues: []string{"false", "0", "FALSE"},
 		},
-		&JsonConfig{
+		&parser.JsonConfig{
 			Name: "json",
 		},
 	} {

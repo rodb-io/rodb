@@ -3,10 +3,11 @@ package config
 import (
 	"fmt"
 	"rodb.io/pkg/util"
+	"rodb.io/pkg/parser"
 )
 
 type parserParser struct {
-	parser Parser
+	parser parser.Config
 }
 
 func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -17,22 +18,22 @@ func (config *parserParser) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 	switch objectType {
 	case "integer":
-		config.parser = &IntegerConfig{}
+		config.parser = &parser.IntegerConfig{}
 		return unmarshal(config.parser)
 	case "float":
-		config.parser = &FloatConfig{}
+		config.parser = &parser.FloatConfig{}
 		return unmarshal(config.parser)
 	case "boolean":
-		config.parser = &BooleanConfig{}
+		config.parser = &parser.BooleanConfig{}
 		return unmarshal(config.parser)
 	case "string":
-		config.parser = &StringConfig{}
+		config.parser = &parser.StringConfig{}
 		return unmarshal(config.parser)
 	case "json":
-		config.parser = &JsonConfig{}
+		config.parser = &parser.JsonConfig{}
 		return unmarshal(config.parser)
 	case "split":
-		config.parser = &SplitConfig{}
+		config.parser = &parser.SplitConfig{}
 		return unmarshal(config.parser)
 	default:
 		return fmt.Errorf("Error in parser config: Unknown type '%v'", objectType)
