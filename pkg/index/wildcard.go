@@ -74,6 +74,9 @@ func (wildcard *Wildcard) createIndex() error {
 		if err != nil {
 			return err
 		}
+		if err := index[property].Save(); err != nil {
+			return err
+		}
 
 		metadata.SetRootNode(propertyIndex, index[property])
 	}

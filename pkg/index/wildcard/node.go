@@ -1,7 +1,6 @@
 package wildcard
 
 import (
-	"bytes"
 	"encoding/binary"
 	"rodb.io/pkg/input/record"
 )
@@ -25,9 +24,14 @@ type TreeNode struct {
 }
 
 func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
-	node := &TreeNode{
+	offset, err := stream.Add(make([]byte, TreeNodeSize))
+	if err != nil {
+		return nil, err
+	}
+
+	return &TreeNode{
 		stream:              stream,
-		offset:              0,
+		offset:              TreeNodeOffset(offset),
 		valueOffset:         0,
 		valueLength:         0,
 		nextSiblingOffset:   0,
@@ -35,13 +39,7 @@ func NewEmptyTreeNode(stream *Stream) (*TreeNode, error) {
 		lastChildOffset:     0,
 		firstPositionOffset: 0,
 		lastPositionOffset:  0,
-	}
-
-	if err := node.Save(); err != nil {
-		return nil, err
-	}
-
-	return node, nil
+	}, nil
 }
 
 func GetTreeNode(
@@ -62,9 +60,7 @@ func GetTreeNode(
 		offset: offset,
 	}
 
-	if err := node.Unserialize(serialized); err != nil {
-		return nil, err
-	}
+	node.Unserialize(serialized)
 
 	return node, nil
 }
@@ -93,78 +89,33 @@ func (node *TreeNode) Value() ([]byte, error) {
 	return node.stream.Get(int64(node.valueOffset), int(node.valueLength))
 }
 
-func (node *TreeNode) Serialize() ([]byte, error) {
-	buffer := &bytes.Buffer{}
+func (node *TreeNode) Serialize() []byte {
+	buffer := make([]byte, TreeNodeSize)
 
-	if err := binary.Write(buffer, binary.BigEndian, node.valueOffset); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.valueLength); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.nextSiblingOffset); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.firstChildOffset); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.lastChildOffset); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.firstPositionOffset); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, node.lastPositionOffset); err != nil {
-		return nil, err
-	}
+	binary.BigEndian.PutUint64(buffer[0:8], uint64(node.valueOffset))
+	binary.BigEndian.PutUint64(buffer[8:16], uint64(node.valueLength))
+	binary.BigEndian.PutUint64(buffer[16:24], uint64(node.nextSiblingOffset))
+	binary.BigEndian.PutUint64(buffer[24:32], uint64(node.firstChildOffset))
+	binary.BigEndian.PutUint64(buffer[32:40], uint64(node.lastChildOffset))
+	binary.BigEndian.PutUint64(buffer[40:48], uint64(node.firstPositionOffset))
+	binary.BigEndian.PutUint64(buffer[48:56], uint64(node.lastPositionOffset))
 
-	return buffer.Bytes(), nil
+	return buffer
 }
 
-func (node *TreeNode) Unserialize(data []byte) error {
-	buffer := bytes.NewBuffer(data)
-
-	if err := binary.Read(buffer, binary.BigEndian, &node.valueOffset); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.valueLength); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.nextSiblingOffset); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.firstChildOffset); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.lastChildOffset); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.firstPositionOffset); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &node.lastPositionOffset); err != nil {
-		return err
-	}
-
-	return nil
+func (node *TreeNode) Unserialize(data []byte) {
+	node.valueOffset = TreeNodeValueOffset(binary.BigEndian.Uint64(data[0:8]))
+	node.valueLength = int64(binary.BigEndian.Uint64(data[8:16]))
+	node.nextSiblingOffset = TreeNodeOffset(binary.BigEndian.Uint64(data[16:24]))
+	node.firstChildOffset = TreeNodeOffset(binary.BigEndian.Uint64(data[24:32]))
+	node.lastChildOffset = TreeNodeOffset(binary.BigEndian.Uint64(data[32:40]))
+	node.firstPositionOffset = PositionLinkedListOffset(binary.BigEndian.Uint64(data[40:48]))
+	node.lastPositionOffset = PositionLinkedListOffset(binary.BigEndian.Uint64(data[48:56]))
 }
 
 func (node *TreeNode) Save() error {
-	serialized, err := node.Serialize()
-	if err != nil {
+	if err := node.stream.Replace(int64(node.offset), node.Serialize()); err != nil {
 		return err
-	}
-
-	if node.offset == 0 {
-		newOffset, err := node.stream.Add(serialized)
-		if err != nil {
-			return err
-		}
-		node.offset = TreeNodeOffset(newOffset)
-	} else {
-		if err := node.stream.Replace(int64(node.offset), serialized); err != nil {
-			return err
-		}
 	}
 
 	return nil

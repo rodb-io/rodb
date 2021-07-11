@@ -1,7 +1,6 @@
 package wildcard
 
 import (
-	"bytes"
 	"encoding/binary"
 	"rodb.io/pkg/input/record"
 )
@@ -88,53 +87,34 @@ func GetPositionLinkedList(
 		offset: offset,
 	}
 
-	if err := position.Unserialize(serialized); err != nil {
-		return nil, err
-	}
+	position.Unserialize(serialized)
 
 	return position, nil
 }
 
-func (list *PositionLinkedList) Serialize() ([]byte, error) {
-	buffer := &bytes.Buffer{}
+func (list *PositionLinkedList) Serialize() []byte {
+	buffer := make([]byte, PositionLinkedListSize)
 
-	if err := binary.Write(buffer, binary.BigEndian, list.Position); err != nil {
-		return nil, err
-	}
-	if err := binary.Write(buffer, binary.BigEndian, list.nextPositionOffset); err != nil {
-		return nil, err
-	}
+	binary.BigEndian.PutUint64(buffer[0:8], uint64(list.Position))
+	binary.BigEndian.PutUint64(buffer[8:16], uint64(list.nextPositionOffset))
 
-	return buffer.Bytes(), nil
+	return buffer
 }
 
-func (list *PositionLinkedList) Unserialize(data []byte) error {
-	buffer := bytes.NewBuffer(data)
-
-	if err := binary.Read(buffer, binary.BigEndian, &list.Position); err != nil {
-		return err
-	}
-	if err := binary.Read(buffer, binary.BigEndian, &list.nextPositionOffset); err != nil {
-		return err
-	}
-
-	return nil
+func (list *PositionLinkedList) Unserialize(data []byte) {
+	list.Position = int64(binary.BigEndian.Uint64(data[0:8]))
+	list.nextPositionOffset = PositionLinkedListOffset(binary.BigEndian.Uint64(data[8:16]))
 }
 
 func (list *PositionLinkedList) Save() error {
-	serialized, err := list.Serialize()
-	if err != nil {
-		return err
-	}
-
 	if list.offset == 0 {
-		newOffset, err := list.stream.Add(serialized)
+		newOffset, err := list.stream.Add(list.Serialize())
 		if err != nil {
 			return err
 		}
 		list.offset = PositionLinkedListOffset(newOffset)
 	} else {
-		if err := list.stream.Replace(int64(list.offset), serialized); err != nil {
+		if err := list.stream.Replace(int64(list.offset), list.Serialize()); err != nil {
 			return err
 		}
 	}

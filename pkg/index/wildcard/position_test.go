@@ -61,16 +61,12 @@ func TestPositionLinkedListSerialize(t *testing.T) {
 			Position:           1,
 			nextPositionOffset: 1234,
 		}
-		got, err := list.Serialize()
-		if err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
 
 		expect := []byte{
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
 		}
-		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", got); expect != got {
+		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", list.Serialize()); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 	})
@@ -79,16 +75,12 @@ func TestPositionLinkedListSerialize(t *testing.T) {
 			Position:           1,
 			nextPositionOffset: 0,
 		}
-		got, err := list.Serialize()
-		if err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
 
 		expect := []byte{
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0, 0,
 		}
-		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", got); expect != got {
+		if expect, got := fmt.Sprintf("%x", expect), fmt.Sprintf("%x", list.Serialize()); expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 	})
@@ -101,9 +93,7 @@ func TestPositionLinkedListUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0x4, 0xD2,
 		}
-		if err := list.Unserialize(data); err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
+		list.Unserialize(data)
 		if expect, got := int64(1), list.Position; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
@@ -117,9 +107,7 @@ func TestPositionLinkedListUnserialize(t *testing.T) {
 			0, 0, 0, 0, 0, 0, 0, 0x01,
 			0, 0, 0, 0, 0, 0, 0, 0,
 		}
-		if err := list.Unserialize(data); err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
+		list.Unserialize(data)
 		if expect, got := int64(1), list.Position; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
@@ -132,15 +120,9 @@ func TestPositionLinkedListUnserialize(t *testing.T) {
 			Position:           1,
 			nextPositionOffset: 1234,
 		}
-		serialized, err := list1.Serialize()
-		if err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
 
 		list2 := PositionLinkedList{}
-		if err := list2.Unserialize(serialized); err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
+		list2.Unserialize(list1.Serialize())
 
 		if expect, got := int64(1), list2.Position; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
