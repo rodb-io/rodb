@@ -36,6 +36,8 @@ func NewFromConfig(
 		return NewMap(config.(*MapConfig), inputs)
 	case *WildcardConfig:
 		return NewWildcard(config.(*WildcardConfig), inputs)
+	case *SqliteConfig:
+		return NewSqlite(config.(*SqliteConfig), inputs)
 	case *NoopConfig:
 		return NewNoop(config.(*NoopConfig), inputs), nil
 	default:

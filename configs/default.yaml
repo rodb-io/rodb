@@ -105,6 +105,13 @@ indexes:
     ignoreCase: true
     properties:
       - name
+  - name: defaultIndexSqlite
+    type: sqlite
+    dsn: ./sqlite.rodb
+    input: defaultInput
+    properties:
+      - id
+      - name
 outputs:
   - name: defaultGraphqlOutput
     type: graphql

@@ -23,6 +23,9 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 	case "wildcard":
 		config.index = &index.WildcardConfig{}
 		return unmarshal(config.index)
+	case "sqlite":
+		config.index = &index.SqliteConfig{}
+		return unmarshal(config.index)
 	case "noop":
 		config.index = &index.NoopConfig{}
 		return unmarshal(config.index)

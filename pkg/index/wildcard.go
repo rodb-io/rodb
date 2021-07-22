@@ -265,6 +265,6 @@ func (wildcard *Wildcard) GetRecordPositions(
 	return record.JoinPositionIterators(individualFiltersResults...), nil
 }
 
-func (wildcardIndex *Wildcard) Close() error {
+func (wildcard *Wildcard) Close() error {
 	return nil
 }

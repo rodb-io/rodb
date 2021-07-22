@@ -59,7 +59,7 @@ func (config *WildcardConfig) Validate(inputs map[string]input.Config, log *logr
 		config.IgnoreCase = &falseValue
 	}
 
-	// The properties validity will be validated at runtime
+	// The properties will be validated at runtime
 
 	return nil
 }

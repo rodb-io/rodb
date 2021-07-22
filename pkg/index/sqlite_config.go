@@ -7,30 +7,36 @@ import (
 	"rodb.io/pkg/input"
 )
 
-type MapConfig struct {
+type SqliteConfig struct {
 	Name       string   `yaml:"name"`
 	Type       string   `yaml:"type"`
+	Dsn        string   `yaml:"dsn"`
 	Input      string   `yaml:"input"`
 	Properties []string `yaml:"properties"`
 	Logger     *logrus.Entry
 }
 
-func (config *MapConfig) Validate(inputs map[string]input.Config, log *logrus.Entry) error {
+func (config *SqliteConfig) Validate(inputs map[string]input.Config, log *logrus.Entry) error {
 	config.Logger = log
 
 	if config.Name == "" {
-		return errors.New("map.name is required")
+		return errors.New("sqlite.name is required")
 	}
+
+	if config.Dsn == "" {
+		return errors.New("sqlite.dsn is required")
+	}
+	// The DSN will be validated at runtime
 
 	_, inputExists := inputs[config.Input]
 	if !inputExists {
-		return fmt.Errorf("map.input: Input '%v' not found in inputs list.", config.Input)
+		return fmt.Errorf("sqlite.input: Input '%v' not found in inputs list.", config.Input)
 	}
 
 	alreadyExistingProperties := make(map[string]bool)
 	for _, propertyName := range config.Properties {
 		if _, alreadyExists := alreadyExistingProperties[propertyName]; alreadyExists {
-			return fmt.Errorf("map.properties: Duplicate property '%v' in array.", propertyName)
+			return fmt.Errorf("sqlite.properties: Duplicate property '%v' in array.", propertyName)
 		}
 		alreadyExistingProperties[propertyName] = true
 	}
@@ -40,11 +46,11 @@ func (config *MapConfig) Validate(inputs map[string]input.Config, log *logrus.En
 	return nil
 }
 
-func (config *MapConfig) GetName() string {
+func (config *SqliteConfig) GetName() string {
 	return config.Name
 }
 
-func (config *MapConfig) DoesHandleProperty(property string) bool {
+func (config *SqliteConfig) DoesHandleProperty(property string) bool {
 	isHandled := false
 	for _, handledProperty := range config.Properties {
 		if property == handledProperty {
@@ -56,6 +62,6 @@ func (config *MapConfig) DoesHandleProperty(property string) bool {
 	return isHandled
 }
 
-func (config *MapConfig) DoesHandleInput(input input.Config) bool {
+func (config *SqliteConfig) DoesHandleInput(input input.Config) bool {
 	return input.GetName() == config.Input
 }
