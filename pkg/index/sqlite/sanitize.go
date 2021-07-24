@@ -17,5 +17,5 @@ func SanitizeIdentifier(db *gosqlite.SQLiteConn, identifier string) (string, err
 		return "", err
 	}
 
-	return `"`+data[0].(string)+`"`, nil
+	return `"` + data[0].(string) + `"`, nil
 }

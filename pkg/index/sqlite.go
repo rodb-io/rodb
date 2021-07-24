@@ -6,9 +6,9 @@ import (
 	gosqlite "github.com/mattn/go-sqlite3"
 	"io"
 	"reflect"
+	sqlitePackage "rodb.io/pkg/index/sqlite"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/input/record"
-	sqlitePackage "rodb.io/pkg/index/sqlite"
 	"rodb.io/pkg/util"
 	"strings"
 )
@@ -36,7 +36,7 @@ func NewSqlite(
 	sqlite := &Sqlite{
 		config: config,
 		input:  input,
-		db: db.(*gosqlite.SQLiteConn),
+		db:     db.(*gosqlite.SQLiteConn),
 	}
 
 	metadataExists, err := sqlitePackage.HasMetadata(sqlite.db, sqlite.config.Name)
@@ -112,16 +112,16 @@ func (sqlite *Sqlite) createIndex() error {
 	}
 
 	preparedInsert, err := sqlite.db.Prepare(`
-		INSERT INTO `+tableIdentifier+` (
+		INSERT INTO ` + tableIdentifier + ` (
 			"offset" INTEGER,
-			`+strings.Join(insertIdentifiers, ", ")+`
-		) VALUES (?, `+strings.Join(insertPlaceholders, ", ")+`);
+			` + strings.Join(insertIdentifiers, ", ") + `
+		) VALUES (?, ` + strings.Join(insertPlaceholders, ", ") + `);
 	`)
 	if err != nil {
 		return err
 	}
 
-	valuesToInsert := make([]driver.Value, 1 + len(sqlite.config.Properties))
+	valuesToInsert := make([]driver.Value, 1+len(sqlite.config.Properties))
 	for {
 		record, err := inputIterator()
 		if err != nil {
