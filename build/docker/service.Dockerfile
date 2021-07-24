@@ -4,9 +4,11 @@ FROM golang:1.16-alpine as builder
 ENV GOPATH=/go
 ENV GOCACHE=/gocache
 ENV GOROOT=/usr/local/go
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 ENV RODB_PACKAGE_NAME=rodb.io
 ENV RODB_PATH=$GOROOT/src/${RODB_PACKAGE_NAME}
+
+RUN apk add --no-cache gcc musl-dev
 
 RUN addgroup -S rodb \
     && adduser -S rodb -G rodb \
@@ -28,13 +30,18 @@ COPY ./pkg ${RODB_PATH}/pkg
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/gocache \
     go mod vendor \
-    && go build -v -o /scratchfs/bin/rodb ./cmd/main.go \
+    && go build -v \
+        -o /scratchfs/bin/rodb \
+        -ldflags '-linkmode external -extldflags "-static"' \
+        ./cmd/main.go \
     && chmod 755 /scratchfs/bin/rodb \
     && chown root:root /scratchfs/bin/rodb
 
 RUN if [ "$(go fmt ./... | wc -l)" -gt 0 ]; then echo "Invalid code-style. Please run 'go fmt ./...'" && exit 1; fi
 
-RUN go test -timeout 3s ./...
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/gocache \
+    go test -timeout 3s ./...
 
 FROM scratch
 LABEL org.label-schema.name="RODB"
