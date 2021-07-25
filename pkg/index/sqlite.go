@@ -85,15 +85,15 @@ func (sqlite *Sqlite) createIndex() error {
 	columnDefinitions := make([]string, len(sqlite.config.Properties))
 	insertIdentifiers := make([]string, len(sqlite.config.Properties))
 	insertPlaceholders := make([]string, len(sqlite.config.Properties))
-	for _, property := range sqlite.config.Properties {
+	for propertyIndex, property := range sqlite.config.Properties {
 		propertyIdentifier, err := sqlite.getPropertyIdentifier(property)
 		if err != nil {
 			return err
 		}
 
-		columnDefinitions = append(columnDefinitions, propertyIdentifier+" BLOB")
-		insertIdentifiers = append(columnDefinitions, propertyIdentifier)
-		insertPlaceholders = append(columnDefinitions, "?")
+		columnDefinitions[propertyIndex] = propertyIdentifier + " BLOB"
+		insertIdentifiers[propertyIndex] = propertyIdentifier
+		insertPlaceholders[propertyIndex] = "?"
 	}
 
 	tableIdentifier, err := sqlite.getIndexTableIdentifier()
@@ -108,17 +108,17 @@ func (sqlite *Sqlite) createIndex() error {
 		);
 	`, []driver.Value{})
 	if err != nil {
-		return err
+		return fmt.Errorf("Error while creating index table: %w", err)
 	}
 
 	preparedInsert, err := sqlite.db.Prepare(`
 		INSERT INTO ` + tableIdentifier + ` (
-			"offset" INTEGER,
+			"offset",
 			` + strings.Join(insertIdentifiers, ", ") + `
 		) VALUES (?, ` + strings.Join(insertPlaceholders, ", ") + `);
 	`)
 	if err != nil {
-		return err
+		return fmt.Errorf("Error while preparing index table insert query: %w", err)
 	}
 
 	valuesToInsert := make([]driver.Value, 1+len(sqlite.config.Properties))
@@ -167,7 +167,7 @@ func (sqlite *Sqlite) createIndex() error {
 	}
 	defer rows.Close()
 
-	sqlite.config.Logger.WithField("indexedRows", data[0].(int)).Infof("Successfully finished indexing")
+	sqlite.config.Logger.WithField("indexedRows", data[0].(int64)).Infof("Successfully finished indexing")
 
 	return nil
 }
@@ -221,12 +221,12 @@ func (sqlite *Sqlite) GetRecordPositions(
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
 	rowData := make([]driver.Value, 1)
 	return func() (*record.Position, error) {
 		for {
 			if err := rows.Next(rowData); err != nil {
+				_ = rows.Close()
 				if err == io.EOF {
 					break
 				} else {
