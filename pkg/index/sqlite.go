@@ -83,16 +83,22 @@ func (sqlite *Sqlite) createIndex() error {
 	}()
 
 	columnDefinitions := make([]string, len(sqlite.config.Properties))
-	insertIdentifiers := make([]string, len(sqlite.config.Properties))
+	columnIdentifiers := make([]string, len(sqlite.config.Properties))
+	indexIdentifiers := make([]string, len(sqlite.config.Properties))
 	insertPlaceholders := make([]string, len(sqlite.config.Properties))
 	for propertyIndex, property := range sqlite.config.Properties {
 		propertyIdentifier, err := sqlite.getPropertyIdentifier(property)
 		if err != nil {
 			return err
 		}
+		indexIdentifier, err := sqlite.getIndexIdentifier(property)
+		if err != nil {
+			return err
+		}
 
 		columnDefinitions[propertyIndex] = propertyIdentifier + " BLOB"
-		insertIdentifiers[propertyIndex] = propertyIdentifier
+		columnIdentifiers[propertyIndex] = propertyIdentifier
+		indexIdentifiers[propertyIndex] = indexIdentifier
 		insertPlaceholders[propertyIndex] = "?"
 	}
 
@@ -111,10 +117,19 @@ func (sqlite *Sqlite) createIndex() error {
 		return fmt.Errorf("Error while creating index table: %w", err)
 	}
 
+	for propertyIndex, indexIdentifier := range indexIdentifiers {
+		_, err = sqlite.db.Exec(`
+			CREATE INDEX `+indexIdentifier+` ON `+tableIdentifier+` (`+columnIdentifiers[propertyIndex]+`);
+		`, []driver.Value{})
+		if err != nil {
+			return fmt.Errorf("Error while creating index table: %w", err)
+		}
+	}
+
 	preparedInsert, err := sqlite.db.Prepare(`
 		INSERT INTO ` + tableIdentifier + ` (
 			"offset",
-			` + strings.Join(insertIdentifiers, ", ") + `
+			` + strings.Join(columnIdentifiers, ", ") + `
 		) VALUES (?, ` + strings.Join(insertPlaceholders, ", ") + `);
 	`)
 	if err != nil {
@@ -174,6 +189,13 @@ func (sqlite *Sqlite) createIndex() error {
 
 func (sqlite *Sqlite) getPropertyIdentifier(propertyName string) (string, error) {
 	return sqlitePackage.SanitizeIdentifier(sqlite.db, fmt.Sprintf("property_%v", propertyName))
+}
+
+func (sqlite *Sqlite) getIndexIdentifier(propertyName string) (string, error) {
+	return sqlitePackage.SanitizeIdentifier(
+		sqlite.db,
+		fmt.Sprintf("index_%v_%v", sqlite.config.Name, propertyName),
+	)
 }
 
 func (sqlite *Sqlite) getIndexTableIdentifier() (string, error) {
