@@ -14,15 +14,16 @@ inputs:
         parser: string
         xpath: "string(//gloss[not(@xml:lang)][1])"
 indexes:
-  - name: index
-    type: map
+  - name: indexFilter
+    type: wildcard
+    path: /var/indexFilter.rodb
     input: dictionary
     properties:
       - writing
       - reading
-  - name: indexSearch
+  - name: indexTranslation
     type: wildcard
-    path: /var/indexSearch.rodb
+    path: /var/indexTranslation.rodb
     input: dictionary
     properties:
       - translation
@@ -33,11 +34,11 @@ outputs:
     parameters:
       word:
         property: writing
-        index: index
+        index: indexFilter
         parser: string
       translation:
         property: translation
-        index: indexSearch
+        index: indexTranslation
         parser: string
 services:
   - name: service
