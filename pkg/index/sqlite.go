@@ -103,7 +103,7 @@ func (sqlite *Sqlite) createIndex() error {
 
 	_, err = sqlite.db.Exec(`
 		CREATE TABLE `+tableIdentifier+` (
-			"offset" INTEGER,
+			"offset" INTEGER NOT NULL,
 			`+strings.Join(columnDefinitions, ", ")+`
 		);
 	`, []driver.Value{})
@@ -165,6 +165,7 @@ func (sqlite *Sqlite) createIndex() error {
 	if err = rows.Next(data); err != nil {
 		return err
 	}
+	defer rows.Close()
 
 	sqlite.config.Logger.WithField("indexedRows", data[0].(int)).Infof("Successfully finished indexing")
 
@@ -176,15 +177,7 @@ func (sqlite *Sqlite) getPropertyIdentifier(propertyName string) (string, error)
 }
 
 func (sqlite *Sqlite) getIndexTableIdentifier() (string, error) {
-	tableIdentifier, err := sqlitePackage.SanitizeIdentifier(
-		sqlite.db,
-		fmt.Sprintf("rodb_%v_index", sqlite.config.Name),
-	)
-	if err != nil {
-		return "", err
-	}
-
-	return tableIdentifier, nil
+	return sqlitePackage.SanitizeIdentifier(sqlite.db, fmt.Sprintf("rodb_%v_index", sqlite.config.Name))
 }
 
 func (sqlite *Sqlite) GetRecordPositions(
@@ -228,6 +221,7 @@ func (sqlite *Sqlite) GetRecordPositions(
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	rowData := make([]driver.Value, 1)
 	return func() (*record.Position, error) {
