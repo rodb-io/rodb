@@ -87,16 +87,16 @@ func (sqlite *Sqlite) createIndex() error {
 	indexIdentifiers := make([]string, len(sqlite.config.Properties))
 	insertPlaceholders := make([]string, len(sqlite.config.Properties))
 	for propertyIndex, property := range sqlite.config.Properties {
-		propertyIdentifier, err := sqlite.getPropertyIdentifier(property)
+		propertyIdentifier, err := sqlite.getPropertyIdentifier(property.Name)
 		if err != nil {
 			return err
 		}
-		indexIdentifier, err := sqlite.getIndexIdentifier(property)
+		indexIdentifier, err := sqlite.getIndexIdentifier(property.Name)
 		if err != nil {
 			return err
 		}
 
-		columnDefinitions[propertyIndex] = propertyIdentifier + " BLOB"
+		columnDefinitions[propertyIndex] = propertyIdentifier + " BLOB COLLATE " + property.Collate
 		columnIdentifiers[propertyIndex] = propertyIdentifier
 		indexIdentifiers[propertyIndex] = indexIdentifier
 		insertPlaceholders[propertyIndex] = "?"
@@ -157,7 +157,7 @@ func (sqlite *Sqlite) createIndex() error {
 
 		valuesToInsert[0] = record.Position()
 		for propertyIndex, property := range sqlite.config.Properties {
-			value, err := record.Get(property)
+			value, err := record.Get(property.Name)
 			if err != nil {
 				return err
 			}

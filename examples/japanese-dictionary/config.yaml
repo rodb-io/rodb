@@ -19,8 +19,10 @@ indexes:
     dsn: /var/indexFilter.rodb
     input: dictionary
     properties:
-      - writing
-      - reading
+      - name: writing
+        collate: binary
+      - name: reading
+        collate: binary
   - name: indexTranslation
     type: wildcard
     path: /var/indexTranslation.rodb

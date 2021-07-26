@@ -8,6 +8,7 @@ import (
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
+	"strings"
 	"testing"
 )
 
@@ -15,11 +16,13 @@ func TestSqlite(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
 		index, err := NewSqlite(
 			&SqliteConfig{
-				Name:       "testIndex",
-				Properties: []string{"col"},
-				Dsn:        ":memory:",
-				Input:      "input",
-				Logger:     logrus.NewEntry(logrus.StandardLogger()),
+				Name: "testIndex",
+				Properties: []SqlitePropertyConfig{
+					{Name: "col", Collate: "NOCASE"},
+				},
+				Dsn:    ":memory:",
+				Input:  "input",
+				Logger: logrus.NewEntry(logrus.StandardLogger()),
 			},
 			input.List{
 				"input": input.NewMock(parser.NewMock(), []record.Record{
@@ -79,14 +82,36 @@ func TestSqlite(t *testing.T) {
 		if got, expect := data[1], "value 3"; got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
 		}
+
+		// Checking the column type
+		tableDefinitionRows, err := index.db.Query(`
+			SELECT sql
+			FROM sqlite_master
+			WHERE type = 'table'
+			AND tbl_name = 'rodb_testIndex_index'
+		`, []driver.Value{})
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+		defer tableDefinitionRows.Close()
+
+		data = make([]driver.Value, 1)
+		if err = tableDefinitionRows.Next(data); err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+		if expect := `"property_col" BLOB COLLATE NOCASE`; !strings.Contains(data[0].(string), expect) {
+			t.Fatalf("Expected the column definition to be '%v', got '%v'\n", expect, data[0])
+		}
 	})
 	t.Run("load", func(t *testing.T) {
 		config := &SqliteConfig{
-			Name:       "testIndex",
-			Properties: []string{"col"},
-			Dsn:        "file:memdb1?mode=memory&cache=shared",
-			Input:      "input",
-			Logger:     logrus.NewEntry(logrus.StandardLogger()),
+			Name: "testIndex",
+			Properties: []SqlitePropertyConfig{
+				{Name: "col", Collate: "BINARY"},
+			},
+			Dsn:    "file:memdb1?mode=memory&cache=shared",
+			Input:  "input",
+			Logger: logrus.NewEntry(logrus.StandardLogger()),
 		}
 		inputs := input.List{
 			"input": input.NewMock(parser.NewMock(), []record.Record{
@@ -175,11 +200,14 @@ func TestSqliteGetRecordPositions(t *testing.T) {
 		})
 		index, err := NewSqlite(
 			&SqliteConfig{
-				Name:       "testIndex",
-				Properties: []string{"col", "col2"},
-				Dsn:        ":memory:",
-				Input:      "input",
-				Logger:     logrus.NewEntry(logrus.StandardLogger()),
+				Name: "testIndex",
+				Properties: []SqlitePropertyConfig{
+					{Name: "col", Collate: "BINARY"},
+					{Name: "col2", Collate: "BINARY"},
+				},
+				Dsn:    ":memory:",
+				Input:  "input",
+				Logger: logrus.NewEntry(logrus.StandardLogger()),
 			},
 			input.List{
 				"input": mockInput,

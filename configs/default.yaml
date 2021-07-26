@@ -110,8 +110,10 @@ indexes:
     dsn: ./sqlite.rodb
     input: defaultInput
     properties:
-      - id
-      - name
+      - name: id
+        collate: binary
+      - name: name
+        collate: nocase
 outputs:
   - name: defaultGraphqlOutput
     type: graphql
