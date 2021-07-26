@@ -15,8 +15,8 @@ inputs:
         xpath: "string(//gloss[not(@xml:lang)][1])"
 indexes:
   - name: indexFilter
-    type: wildcard
-    path: /var/indexFilter.rodb
+    type: sqlite
+    dsn: /var/indexFilter.rodb
     input: dictionary
     properties:
       - writing

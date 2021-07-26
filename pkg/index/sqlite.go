@@ -107,6 +107,13 @@ func (sqlite *Sqlite) createIndex() error {
 		return err
 	}
 
+	if _, err = sqlite.db.Exec(`PRAGMA synchronous = OFF;`, []driver.Value{}); err != nil {
+		return fmt.Errorf("Error while creating index table: %w", err)
+	}
+	if _, err = sqlite.db.Exec(`PRAGMA journal_mode = OFF;`, []driver.Value{}); err != nil {
+		return fmt.Errorf("Error while creating index table: %w", err)
+	}
+
 	_, err = sqlite.db.Exec(`
 		CREATE TABLE `+tableIdentifier+` (
 			"offset" INTEGER NOT NULL,
