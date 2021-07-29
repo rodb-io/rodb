@@ -28,7 +28,9 @@ func NewSqlite(
 		return nil, fmt.Errorf("Input '%v' not found in inputs list.", config.Input)
 	}
 
-	db, err := (&gosqlite.SQLiteDriver{}).Open(config.Dsn)
+	// We use the driver directly rather than the database/sql interfaces, because the generic
+	// way tries to autodetect and normalize the return types. But we want to get the real types.
+	db, err := sqlitePackage.Open(config.Dsn)
 	if err != nil {
 		return nil, fmt.Errorf("Error while opening the sqlite DSN: %w", err)
 	}
@@ -36,7 +38,7 @@ func NewSqlite(
 	sqlite := &Sqlite{
 		config: config,
 		input:  input,
-		db:     db.(*gosqlite.SQLiteConn),
+		db:     db,
 	}
 
 	metadataExists, err := sqlitePackage.HasMetadata(sqlite.db, sqlite.config.Name)
@@ -105,13 +107,6 @@ func (sqlite *Sqlite) createIndex() error {
 	tableIdentifier, err := sqlite.getIndexTableIdentifier()
 	if err != nil {
 		return err
-	}
-
-	if _, err = sqlite.db.Exec(`PRAGMA synchronous = OFF;`, []driver.Value{}); err != nil {
-		return fmt.Errorf("Error while creating index table: %w", err)
-	}
-	if _, err = sqlite.db.Exec(`PRAGMA journal_mode = OFF;`, []driver.Value{}); err != nil {
-		return fmt.Errorf("Error while creating index table: %w", err)
 	}
 
 	_, err = sqlite.db.Exec(`
