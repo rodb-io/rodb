@@ -33,6 +33,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     && go build -v \
         -o /scratchfs/bin/rodb \
         -ldflags '-linkmode external -extldflags "-static"' \
+        --tags 'sqlite_fts5' \
         ./cmd/main.go \
     && chmod 755 /scratchfs/bin/rodb \
     && chown root:root /scratchfs/bin/rodb
