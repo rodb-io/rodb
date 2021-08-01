@@ -29,6 +29,12 @@ indexes:
     input: dictionary
     properties:
       - translation
+  - name: indexMatchTranslation
+    type: fts5
+    dsn: /var/indexMatchTranslation.rodb
+    input: dictionary
+    properties:
+      - translation
 outputs:
   - name: output
     type: jsonArray
@@ -41,6 +47,10 @@ outputs:
       translation:
         property: translation
         index: indexTranslation
+        parser: string
+      query:
+        property: match
+        index: indexMatchTranslation
         parser: string
 services:
   - name: service

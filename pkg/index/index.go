@@ -38,6 +38,8 @@ func NewFromConfig(
 		return NewWildcard(config.(*WildcardConfig), inputs)
 	case *SqliteConfig:
 		return NewSqlite(config.(*SqliteConfig), inputs)
+	case *Fts5Config:
+		return NewFts5(config.(*Fts5Config), inputs)
 	case *NoopConfig:
 		return NewNoop(config.(*NoopConfig), inputs), nil
 	default:

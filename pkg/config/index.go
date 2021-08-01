@@ -26,6 +26,9 @@ func (config *indexParser) UnmarshalYAML(unmarshal func(interface{}) error) erro
 	case "sqlite":
 		config.index = &index.SqliteConfig{}
 		return unmarshal(config.index)
+	case "fts5":
+		config.index = &index.Fts5Config{}
+		return unmarshal(config.index)
 	case "noop":
 		config.index = &index.NoopConfig{}
 		return unmarshal(config.index)

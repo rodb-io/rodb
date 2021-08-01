@@ -27,13 +27,14 @@ RUN go mod download
 COPY ./cmd ${RODB_PATH}/cmd
 COPY ./pkg ${RODB_PATH}/pkg
 
+ENV BUILD_TAGS='sqlite_fts5'
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/gocache \
     go mod vendor \
     && go build -v \
         -o /scratchfs/bin/rodb \
         -ldflags '-linkmode external -extldflags "-static"' \
-        --tags 'sqlite_fts5' \
+        --tags "$BUILD_TAGS" \
         ./cmd/main.go \
     && chmod 755 /scratchfs/bin/rodb \
     && chown root:root /scratchfs/bin/rodb
@@ -42,7 +43,7 @@ RUN if [ "$(go fmt ./... | wc -l)" -gt 0 ]; then echo "Invalid code-style. Pleas
 
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/gocache \
-    go test -timeout 3s ./...
+    go test --tags "$BUILD_TAGS" -timeout 3s ./...
 
 FROM scratch
 LABEL org.label-schema.name="RODB"
