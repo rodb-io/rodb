@@ -1,0 +1,45 @@
+inputs:
+  - name: people
+    type: json
+    path: /srv/people.json
+indexes:
+  - name: peopleFullText
+    type: fts5
+    dsn: "/var/indexPeopleFullText.rodb"
+    input: people
+    properties:
+      - firstName
+      - lastName
+      - username
+  - name: peopleIds
+    type: sqlite
+    dsn: "/var/indexPeopleIds.rodb"
+    input: people
+    properties:
+      - name: id
+outputs:
+  - name: peopleList
+    type: jsonArray
+    input: people
+    parameters:
+      search:
+        property: match
+        index: peopleFullText
+  - name: people
+    type: jsonObject
+    input: people
+    parameters:
+      id:
+        property: id
+        index: peopleIds
+        parser: integer
+services:
+  - name: httpService
+    type: http
+    http:
+      listen: ":80"
+    routes:
+      - path: "/people"
+        output: peopleList
+      - path: "/people/{id}"
+        output: people

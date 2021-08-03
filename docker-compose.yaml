@@ -10,6 +10,16 @@ services:
     volumes:
       - $PWD/configs:/etc/configs
     command: --config=/etc/configs/default.yaml --verbose
+  people:
+    tty: true
+    build:
+      context: ./examples/people
+      dockerfile: ./Dockerfile
+    user: root:root
+    ports:
+      - "3003:80"
+    volumes:
+      - generatedIndexes:/var
   japanese-dictionary:
     tty: true
     build:
