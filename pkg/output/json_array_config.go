@@ -17,7 +17,7 @@ type JsonArrayConfig struct {
 	Input         string                                             `yaml:"input"`
 	Limit         JsonArrayLimitConfig                               `yaml:"limit"`
 	Offset        JsonArrayOffsetConfig                              `yaml:"offset"`
-	Parameters    map[string]parameterPackage.ParameterConfig        `yaml:"parameters"`
+	Parameters    map[string]*parameterPackage.ParameterConfig       `yaml:"parameters"`
 	Relationships map[string]*relationshipPackage.RelationshipConfig `yaml:"relationships"`
 	Logger        *logrus.Entry
 }

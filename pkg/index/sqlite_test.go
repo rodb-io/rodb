@@ -17,7 +17,7 @@ func TestSqlite(t *testing.T) {
 		index, err := NewSqlite(
 			&SqliteConfig{
 				Name: "testIndex",
-				Properties: []SqlitePropertyConfig{
+				Properties: []*SqlitePropertyConfig{
 					{Name: "col", Collate: "NOCASE"},
 				},
 				Dsn:    ":memory:",
@@ -106,7 +106,7 @@ func TestSqlite(t *testing.T) {
 	t.Run("load", func(t *testing.T) {
 		config := &SqliteConfig{
 			Name: "testIndex",
-			Properties: []SqlitePropertyConfig{
+			Properties: []*SqlitePropertyConfig{
 				{Name: "col", Collate: "BINARY"},
 			},
 			Dsn:    "file:memorysqlite?mode=memory&cache=shared",
@@ -201,7 +201,7 @@ func TestSqliteGetRecordPositions(t *testing.T) {
 		index, err := NewSqlite(
 			&SqliteConfig{
 				Name: "testIndex",
-				Properties: []SqlitePropertyConfig{
+				Properties: []*SqlitePropertyConfig{
 					{Name: "col", Collate: "BINARY"},
 					{Name: "col2", Collate: "BINARY"},
 				},

@@ -12,11 +12,11 @@ import (
 var SqlitePropertyCollateAllowedValues = []string{"BINARY", "NOCASE", "RTIRM"}
 
 type SqliteConfig struct {
-	Name       string                 `yaml:"name"`
-	Type       string                 `yaml:"type"`
-	Dsn        string                 `yaml:"dsn"`
-	Input      string                 `yaml:"input"`
-	Properties []SqlitePropertyConfig `yaml:"properties"`
+	Name       string                  `yaml:"name"`
+	Type       string                  `yaml:"type"`
+	Dsn        string                  `yaml:"dsn"`
+	Input      string                  `yaml:"input"`
+	Properties []*SqlitePropertyConfig `yaml:"properties"`
 	Logger     *logrus.Entry
 }
 

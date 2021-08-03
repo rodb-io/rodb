@@ -56,7 +56,7 @@ func NewHttp(
 			return nil, fmt.Errorf("Output '%v' not found in outputs list.", route.Output)
 		}
 
-		routePath, parameters, err := service.createPathRegexp(route, output)
+		routePath, parameters, err := service.createPathRegexp(*route, output)
 		if err != nil {
 			return nil, fmt.Errorf("Cannot build regexp from route path '%v': %w", route.Path, err)
 		}
@@ -68,7 +68,7 @@ func NewHttp(
 		}
 
 		service.routes = append(service.routes, &httpRoute{
-			config:     route,
+			config:     *route,
 			path:       routePath,
 			parameters: parameters,
 			output:     output,

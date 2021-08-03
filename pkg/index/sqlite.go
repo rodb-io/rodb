@@ -124,7 +124,7 @@ func (sqlite *Sqlite) createIndex() error {
 			CREATE INDEX `+indexIdentifier+` ON `+tableIdentifier+` (`+columnIdentifiers[propertyIndex]+`);
 		`, []driver.Value{})
 		if err != nil {
-			return fmt.Errorf("Error while creating index table: %w", err)
+			return fmt.Errorf("Error while creating index table index: %w", err)
 		}
 	}
 
@@ -240,7 +240,7 @@ func (sqlite *Sqlite) GetRecordPositions(
 	rows, err := sqlite.db.Query(`
 		SELECT "offset"
 		FROM `+tableIdentifier+`
-		WHERE `+strings.Join(clauses, " AND ")+`
+		WHERE `+strings.Join(clauses, " AND ")+`;
 	`, values)
 	if err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func (sqlite *Sqlite) GetRecordPositions(
 			if err := rows.Next(rowData); err != nil {
 				_ = rows.Close()
 				if err == io.EOF {
-					break
+					return nil, nil
 				} else {
 					return nil, err
 				}
@@ -261,8 +261,6 @@ func (sqlite *Sqlite) GetRecordPositions(
 			position := record.Position(rowData[0].(int64))
 			return &position, nil
 		}
-
-		return nil, nil
 	}, nil
 }
 

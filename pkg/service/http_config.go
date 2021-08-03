@@ -10,12 +10,12 @@ import (
 )
 
 type HttpConfig struct {
-	Name       string            `yaml:"name"`
-	Type       string            `yaml:"type"`
-	Http       *HttpHttpConfig   `yaml:"http"`
-	Https      *HttpHttpsConfig  `yaml:"https"`
-	ErrorsType string            `yaml:"errorsType"`
-	Routes     []HttpRouteConfig `yaml:"routes"`
+	Name       string             `yaml:"name"`
+	Type       string             `yaml:"type"`
+	Http       *HttpHttpConfig    `yaml:"http"`
+	Https      *HttpHttpsConfig   `yaml:"https"`
+	ErrorsType string             `yaml:"errorsType"`
+	Routes     []*HttpRouteConfig `yaml:"routes"`
 	Logger     *logrus.Entry
 }
 

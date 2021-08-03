@@ -34,7 +34,7 @@ func TestJsonArrayHandler(t *testing.T) {
 		Offset: *&JsonArrayOffsetConfig{
 			Parameter: "offset",
 		},
-		Parameters: map[string]parameterPackage.ParameterConfig{
+		Parameters: map[string]*parameterPackage.ParameterConfig{
 			"belongs_to_param": {
 				Property: "belongs_to",
 				Parser:   "mock",
@@ -361,7 +361,7 @@ func TestJsonArrayGetFiltersPerIndex(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
 		jsonArray, err := mockJsonArrayForTests(&JsonArrayConfig{
 			Input: "mock",
-			Parameters: map[string]parameterPackage.ParameterConfig{
+			Parameters: map[string]*parameterPackage.ParameterConfig{
 				"a": {
 					Property: "a",
 					Index:    "a",

@@ -21,7 +21,7 @@ func TestHttp(t *testing.T) {
 		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Routes: []HttpRouteConfig{
+		Routes: []*HttpRouteConfig{
 			{
 				Path:   "/foo",
 				Output: "mock",
@@ -106,7 +106,7 @@ func TestHttpOutputList(t *testing.T) {
 		},
 		ErrorsType: "application/json",
 		Logger:     logrus.NewEntry(logrus.StandardLogger()),
-		Routes: []HttpRouteConfig{
+		Routes: []*HttpRouteConfig{
 			{
 				Output: "foo",
 			},
