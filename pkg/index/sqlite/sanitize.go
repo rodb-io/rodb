@@ -1,21 +1,20 @@
 package sqlite
 
 import (
-	"database/sql/driver"
-	gosqlite "github.com/mattn/go-sqlite3"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func SanitizeIdentifier(db *gosqlite.SQLiteConn, identifier string) (string, error) {
-	rows, err := db.Query("SELECT printf('%w', ?)", []driver.Value{identifier})
-	if err != nil {
-		return "", err
-	}
-	defer rows.Close()
-
-	data := make([]driver.Value, 1)
-	if err = rows.Next(data); err != nil {
+func SanitizeIdentifier(db *sql.DB, identifier string) (string, error) {
+	row := db.QueryRow("SELECT printf('%w', ?)", identifier)
+	if err := row.Err(); err != nil {
 		return "", err
 	}
 
-	return `"` + data[0].(string) + `"`, nil
+	var sanitizedIdentifier string
+	if err := row.Scan(&sanitizedIdentifier); err != nil {
+		return "", err
+	}
+
+	return `"` + sanitizedIdentifier + `"`, nil
 }

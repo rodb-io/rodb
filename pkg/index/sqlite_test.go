@@ -1,8 +1,8 @@
 package index
 
 import (
-	"database/sql/driver"
-	gosqlite "github.com/mattn/go-sqlite3"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/sirupsen/logrus"
 	sqlitePackage "rodb.io/pkg/index/sqlite"
 	"rodb.io/pkg/input"
@@ -45,62 +45,70 @@ func TestSqlite(t *testing.T) {
 		rows, err := index.db.Query(`
 			SELECT "offset", "property_col"
 			FROM "rodb_testIndex_index";
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
 		defer rows.Close()
 
-		data := make([]driver.Value, 4)
+		var offset int64
+		var value string
 
-		if err = rows.Next(data); err != nil {
+		rows.Next()
+		if err = rows.Scan(&offset, &value); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		if got, expect := data[0], int64(1); got != expect {
+		if got, expect := offset, int64(1); got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
 		}
-		if got, expect := data[1], "value 1"; got != expect {
-			t.Fatalf("Expected %v, got %v\n", expect, got)
-		}
-
-		if err = rows.Next(data); err != nil {
-			t.Fatalf("Unexpected error: %v", err)
-		}
-		if got, expect := data[0], int64(2); got != expect {
-			t.Fatalf("Expected %v, got %v\n", expect, got)
-		}
-		if got, expect := data[1], "value 2"; got != expect {
+		if got, expect := value, "value 1"; got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
 		}
 
-		if err = rows.Next(data); err != nil {
+		rows.Next()
+		if err = rows.Scan(&offset, &value); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		if got, expect := data[0], int64(3); got != expect {
+		if got, expect := offset, int64(2); got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
 		}
-		if got, expect := data[1], "value 3"; got != expect {
+		if got, expect := value, "value 2"; got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
+		}
+
+		rows.Next()
+		if err = rows.Scan(&offset, &value); err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+		if got, expect := offset, int64(3); got != expect {
+			t.Fatalf("Expected %v, got %v\n", expect, got)
+		}
+		if got, expect := value, "value 3"; got != expect {
+			t.Fatalf("Expected %v, got %v\n", expect, got)
+		}
+
+		if err := rows.Close(); err != nil {
+			t.Fatalf("Unexpected error: %v", err)
 		}
 
 		// Checking the column type
-		tableDefinitionRows, err := index.db.Query(`
+		tableDefinitionRow := index.db.QueryRow(`
 			SELECT sql
 			FROM sqlite_master
 			WHERE type = 'table'
 			AND tbl_name = 'rodb_testIndex_index'
-		`, []driver.Value{})
-		if err != nil {
+		`)
+		if err := tableDefinitionRow.Err(); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		defer tableDefinitionRows.Close()
 
-		data = make([]driver.Value, 1)
-		if err = tableDefinitionRows.Next(data); err != nil {
+		var definition string
+		if err := tableDefinitionRow.Scan(&definition); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		if expect := `"property_col" BLOB COLLATE NOCASE`; !strings.Contains(data[0].(string), expect) {
-			t.Fatalf("Expected the column definition to be '%v', got '%v'\n", expect, data[0])
+
+		if expect := `"property_col" BLOB COLLATE NOCASE`; !strings.Contains(definition, expect) {
+			t.Fatalf("Expected the column definition to be '%v', got '%v'\n", expect, definition)
 		}
 	})
 	t.Run("load", func(t *testing.T) {
@@ -124,12 +132,11 @@ func TestSqlite(t *testing.T) {
 			}),
 		}
 
-		genericDb, err := (&gosqlite.SQLiteDriver{}).Open(config.Dsn)
+		db, err := sql.Open("sqlite3", config.Dsn)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		defer genericDb.Close()
-		db := genericDb.(*gosqlite.SQLiteConn)
+		defer db.Close()
 
 		metadata, err := sqlitePackage.NewMetadata(db, "testIndex", inputs["input"])
 		if err != nil {
@@ -145,7 +152,7 @@ func TestSqlite(t *testing.T) {
 				"offset" INTEGER NOT NULL,
 				"property_col" BLOB
 			);
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -155,20 +162,19 @@ func TestSqlite(t *testing.T) {
 			t.Fatalf("Unexpected error: %v", err)
 		}
 
-		rows, err := index.db.Query(`
+		row := index.db.QueryRow(`
 			SELECT COUNT(*)
 			FROM "rodb_testIndex_index";
-		`, []driver.Value{})
-		if err != nil {
+		`)
+		if err := row.Err(); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		defer rows.Close()
 
-		data := make([]driver.Value, 1)
-		if err = rows.Next(data); err != nil {
+		var count int64
+		if err = row.Scan(&count); err != nil {
 			t.Fatalf("Unexpected error: %v", err)
 		}
-		if got, expect := data[0], int64(0); got != expect {
+		if got, expect := count, int64(0); got != expect {
 			t.Fatalf("Expected %v, got %v\n", expect, got)
 		}
 	})

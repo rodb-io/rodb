@@ -1,11 +1,10 @@
 package index
 
 import (
-	"database/sql/driver"
+	"database/sql"
 	"errors"
 	"fmt"
-	gosqlite "github.com/mattn/go-sqlite3"
-	"io"
+	_ "github.com/mattn/go-sqlite3"
 	"reflect"
 	sqlitePackage "rodb.io/pkg/index/sqlite"
 	"rodb.io/pkg/input"
@@ -18,7 +17,7 @@ import (
 type Fts5 struct {
 	config *Fts5Config
 	input  input.Input
-	db     *gosqlite.SQLiteConn
+	db     *sql.DB
 }
 
 func NewFts5(
@@ -121,13 +120,13 @@ func (sqlite *Fts5) createIndex() error {
 	}
 
 	_, err = sqlite.db.Exec(`
-		CREATE VIRTUAL TABLE `+tableIdentifier+` USING fts5(
+		CREATE VIRTUAL TABLE ` + tableIdentifier + ` USING fts5(
 			"__offset" UNINDEXED,
-			`+strings.Join(columnIdentifiers, ", ")+`,
-			prefix = '`+prefixString+`',
-			tokenize = `+tokenizeString+`
+			` + strings.Join(columnIdentifiers, ", ") + `,
+			prefix = '` + prefixString + `',
+			tokenize = ` + tokenizeString + `
 		);
-	`, []driver.Value{})
+	`)
 	if err != nil {
 		return fmt.Errorf("Error while creating index table: %w", err)
 	}
@@ -142,7 +141,7 @@ func (sqlite *Fts5) createIndex() error {
 		return fmt.Errorf("Error while preparing index table insert query: %w", err)
 	}
 
-	valuesToInsert := make([]driver.Value, 1+len(sqlite.config.Properties))
+	valuesToInsert := make([]interface{}, 1+len(sqlite.config.Properties))
 	for {
 		record, err := inputIterator()
 		if err != nil {
@@ -168,7 +167,7 @@ func (sqlite *Fts5) createIndex() error {
 			valuesToInsert[propertyIndex+1] = value
 		}
 
-		if _, err = preparedInsert.Exec(valuesToInsert); err != nil {
+		if _, err = preparedInsert.Exec(valuesToInsert...); err != nil {
 			return err
 		}
 	}
@@ -178,17 +177,17 @@ func (sqlite *Fts5) createIndex() error {
 		return err
 	}
 
-	rows, err := sqlite.db.Query(`SELECT COUNT(1) FROM `+tableIdentifier+`;`, []driver.Value{})
-	if err != nil {
+	row := sqlite.db.QueryRow(`SELECT COUNT(1) FROM ` + tableIdentifier + `;`)
+	if err := row.Err(); err != nil {
 		return err
 	}
-	data := make([]driver.Value, 1)
-	if err = rows.Next(data); err != nil {
-		return err
-	}
-	defer rows.Close()
 
-	sqlite.config.Logger.WithField("indexedRows", data[0].(int64)).Infof("Successfully finished indexing")
+	var indexedRows int64
+	if err = row.Scan(&indexedRows); err != nil {
+		return err
+	}
+
+	sqlite.config.Logger.WithField("indexedRows", indexedRows).Infof("Successfully finished indexing")
 
 	return nil
 }
@@ -231,24 +230,20 @@ func (sqlite *Fts5) GetRecordPositions(
 		SELECT "__offset"
 		FROM `+tableIdentifier+`
 		WHERE `+tableIdentifier+` MATCH ?
-	`, []driver.Value{filters["match"]})
+	`, filters["match"])
 	if err != nil {
 		return nil, err
 	}
 
-	rowData := make([]driver.Value, 1)
 	return func() (*record.Position, error) {
-		for {
-			if err := rows.Next(rowData); err != nil {
+		for rows.Next() {
+			var positionValue int64
+			if err := rows.Scan(&positionValue); err != nil {
 				_ = rows.Close()
-				if err == io.EOF {
-					break
-				} else {
-					return nil, err
-				}
+				return nil, err
 			}
 
-			position := record.Position(rowData[0].(int64))
+			position := record.Position(positionValue)
 			return &position, nil
 		}
 

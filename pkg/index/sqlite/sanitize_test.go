@@ -1,19 +1,20 @@
 package sqlite
 
 import (
-	gosqlite "github.com/mattn/go-sqlite3"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"testing"
 )
 
 func TestSanitizeIdentifier(t *testing.T) {
 	getSanitizedIdentifier := func(identifier string) string {
-		db, err := (&gosqlite.SQLiteDriver{}).Open(":memory:")
+		db, err := sql.Open("sqlite3", ":memory:")
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
 		defer db.Close()
 
-		result, err := SanitizeIdentifier(db.(*gosqlite.SQLiteConn), identifier)
+		result, err := SanitizeIdentifier(db, identifier)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}

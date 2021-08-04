@@ -1,8 +1,8 @@
 package sqlite
 
 import (
-	"database/sql/driver"
-	gosqlite "github.com/mattn/go-sqlite3"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"rodb.io/pkg/input"
 	"rodb.io/pkg/input/record"
 	"rodb.io/pkg/parser"
@@ -12,7 +12,7 @@ import (
 
 func TestMetadataNewMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		db, err := (&gosqlite.SQLiteDriver{}).Open(":memory:")
+		db, err := sql.Open("sqlite3", ":memory:")
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -21,7 +21,7 @@ func TestMetadataNewMetadata(t *testing.T) {
 		input := input.NewMock(parser.NewMock(), make([]record.Record, 42))
 		input.SetModTime(time.Unix(1234, 0))
 
-		metadata, err := NewMetadata(db.(*gosqlite.SQLiteConn), "testIndex", input)
+		metadata, err := NewMetadata(db, "testIndex", input)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
@@ -43,12 +43,11 @@ func TestMetadataNewMetadata(t *testing.T) {
 
 func TestMetadataLoadMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		genericDb, err := (&gosqlite.SQLiteDriver{}).Open(":memory:")
+		db, err := sql.Open("sqlite3", ":memory:")
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		defer genericDb.Close()
-		db := genericDb.(*gosqlite.SQLiteConn)
+		defer db.Close()
 
 		_, err = db.Exec(`
 			CREATE TABLE IF NOT EXISTS "rodb_testIndex_metadata" (
@@ -57,7 +56,7 @@ func TestMetadataLoadMetadata(t *testing.T) {
 				"inputFileSize" INTEGER NOT NULL,
 				"completed" BOOLEAN NOT NULL
 			);
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -69,7 +68,7 @@ func TestMetadataLoadMetadata(t *testing.T) {
 				"inputFileSize",
 				"completed"
 			) VALUES (2, 1234, 42, 1);
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -96,12 +95,11 @@ func TestMetadataLoadMetadata(t *testing.T) {
 
 func TestMetadataHasMetadata(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		genericDb, err := (&gosqlite.SQLiteDriver{}).Open(":memory:")
+		db, err := sql.Open("sqlite3", ":memory:")
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		defer genericDb.Close()
-		db := genericDb.(*gosqlite.SQLiteConn)
+		defer db.Close()
 
 		_, err = db.Exec(`
 			CREATE TABLE IF NOT EXISTS "rodb_testIndex_metadata" (
@@ -110,7 +108,7 @@ func TestMetadataHasMetadata(t *testing.T) {
 				"inputFileSize" INTEGER NOT NULL,
 				"completed" BOOLEAN NOT NULL
 			);
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -122,7 +120,7 @@ func TestMetadataHasMetadata(t *testing.T) {
 				"inputFileSize",
 				"completed"
 			) VALUES (2, 1234, 42, 1);
-		`, []driver.Value{})
+		`)
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
@@ -139,12 +137,11 @@ func TestMetadataHasMetadata(t *testing.T) {
 
 func TestMetadataSave(t *testing.T) {
 	t.Run("normal", func(t *testing.T) {
-		genericDb, err := (&gosqlite.SQLiteDriver{}).Open(":memory:")
+		db, err := sql.Open("sqlite3", ":memory:")
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		defer genericDb.Close()
-		db := genericDb.(*gosqlite.SQLiteConn)
+		defer db.Close()
 
 		metadata := Metadata{
 			db:                        db,
@@ -158,34 +155,36 @@ func TestMetadataSave(t *testing.T) {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		rows, err := db.Query(`
+		row := db.QueryRow(`
 			SELECT
 				"version",
 				"inputFileModificationTime",
 				"inputFileSize",
 				"completed"
 			FROM "rodb_testIndex_metadata";
-		`, []driver.Value{})
-		if err != nil {
-			t.Fatalf("Unexpected error: '%+v'", err)
-		}
-		defer rows.Close()
-
-		data := make([]driver.Value, 4)
-		if err = rows.Next(data); err != nil {
+		`)
+		if err := row.Err(); err != nil {
 			t.Fatalf("Unexpected error: '%+v'", err)
 		}
 
-		if expect, got := int64(CurrentVersion), data[0]; expect != got {
+		var version int64
+		var inputFileModificationTime int64
+		var inputFileSize int64
+		var completed bool
+		if err = row.Scan(&version, &inputFileModificationTime, &inputFileSize, &completed); err != nil {
+			t.Fatalf("Unexpected error: '%+v'", err)
+		}
+
+		if expect, got := int64(CurrentVersion), version; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := int64(1234), data[1]; expect != got {
+		if expect, got := int64(1234), inputFileModificationTime; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := int64(42), data[2]; expect != got {
+		if expect, got := int64(42), inputFileSize; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
-		if expect, got := false, data[3]; expect != got {
+		if expect, got := false, completed; expect != got {
 			t.Fatalf("Expected %v, got %v", expect, got)
 		}
 	})

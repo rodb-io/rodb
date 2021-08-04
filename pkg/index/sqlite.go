@@ -1,10 +1,9 @@
 package index
 
 import (
-	"database/sql/driver"
+	"database/sql"
 	"fmt"
-	gosqlite "github.com/mattn/go-sqlite3"
-	"io"
+	_ "github.com/mattn/go-sqlite3"
 	"reflect"
 	sqlitePackage "rodb.io/pkg/index/sqlite"
 	"rodb.io/pkg/input"
@@ -16,7 +15,7 @@ import (
 type Sqlite struct {
 	config *SqliteConfig
 	input  input.Input
-	db     *gosqlite.SQLiteConn
+	db     *sql.DB
 }
 
 func NewSqlite(
@@ -110,19 +109,19 @@ func (sqlite *Sqlite) createIndex() error {
 	}
 
 	_, err = sqlite.db.Exec(`
-		CREATE TABLE `+tableIdentifier+` (
+		CREATE TABLE ` + tableIdentifier + ` (
 			"offset" INTEGER NOT NULL,
-			`+strings.Join(columnDefinitions, ", ")+`
+			` + strings.Join(columnDefinitions, ", ") + `
 		);
-	`, []driver.Value{})
+	`)
 	if err != nil {
 		return fmt.Errorf("Error while creating index table: %w", err)
 	}
 
 	for propertyIndex, indexIdentifier := range indexIdentifiers {
 		_, err = sqlite.db.Exec(`
-			CREATE INDEX `+indexIdentifier+` ON `+tableIdentifier+` (`+columnIdentifiers[propertyIndex]+`);
-		`, []driver.Value{})
+			CREATE INDEX ` + indexIdentifier + ` ON ` + tableIdentifier + ` (` + columnIdentifiers[propertyIndex] + `);
+		`)
 		if err != nil {
 			return fmt.Errorf("Error while creating index table index: %w", err)
 		}
@@ -138,7 +137,7 @@ func (sqlite *Sqlite) createIndex() error {
 		return fmt.Errorf("Error while preparing index table insert query: %w", err)
 	}
 
-	valuesToInsert := make([]driver.Value, 1+len(sqlite.config.Properties))
+	valuesToInsert := make([]interface{}, 1+len(sqlite.config.Properties))
 	for {
 		record, err := inputIterator()
 		if err != nil {
@@ -164,7 +163,7 @@ func (sqlite *Sqlite) createIndex() error {
 			valuesToInsert[propertyIndex+1] = value
 		}
 
-		if _, err = preparedInsert.Exec(valuesToInsert); err != nil {
+		if _, err = preparedInsert.Exec(valuesToInsert...); err != nil {
 			return err
 		}
 	}
@@ -174,17 +173,17 @@ func (sqlite *Sqlite) createIndex() error {
 		return err
 	}
 
-	rows, err := sqlite.db.Query(`SELECT COUNT(1) FROM `+tableIdentifier+`;`, []driver.Value{})
-	if err != nil {
+	row := sqlite.db.QueryRow(`SELECT COUNT(1) FROM ` + tableIdentifier + `;`)
+	if err := row.Err(); err != nil {
 		return err
 	}
-	data := make([]driver.Value, 1)
-	if err = rows.Next(data); err != nil {
-		return err
-	}
-	defer rows.Close()
 
-	sqlite.config.Logger.WithField("indexedRows", data[0].(int64)).Infof("Successfully finished indexing")
+	var indexedRows int64
+	if err = row.Scan(&indexedRows); err != nil {
+		return err
+	}
+
+	sqlite.config.Logger.WithField("indexedRows", indexedRows).Infof("Successfully finished indexing")
 
 	return nil
 }
@@ -222,7 +221,7 @@ func (sqlite *Sqlite) GetRecordPositions(
 	}
 
 	clauses := make([]string, 0, len(filters))
-	values := make([]driver.Value, 0, len(filters))
+	values := make([]interface{}, 0, len(filters))
 	for propertyName, filter := range filters {
 		if !sqlite.config.DoesHandleProperty(propertyName) {
 			return nil, fmt.Errorf("This index does not handle the property '%v'.", propertyName)
@@ -241,26 +240,24 @@ func (sqlite *Sqlite) GetRecordPositions(
 		SELECT "offset"
 		FROM `+tableIdentifier+`
 		WHERE `+strings.Join(clauses, " AND ")+`;
-	`, values)
+	`, values...)
 	if err != nil {
 		return nil, err
 	}
 
-	rowData := make([]driver.Value, 1)
 	return func() (*record.Position, error) {
-		for {
-			if err := rows.Next(rowData); err != nil {
+		for rows.Next() {
+			var positionValue int64
+			if err := rows.Scan(&positionValue); err != nil {
 				_ = rows.Close()
-				if err == io.EOF {
-					return nil, nil
-				} else {
-					return nil, err
-				}
+				return nil, err
 			}
 
-			position := record.Position(rowData[0].(int64))
+			position := record.Position(positionValue)
 			return &position, nil
 		}
+
+		return nil, nil
 	}, nil
 }
 

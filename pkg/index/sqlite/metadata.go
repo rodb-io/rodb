@@ -1,9 +1,9 @@
 package sqlite
 
 import (
-	"database/sql/driver"
+	"database/sql"
 	"fmt"
-	gosqlite "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 	"rodb.io/pkg/input"
 	"time"
 )
@@ -12,7 +12,7 @@ import (
 const CurrentVersion = uint16(1)
 
 type Metadata struct {
-	db                        *gosqlite.SQLiteConn
+	db                        *sql.DB
 	indexName                 string
 	version                   uint16
 	inputFileModificationTime time.Time
@@ -21,7 +21,7 @@ type Metadata struct {
 }
 
 func NewMetadata(
-	db *gosqlite.SQLiteConn,
+	db *sql.DB,
 	indexName string,
 	input input.Input,
 ) (*Metadata, error) {
@@ -48,7 +48,7 @@ func NewMetadata(
 }
 
 func LoadMetadata(
-	db *gosqlite.SQLiteConn,
+	db *sql.DB,
 	indexName string,
 ) (*Metadata, error) {
 	metadata := &Metadata{
@@ -61,34 +61,29 @@ func LoadMetadata(
 		return nil, err
 	}
 
-	rows, err := metadata.db.Query(`
+	row := metadata.db.QueryRow(`
 		SELECT
 			"version",
 			"inputFileModificationTime",
 			"inputFileSize",
 			"completed"
-		FROM `+tableIdentifier+`;
-	`, []driver.Value{})
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	data := make([]driver.Value, 4)
-	if err = rows.Next(data); err != nil {
+		FROM ` + tableIdentifier + `;
+	`)
+	if err := row.Err(); err != nil {
 		return nil, err
 	}
 
-	metadata.version = uint16(data[0].(int64))
-	metadata.inputFileModificationTime = time.Unix(data[1].(int64), 0)
-	metadata.inputFileSize = data[2].(int64)
-	metadata.completed = data[3].(bool)
+	var modificationTime int64
+	if err = row.Scan(&metadata.version, &modificationTime, &metadata.inputFileSize, &metadata.completed); err != nil {
+		return nil, err
+	}
+	metadata.inputFileModificationTime = time.Unix(modificationTime, 0)
 
 	return metadata, nil
 }
 
 func HasMetadata(
-	db *gosqlite.SQLiteConn,
+	db *sql.DB,
 	indexName string,
 ) (bool, error) {
 	metadata := &Metadata{
@@ -101,23 +96,22 @@ func HasMetadata(
 		return false, err
 	}
 
-	rows, err := metadata.db.Query(`
+	row := metadata.db.QueryRow(`
 		SELECT COUNT(*)
 		FROM sqlite_master
 		WHERE type = 'table'
-		AND name = `+tableIdentifier+`;
-	`, []driver.Value{})
-	if err != nil {
-		return false, err
-	}
-	defer rows.Close()
-
-	data := make([]driver.Value, 1)
-	if err = rows.Next(data); err != nil {
+		AND name = ` + tableIdentifier + `;
+	`)
+	if err := row.Err(); err != nil {
 		return false, err
 	}
 
-	return (data[0].(int64) > 0), nil
+	var count int64
+	if err = row.Scan(&count); err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }
 
 func (metadata *Metadata) GetTableIdentifier() (string, error) {
@@ -137,37 +131,38 @@ func (metadata *Metadata) Save() error {
 	}
 
 	_, err = metadata.db.Exec(`
-		CREATE TABLE IF NOT EXISTS `+tableIdentifier+` (
+		CREATE TABLE IF NOT EXISTS ` + tableIdentifier + ` (
 			"version" INTEGER NOT NULL,
 			"inputFileModificationTime" INTEGER NOT NULL,
 			"inputFileSize" INTEGER NOT NULL,
 			"completed" BOOLEAN NOT NULL
 		);
-	`, []driver.Value{})
+	`)
 	if err != nil {
 		return err
 	}
 
 	_, err = metadata.db.Exec(`
-		DELETE FROM `+tableIdentifier+`;
-	`, []driver.Value{})
+		DELETE FROM ` + tableIdentifier + `;
+	`)
 	if err != nil {
 		return err
 	}
 
-	_, err = metadata.db.Exec(`
-		INSERT INTO `+tableIdentifier+` (
-			"version",
-			"inputFileModificationTime",
-			"inputFileSize",
-			"completed"
-		) VALUES (?, ?, ?, ?);
-	`, []driver.Value{
+	_, err = metadata.db.Exec(
+		`
+			INSERT INTO `+tableIdentifier+` (
+				"version",
+				"inputFileModificationTime",
+				"inputFileSize",
+				"completed"
+			) VALUES (?, ?, ?, ?);
+		`,
 		int64(metadata.version),
 		metadata.inputFileModificationTime.Unix(),
 		metadata.inputFileSize,
 		metadata.completed,
-	})
+	)
 	if err != nil {
 		return err
 	}
