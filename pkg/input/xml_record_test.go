@@ -150,7 +150,7 @@ func TestXmlRecordAll(t *testing.T) {
 		t.Fatalf("Unexpected error: '%v'", err)
 	}
 
-	if expect, got := 42, result["integer"].(int); got != expect {
+	if expect, got := int64(42), result["integer"].(int64); got != expect {
 		t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 	}
 	if expect, got := 3.14, result["float"].(float64); got != expect {
@@ -281,7 +281,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
@@ -353,7 +353,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
@@ -517,7 +517,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error, got %v", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
@@ -552,7 +552,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error, got %v", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
@@ -615,10 +615,10 @@ func TestXmlRecordGet(t *testing.T) {
 		if expect := 2; len(arrayResult) != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, arrayResult)
 		}
-		if expect := 1; arrayResult[0] != expect {
+		if expect := int64(1); arrayResult[0] != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, arrayResult[0])
 		}
-		if expect := 42; arrayResult[1] != expect {
+		if expect := int64(42); arrayResult[1] != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, arrayResult[1])
 		}
 	})
@@ -654,7 +654,7 @@ func TestXmlRecordGet(t *testing.T) {
 			t.Fatalf("Unexpected error, got %v", err)
 		}
 		objectResult := result.(map[string]interface{})
-		if expect := 42; objectResult["prop"] != expect {
+		if expect := int64(42); objectResult["prop"] != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, objectResult["prop"])
 		}
 	})
@@ -807,7 +807,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error, got %v", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})
@@ -849,7 +849,7 @@ func TestXmlRecordGet(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error, got %v", err)
 		}
-		if expect := 42; got != expect {
+		if expect := int64(42); got != expect {
 			t.Fatalf("Expected to get '%v', got '%v'", expect, got)
 		}
 	})

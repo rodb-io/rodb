@@ -16,9 +16,9 @@ func TestCompare(t *testing.T) {
 		{"string a = b", "a", "a", true, false},
 		{"string a > b", "b", "a", false, false},
 
-		{"integer a < b", 1, 2, false, true},
-		{"integer a = b", 1, 1, true, false},
-		{"integer a > b", 2, 1, false, false},
+		{"integer a < b", int64(1), int64(2), false, true},
+		{"integer a = b", int64(1), int64(1), true, false},
+		{"integer a > b", int64(2), int64(1), false, false},
 
 		{"float a < b", 1.0, 2.0, false, true},
 		{"float a = b", 1.0, 1.0, true, false},

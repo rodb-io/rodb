@@ -77,9 +77,9 @@ func Compare(a interface{}, b interface{}) (*bool, error) {
 		}
 		result := aString < bString
 		return &result, nil
-	case int:
-		aInt := a.(int)
-		bInt, bIsInt := b.(int)
+	case int64:
+		aInt := a.(int64)
+		bInt, bIsInt := b.(int64)
 		if !bIsInt {
 			return nil, fmt.Errorf("Cannot compare an integer with '%#v'", b)
 		}

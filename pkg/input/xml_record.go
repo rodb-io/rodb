@@ -191,7 +191,7 @@ func (record *XmlRecord) handleNumericValue(config *XmlPropertyConfig, value flo
 	if _, isFloatParser := parser.(*parserPackage.Float); isFloatParser {
 		return value, nil
 	} else if _, isIntegerParser := parser.(*parserPackage.Integer); isIntegerParser {
-		return int(value), nil
+		return int64(value), nil
 	} else {
 		return nil, record.xpathError(config, fmt.Sprintf("got a numeric value, but the property does not have a numeric parser"))
 	}

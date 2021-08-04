@@ -32,7 +32,7 @@ func TestSplitParse(t *testing.T) {
 			t.Fatalf("Expected array to have 2 values, got '%#v'", dataArray)
 		}
 
-		data0, isInt := dataArray[0].(int)
+		data0, isInt := dataArray[0].(int64)
 		if !isInt {
 			t.Fatalf("Expected property to be a string, got '%#v'", dataArray)
 		}
@@ -40,7 +40,7 @@ func TestSplitParse(t *testing.T) {
 			t.Fatalf("Expected array value at index 0 to be '1', got '%v'", data0)
 		}
 
-		data1, isInt := dataArray[1].(int)
+		data1, isInt := dataArray[1].(int64)
 		if !isInt {
 			t.Fatalf("Expected property to be a string, got '%#v'", dataArray)
 		}
@@ -75,7 +75,7 @@ func TestSplitParse(t *testing.T) {
 			t.Fatalf("Expected array to have 2 values, got '%#v'", dataArray)
 		}
 
-		data0, isInt := dataArray[0].(int)
+		data0, isInt := dataArray[0].(int64)
 		if !isInt {
 			t.Fatalf("Expected property to be a string, got '%#v'", dataArray)
 		}
@@ -83,7 +83,7 @@ func TestSplitParse(t *testing.T) {
 			t.Fatalf("Expected array value at index 0 to be '1', got '%v'", data0)
 		}
 
-		data1, isInt := dataArray[1].(int)
+		data1, isInt := dataArray[1].(int64)
 		if !isInt {
 			t.Fatalf("Expected property to be a string, got '%#v'", dataArray)
 		}

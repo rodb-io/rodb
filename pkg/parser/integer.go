@@ -37,5 +37,6 @@ func (integer *Integer) GetRegexpPattern() string {
 
 func (integer *Integer) Parse(value string) (interface{}, error) {
 	cleanedValue := util.RemoveCharacters(value, integer.config.IgnoreCharacters)
-	return strconv.Atoi(cleanedValue)
+	integerValue, err := strconv.Atoi(cleanedValue)
+	return int64(integerValue), err
 }

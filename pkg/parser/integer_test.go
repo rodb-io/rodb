@@ -12,10 +12,10 @@ func TestIntegerParse(t *testing.T) {
 	integer := NewInteger(config)
 
 	for value, expectedResult := range map[string]interface{}{
-		"1":         1,
-		"-42":       -42,
-		"3":         3,
-		"$ 123,456": 123456,
+		"1":         int64(1),
+		"-42":       int64(-42),
+		"3":         int64(3),
+		"$ 123,456": int64(123456),
 		"nope":      nil,
 	} {
 		t.Run(value, func(t *testing.T) {

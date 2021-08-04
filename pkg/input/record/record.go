@@ -35,6 +35,7 @@ type Record interface {
 
 	// Returns the value matching the given path. The path is a dot-separated string.
 	// Array indexes does not have a specific syntax, ie foo.0.bar.1 ...
+	// Only expecting a bool, int64, float64 or string
 	Get(path string) (interface{}, error)
 
 	Position() Position
