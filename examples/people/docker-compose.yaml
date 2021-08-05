@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  people:
+    tty: true
+    build:
+      context: "${EX_PE_CONTEXT:-.}"
+      dockerfile: ./Dockerfile
+    user: root:root
+    ports:
+      - "3003:80"
+    volumes:
+      - peopleIndexes:/var
+volumes:
+  peopleIndexes:

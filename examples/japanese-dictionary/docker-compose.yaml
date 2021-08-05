@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  japanese-dictionary:
+    tty: true
+    build:
+      context: "${EX_JD_CONTEXT:-.}"
+      dockerfile: ./Dockerfile
+    user: root:root
+    ports:
+      - "3001:80"
+      - "3002:443"
+    volumes:
+      - japaneseDictionaryIndexes:/var
+volumes:
+  japaneseDictionaryIndexes:

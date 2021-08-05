@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  zip-codes-tokyo:
+    tty: true
+    build:
+      context: "${EX_ZC_CONTEXT:-.}"
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:80"
