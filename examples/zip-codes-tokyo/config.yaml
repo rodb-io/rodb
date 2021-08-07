@@ -85,11 +85,11 @@ outputs:
     type: jsonArray
     input: zipCodesTokyo
     limit:
-      default: 100
-      max: 1000
-      parameter: "limit"
+      default: 30
+      max: 100
+      parameter: "max_per_page"
     offset:
-      parameter: "offset"
+      parameter: "offset_from"
     parameters:
       municipality:
         property: municipality

@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  tests:
+  unit_tests:
     tty: true
     image: localhost/rodb:latest
     build:
@@ -9,4 +9,9 @@ services:
       dockerfile: ./build/docker/service.Dockerfile
     volumes:
       - $PWD/configs:/etc/configs
-    command: --config=/etc/configs/default.yaml --verbose
+    command: --help
+  e2e_tests:
+    tty: true
+    build:
+      context: .
+      dockerfile: ./build/docker/e2e.Dockerfile
