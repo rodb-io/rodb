@@ -20,9 +20,9 @@ func TestMain(m *testing.M) {
 	}
 
 	var response *http.Response
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 100; i++ {
 		if response, err = getClient().Do(request); err != nil {
-			time.Sleep(250 * time.Millisecond) // and continue
+			time.Sleep(50 * time.Millisecond) // and continue
 		} else {
 			break
 		}
@@ -38,7 +38,7 @@ func TestMain(m *testing.M) {
 
 func getClient() *http.Client {
 	return &http.Client{
-		Timeout: 250 * time.Millisecond,
+		Timeout: 200 * time.Millisecond,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,

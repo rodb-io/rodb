@@ -1,6 +1,8 @@
 package e2e
 
 import (
+	"net/url"
+	"strings"
 	"testing"
 )
 
@@ -58,16 +60,49 @@ func TestParameters(t *testing.T) {
 		}
 	})
 	t.Run("translation full string", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?translation=wet%20towel%20%28supplied%20at%20table%29")
+		items := getListResponse(t, ServerUrl + "/?translation=" + url.QueryEscape("wet towel (supplied at table)"))
 		if got, expect := len(items), 1; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("word and translation", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?word=食べる&translation=to%20eat")
+		items := getListResponse(t, ServerUrl + "/?word=食べる&translation=" + url.QueryEscape("to eat"))
 		if got, expect := len(items), 1; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
+	t.Run("match", func(t *testing.T) {
+		items := getListResponse(t, ServerUrl + "/?query=" + url.QueryEscape("(translation: trip AND translation: day) OR translation:work hard"))
+
+		foundDayTrip := false
+		foundWorkHard := false
+		for itemIndex, item := range items {
+			itemMap, isMap := item.(map[string]interface{})
+			if !isMap {
+				t.Fatalf("The item at index %v is not an object: %v", itemIndex, item)
+			}
+
+			translation, translationIsString := itemMap["translation"].(string)
+			if !translationIsString {
+				t.Fatalf("The translation of the item at index %v of the result is not a string: %v", itemIndex, itemMap["translation"])
+			}
+
+			if strings.Contains(translation, "day trip") {
+				foundDayTrip = true
+			}
+			if strings.Contains(translation, "work hard") {
+				foundWorkHard = true
+			}
+			if foundDayTrip && foundWorkHard {
+				break
+			}
+		}
+
+		if !foundDayTrip {
+			t.Fatalf("Expected to find at least one result containing 'day trip', but it was not found among %v results.", len(items))
+		}
+		if !foundWorkHard {
+			t.Fatalf("Expected to find at least one result containing 'work hard', but it was not found among %v results.", len(items))
+		}
+	})
 }
-// TODO test query (match) parameter
