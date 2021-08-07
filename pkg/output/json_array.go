@@ -142,7 +142,7 @@ func (jsonArray *JsonArray) getLimit(params map[string]string) (uint, error) {
 		if err != nil {
 			return 0, err
 		}
-		if limitAsInt < 0 {
+		if limitAsInt <= 0 {
 			return 0, errors.New("The '" + jsonArray.config.Limit.Parameter + "' parameter must be a positive and non-zero number.")
 		}
 		limit = uint(limitAsInt)

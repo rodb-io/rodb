@@ -1,33 +1,14 @@
 package e2e
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 )
 
-func getListOutput(t *testing.T, path string) []interface{} {
-	response, err := getClient().Get(ServerUrl + path)
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-
-	if got, expect := response.StatusCode, http.StatusOK; got != expect {
-		t.Fatalf("Got return status %v, expected %v", got, expect)
-	}
-
-	body := []interface{}{}
-	jsonDecoder := json.NewDecoder(response.Body)
-	if err := jsonDecoder.Decode(&body); err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-
-	return body
-}
-
 func TestOutput(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
-		items := getListOutput(t, "/")
+		items := getListResponse(t, ServerUrl + "/")
 		if got, expect := len(items), 100; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
@@ -69,11 +50,37 @@ func TestOutput(t *testing.T) {
 			t.Fatalf("The list only contains empty writings")
 		}
 	})
+	t.Run("custom limit", func(t *testing.T) {
+		itemsDefault := getListResponse(t, ServerUrl + "/")
+		if got, expect := len(itemsDefault), 100; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
+		}
+
+		itemsCustom := getListResponse(t, ServerUrl + "/?limit=10")
+		if got, expect := len(itemsCustom), 10; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
+		}
+
+		if fmt.Sprintf("%#v", itemsCustom[0]) != fmt.Sprintf("%#v", itemsDefault[0]) {
+			t.Fatalf("Expected the results to be identical. Expected %#v, got %#v", itemsDefault[0], itemsCustom[0])
+		}
+	})
+	t.Run("limit > max", func(t *testing.T) {
+		items := getListResponse(t, ServerUrl + "/?limit=2000")
+		if got, expect := len(items), 1000; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
+		}
+	})
+	t.Run("limit < 0", func(t *testing.T) {
+		getErrorResponse(t, ServerUrl + "/?limit=-123", http.StatusInternalServerError)
+	})
+	t.Run("limit = 0", func(t *testing.T) {
+		getErrorResponse(t, ServerUrl + "/?limit=0", http.StatusInternalServerError)
+	})
 }
 
-// TODO test setting limit manually
-// TODO test setting a limit over 1000
-// TODO test setting a limit <= 0
+// TODO have a different return status for the validation errors than 500
+
 // TODO test word parameter
 // TODO test translation parameter
 // TODO test query parameter

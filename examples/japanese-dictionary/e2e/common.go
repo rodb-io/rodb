@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -44,4 +45,46 @@ func getClient() *http.Client {
 			},
 		},
 	}
+}
+
+func getListResponse(t *testing.T, url string) []interface{} {
+	response, err := getClient().Get(url)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if got, expect := response.StatusCode, http.StatusOK; got != expect {
+		t.Fatalf("Got return status %v, expected %v", got, expect)
+	}
+
+	body := []interface{}{}
+	jsonDecoder := json.NewDecoder(response.Body)
+	if err := jsonDecoder.Decode(&body); err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	return body
+}
+
+func getErrorResponse(t *testing.T, url string, expectStatus int) map[string]string {
+	response, err := getClient().Get(url)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if got := response.StatusCode; got != expectStatus {
+		t.Fatalf("Got return status %v, expected %v", got, expectStatus)
+	}
+
+	body := map[string]string{}
+	jsonDecoder := json.NewDecoder(response.Body)
+	if err := jsonDecoder.Decode(&body); err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if _, hasError := body["error"]; !hasError {
+		t.Fatalf("Expected an error property in the json body, got %v", body)
+	}
+
+	return body
 }
