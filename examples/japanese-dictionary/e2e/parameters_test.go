@@ -36,8 +36,38 @@ func TestParameters(t *testing.T) {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
-}
+	t.Run("translation wildcard", func(t *testing.T) {
+		items := getListResponse(t, ServerUrl + "/?translation=table")
 
-// TODO test translation parameter
-// TODO test query parameter
-// TODO test multiple parameters
+		found := false
+		expect := "wet towel (supplied at table)"
+		for itemIndex, item := range items {
+			itemMap, isMap := item.(map[string]interface{})
+			if !isMap {
+				t.Fatalf("The item at index %v is not an object: %v", itemIndex, item)
+			}
+
+			if itemMap["translation"] == expect {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			t.Fatalf("Expected to find a result with the translation '%v', but it was not found among %v results.", found, len(items))
+		}
+	})
+	t.Run("translation full string", func(t *testing.T) {
+		items := getListResponse(t, ServerUrl + "/?translation=wet%20towel%20%28supplied%20at%20table%29")
+		if got, expect := len(items), 1; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
+		}
+	})
+	t.Run("word and translation", func(t *testing.T) {
+		items := getListResponse(t, ServerUrl + "/?word=食べる&translation=to%20eat")
+		if got, expect := len(items), 1; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
+		}
+	})
+}
+// TODO test query (match) parameter
