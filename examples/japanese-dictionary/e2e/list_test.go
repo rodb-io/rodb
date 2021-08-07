@@ -3,11 +3,12 @@ package e2e
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 )
 
-func TestOutput(t *testing.T) {
-	t.Run("default", func(t *testing.T) {
+func TestList(t *testing.T) {
+	t.Run("list", func(t *testing.T) {
 		items := getListResponse(t, ServerUrl + "/")
 		if got, expect := len(items), 100; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
@@ -20,27 +21,27 @@ func TestOutput(t *testing.T) {
 				t.Fatalf("Item %v of the result is not an object: %v", itemIndex, item)
 			}
 
-			writing, writingIsString := itemMap["reading"].(string)
-			if !writingIsString {
+			reading, readingIsString := itemMap["reading"].(string)
+			if !readingIsString {
 				t.Fatalf("reading property of the index %v of the result is not a string: %v", itemIndex, itemMap["reading"])
 			}
-			if writing == "" {
+			if reading == "" {
 				t.Fatalf("reading property of the index %v of the result is empty", itemIndex)
 			}
 
-			translation, writingIsString := itemMap["translation"].(string)
-			if !writingIsString {
+			translation, translationIsString := itemMap["translation"].(string)
+			if !translationIsString {
 				t.Fatalf("translation property of the index %v of the result is not a string: %v", itemIndex, itemMap["translation"])
 			}
 			if translation == "" {
 				t.Fatalf("translation property of the index %v of the result is empty", itemIndex)
 			}
 
-			reading, writingIsString := itemMap["writing"].(string)
+			writing, writingIsString := itemMap["writing"].(string)
 			if !writingIsString {
 				t.Fatalf("writing property of the index %v of the result is not a string: %v", itemIndex, itemMap["writing"])
 			}
-			if reading != "" {
+			if writing != "" {
 				// The writing is optional, but rarely empty
 				writingCount++
 			}
@@ -48,6 +49,13 @@ func TestOutput(t *testing.T) {
 
 		if writingCount == 0 {
 			t.Fatalf("The list only contains empty writings")
+		}
+	})
+	t.Run("default via http", func(t *testing.T) {
+		httpServerUrl := strings.Replace(ServerUrl, "https://", "http://", 1)
+		items := getListResponse(t, httpServerUrl + "/")
+		if got, expect := len(items), 100; got != expect {
+			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("custom limit", func(t *testing.T) {
@@ -78,10 +86,3 @@ func TestOutput(t *testing.T) {
 		getErrorResponse(t, ServerUrl + "/?limit=0", http.StatusInternalServerError)
 	})
 }
-
-// TODO have a different return status for the validation errors than 500
-
-// TODO test word parameter
-// TODO test translation parameter
-// TODO test query parameter
-// TODO test multiple parameters
