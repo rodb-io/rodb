@@ -23,9 +23,9 @@ func TestMain(m *testing.M) {
 	}
 
 	var response *http.Response
-	for i := 0; i < 100; i++ {
+	for {
 		if response, err = client.Do(request); err != nil {
-			time.Sleep(50 * time.Millisecond) // and continue
+			time.Sleep(500 * time.Millisecond) // and continue
 		} else {
 			break
 		}
