@@ -44,7 +44,16 @@ func NewSqlite(
 	if err != nil {
 		return nil, fmt.Errorf("Error while checking metadata from the index: %w", err)
 	}
-	if !metadataExists {
+	if metadataExists {
+		metadata, err := sqlitePackage.LoadMetadata(sqlite.db, sqlite.config.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		if err := metadata.AssertValid(sqlite.input); err != nil {
+			return nil, err
+		}
+	} else {
 		if err := sqlite.createIndex(); err != nil {
 			return nil, fmt.Errorf("Error while creating the index: %w", err)
 		}

@@ -104,6 +104,7 @@ func TestFts5(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
+		metadata.SetCompleted(true)
 		if err := metadata.Save(); err != nil {
 			t.Fatalf("Unexpected error: '%v'", err)
 		}
