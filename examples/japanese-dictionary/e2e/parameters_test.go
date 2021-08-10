@@ -8,7 +8,7 @@ import (
 
 func TestParameters(t *testing.T) {
 	t.Run("word found with exact search", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?word=食べる")
+		items := getListResponse(t, ServerUrl+"/?word=食べる")
 		if got, expect := len(items), 1; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
@@ -27,19 +27,19 @@ func TestParameters(t *testing.T) {
 		}
 	})
 	t.Run("word not found with suffix", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?word=べる")
+		items := getListResponse(t, ServerUrl+"/?word=べる")
 		if got, expect := len(items), 0; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("word not found with prefix", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?word=食べ")
+		items := getListResponse(t, ServerUrl+"/?word=食べ")
 		if got, expect := len(items), 0; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("translation wildcard", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?translation=table")
+		items := getListResponse(t, ServerUrl+"/?translation=table")
 
 		found := false
 		expect := "wet towel (supplied at table)"
@@ -60,19 +60,19 @@ func TestParameters(t *testing.T) {
 		}
 	})
 	t.Run("translation full string", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?translation=" + url.QueryEscape("wet towel (supplied at table)"))
+		items := getListResponse(t, ServerUrl+"/?translation="+url.QueryEscape("wet towel (supplied at table)"))
 		if got, expect := len(items), 1; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("word and translation", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?word=食べる&translation=" + url.QueryEscape("to eat"))
+		items := getListResponse(t, ServerUrl+"/?word=食べる&translation="+url.QueryEscape("to eat"))
 		if got, expect := len(items), 1; got != expect {
 			t.Fatalf("Got %v items, expected %v", got, expect)
 		}
 	})
 	t.Run("match", func(t *testing.T) {
-		items := getListResponse(t, ServerUrl + "/?query=" + url.QueryEscape("(translation: trip AND translation: day) OR translation:work hard"))
+		items := getListResponse(t, ServerUrl+"/?query="+url.QueryEscape("(translation: trip AND translation: day) OR translation:work hard"))
 
 		foundDayTrip := false
 		foundWorkHard := false
