@@ -4,7 +4,7 @@ services:
   japanese-dictionary:
     tty: true
     build:
-      context: "${EX_JD_CONTEXT:-.}"
+      context: .
       dockerfile: ./Dockerfile
     user: root:root
     ports:

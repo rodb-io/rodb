@@ -14,4 +14,4 @@ RUN mkdir -p $E2E_PATH \
 
 WORKDIR ${E2E_PATH}
 
-ENTRYPOINT ["go", "test", "-timeout=3s", "./..."]
+ENTRYPOINT ["go", "test", "./...", "-test.timeout", "0"]

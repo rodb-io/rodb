@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  unit_tests:
+  build:
     tty: true
     image: localhost/rodb:latest
     build:
@@ -10,8 +10,49 @@ services:
     volumes:
       - $PWD/configs:/etc/configs
     command: --help
+  japanese-dictionary:
+    tty: true
+    depends_on:
+      - build
+    build:
+      context: ./examples/japanese-dictionary
+      dockerfile: ./Dockerfile
+    user: root:root
+    ports:
+      - "3001:80"
+      - "3002:443"
+    volumes:
+      - japaneseDictionaryIndexes:/var
+  people:
+    tty: true
+    depends_on:
+      - build
+    build:
+      context: ./examples/people
+      dockerfile: ./Dockerfile
+    user: root:root
+    ports:
+      - "3003:80"
+    volumes:
+      - peopleIndexes:/var
+  zip-codes-tokyo:
+    tty: true
+    depends_on:
+      - build
+    build:
+      context: ./examples/zip-codes-tokyo
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:80"
   e2e_tests:
     tty: true
+    depends_on:
+      - japanese-dictionary
+      - people
+      - zip-codes-tokyo
     build:
       context: .
       dockerfile: ./build/docker/e2e.Dockerfile
+volumes:
+  japaneseDictionaryIndexes:
+  peopleIndexes:

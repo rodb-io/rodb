@@ -2,24 +2,21 @@ package e2e
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 )
 
 const ServerUrl = "http://people"
 
-func TestMain(m *testing.M) {
+func waitForServer(t *testing.T) {
 	client := &http.Client{
-		Timeout: 200 * time.Millisecond,
+		Timeout: 500 * time.Millisecond,
 	}
 
 	request, err := http.NewRequest("GET", ServerUrl, nil)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		t.Fatal(err)
 	}
 
 	var response *http.Response
@@ -32,11 +29,8 @@ func TestMain(m *testing.M) {
 	}
 
 	if response == nil {
-		fmt.Printf("The server %v did not start before the end of the check period.\n", ServerUrl)
-		os.Exit(1)
+		t.Fatalf("The server %v did not start before the end of the check period.\n", ServerUrl)
 	}
-
-	os.Exit(m.Run())
 }
 
 func getResponse(t *testing.T, url string, out interface{}) {

@@ -5,6 +5,7 @@ import (
 )
 
 func TestParameters(t *testing.T) {
+	waitForServer(t)
 	t.Run("municipality found with exact search", func(t *testing.T) {
 		items := []interface{}{}
 		getResponse(t, ServerUrl+"/zip-codes?municipality=世田谷区", &items)

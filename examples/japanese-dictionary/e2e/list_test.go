@@ -8,6 +8,7 @@ import (
 )
 
 func TestList(t *testing.T) {
+	waitForServer(t)
 	t.Run("list", func(t *testing.T) {
 		items := getListResponse(t, ServerUrl+"/")
 		if got, expect := len(items), 100; got != expect {

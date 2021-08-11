@@ -4,7 +4,7 @@ services:
   zip-codes-tokyo:
     tty: true
     build:
-      context: "${EX_ZC_CONTEXT:-.}"
+      context: .
       dockerfile: ./Dockerfile
     ports:
       - "3000:80"

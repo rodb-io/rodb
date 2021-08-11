@@ -7,6 +7,7 @@ import (
 )
 
 func TestParameters(t *testing.T) {
+	waitForServer(t)
 	t.Run("word found with exact search", func(t *testing.T) {
 		items := getListResponse(t, ServerUrl+"/?word=食べる")
 		if got, expect := len(items), 1; got != expect {

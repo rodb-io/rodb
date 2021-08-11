@@ -3,20 +3,17 @@ package e2e
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 )
 
 const ServerUrl = "https://japanese-dictionary"
 
-func TestMain(m *testing.M) {
+func waitForServer(t *testing.T) {
 	request, err := http.NewRequest("GET", ServerUrl, nil)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		t.Fatal(err)
 	}
 
 	var response *http.Response
@@ -29,16 +26,13 @@ func TestMain(m *testing.M) {
 	}
 
 	if response == nil {
-		fmt.Printf("The server %v did not start before the end of the check period.\n", ServerUrl)
-		os.Exit(1)
+		t.Fatalf("The server %v did not start before the end of the check period.\n", ServerUrl)
 	}
-
-	os.Exit(m.Run())
 }
 
 func getClient() *http.Client {
 	return &http.Client{
-		Timeout: 200 * time.Millisecond,
+		Timeout: 500 * time.Millisecond,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,

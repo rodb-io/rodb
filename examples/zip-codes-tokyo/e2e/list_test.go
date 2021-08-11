@@ -6,6 +6,7 @@ import (
 )
 
 func TestList(t *testing.T) {
+	waitForServer(t)
 	t.Run("list", func(t *testing.T) {
 		items := []interface{}{}
 		getResponse(t, ServerUrl+"/zip-codes", &items)

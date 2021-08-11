@@ -7,6 +7,7 @@ import (
 )
 
 func TestErrors(t *testing.T) {
+	waitForServer(t)
 	t.Run("404", func(t *testing.T) {
 		getErrorResponse(t, ServerUrl+"/wrong-url", http.StatusNotFound)
 	})
