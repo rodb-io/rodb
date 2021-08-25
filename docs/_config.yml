@@ -1,3 +1,8 @@
 theme: jekyll-theme-cayman
 title: RODB
 description: Read-Only DataBase
+menu:
+  - title: Documentation
+    href: /documentation/
+  - title: Changelog
+    href: /changelog/

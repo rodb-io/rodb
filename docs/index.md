@@ -1,3 +1,10 @@
+---
+layout: default
+title: Homepage
+permalink: /
+---
+
+Test page
 RODB is a fast and composable service that allows you to parse, index and publish:
 - static data from files: csv, xml, json...
 - in multiple formats: json, GraphQL, xml...
