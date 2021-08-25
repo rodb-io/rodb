@@ -53,6 +53,26 @@ services:
     build:
       context: .
       dockerfile: ./build/docker/e2e.Dockerfile
+  build:
+    tty: true
+    image: localhost/rodb:latest
+    build:
+      context: .
+      dockerfile: ./build/docker/service.Dockerfile
+    volumes:
+      - $PWD/configs:/etc/configs
+    command: --help
+  docs:
+    tty: true
+    image: jekyll/jekyll:3.8
+    command: jekyll serve --watch
+    working_dir: /srv/jekyll/docs
+    ports:
+      - "4000:4000"
+    volumes:
+      - $PWD:/srv/jekyll
+      - jekyllDependencies:/usr
 volumes:
   japaneseDictionaryIndexes:
   peopleIndexes:
+  jekyllDependencies:
