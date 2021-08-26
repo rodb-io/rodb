@@ -4,4 +4,4 @@ title: Changelog
 permalink: /changelog/
 ---
 
-Changelog page
+Changelog page coming soon...
