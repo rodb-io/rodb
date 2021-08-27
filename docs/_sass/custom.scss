@@ -1,0 +1,33 @@
+@import "mixins";
+
+.documentation-menu {
+  display: grid;
+  grid-column-gap: 0.5rem;
+  grid-row-gap: 0.5rem;
+
+  @include large {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @include medium {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @include small {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  > div {
+    padding: 0.5rem 1rem;
+    text-align: center;
+
+    margin-bottom: 1rem;
+    color: $code-text-color;
+    background-color: $code-bg-color;
+    border-color: $border-color;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.3rem;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+}
