@@ -1,0 +1,24 @@
+inputs:
+  - name: countries
+    type: json
+    path: /var/countries.json
+outputs:
+  - name: countries
+    type: jsonArray
+    input: countries
+    limit:
+      default: 1000
+      max: 1000
+    parameters:
+      continentCode:
+        property: continentCode
+      countryCode:
+        property: countryCode
+services:
+  - name: httpService
+    type: http
+    http:
+      listen: ":80"
+    routes:
+      - path: "/"
+        output: countries

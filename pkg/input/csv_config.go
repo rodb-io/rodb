@@ -98,11 +98,6 @@ func (config *CsvConfig) Validate(parsers map[string]parser.Config, log *logrus.
 }
 
 func (config *CsvColumnConfig) Validate(parsers map[string]parser.Config, log *logrus.Entry, logPrefix string) error {
-	_, parserExists := parsers[config.Parser]
-	if !parserExists {
-		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
-	}
-
 	if config.Name == "" {
 		return errors.New("name is required")
 	}
@@ -110,6 +105,11 @@ func (config *CsvColumnConfig) Validate(parsers map[string]parser.Config, log *l
 	if config.Parser == "" {
 		log.Debug(logPrefix + "parser not defined. Assuming 'string'")
 		config.Parser = "string"
+	}
+
+	_, parserExists := parsers[config.Parser]
+	if !parserExists {
+		return fmt.Errorf("parser: Parser '%v' not found in parsers list.", config.Parser)
 	}
 
 	return nil

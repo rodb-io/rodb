@@ -1,0 +1,262 @@
+{"continentName":"Africa","continentCode":"AF","countryName":"Algeria, People's Democratic Republic of","countryCode":"DZ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Angola, Republic of","countryCode":"AO"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Benin, Republic of","countryCode":"BJ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Botswana, Republic of","countryCode":"BW"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Burkina Faso","countryCode":"BF"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Burundi, Republic of","countryCode":"BI"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Cameroon, Republic of","countryCode":"CM"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Cape Verde, Republic of","countryCode":"CV"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Central African Republic","countryCode":"CF"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Chad, Republic of","countryCode":"TD"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Comoros, Union of the","countryCode":"KM"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Congo, Democratic Republic of the","countryCode":"CD"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Congo, Republic of the","countryCode":"CG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Cote d'Ivoire, Republic of","countryCode":"CI"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Djibouti, Republic of","countryCode":"DJ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Egypt, Arab Republic of","countryCode":"EG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Equatorial Guinea, Republic of","countryCode":"GQ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Eritrea, State of","countryCode":"ER"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Ethiopia, Federal Democratic Republic of","countryCode":"ET"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Gabon, Gabonese Republic","countryCode":"GA"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Gambia, Republic of the","countryCode":"GM"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Ghana, Republic of","countryCode":"GH"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Guinea, Republic of","countryCode":"GN"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Guinea-Bissau, Republic of","countryCode":"GW"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Kenya, Republic of","countryCode":"KE"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Lesotho, Kingdom of","countryCode":"LS"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Liberia, Republic of","countryCode":"LR"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Libyan Arab Jamahiriya","countryCode":"LY"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Madagascar, Republic of","countryCode":"MG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Malawi, Republic of","countryCode":"MW"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Mali, Republic of","countryCode":"ML"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Mauritania, Islamic Republic of","countryCode":"MR"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Mauritius, Republic of","countryCode":"MU"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Mayotte","countryCode":"YT"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Morocco, Kingdom of","countryCode":"MA"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Mozambique, Republic of","countryCode":"MZ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Namibia, Republic of","countryCode":"NA"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Niger, Republic of","countryCode":"NE"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Nigeria, Federal Republic of","countryCode":"NG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Reunion","countryCode":"RE"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Rwanda, Republic of","countryCode":"RW"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Saint Helena","countryCode":"SH"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Sao Tome and Principe, Democratic Republic of","countryCode":"ST"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Senegal, Republic of","countryCode":"SN"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Seychelles, Republic of","countryCode":"SC"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Sierra Leone, Republic of","countryCode":"SL"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Somalia, Somali Republic","countryCode":"SO"}
+{"continentName":"Africa","continentCode":"AF","countryName":"South Africa, Republic of","countryCode":"ZA"}
+{"continentName":"Africa","continentCode":"AF","countryName":"South Sudan","countryCode":"SS"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Sudan, Republic of","countryCode":"SD"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Swaziland, Kingdom of","countryCode":"SZ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Tanzania, United Republic of","countryCode":"TZ"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Togo, Togolese Republic","countryCode":"TG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Tunisia, Tunisian Republic","countryCode":"TN"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Uganda, Republic of","countryCode":"UG"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Western Sahara","countryCode":"EH"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Zambia, Republic of","countryCode":"ZM"}
+{"continentName":"Africa","continentCode":"AF","countryName":"Zimbabwe, Republic of","countryCode":"ZW"}
+{"continentName":"Antarctica","continentCode":"AN","countryName":"Antarctica (the territory South of 60 deg S)","countryCode":"AQ"}
+{"continentName":"Antarctica","continentCode":"AN","countryName":"Bouvet Island (Bouvetoya)","countryCode":"BV"}
+{"continentName":"Antarctica","continentCode":"AN","countryName":"French Southern Territories","countryCode":"TF"}
+{"continentName":"Antarctica","continentCode":"AN","countryName":"Heard Island and McDonald Islands","countryCode":"HM"}
+{"continentName":"Antarctica","continentCode":"AN","countryName":"South Georgia and the South Sandwich Islands","countryCode":"GS"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Afghanistan, Islamic Republic of","countryCode":"AF"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Armenia, Republic of","countryCode":"AM"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Azerbaijan, Republic of","countryCode":"AZ"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Bahrain, Kingdom of","countryCode":"BH"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Bangladesh, People's Republic of","countryCode":"BD"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Bhutan, Kingdom of","countryCode":"BT"}
+{"continentName":"Asia","continentCode":"AS","countryName":"British Indian Ocean Territory (Chagos Archipelago)","countryCode":"IO"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Brunei Darussalam","countryCode":"BN"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Cambodia, Kingdom of","countryCode":"KH"}
+{"continentName":"Asia","continentCode":"AS","countryName":"China, People's Republic of","countryCode":"CN"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Christmas Island","countryCode":"CX"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Cocos (Keeling) Islands","countryCode":"CC"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Cyprus, Republic of","countryCode":"CY"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Georgia","countryCode":"GE"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Hong Kong, Special Administrative Region of China","countryCode":"HK"}
+{"continentName":"Asia","continentCode":"AS","countryName":"India, Republic of","countryCode":"IN"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Indonesia, Republic of","countryCode":"ID"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Iran, Islamic Republic of","countryCode":"IR"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Iraq, Republic of","countryCode":"IQ"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Iraq-Saudi Arabia Neutral Zone","countryCode":"XE"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Israel, State of","countryCode":"IL"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Japan","countryCode":"JP"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Jordan, Hashemite Kingdom of","countryCode":"JO"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Kazakhstan, Republic of","countryCode":"KZ"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Korea, Democratic People's Republic of","countryCode":"KP"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Korea, Republic of","countryCode":"KR"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Kuwait, State of","countryCode":"KW"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Kyrgyz Republic","countryCode":"KG"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Lao People's Democratic Republic","countryCode":"LA"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Lebanon, Lebanese Republic","countryCode":"LB"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Macao, Special Administrative Region of China","countryCode":"MO"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Malaysia","countryCode":"MY"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Maldives, Republic of","countryCode":"MV"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Mongolia","countryCode":"MN"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Myanmar, Union of","countryCode":"MM"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Nepal, State of","countryCode":"NP"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Oman, Sultanate of","countryCode":"OM"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Pakistan, Islamic Republic of","countryCode":"PK"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Palestinian Territory, Occupied","countryCode":"PS"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Philippines, Republic of the","countryCode":"PH"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Qatar, State of","countryCode":"QA"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Russian Federation","countryCode":"RU"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Saudi Arabia, Kingdom of","countryCode":"SA"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Singapore, Republic of","countryCode":"SG"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Spratly Islands","countryCode":"XS"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Sri Lanka, Democratic Socialist Republic of","countryCode":"LK"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Syrian Arab Republic","countryCode":"SY"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Taiwan","countryCode":"TW"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Tajikistan, Republic of","countryCode":"TJ"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Thailand, Kingdom of","countryCode":"TH"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Timor-Leste, Democratic Republic of","countryCode":"TL"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Turkey, Republic of","countryCode":"TR"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Turkmenistan","countryCode":"TM"}
+{"continentName":"Asia","continentCode":"AS","countryName":"United Arab Emirates","countryCode":"AE"}
+{"continentName":"Asia","continentCode":"AS","countryName":"United Nations Neutral Zone","countryCode":"XD"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Uzbekistan, Republic of","countryCode":"UZ"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Vietnam, Socialist Republic of","countryCode":"VN"}
+{"continentName":"Asia","continentCode":"AS","countryName":"Yemen","countryCode":"YE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Albania, Republic of","countryCode":"AL"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Andorra, Principality of","countryCode":"AD"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Armenia, Republic of","countryCode":"AM"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Austria, Republic of","countryCode":"AT"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Azerbaijan, Republic of","countryCode":"AZ"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Belarus, Republic of","countryCode":"BY"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Belgium, Kingdom of","countryCode":"BE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Bosnia and Herzegovina","countryCode":"BA"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Bulgaria, Republic of","countryCode":"BG"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Croatia, Republic of","countryCode":"HR"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Cyprus, Republic of","countryCode":"CY"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Czech Republic","countryCode":"CZ"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Denmark, Kingdom of","countryCode":"DK"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Estonia, Republic of","countryCode":"EE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Faroe Islands","countryCode":"FO"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Finland, Republic of","countryCode":"FI"}
+{"continentName":"Europe","continentCode":"EU","countryName":"France, French Republic","countryCode":"FR"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Georgia","countryCode":"GE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Germany, Federal Republic of","countryCode":"DE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Gibraltar","countryCode":"GI"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Greece, Hellenic Republic","countryCode":"GR"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Guernsey, Bailiwick of","countryCode":"GG"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Holy See (Vatican City State)","countryCode":"VA"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Hungary, Republic of","countryCode":"HU"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Iceland, Republic of","countryCode":"IS"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Ireland","countryCode":"IE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Isle of Man","countryCode":"IM"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Italy, Italian Republic","countryCode":"IT"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Jersey, Bailiwick of","countryCode":"JE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Kazakhstan, Republic of","countryCode":"KZ"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Latvia, Republic of","countryCode":"LV"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Liechtenstein, Principality of","countryCode":"LI"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Lithuania, Republic of","countryCode":"LT"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Luxembourg, Grand Duchy of","countryCode":"LU"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Macedonia, The Former Yugoslav Republic of","countryCode":"MK"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Malta, Republic of","countryCode":"MT"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Moldova, Republic of","countryCode":"MD"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Monaco, Principality of","countryCode":"MC"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Montenegro, Republic of","countryCode":"ME"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Netherlands, Kingdom of the","countryCode":"NL"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Norway, Kingdom of","countryCode":"NO"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Poland, Republic of","countryCode":"PL"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Portugal, Portuguese Republic","countryCode":"PT"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Romania","countryCode":"RO"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Russian Federation","countryCode":"RU"}
+{"continentName":"Europe","continentCode":"EU","countryName":"San Marino, Republic of","countryCode":"SM"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Serbia, Republic of","countryCode":"RS"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Slovakia (Slovak Republic)","countryCode":"SK"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Slovenia, Republic of","countryCode":"SI"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Spain, Kingdom of","countryCode":"ES"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Svalbard & Jan Mayen Islands","countryCode":"SJ"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Sweden, Kingdom of","countryCode":"SE"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Switzerland, Swiss Confederation","countryCode":"CH"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Turkey, Republic of","countryCode":"TR"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Ukraine","countryCode":"UA"}
+{"continentName":"Europe","continentCode":"EU","countryName":"United Kingdom of Great Britain & Northern Ireland","countryCode":"GB"}
+{"continentName":"Europe","continentCode":"EU","countryName":"Åland Islands","countryCode":"AX"}
+{"continentName":"North America","continentCode":"NA","countryName":"Anguilla","countryCode":"AI"}
+{"continentName":"North America","continentCode":"NA","countryName":"Antigua and Barbuda","countryCode":"AG"}
+{"continentName":"North America","continentCode":"NA","countryName":"Aruba","countryCode":"AW"}
+{"continentName":"North America","continentCode":"NA","countryName":"Bahamas, Commonwealth of the","countryCode":"BS"}
+{"continentName":"North America","continentCode":"NA","countryName":"Barbados","countryCode":"BB"}
+{"continentName":"North America","continentCode":"NA","countryName":"Belize","countryCode":"BZ"}
+{"continentName":"North America","continentCode":"NA","countryName":"Bermuda","countryCode":"BM"}
+{"continentName":"North America","continentCode":"NA","countryName":"Bonaire, Sint Eustatius and Saba","countryCode":"BQ"}
+{"continentName":"North America","continentCode":"NA","countryName":"British Virgin Islands","countryCode":"VG"}
+{"continentName":"North America","continentCode":"NA","countryName":"Canada","countryCode":"CA"}
+{"continentName":"North America","continentCode":"NA","countryName":"Cayman Islands","countryCode":"KY"}
+{"continentName":"North America","continentCode":"NA","countryName":"Costa Rica, Republic of","countryCode":"CR"}
+{"continentName":"North America","continentCode":"NA","countryName":"Cuba, Republic of","countryCode":"CU"}
+{"continentName":"North America","continentCode":"NA","countryName":"Curaçao","countryCode":"CW"}
+{"continentName":"North America","continentCode":"NA","countryName":"Dominica, Commonwealth of","countryCode":"DM"}
+{"continentName":"North America","continentCode":"NA","countryName":"Dominican Republic","countryCode":"DO"}
+{"continentName":"North America","continentCode":"NA","countryName":"El Salvador, Republic of","countryCode":"SV"}
+{"continentName":"North America","continentCode":"NA","countryName":"Greenland","countryCode":"GL"}
+{"continentName":"North America","continentCode":"NA","countryName":"Grenada","countryCode":"GD"}
+{"continentName":"North America","continentCode":"NA","countryName":"Guadeloupe","countryCode":"GP"}
+{"continentName":"North America","continentCode":"NA","countryName":"Guatemala, Republic of","countryCode":"GT"}
+{"continentName":"North America","continentCode":"NA","countryName":"Haiti, Republic of","countryCode":"HT"}
+{"continentName":"North America","continentCode":"NA","countryName":"Honduras, Republic of","countryCode":"HN"}
+{"continentName":"North America","continentCode":"NA","countryName":"Jamaica","countryCode":"JM"}
+{"continentName":"North America","continentCode":"NA","countryName":"Martinique","countryCode":"MQ"}
+{"continentName":"North America","continentCode":"NA","countryName":"Mexico, United Mexican States","countryCode":"MX"}
+{"continentName":"North America","continentCode":"NA","countryName":"Montserrat","countryCode":"MS"}
+{"continentName":"North America","continentCode":"NA","countryName":"Netherlands Antilles","countryCode":"AN"}
+{"continentName":"North America","continentCode":"NA","countryName":"Nicaragua, Republic of","countryCode":"NI"}
+{"continentName":"North America","continentCode":"NA","countryName":"Panama, Republic of","countryCode":"PA"}
+{"continentName":"North America","continentCode":"NA","countryName":"Puerto Rico, Commonwealth of","countryCode":"PR"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Barthelemy","countryCode":"BL"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Kitts and Nevis, Federation of","countryCode":"KN"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Lucia","countryCode":"LC"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Martin","countryCode":"MF"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Pierre and Miquelon","countryCode":"PM"}
+{"continentName":"North America","continentCode":"NA","countryName":"Saint Vincent and the Grenadines","countryCode":"VC"}
+{"continentName":"North America","continentCode":"NA","countryName":"Sint Maarten (Netherlands)","countryCode":"SX"}
+{"continentName":"North America","continentCode":"NA","countryName":"Trinidad and Tobago, Republic of","countryCode":"TT"}
+{"continentName":"North America","continentCode":"NA","countryName":"Turks and Caicos Islands","countryCode":"TC"}
+{"continentName":"North America","continentCode":"NA","countryName":"United States Minor Outlying Islands","countryCode":"UM"}
+{"continentName":"North America","continentCode":"NA","countryName":"United States Virgin Islands","countryCode":"VI"}
+{"continentName":"North America","continentCode":"NA","countryName":"United States of America","countryCode":"US"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"American Samoa","countryCode":"AS"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Australia, Commonwealth of","countryCode":"AU"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Cook Islands","countryCode":"CK"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Disputed Territory","countryCode":"XX"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Fiji, Republic of the Fiji Islands","countryCode":"FJ"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"French Polynesia","countryCode":"PF"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Guam","countryCode":"GU"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Kiribati, Republic of","countryCode":"KI"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Marshall Islands, Republic of the","countryCode":"MH"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Micronesia, Federated States of","countryCode":"FM"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Nauru, Republic of","countryCode":"NR"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"New Caledonia","countryCode":"NC"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"New Zealand","countryCode":"NZ"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Niue","countryCode":"NU"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Norfolk Island","countryCode":"NF"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Northern Mariana Islands, Commonwealth of the","countryCode":"MP"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Palau, Republic of","countryCode":"PW"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Papua New Guinea, Independent State of","countryCode":"PG"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Pitcairn Islands","countryCode":"PN"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Samoa, Independent State of","countryCode":"WS"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Solomon Islands","countryCode":"SB"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Tokelau","countryCode":"TK"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Tonga, Kingdom of","countryCode":"TO"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Tuvalu","countryCode":"TV"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"United States Minor Outlying Islands","countryCode":"UM"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Vanuatu, Republic of","countryCode":"VU"}
+{"continentName":"Oceania","continentCode":"OC","countryName":"Wallis and Futuna","countryCode":"WF"}
+{"continentName":"South America","continentCode":"SA","countryName":"Argentina, Argentine Republic","countryCode":"AR"}
+{"continentName":"South America","continentCode":"SA","countryName":"Bolivia, Republic of","countryCode":"BO"}
+{"continentName":"South America","continentCode":"SA","countryName":"Brazil, Federative Republic of","countryCode":"BR"}
+{"continentName":"South America","continentCode":"SA","countryName":"Chile, Republic of","countryCode":"CL"}
+{"continentName":"South America","continentCode":"SA","countryName":"Colombia, Republic of","countryCode":"CO"}
+{"continentName":"South America","continentCode":"SA","countryName":"Ecuador, Republic of","countryCode":"EC"}
+{"continentName":"South America","continentCode":"SA","countryName":"Falkland Islands (Malvinas)","countryCode":"FK"}
+{"continentName":"South America","continentCode":"SA","countryName":"French Guiana","countryCode":"GF"}
+{"continentName":"South America","continentCode":"SA","countryName":"Guyana, Co-operative Republic of","countryCode":"GY"}
+{"continentName":"South America","continentCode":"SA","countryName":"Paraguay, Republic of","countryCode":"PY"}
+{"continentName":"South America","continentCode":"SA","countryName":"Peru, Republic of","countryCode":"PE"}
+{"continentName":"South America","continentCode":"SA","countryName":"Suriname, Republic of","countryCode":"SR"}
+{"continentName":"South America","continentCode":"SA","countryName":"Uruguay, Eastern Republic of","countryCode":"UY"}
+{"continentName":"South America","continentCode":"SA","countryName":"Venezuela, Bolivarian Republic of","countryCode":"VE"}

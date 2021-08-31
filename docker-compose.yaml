@@ -44,6 +44,14 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "3000:80"
+  countries:
+    tty: true
+    image: localhost/rodb:latest
+    command: --config=/var/config.yaml
+    ports:
+      - "3004:80"
+    volumes:
+      - $PWD/examples/countries:/var
   e2e_tests:
     tty: true
     depends_on:

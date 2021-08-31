@@ -57,11 +57,11 @@ func (config *JsonArrayConfig) Validate(
 	}
 
 	if err := config.Limit.Validate(log); err != nil {
-		return err
+		return fmt.Errorf("jsonArray.limit.%v", err)
 	}
 
 	if err := config.Offset.Validate(log); err != nil {
-		return err
+		return fmt.Errorf("jsonArray.offset.%v", err)
 	}
 
 	for configParamName, configParam := range config.Parameters {
@@ -97,6 +97,10 @@ func (config *JsonArrayLimitConfig) Validate(log *logrus.Entry) error {
 	if config.Max == 0 {
 		log.Debug("jsonArray.limit.max not set. Assuming '1000'")
 		config.Max = 1000
+	}
+
+	if config.Default > config.Max {
+		return fmt.Errorf("default is higher than the max value of %v.", config.Max)
 	}
 
 	if config.Parameter == "" {
