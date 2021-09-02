@@ -10,6 +10,16 @@ services:
     volumes:
       - $PWD/configs:/etc/configs
     command: --help
+  countries:
+    tty: true
+    depends_on:
+      - build
+    image: localhost/rodb:latest
+    command: --config=/var/config.yaml
+    ports:
+      - "3004:80"
+    volumes:
+      - $PWD/examples/countries:/var
   japanese-dictionary:
     tty: true
     depends_on:
@@ -17,6 +27,8 @@ services:
     build:
       context: ./examples/japanese-dictionary
       dockerfile: ./Dockerfile
+      args:
+        BASE_IMAGE: localhost/rodb:latest
     user: root:root
     ports:
       - "3001:80"
@@ -30,6 +42,8 @@ services:
     build:
       context: ./examples/people
       dockerfile: ./Dockerfile
+      args:
+        BASE_IMAGE: localhost/rodb:latest
     user: root:root
     ports:
       - "3003:80"
@@ -42,19 +56,14 @@ services:
     build:
       context: ./examples/zip-codes-tokyo
       dockerfile: ./Dockerfile
+      args:
+        BASE_IMAGE: localhost/rodb:latest
     ports:
       - "3000:80"
-  countries:
-    tty: true
-    image: localhost/rodb:latest
-    command: --config=/var/config.yaml
-    ports:
-      - "3004:80"
-    volumes:
-      - $PWD/examples/countries:/var
   e2e_tests:
     tty: true
     depends_on:
+      - countries
       - japanese-dictionary
       - people
       - zip-codes-tokyo

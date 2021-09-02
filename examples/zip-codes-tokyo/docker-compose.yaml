@@ -6,5 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        BASE_IMAGE: ghcr.io/rodb-io/rodb:master
     ports:
       - "3000:80"

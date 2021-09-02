@@ -1,3 +1,5 @@
+ARG BASE_IMAGE
+
 FROM alpine:3.13 as data
 
 COPY ./JMdict.gz /
@@ -17,7 +19,7 @@ RUN openssl req \
     -subj "/C=JP/ST=Tokyo/L=Tokyo/O=RODB/OU=RODB/CN=localhost"
 RUN chmod a+r-w -R /etc/ssl/certs/rodb.*
 
-FROM localhost/rodb:latest
+FROM $BASE_IMAGE
 
 COPY ./config.yaml /etc/rodb.yaml
 COPY --from=data /JMdict /srv/JMdict.xml

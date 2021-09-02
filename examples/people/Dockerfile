@@ -1,3 +1,5 @@
+ARG BASE_IMAGE
+
 FROM golang:1.16-alpine as generator
 
 ENV GOPATH=/go
@@ -16,7 +18,7 @@ RUN go mod download
 
 RUN go run generate_people.go
 
-FROM localhost/rodb:latest
+FROM $BASE_IMAGE
 
 COPY ./config.yaml /etc/rodb.yaml
 COPY --from=generator /people.json /srv/people.json

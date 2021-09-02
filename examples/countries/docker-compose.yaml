@@ -3,7 +3,7 @@ version: '3.8'
 services:
   countries:
     tty: true
-    image: localhost/rodb:latest
+    image: ghcr.io/rodb-io/rodb:master
     command: --config=/var/config.yaml
     ports:
       - "3004:80"
