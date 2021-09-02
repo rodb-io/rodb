@@ -1,0 +1,14 @@
+name: Build and push docker image
+on:
+  push:
+    branches: [ master ]
+jobs:
+  tests:
+    name: Build and push docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build/ci/build.sh
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_USER: "${{ github.actor }}"
