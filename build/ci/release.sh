@@ -1,16 +1,17 @@
 #!/bin/bash
 
+GIT_TAG="$(./build/ci/git-tag.sh)"
+DOCKER_TAGS="$(./build/ci/docker-tags.sh)"
+
 cd examples
 for EXAMPLE in *; do
     if [ -d "$EXAMPLE" ]; then
         rm $EXAMPLE.zip || true
+        sed -i "s/:master/:$GIT_TAG/" $EXAMPLE/docker-compose.yaml
         zip -r $EXAMPLE.zip $EXAMPLE
     fi
 done
 cd -
-
-GIT_TAG="$(./build/ci/git-tag.sh)"
-DOCKER_TAGS="$(./build/ci/docker-tags.sh)"
 
 NOTES="$(echo -e 'Available docker images:\n```')"
 for DOCKER_TAG in $DOCKER_TAGS; do
