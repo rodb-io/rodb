@@ -1,0 +1,263 @@
+continentName;continentCode;countryName;countryCode
+Africa;AF;Algeria, People's Democratic Republic of;DZ
+Africa;AF;Angola, Republic of;AO
+Africa;AF;Benin, Republic of;BJ
+Africa;AF;Botswana, Republic of;BW
+Africa;AF;Burkina Faso;BF
+Africa;AF;Burundi, Republic of;BI
+Africa;AF;Cameroon, Republic of;CM
+Africa;AF;Cape Verde, Republic of;CV
+Africa;AF;Central African Republic;CF
+Africa;AF;Chad, Republic of;TD
+Africa;AF;Comoros, Union of the;KM
+Africa;AF;Congo, Democratic Republic of the;CD
+Africa;AF;Congo, Republic of the;CG
+Africa;AF;Cote d'Ivoire, Republic of;CI
+Africa;AF;Djibouti, Republic of;DJ
+Africa;AF;Egypt, Arab Republic of;EG
+Africa;AF;Equatorial Guinea, Republic of;GQ
+Africa;AF;Eritrea, State of;ER
+Africa;AF;Ethiopia, Federal Democratic Republic of;ET
+Africa;AF;Gabon, Gabonese Republic;GA
+Africa;AF;Gambia, Republic of the;GM
+Africa;AF;Ghana, Republic of;GH
+Africa;AF;Guinea, Republic of;GN
+Africa;AF;Guinea-Bissau, Republic of;GW
+Africa;AF;Kenya, Republic of;KE
+Africa;AF;Lesotho, Kingdom of;LS
+Africa;AF;Liberia, Republic of;LR
+Africa;AF;Libyan Arab Jamahiriya;LY
+Africa;AF;Madagascar, Republic of;MG
+Africa;AF;Malawi, Republic of;MW
+Africa;AF;Mali, Republic of;ML
+Africa;AF;Mauritania, Islamic Republic of;MR
+Africa;AF;Mauritius, Republic of;MU
+Africa;AF;Mayotte;YT
+Africa;AF;Morocco, Kingdom of;MA
+Africa;AF;Mozambique, Republic of;MZ
+Africa;AF;Namibia, Republic of;NA
+Africa;AF;Niger, Republic of;NE
+Africa;AF;Nigeria, Federal Republic of;NG
+Africa;AF;Reunion;RE
+Africa;AF;Rwanda, Republic of;RW
+Africa;AF;Saint Helena;SH
+Africa;AF;Sao Tome and Principe, Democratic Republic of;ST
+Africa;AF;Senegal, Republic of;SN
+Africa;AF;Seychelles, Republic of;SC
+Africa;AF;Sierra Leone, Republic of;SL
+Africa;AF;Somalia, Somali Republic;SO
+Africa;AF;South Africa, Republic of;ZA
+Africa;AF;South Sudan;SS
+Africa;AF;Sudan, Republic of;SD
+Africa;AF;Swaziland, Kingdom of;SZ
+Africa;AF;Tanzania, United Republic of;TZ
+Africa;AF;Togo, Togolese Republic;TG
+Africa;AF;Tunisia, Tunisian Republic;TN
+Africa;AF;Uganda, Republic of;UG
+Africa;AF;Western Sahara;EH
+Africa;AF;Zambia, Republic of;ZM
+Africa;AF;Zimbabwe, Republic of;ZW
+Antarctica;AN;Antarctica (the territory South of 60 deg S);AQ
+Antarctica;AN;Bouvet Island (Bouvetoya);BV
+Antarctica;AN;French Southern Territories;TF
+Antarctica;AN;Heard Island and McDonald Islands;HM
+Antarctica;AN;South Georgia and the South Sandwich Islands;GS
+Asia;AS;Afghanistan, Islamic Republic of;AF
+Asia;AS;Armenia, Republic of;AM
+Asia;AS;Azerbaijan, Republic of;AZ
+Asia;AS;Bahrain, Kingdom of;BH
+Asia;AS;Bangladesh, People's Republic of;BD
+Asia;AS;Bhutan, Kingdom of;BT
+Asia;AS;British Indian Ocean Territory (Chagos Archipelago);IO
+Asia;AS;Brunei Darussalam;BN
+Asia;AS;Cambodia, Kingdom of;KH
+Asia;AS;China, People's Republic of;CN
+Asia;AS;Christmas Island;CX
+Asia;AS;Cocos (Keeling) Islands;CC
+Asia;AS;Cyprus, Republic of;CY
+Asia;AS;Georgia;GE
+Asia;AS;Hong Kong, Special Administrative Region of China;HK
+Asia;AS;India, Republic of;IN
+Asia;AS;Indonesia, Republic of;ID
+Asia;AS;Iran, Islamic Republic of;IR
+Asia;AS;Iraq, Republic of;IQ
+Asia;AS;Iraq-Saudi Arabia Neutral Zone;XE
+Asia;AS;Israel, State of;IL
+Asia;AS;Japan;JP
+Asia;AS;Jordan, Hashemite Kingdom of;JO
+Asia;AS;Kazakhstan, Republic of;KZ
+Asia;AS;Korea, Democratic People's Republic of;KP
+Asia;AS;Korea, Republic of;KR
+Asia;AS;Kuwait, State of;KW
+Asia;AS;Kyrgyz Republic;KG
+Asia;AS;Lao People's Democratic Republic;LA
+Asia;AS;Lebanon, Lebanese Republic;LB
+Asia;AS;Macao, Special Administrative Region of China;MO
+Asia;AS;Malaysia;MY
+Asia;AS;Maldives, Republic of;MV
+Asia;AS;Mongolia;MN
+Asia;AS;Myanmar, Union of;MM
+Asia;AS;Nepal, State of;NP
+Asia;AS;Oman, Sultanate of;OM
+Asia;AS;Pakistan, Islamic Republic of;PK
+Asia;AS;Palestinian Territory, Occupied;PS
+Asia;AS;Philippines, Republic of the;PH
+Asia;AS;Qatar, State of;QA
+Asia;AS;Russian Federation;RU
+Asia;AS;Saudi Arabia, Kingdom of;SA
+Asia;AS;Singapore, Republic of;SG
+Asia;AS;Spratly Islands;XS
+Asia;AS;Sri Lanka, Democratic Socialist Republic of;LK
+Asia;AS;Syrian Arab Republic;SY
+Asia;AS;Taiwan;TW
+Asia;AS;Tajikistan, Republic of;TJ
+Asia;AS;Thailand, Kingdom of;TH
+Asia;AS;Timor-Leste, Democratic Republic of;TL
+Asia;AS;Turkey, Republic of;TR
+Asia;AS;Turkmenistan;TM
+Asia;AS;United Arab Emirates;AE
+Asia;AS;United Nations Neutral Zone;XD
+Asia;AS;Uzbekistan, Republic of;UZ
+Asia;AS;Vietnam, Socialist Republic of;VN
+Asia;AS;Yemen;YE
+Europe;EU;Albania, Republic of;AL
+Europe;EU;Andorra, Principality of;AD
+Europe;EU;Armenia, Republic of;AM
+Europe;EU;Austria, Republic of;AT
+Europe;EU;Azerbaijan, Republic of;AZ
+Europe;EU;Belarus, Republic of;BY
+Europe;EU;Belgium, Kingdom of;BE
+Europe;EU;Bosnia and Herzegovina;BA
+Europe;EU;Bulgaria, Republic of;BG
+Europe;EU;Croatia, Republic of;HR
+Europe;EU;Cyprus, Republic of;CY
+Europe;EU;Czech Republic;CZ
+Europe;EU;Denmark, Kingdom of;DK
+Europe;EU;Estonia, Republic of;EE
+Europe;EU;Faroe Islands;FO
+Europe;EU;Finland, Republic of;FI
+Europe;EU;France, French Republic;FR
+Europe;EU;Georgia;GE
+Europe;EU;Germany, Federal Republic of;DE
+Europe;EU;Gibraltar;GI
+Europe;EU;Greece, Hellenic Republic;GR
+Europe;EU;Guernsey, Bailiwick of;GG
+Europe;EU;Holy See (Vatican City State);VA
+Europe;EU;Hungary, Republic of;HU
+Europe;EU;Iceland, Republic of;IS
+Europe;EU;Ireland;IE
+Europe;EU;Isle of Man;IM
+Europe;EU;Italy, Italian Republic;IT
+Europe;EU;Jersey, Bailiwick of;JE
+Europe;EU;Kazakhstan, Republic of;KZ
+Europe;EU;Latvia, Republic of;LV
+Europe;EU;Liechtenstein, Principality of;LI
+Europe;EU;Lithuania, Republic of;LT
+Europe;EU;Luxembourg, Grand Duchy of;LU
+Europe;EU;Macedonia, The Former Yugoslav Republic of;MK
+Europe;EU;Malta, Republic of;MT
+Europe;EU;Moldova, Republic of;MD
+Europe;EU;Monaco, Principality of;MC
+Europe;EU;Montenegro, Republic of;ME
+Europe;EU;Netherlands, Kingdom of the;NL
+Europe;EU;Norway, Kingdom of;NO
+Europe;EU;Poland, Republic of;PL
+Europe;EU;Portugal, Portuguese Republic;PT
+Europe;EU;Romania;RO
+Europe;EU;Russian Federation;RU
+Europe;EU;San Marino, Republic of;SM
+Europe;EU;Serbia, Republic of;RS
+Europe;EU;Slovakia (Slovak Republic);SK
+Europe;EU;Slovenia, Republic of;SI
+Europe;EU;Spain, Kingdom of;ES
+Europe;EU;Svalbard & Jan Mayen Islands;SJ
+Europe;EU;Sweden, Kingdom of;SE
+Europe;EU;Switzerland, Swiss Confederation;CH
+Europe;EU;Turkey, Republic of;TR
+Europe;EU;Ukraine;UA
+Europe;EU;United Kingdom of Great Britain & Northern Ireland;GB
+Europe;EU;Åland Islands;AX
+North America;NA;Anguilla;AI
+North America;NA;Antigua and Barbuda;AG
+North America;NA;Aruba;AW
+North America;NA;Bahamas, Commonwealth of the;BS
+North America;NA;Barbados;BB
+North America;NA;Belize;BZ
+North America;NA;Bermuda;BM
+North America;NA;Bonaire, Sint Eustatius and Saba;BQ
+North America;NA;British Virgin Islands;VG
+North America;NA;Canada;CA
+North America;NA;Cayman Islands;KY
+North America;NA;Costa Rica, Republic of;CR
+North America;NA;Cuba, Republic of;CU
+North America;NA;Curaçao;CW
+North America;NA;Dominica, Commonwealth of;DM
+North America;NA;Dominican Republic;DO
+North America;NA;El Salvador, Republic of;SV
+North America;NA;Greenland;GL
+North America;NA;Grenada;GD
+North America;NA;Guadeloupe;GP
+North America;NA;Guatemala, Republic of;GT
+North America;NA;Haiti, Republic of;HT
+North America;NA;Honduras, Republic of;HN
+North America;NA;Jamaica;JM
+North America;NA;Martinique;MQ
+North America;NA;Mexico, United Mexican States;MX
+North America;NA;Montserrat;MS
+North America;NA;Netherlands Antilles;AN
+North America;NA;Nicaragua, Republic of;NI
+North America;NA;Panama, Republic of;PA
+North America;NA;Puerto Rico, Commonwealth of;PR
+North America;NA;Saint Barthelemy;BL
+North America;NA;Saint Kitts and Nevis, Federation of;KN
+North America;NA;Saint Lucia;LC
+North America;NA;Saint Martin;MF
+North America;NA;Saint Pierre and Miquelon;PM
+North America;NA;Saint Vincent and the Grenadines;VC
+North America;NA;Sint Maarten (Netherlands);SX
+North America;NA;Trinidad and Tobago, Republic of;TT
+North America;NA;Turks and Caicos Islands;TC
+North America;NA;United States Minor Outlying Islands;UM
+North America;NA;United States Virgin Islands;VI
+North America;NA;United States of America;US
+Oceania;OC;American Samoa;AS
+Oceania;OC;Australia, Commonwealth of;AU
+Oceania;OC;Cook Islands;CK
+Oceania;OC;Disputed Territory;XX
+Oceania;OC;Fiji, Republic of the Fiji Islands;FJ
+Oceania;OC;French Polynesia;PF
+Oceania;OC;Guam;GU
+Oceania;OC;Kiribati, Republic of;KI
+Oceania;OC;Marshall Islands, Republic of the;MH
+Oceania;OC;Micronesia, Federated States of;FM
+Oceania;OC;Nauru, Republic of;NR
+Oceania;OC;New Caledonia;NC
+Oceania;OC;New Zealand;NZ
+Oceania;OC;Niue;NU
+Oceania;OC;Norfolk Island;NF
+Oceania;OC;Northern Mariana Islands, Commonwealth of the;MP
+Oceania;OC;Palau, Republic of;PW
+Oceania;OC;Papua New Guinea, Independent State of;PG
+Oceania;OC;Pitcairn Islands;PN
+Oceania;OC;Samoa, Independent State of;WS
+Oceania;OC;Solomon Islands;SB
+Oceania;OC;Tokelau;TK
+Oceania;OC;Tonga, Kingdom of;TO
+Oceania;OC;Tuvalu;TV
+Oceania;OC;United States Minor Outlying Islands;UM
+Oceania;OC;Vanuatu, Republic of;VU
+Oceania;OC;Wallis and Futuna;WF
+South America;SA;Argentina, Argentine Republic;AR
+South America;SA;Bolivia, Republic of;BO
+South America;SA;Brazil, Federative Republic of;BR
+South America;SA;Chile, Republic of;CL
+South America;SA;Colombia, Republic of;CO
+South America;SA;Ecuador, Republic of;EC
+South America;SA;Falkland Islands (Malvinas);FK
+South America;SA;French Guiana;GF
+South America;SA;Guyana, Co-operative Republic of;GY
+South America;SA;Paraguay, Republic of;PY
+South America;SA;Peru, Republic of;PE
+South America;SA;Suriname, Republic of;SR
+South America;SA;Uruguay, Eastern Republic of;UY
+South America;SA;Venezuela, Bolivarian Republic of;VE

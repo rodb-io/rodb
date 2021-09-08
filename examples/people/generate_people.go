@@ -4,6 +4,7 @@ import (
 	faker "github.com/bxcodec/faker/v3"
 	"encoding/json"
 	"log"
+	"math/rand"
 	"os"
 )
 
@@ -13,6 +14,8 @@ func main() {
 		log.Fatal("Error create the file: ", err)
 	}
 	defer file.Close()
+
+	rand.Seed(42)
 
 	for i := 1; i <= 1000000; i++ {
 		jsonDocument, err := json.Marshal(map[string]interface{} {

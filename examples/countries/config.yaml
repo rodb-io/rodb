@@ -1,7 +1,10 @@
 inputs:
   - name: countries
-    type: json
-    path: /var/countries.json
+    type: csv
+    path: /var/countries.csv
+    ignoreFirstRow: true
+    autodetectColumns: true
+    delimiter: ";"
 outputs:
   - name: countries
     type: jsonArray
