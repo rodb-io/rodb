@@ -6,4 +6,14 @@ permalink: /documentation/inputs
 
 {% include documentation/menu.html %}
 
-TODO Inputs documentation
+# CSV
+
+TODO
+
+# JSON
+
+TODO
+
+# XML
+
+TODO

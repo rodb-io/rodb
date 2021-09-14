@@ -6,4 +6,10 @@ permalink: /documentation/outputs
 
 {% include documentation/menu.html %}
 
-TODO Outputs documentation
+# Json array
+
+TODO
+
+# Json object
+
+TODO

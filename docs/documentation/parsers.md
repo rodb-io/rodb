@@ -6,4 +6,26 @@ permalink: /documentation/parsers
 
 {% include documentation/menu.html %}
 
-TODO Parsers documentation
+# Integer
+
+TODO
+
+# Float
+
+TODO
+
+# Boolean
+
+TODO
+
+# JSON
+
+TODO
+
+# Split
+
+TODO
+
+# String
+
+TODO

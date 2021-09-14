@@ -6,4 +6,22 @@ permalink: /documentation/indexes
 
 {% include documentation/menu.html %}
 
-TODO Indexes documentation
+# Map
+
+TODO
+
+# SQLite
+
+TODO
+
+# FTS5
+
+TODO
+
+# Wildcard
+
+TODO
+
+# Noop
+
+TODO
