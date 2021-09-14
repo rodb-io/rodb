@@ -2,7 +2,7 @@
 
 This is the most basic example of how to use RODB.
 
-It takes a single CSV file as an input, and provides an HTTP service with one endpoint which returns a list of countries.
+It takes a single [CSV](/documentation/inputs/#csv) file as an input, and provides an [HTTP](/documentation/services/#http) service with one endpoint which returns a list of countries.
 
 You can download and run this example locally (using Docker) with the following script.
 
