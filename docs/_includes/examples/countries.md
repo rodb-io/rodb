@@ -16,6 +16,7 @@ The API provides a single endpoint with basic filtering:
 - `GET http://localhost:3004/?countryCode=US`: returns a list containing only the USA
 
 Here is a sample response body of this endpoint:
+
 ```
 [
 	{

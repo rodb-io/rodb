@@ -13,8 +13,11 @@ The source code for this example is also available [here](https://github.com/rod
 ## List everyone in the database
 
 This endpoint allows to list and filter the persons in the database:
+
 `GET http://localhost:3003/people`
+
 Response body:
+
 ```
 [
 	{
@@ -44,7 +47,9 @@ Response body:
 The `search` filter allows advanced searching and filtering a person by either it's `firstName`, `lastName` or `userName`. This is done by indexing those properties using the [FTS5](/documentation/indexes/#fts5) index.
 
 `GET http://localhost:3003/people?search=firstName:John AND lastName:An*`
+
 Response body:
+
 ```
 [
 	{
@@ -75,7 +80,9 @@ This endpoint allows to get a specific record using it's id property.
 The ids are indexed in an [SQLite](/documentation/indexes/#sqlite) database.
 
 `GET http://localhost:3003/people/{id}`
+
 Response body:
+
 ```
 {
 	"email": "nOUblmG@ruJJjDe.com",
