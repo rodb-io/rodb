@@ -1,3 +1,115 @@
-TODO 1
+# Japanese dictionary API
+
+This is a more advanced example, that aims to provide a Japanese-English dictionary API. It is based on the [JMDict project](https://www.edrdg.org/jmdict/j_jmdict.html).
+
+It takes a large [XML](/documentation/inputs/#xml) file as an input, and provides an [HTTP](/documentation/services/#http) service with a single endpoint and filtering features.
+
+It also demonstrate the possibility of having the endpoints available both via HTTP (`http://localhost:3001`) and via HTTPS (`https://localhost:3002`), with a self-signed certificate.
+
+You can download and run this example locally (using Docker) with the following script.
 
 <pre show-example-script="japanese-dictionary"></pre>
+
+The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/japanese-dictionary).
+
+## List of words
+
+The basic behaviour of the endpoint is to list all the words in the database:
+`GET http://localhost:3001/`
+Response body:
+```
+[
+	...
+		{
+			"reading": "めいはく",
+		"translation": "obvious",
+		"writing": "明白"
+	},
+	{
+		"reading": "あからさま",
+		"translation": "plain",
+		"writing": "明白"
+	},
+	{
+		"reading": "あかん",
+		"translation": "useless",
+		"writing": "明かん"
+	},
+	{
+		"reading": "あくどい",
+		"translation": "gaudy",
+		"writing": "悪どい"
+	},
+	...
+]
+```
+
+## Search a specific Japanese word
+
+The `word` filter allows filters on a Japanese word. It is based on the [SQLite](/documentation/indexes/#sqlite) index and only allows exact matching of the whole words.
+
+`GET http://localhost:3001/?word=読む`
+Response body:
+```
+[
+	{
+		"reading": "よむ",
+		"translation": "to read",
+		"writing": "読む"
+	}
+]
+```
+
+## Wildcard search in English
+
+The `translation` filter allows to search a word by it's translation, using a [Wildcard](/documentation/indexes/#wildcard) index.
+
+`GET http://localhost:3001/people/{id}`
+Response body:
+```
+[
+	{
+		"reading": "かっさらう",
+		"translation": "to snatch (and run)",
+		"writing": "掻っ攫う"
+	},
+	{
+		"reading": "サヨナラホームラン",
+		"translation": "game-ending home run",
+		"writing": ""
+	},
+	{
+		"reading": "じゃりじゃり",
+		"translation": "crunchy",
+		"writing": ""
+	},
+	...
+]
+```
+
+## Advanced full-text query
+
+The `query` filter allows more advanced searches using an [FTS5](/documentation/indexes/#fts5) index.
+
+`GET http://localhost:3001/?query=(translation: trip AND translation: day) OR translation:work hard`
+Response body:
+```
+[
+	{
+		"reading": "ごくろうさま",
+		"translation": "thank you for your hard work",
+		"writing": "ご苦労様"
+	},
+	{
+		"reading": "こっく",
+		"translation": "hard work",
+		"writing": "刻苦"
+	},
+	{
+		"reading": "ひがえり",
+		"translation": "day trip",
+		"writing": "日帰り"
+	},
+	...
+]
+```
