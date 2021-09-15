@@ -1,3 +1,12 @@
+---
+layout: default
+title: Examples - Tokyo's zip codes API
+permalink: /examples/zip-codes-tokyo
+---
+
+{% include menus/examples.html %}
+{% include scripts/examples.html %}
+
 # Tokyo's zip-codes API
 
 This is another example, based of an official list of zip codes in Tokyo.

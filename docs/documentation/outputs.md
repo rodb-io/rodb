@@ -4,7 +4,7 @@ title: Documentation - Outputs
 permalink: /documentation/outputs
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 # Json array
 

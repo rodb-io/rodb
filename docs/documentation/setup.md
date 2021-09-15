@@ -4,6 +4,6 @@ title: Documentation - Setup
 permalink: /documentation/setup
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 TODO Setup documentation

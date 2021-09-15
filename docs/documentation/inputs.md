@@ -4,7 +4,7 @@ title: Documentation - Inputs
 permalink: /documentation/inputs
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 # CSV
 

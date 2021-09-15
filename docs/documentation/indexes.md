@@ -4,7 +4,7 @@ title: Documentation - Indexes
 permalink: /documentation/indexes
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 # Map
 

@@ -4,7 +4,7 @@ title: Documentation - Parsers
 permalink: /documentation/parsers
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 # Integer
 

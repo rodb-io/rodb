@@ -1,3 +1,12 @@
+---
+layout: default
+title: Examples - People API
+permalink: /examples/people
+---
+
+{% include menus/examples.html %}
+{% include scripts/examples.html %}
+
 # People API
 
 This is a more advanced example, based of a randomly generated list of one million fictious persons.

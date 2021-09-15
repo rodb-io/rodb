@@ -4,6 +4,6 @@ title: Documentation - Services
 permalink: /documentation/services
 ---
 
-{% include documentation/menu.html %}
+{% include menus/documentation.html %}
 
 # HTTP

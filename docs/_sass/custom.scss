@@ -1,21 +1,9 @@
 @import "mixins";
 
-.documentation-menu {
+.custom-menu {
   display: grid;
   grid-column-gap: 0.5rem;
   grid-row-gap: 0.5rem;
-
-  @include large {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  @include medium {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  @include small {
-    grid-template-columns: repeat(3, 1fr);
-  }
 
   > div {
     padding: 0.5rem 1rem;
@@ -29,5 +17,40 @@
     border-width: 1px;
     border-radius: 0.3rem;
     transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+}
+
+.documentation-menu {
+  @include large {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @include medium {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @include small {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.examples-menu {
+  grid-column-gap: 0.3rem;
+  grid-row-gap: 0.3rem;
+
+  @include large {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @include medium {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @include small {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  > div {
+    padding: 0.5rem 0.4rem;
   }
 }

@@ -1,3 +1,12 @@
+---
+layout: default
+title: Examples - Countries API
+permalink: /examples/countries
+---
+
+{% include menus/examples.html %}
+{% include scripts/examples.html %}
+
 # Countries API
 
 This is the most basic example of how to use RODB.
