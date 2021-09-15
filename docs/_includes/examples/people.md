@@ -74,6 +74,64 @@ Response body:
 ]
 ```
 
+## Paging
+
+The results are paged using the `offset` and `limit` parameters. The default value for `limit` is `100`.
+
+`GET http://localhost:3003/people?limit=2&offset=0`
+
+Response body:
+
+```
+[
+	{
+		"email": "ZbqFNla@XHTbHUG.net",
+		"firstName": "Rudy",
+		"gender": "Female",
+		"id": 1,
+		"lastName": "Gleason",
+		"phoneNumber": "108-953-1642",
+		"username": "GcSyDdb"
+	},
+	{
+		"email": "cGNHYWP@GwUXDTY.net",
+		"firstName": "Gustave",
+		"gender": "Prefer to skip",
+		"id": 2,
+		"lastName": "Smith",
+		"phoneNumber": "437-109-6851",
+		"username": "Jcmkdmh"
+	}
+]
+```
+
+`GET http://localhost:3003/people?limit=2&offset=2`
+
+Response body:
+
+```
+[
+	{
+		"email": "waCBExK@bDdSKsu.ru",
+		"firstName": "Aiyana",
+		"gender": "Male",
+		"id": 3,
+		"lastName": "Schuppe",
+		"phoneNumber": "945-108-3127",
+		"username": "dnVShFW"
+	},
+	{
+		"email": "bvwtuQh@NrPOIli.ru",
+		"firstName": "Bertrand",
+		"gender": "Prefer to skip",
+		"id": 4,
+		"lastName": "Hermann",
+		"phoneNumber": "910-312-5874",
+		"username": "wZNoEpK"
+	}
+]
+```
+
 ## Get a specific person by id
 
 This endpoint allows to get a specific record using it's id property.

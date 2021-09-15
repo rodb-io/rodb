@@ -122,3 +122,45 @@ Response body:
 	...
 ]
 ```
+
+## Paging
+
+The results are paged using the `offset` and `limit` parameters. The default value for `limit` is `100`.
+
+`GET http://localhost:3001/?limit=2&offset=50`
+
+Response body:
+
+```
+[
+	{
+		"reading": "いかなるばあいでも",
+		"translation": "in any case",
+		"writing": "いかなる場合でも"
+	},
+	{
+		"reading": "いかにも",
+		"translation": "indeed",
+		"writing": "如何にも"
+	}
+]
+```
+
+`GET http://localhost:3001/?limit=2&offset=52`
+
+Response body:
+
+```
+[
+	{
+		"reading": "いくつも",
+		"translation": "many",
+		"writing": "幾つも"
+	},
+	{
+		"reading": "いけない",
+		"translation": "wrong",
+		"writing": "行けない"
+	}
+]
+```
