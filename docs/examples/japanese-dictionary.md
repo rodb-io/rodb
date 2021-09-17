@@ -28,7 +28,7 @@ The basic behaviour of the endpoint is to list all the words in the database:
 
 Response body:
 
-```
+{% highlight json %}
 [
 	...
 	{
@@ -53,7 +53,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Search a specific Japanese word
 
@@ -63,7 +63,7 @@ The `word` filter allows filters on a Japanese word. It is based on the [SQLite]
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"reading": "よむ",
@@ -71,7 +71,7 @@ Response body:
 		"writing": "読む"
 	}
 ]
-```
+{% endhighlight %}
 
 ## Wildcard search in English
 
@@ -81,7 +81,7 @@ The `translation` filter allows to search a word by it's translation, using a [W
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"reading": "かっさらう",
@@ -100,7 +100,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Advanced full-text match query
 
@@ -110,7 +110,7 @@ The `query` filter allows more advanced searches using an [FTS5](/documentation/
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"reading": "ひがえり",
@@ -129,7 +129,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Paging
 
@@ -139,7 +139,7 @@ The results are paged using the `offset` and `limit` parameters. The default val
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"reading": "いかなるばあいでも",
@@ -152,13 +152,13 @@ Response body:
 		"writing": "如何にも"
 	}
 ]
-```
+{% endhighlight %}
 
 `GET http://localhost:3001/?limit=2&offset=52`
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"reading": "いくつも",
@@ -171,4 +171,4 @@ Response body:
 		"writing": "行けない"
 	}
 ]
-```
+{% endhighlight %}

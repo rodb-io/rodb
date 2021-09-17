@@ -26,7 +26,7 @@ This endpoint allows to list and filter the persons in the database:
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"email": "ZbqFNla@XHTbHUG.net",
@@ -48,7 +48,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Search in the database
 
@@ -58,7 +58,7 @@ The `search` filter allows advanced searching and filtering a person by either i
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"email": "upNHUVg@BtFHXhT.info",
@@ -80,7 +80,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Paging
 
@@ -90,7 +90,7 @@ The results are paged using the `offset` and `limit` parameters. The default val
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"email": "ZbqFNla@XHTbHUG.net",
@@ -111,13 +111,13 @@ Response body:
 		"username": "Jcmkdmh"
 	}
 ]
-```
+{% endhighlight %}
 
 `GET http://localhost:3003/people?limit=2&offset=2`
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"email": "waCBExK@bDdSKsu.ru",
@@ -138,7 +138,7 @@ Response body:
 		"username": "wZNoEpK"
 	}
 ]
-```
+{% endhighlight %}
 
 ## Get a specific person by id
 
@@ -149,7 +149,7 @@ The ids are indexed in an [SQLite](/documentation/indexes#sqlite) database.
 
 Response body:
 
-```
+{% highlight json %}
 {
 	"email": "nOUblmG@ruJJjDe.com",
 	"firstName": "Brandon",
@@ -159,4 +159,4 @@ Response body:
 	"phoneNumber": "268-194-7351",
 	"username": "grVSJDH"
 }
-```
+{% endhighlight %}

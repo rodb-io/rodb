@@ -25,7 +25,7 @@ The API provides a single endpoint with basic filtering:
 
 Here is a sample response body of this endpoint:
 
-```
+{% highlight json %}
 [
 	{
 		"continentCode": "EU",
@@ -41,7 +41,7 @@ Here is a sample response body of this endpoint:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 Since this example does not set-up any indexes, all of the parameters must be an exact match.
 It also means that RODB iterates all the records to find the requested ones, which is not recommended with a large data-set.

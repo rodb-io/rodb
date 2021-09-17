@@ -1,5 +1,9 @@
 @import "mixins";
 
+pre {
+  tab-size: 4;
+}
+
 .custom-menu {
   display: grid;
   grid-column-gap: 0.5rem;

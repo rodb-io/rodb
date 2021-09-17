@@ -34,7 +34,7 @@ This endpoint allows to list and filter the persons in the database:
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"code": 13101,
@@ -63,7 +63,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## List the zip codes of a specific municipality
 
@@ -73,7 +73,7 @@ This endpoint provides a `municipality` parameter, that uses a [map](/documentat
 
 Response body:
 
-```
+{% highlight json %}
 [
 	{
 		"code": 13113,
@@ -102,7 +102,7 @@ Response body:
 	},
 	...
 ]
-```
+{% endhighlight %}
 
 ## Paging
 
@@ -126,7 +126,7 @@ The zip-codes are also indexed using a [map](/documentation/indexes#map) index.
 
 Response body:
 
-```
+{% highlight json %}
 {
 	"code": 13108,
 	"hasSubdivision": true,
@@ -152,4 +152,4 @@ Response body:
 	"zipCode": "1350064",
 	"zipCodeHasMultipleTowns": false
 }
-```
+{% endhighlight %}
