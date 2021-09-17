@@ -10,7 +10,7 @@ permalink: /examples/japanese-dictionary
 
 This is a more advanced example, that aims to provide a Japanese-English dictionary API. It is based on the [JMdict project](https://www.edrdg.org/jmdict/j_jmdict.html).
 
-It takes a large [XML](/documentation/inputs/#xml) file as an input, and provides an [HTTP](/documentation/services/#http) service with a single endpoint and filtering features.
+It takes a large [XML](/documentation/inputs#xml) file as an input, and provides an [HTTP](/documentation/services#http) service with a single endpoint and filtering features.
 
 It also demonstrates the possibility of having the endpoints available via both HTTP (`http://localhost:3001`) and HTTPS (`https://localhost:3002`), using a self-signed certificate.
 
@@ -57,7 +57,7 @@ Response body:
 
 ## Search a specific Japanese word
 
-The `word` filter allows filters on a Japanese word. It is based on the [SQLite](/documentation/indexes/#sqlite) index and only allows exact matching of the whole words.
+The `word` filter allows filters on a Japanese word. It is based on the [SQLite](/documentation/indexes#sqlite) index and only allows exact matching of the whole words.
 
 `GET http://localhost:3001/?word=読む`
 
@@ -75,7 +75,7 @@ Response body:
 
 ## Wildcard search in English
 
-The `translation` filter allows to search a word by it's translation, using a [Wildcard](/documentation/indexes/#wildcard) index.
+The `translation` filter allows to search a word by it's translation, using a [Wildcard](/documentation/indexes#wildcard) index.
 
 `GET http://localhost:3001/people/{id}`
 
@@ -104,7 +104,7 @@ Response body:
 
 ## Advanced full-text match query
 
-The `query` filter allows more advanced searches using an [FTS5](/documentation/indexes/#fts5) index.
+The `query` filter allows more advanced searches using an [FTS5](/documentation/indexes#fts5) index.
 
 `GET http://localhost:3001/?query=(translation: trip AND translation: day) OR translation:work hard`
 
