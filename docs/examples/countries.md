@@ -5,7 +5,6 @@ permalink: /examples/countries
 ---
 
 {% include menus/examples.html %}
-{% include scripts/examples.html %}
 
 # Countries API
 
@@ -15,7 +14,7 @@ It takes a single [CSV](/documentation/inputs/#csv) file as an input, and provid
 
 You can download and run this example locally (using Docker) with the following script.
 
-<pre show-example-script="countries"></pre>
+{% include scripts/get-example.md exampleName="countries" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/countries).
 

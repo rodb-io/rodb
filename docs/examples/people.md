@@ -5,7 +5,6 @@ permalink: /examples/people
 ---
 
 {% include menus/examples.html %}
-{% include scripts/examples.html %}
 
 # People API
 
@@ -15,7 +14,7 @@ It takes a file containing multiple [JSON](/documentation/inputs/#json) document
 
 You can download and run this example locally (using Docker) with the following script.
 
-<pre show-example-script="people"></pre>
+{% include scripts/get-example.md exampleName="people" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/people).
 

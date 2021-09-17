@@ -5,7 +5,6 @@ permalink: /examples/zip-codes-tokyo
 ---
 
 {% include menus/examples.html %}
-{% include scripts/examples.html %}
 
 # Tokyo's zip-codes API
 
@@ -23,7 +22,7 @@ Other [CSV](/documentation/inputs/#csv) files containing some type definitions a
 
 You can download and run this example locally (using Docker) with the following script.
 
-<pre show-example-script="zip-codes-tokyo"></pre>
+{% include scripts/get-example.md exampleName="zip-codes-tokyo" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/zip-codes-tokyo).
 
