@@ -5,3 +5,5 @@ properties:
     type: string
   bar:
     description: dgfdg [Deprecated - use dfgdfg instead] dfgdgf
+  baz:
+    description: dgfdg [Deprecated - use dfgdfg instead] dfgdgf

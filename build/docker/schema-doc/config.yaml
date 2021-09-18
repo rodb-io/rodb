@@ -5,8 +5,8 @@ show_breadcrumbs: true
 collapse_long_descriptions: false
 link_to_reused_ref: false
 default_from_description: false
-copy_css: false
-copy_js: false
+copy_css: true
+copy_js: true
 template_name: js
 show_toc: false
 examples_as_yaml: true
