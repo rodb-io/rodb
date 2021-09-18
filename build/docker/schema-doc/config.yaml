@@ -1,0 +1,22 @@
+description_is_markdown: true
+expand_buttons: true
+minify: False
+show_breadcrumbs: true
+collapse_long_descriptions: false
+link_to_reused_ref: false
+default_from_description: false
+copy_css: false
+copy_js: false
+template_name: js
+show_toc: false
+examples_as_yaml: true
+markdown_options:
+  fenced-code-blocks:
+    break-on-newline: true
+    cssclass: "highlight jumbotron"
+    tables: null
+  tables: null
+template_md_options:
+  show_array_restrictions: true
+  show_heading_numbers: false
+  badge_as_image: true

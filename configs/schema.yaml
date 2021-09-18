@@ -1,0 +1,7 @@
+type: object
+additionalProperties: false
+properties:
+  foo:
+    type: string
+  bar:
+    description: dgfdg [Deprecated - use dfgdfg instead] dfgdgf
