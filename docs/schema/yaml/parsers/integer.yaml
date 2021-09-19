@@ -1,0 +1,37 @@
+$id: https://rodb.io/schema/yaml/parsers/integer.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: integer
+description: |
+  # Integer parser
+  Parses a string value to a 64-bytes integer.
+
+  <div class="badge badge-secondary">Examples:</div>
+  ```yaml
+  name: formattedInteger
+  type: integer
+  ignoreCharacters: ", "
+  ```
+  ```yaml
+  name: currencyInteger
+  type: integer
+  ignoreCharacters: "€$¥"
+  ```
+additionalProperties: false
+required:
+  - name
+  - type
+properties:
+  name:
+    type: string
+    description: |
+      The name of this parser, which any other component will use to refer to it.
+  type:
+    const: "integer"
+  ignoreCharacters:
+    type: string
+    default: ""
+    description: |
+      This is a list of unicode characters, as a string.
+      All the characters in this string will be stripped from the value before parsing it to an integer.
+      This is useful for example to parse formatted numbers to an integer.

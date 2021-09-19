@@ -1,9 +1,66 @@
+$id: https://rodb.io/schema/yaml/schema.yaml
+$schema: http://json-schema.org/draft-07/schema#
+description: Configuration file for RODB
 type: object
 additionalProperties: false
 properties:
-  foo:
-    type: string
-  bar:
-    description: dgfdg [Deprecated - use dfgdfg instead] dfgdgf
-  baz:
-    description: dgfdg [Deprecated - use dfgdfg instead] dfgdgf
+  parsers:
+    type: array
+    description: |
+      Defines the list of all the parsers available
+      Each parser configuration object must match one of the given definitions
+
+      <div class="badge badge-secondary">Example:</div>
+      ```yaml
+      parsers:
+        - name: booleanYesNo
+          type: boolean
+          falseValues: ["No", "NO", "no"]
+          trueValues: ["Yes", "YES", "yes"]
+        - name: integerWithCommas
+          type: integer
+          ignoreCharacters: ","
+        - name: shiftJisString
+          type: string
+          convertFromCharset: "Shift_JIS"
+      ```
+    items:
+      anyOf:
+        - $ref: ./parsers/integer.yaml
+          title: integer
+        - type: object
+          title: float
+          description: Float Parser
+          additionalProperties: false
+        - type: object
+          title: boolean
+          description: Boolean Parser
+          additionalProperties: false
+        - type: object
+          title: json
+          description: JSON Parser
+          additionalProperties: false
+        - type: object
+          title: split
+          description: Split Parser
+          additionalProperties: false
+        - type: object
+          title: string
+          description: String Parser
+          additionalProperties: false
+  inputs:
+    type: array
+    items:
+      type: object
+  indexes:
+    type: array
+    items:
+      type: object
+  outputs:
+    type: array
+    items:
+      type: object
+  services:
+    type: array
+    items:
+      type: object
