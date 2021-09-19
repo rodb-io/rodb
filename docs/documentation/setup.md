@@ -12,13 +12,21 @@ TODO Setup documentation and figure out how to integrate the json schema
 <script type="text/javascript">
 	window.addEventListener("load", function () {
 		var iframe = document.querySelector('iframe.schema-doc');
+		var iframeDocument = iframe.contentWindow.document;
+
+		// Automatically set the iframe height to it's content
 		var setHeight = function() {
-			iframe.style.height = (iframe.contentWindow.document.body.scrollHeight + 1) + 'px';
+			iframe.style.height = (iframeDocument.body.scrollHeight + 1) + 'px';
 		};
-
-		iframe.contentWindow.document.querySelector('.generated-by-footer').style.marginBottom = 0;
-		(new ResizeObserver(setHeight)).observe(iframe.contentWindow.document.documentElement)
-
+		iframeDocument.querySelector('.generated-by-footer').style.marginBottom = 0;
+		(new ResizeObserver(setHeight)).observe(iframeDocument.documentElement)
 		setHeight();
+
+		// Adding a custom stylesheet to the iframe
+		var style = iframeDocument.createElement('link');
+		style.setAttribute('type', 'text/css');
+		style.setAttribute('rel', 'stylesheet');
+		style.setAttribute('href', '/schema/html/custom.css');
+		iframeDocument.head.appendChild(style);
 	});
 </script>

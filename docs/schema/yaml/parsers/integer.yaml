@@ -6,7 +6,7 @@ description: |
   # Integer parser
   Parses a string value to a 64-bytes integer.
 
-  <div class="badge badge-secondary">Examples:</div>
+  ### Examples:
   ```yaml
   name: formattedInteger
   type: integer

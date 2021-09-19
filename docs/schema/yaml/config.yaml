@@ -10,7 +10,7 @@ properties:
       Defines the list of all the parsers available
       Each parser configuration object must match one of the given definitions
 
-      <div class="badge badge-secondary">Example:</div>
+      ### Example:
       ```yaml
       parsers:
         - name: booleanYesNo

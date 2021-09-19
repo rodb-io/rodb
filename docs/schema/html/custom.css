@@ -1,0 +1,7 @@
+div.highlight.jumbotron > pre {
+    margin-bottom: 0;
+}
+
+.any-of-value > h2 {
+    display: none;
+}
