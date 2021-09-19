@@ -95,7 +95,7 @@ services:
       context: .
       dockerfile: ./build/docker/schema-doc/Dockerfile
     volumes:
-      - $PWD:/rodb
+      - $PWD/docs/schema:/schema
 volumes:
   japaneseDictionaryIndexes:
   peopleIndexes:

@@ -8,7 +8,7 @@ permalink: /documentation/setup
 
 TODO Setup documentation and figure out how to integrate the json schema
 
-<iframe class="schema-doc" src="/schema/schema.html"></iframe>
+<iframe class="schema-doc" src="/schema/html/schema.html"></iframe>
 <script type="text/javascript">
 	window.addEventListener("load", function () {
 		var iframe = document.querySelector('iframe.schema-doc');
