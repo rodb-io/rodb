@@ -10,7 +10,7 @@ COPY ./examples /tmp/examples
 
 RUN mkdir -p $E2E_PATH \
     && cd /tmp/examples \
-    && (for d in *; do mv /tmp/examples/$d/e2e $E2E_PATH/$d; done)
+    && (for d in */; do mv /tmp/examples/$d/e2e $E2E_PATH/$d; done)
 
 WORKDIR ${E2E_PATH}
 
