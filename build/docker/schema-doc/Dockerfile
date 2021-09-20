@@ -8,4 +8,6 @@ COPY ./build/docker/schema-doc/templates /usr/local/lib/python3.9/site-packages/
 COPY ./build/docker/schema-doc/config.yaml /var/jsfh/config.yaml
 COPY ./build/docker/schema-doc/watch.sh /watch.sh
 
+STOPSIGNAL SIGKILL
+
 ENTRYPOINT ["/watch.sh"]
