@@ -7,8 +7,9 @@ properties:
   parsers:
     type: array
     description: |
-      Defines the list of all the parsers available
-      Each parser configuration object must match one of the given definitions
+      # Parsers
+
+      TODO parsers introduction
 
       ### Example:
       ```yaml
@@ -28,14 +29,10 @@ properties:
       anyOf:
         - $ref: ./parsers/integer.yaml
           title: integer
-        - type: object
+        - $ref: ./parsers/float.yaml
           title: float
-          description: Float Parser
-          additionalProperties: false
-        - type: object
+        - $ref: ./parsers/boolean.yaml
           title: boolean
-          description: Boolean Parser
-          additionalProperties: false
         - type: object
           title: json
           description: JSON Parser
