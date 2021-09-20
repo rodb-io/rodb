@@ -21,12 +21,5 @@ TODO Setup documentation and figure out how to integrate the json schema
 		iframeDocument.querySelector('.generated-by-footer').style.marginBottom = 0;
 		(new ResizeObserver(setHeight)).observe(iframeDocument.documentElement)
 		setHeight();
-
-		// Adding a custom stylesheet to the iframe
-		var style = iframeDocument.createElement('link');
-		style.setAttribute('type', 'text/css');
-		style.setAttribute('rel', 'stylesheet');
-		style.setAttribute('href', '/schema/html/custom.css');
-		iframeDocument.head.appendChild(style);
 	});
 </script>
