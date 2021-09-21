@@ -29,30 +29,90 @@ properties:
     items:
       anyOf:
         - $ref: ./parsers/integer.yaml
-          title: integer
+          title: Integer
         - $ref: ./parsers/float.yaml
-          title: float
+          title: Float
         - $ref: ./parsers/boolean.yaml
-          title: boolean
+          title: Boolean
         - $ref: ./parsers/string.yaml
-          title: string
+          title: String
         - $ref: ./parsers/split.yaml
-          title: split
+          title: Split
         - $ref: ./parsers/json.yaml
-          title: json
+          title: JSON
   inputs:
     type: array
+    description: |
+      # Inputs
+
+      TODO inputs introduction
+
+      ### Example:
+      ```yaml
+      TODO
+      ```
     items:
-      type: object
+      anyOf:
+        - $ref: ./inputs/csv.yaml
+          title: CSV
+        - $ref: ./inputs/json.yaml
+          title: JSON
+        - $ref: ./inputs/xml.yaml
+          title: XML
   indexes:
     type: array
+    description: |
+      # Indexes
+
+      TODO indexes introduction
+      TODO repeat the default indexes config here
+
+      ### Example:
+      ```yaml
+      TODO
+      ```
     items:
       type: object
+      anyOf:
+        - $ref: ./indexes/map.yaml
+          title: Map
+        - $ref: ./indexes/sqlite.yaml
+          title: SQLite
+        - $ref: ./indexes/fts5.yaml
+          title: FTS5
+        - $ref: ./indexes/wildcard.yaml
+          title: Wildcard
+        - $ref: ./indexes/noop.yaml
+          title: NoOp
   outputs:
     type: array
+    description: |
+      # Outputs
+
+      TODO outputs introduction
+
+      ### Example:
+      ```yaml
+      TODO
+      ```
     items:
-      type: object
+      anyOf:
+        - $ref: ./outputs/json-object.yaml
+          title: JSON Object
+        - $ref: ./outputs/json-array.yaml
+          title: JSON Array
   services:
     type: array
+    description: |
+      # Services
+
+      TODO services introduction
+
+      ### Example:
+      ```yaml
+      TODO
+      ```
     items:
-      type: object
+      anyOf:
+        - $ref: ./services/http.yaml
+          title: HTTP

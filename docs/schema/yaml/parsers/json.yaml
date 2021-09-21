@@ -5,6 +5,7 @@ title: json
 description: |
   # JSON parser
   Parses a JSON value (string) to any type it contains (object, array...).
+  (not to be confused with the JSON input parser)
 
   While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.
 
