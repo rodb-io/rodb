@@ -173,18 +173,19 @@ TODO repeat the default parsers config here</p>
 <span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;,</span><span class="nv"> </span><span class="s">&quot;</span>
 </code></pre></div>
 
-<p>```yaml<br />
-name: currencyInteger<br />
-type: integer<br />
-ignoreCharacters: "€$¥"</p>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">currencyInteger</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
+<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
+</code></pre></div>
 
-<pre><code>### Default instance
-A default instance of this parser is already automatically created as such:
-```yaml
-name: integer
-type: integer
-ignoreCharacters: ""
-</code></pre>
+<h3>Default instance</h3>
+
+<p>A default instance of this parser is already automatically created as such:</p>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
+<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -426,20 +427,21 @@ This is useful for example to parse formatted numbers to an integer.</p>
 <span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;,&quot;</span>
 </code></pre></div>
 
-<p>```yaml<br />
-name: currencyFloat<br />
-type: float<br />
-decimalSeparator: "."<br />
-ignoreCharacters: "€$¥"</p>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">currencyFloat</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
+<span class="nt">decimalSeparator</span><span class="p">:</span> <span class="s">&quot;.&quot;</span>
+<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
+</code></pre></div>
 
-<pre><code>### Default instance
-A default instance of this parser is already automatically created as such:
-```yaml
-name: float
-type: float
-decimalSeparator: "."
-ignoreCharacters: ""
-</code></pre>
+<h3>Default instance</h3>
+
+<p>A default instance of this parser is already automatically created as such:</p>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
+<span class="nt">decimalSeparator</span><span class="p">:</span> <span class="s">&quot;.&quot;</span>
+<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -744,20 +746,21 @@ RODB will output an error if it encounters a value that is neither defined in <c
 <span class="nt">trueValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;Yes&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;YES&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;yes&quot;</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 
-<p>```yaml<br />
-name: booleanZeroOne<br />
-type: boolean<br />
-trueValues: ["1"]<br />
-falseValues: ["0"]</p>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanZeroOne</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
+<span class="nt">trueValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;1&quot;</span><span class="p p-Indicator">]</span>
+<span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;0&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
 
-<pre><code>### Default instance
-A default instance of this parser is already automatically created as such:
-```yaml
-name: boolean
-type: boolean
-trueValues:  ["true", "1", "TRUE"]
-falseValues: ["false", "0", "FALSE"]
-</code></pre>
+<h3>Default instance</h3>
+
+<p>A default instance of this parser is already automatically created as such:</p>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
+<span class="nt">trueValues</span><span class="p">:</span>  <span class="p p-Indicator">[</span><span class="s">&quot;true&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;1&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;TRUE&quot;</span><span class="p p-Indicator">]</span>
+<span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;false&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;0&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;FALSE&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>

@@ -12,6 +12,7 @@ description: |
   type: integer
   ignoreCharacters: ", "
   ```
+
   ```yaml
   name: currencyInteger
   type: integer
