@@ -4,18 +4,7 @@ generate () {
     generate-schema-doc \
         --config-file=/var/jsfh/config.yaml \
         /schema/yaml/config.yaml \
-        /schema/html/schema.html.tmp
-
-    tidy \
-        --show-warnings no \
-        -quiet \
-        -indent \
-        --wrap-attributes no \
-        --indent-attributes \
-        /schema/html/schema.html.tmp \
-    > /schema/html/schema.html
-
-    rm /schema/html/schema.html.tmp
+        /schema/html/schema.html
 }
 
 # Building a first time at startup
