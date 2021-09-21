@@ -17,6 +17,14 @@ description: |
   type: integer
   ignoreCharacters: "€$¥"
   ```
+
+  ### Default instance
+  A default instance of this parser is already automatically created as such:
+  ```yaml
+  name: integer
+  type: integer
+  ignoreCharacters: ""
+  ```
 additionalProperties: false
 required:
   - name

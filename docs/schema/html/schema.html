@@ -52,7 +52,8 @@
           array</span><br>
           <h1><span class="description">Parsers</span></h1>
           <p><span class="description">TODO parsers
-          introduction</span></p>
+          introduction<br>
+          TODO repeat the default parsers config here</span></p>
           <h3><span class="description">Example:</span></h3>
           <div class="highlight jumbotron">
             <pre><span class="description"><code><span class=
@@ -138,7 +139,7 @@
                     "parsers_items_anyOf_i3" data-toggle="tab"
                     href="#tab-pane_parsers_items_anyOf_i3" role=
                     "tab" onclick=
-                    "setAnchor('#parsers_items_anyOf_i3')">json</a>
+                    "setAnchor('#parsers_items_anyOf_i3')">string</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link anyOf-option" id=
@@ -152,7 +153,7 @@
                     "parsers_items_anyOf_i5" data-toggle="tab"
                     href="#tab-pane_parsers_items_anyOf_i5" role=
                     "tab" onclick=
-                    "setAnchor('#parsers_items_anyOf_i5')">string</a>
+                    "setAnchor('#parsers_items_anyOf_i5')">json</a>
                   </li>
                 </ul>
                 <div class="tab-content card">
@@ -215,19 +216,18 @@
 "nv"> </span><span class="s">"</span>
 </code></span></pre>
                     </div>
-                    <div class="highlight jumbotron">
-                      <pre><code><span class=
-                      "nt">name</span><span class=
-                      "p">:</span> <span class=
-                      "l l-Scalar l-Scalar-Plain">currencyInteger</span>
-<span class="nt">type</span><span class="p">:</span> <span class=
-"l l-Scalar l-Scalar-Plain">integer</span>
-<span class="nt">ignoreCharacters</span><span class=
-"p">:</span> <span class="s">"€$¥"</span>
-</code></pre>
-                    </div><span class=
-                    "badge badge-info no-additional">No Additional
-                    Properties</span>
+                    <p>```yaml<br>
+                    name: currencyInteger<br>
+                    type: integer<br>
+                    ignoreCharacters: "€$¥"</p>
+                    <pre><code>### Default instance
+A default instance of this parser is already automatically created as such:
+```yaml
+name: integer
+type: integer
+ignoreCharacters: ""
+</code></pre><span class="badge badge-info no-additional">No
+Additional Properties</span>
                     <div class="accordion" id=
                     "accordionparsers_items_anyOf_i0_name">
                       <div class="card">
@@ -558,21 +558,20 @@
 "p">:</span> <span class="s">","</span>
 </code></span></pre>
                     </div>
-                    <div class="highlight jumbotron">
-                      <pre><code><span class=
-                      "nt">name</span><span class=
-                      "p">:</span> <span class=
-                      "l l-Scalar l-Scalar-Plain">currencyFloat</span>
-<span class="nt">type</span><span class="p">:</span> <span class=
-"l l-Scalar l-Scalar-Plain">float</span>
-<span class="nt">decimalSeparator</span><span class=
-"p">:</span> <span class="s">"."</span>
-<span class="nt">ignoreCharacters</span><span class=
-"p">:</span> <span class="s">"€$¥"</span>
-</code></pre>
-                    </div><span class=
-                    "badge badge-info no-additional">No Additional
-                    Properties</span>
+                    <p>```yaml<br>
+                    name: currencyFloat<br>
+                    type: float<br>
+                    decimalSeparator: "."<br>
+                    ignoreCharacters: "€$¥"</p>
+                    <pre><code>### Default instance
+A default instance of this parser is already automatically created as such:
+```yaml
+name: float
+type: float
+decimalSeparator: "."
+ignoreCharacters: ""
+</code></pre><span class="badge badge-info no-additional">No
+Additional Properties</span>
                     <div class="accordion" id=
                     "accordionparsers_items_anyOf_i1_name">
                       <div class="card">
@@ -1003,23 +1002,20 @@
 "s">"yes"</span><span class="p p-Indicator">]</span>
 </code></span></pre>
                     </div>
-                    <div class="highlight jumbotron">
-                      <pre><code><span class=
-                      "nt">name</span><span class=
-                      "p">:</span> <span class=
-                      "l l-Scalar l-Scalar-Plain">booleanZeroOne</span>
-<span class="nt">type</span><span class="p">:</span> <span class=
-"l l-Scalar l-Scalar-Plain">boolean</span>
-<span class="nt">trueValues</span><span class=
-"p">:</span> <span class="p p-Indicator">[</span><span class=
-"s">"1"</span><span class="p p-Indicator">]</span>
-<span class="nt">falseValues</span><span class=
-"p">:</span> <span class="p p-Indicator">[</span><span class=
-"s">"0"</span><span class="p p-Indicator">]</span>
-</code></pre>
-                    </div><span class=
-                    "badge badge-info no-additional">No Additional
-                    Properties</span>
+                    <p>```yaml<br>
+                    name: booleanZeroOne<br>
+                    type: boolean<br>
+                    trueValues: ["1"]<br>
+                    falseValues: ["0"]</p>
+                    <pre><code>### Default instance
+A default instance of this parser is already automatically created as such:
+```yaml
+name: boolean
+type: boolean
+trueValues:  ["true", "1", "TRUE"]
+falseValues: ["false", "0", "FALSE"]
+</code></pre><span class="badge badge-info no-additional">No
+Additional Properties</span>
                     <div class="accordion" id=
                     "accordionparsers_items_anyOf_i2_name">
                       <div class="card">
@@ -1555,12 +1551,325 @@
                       "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
                       </svg> <a href="#parsers_items_anyOf_i3"
                       onclick=
-                      "anchorLink('parsers_items_anyOf_i3')">json</a>
+                      "anchorLink('parsers_items_anyOf_i3')">string</a>
                     </div><span class=
                     "badge badge-dark value-type">Type:
                     object</span><br>
-                    <p><span class="description">JSON
-                    Parser</span></p>
+                    <h1><span class="description">String
+                    parser</span></h1>
+                    <p><span class="description">This parser allows
+                    to operate some changes on a string.</span></p>
+                    <p><span class="description">It is currently
+                    only useful if you need to read files with a
+                    non-unicode encoding.<br>
+                    Otherwise, while it is possible to declare your
+                    own, it would be equivalent to the default
+                    one.</span></p>
+                    <h3><span class=
+                    "description">Example:</span></h3>
+                    <div class="highlight jumbotron">
+                      <pre><span class=
+                      "description"><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">shiftJisString</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">string</span>
+<span class="nt">convertFromCharset</span><span class=
+"p">:</span> <span class="s">"Shift_JIS"</span>
+</code></span></pre>
+                    </div>
+                    <h3>Default instance</h3>
+                    <p>A default instance of this parser is already
+                    automatically created as such:</p>
+                    <div class="highlight jumbotron">
+                      <pre><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">string</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">string</span>
+<span class="nt">convertFromCharset</span><span class=
+"p">:</span> <span class="s">""</span>
+</code></pre>
+                    </div><span class=
+                    "badge badge-info no-additional">No Additional
+                    Properties</span>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i3_name">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i3_name">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i3_name"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i3_name" onclick=
+                          "setAnchor('#parsers_items_anyOf_i3_name')">
+                          <span class="property-name">name</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i3_name"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i3_name"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i3_name">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3" onclick=
+                              "anchorLink('parsers_items_anyOf_i3')">
+                              string</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3_name"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i3_name')">
+                              name</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span><br>
+                            <p><span class="description">The name
+                            of this parser, which any other
+                            component will use to refer to
+                            it.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i3_type">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i3_type">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i3_type"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i3_type" onclick=
+                          "setAnchor('#parsers_items_anyOf_i3_type')">
+                          <span class="property-name">type</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i3_type"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i3_type"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i3_type">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3" onclick=
+                              "anchorLink('parsers_items_anyOf_i3')">
+                              string</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3_type"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i3_type')">
+                              type</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            const</span><br>
+                            <span class="const-value" id=
+                            "parsers_items_anyOf_i3_type_const">Specific
+                            value: <code>"string"</code></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i3_convertFromCharset">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i3_convertFromCharset">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i3_convertFromCharset"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i3_convertFromCharset"
+                          onclick=
+                          "setAnchor('#parsers_items_anyOf_i3_convertFromCharset')">
+                          <span class=
+                          "property-name">convertFromCharset</span></button></h2>
+                        </div>
+                        <div id=
+                        "parsers_items_anyOf_i3_convertFromCharset"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i3_convertFromCharset"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i3_convertFromCharset">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3" onclick=
+                              "anchorLink('parsers_items_anyOf_i3')">
+                              string</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i3_convertFromCharset"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i3_convertFromCharset')">
+                              convertFromCharset</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span> <span class=
+                            "badge badge-success default-value">Default:
+                            ""</span><br>
+                            <p><span class=
+                            "description">Internally, RODB only
+                            handles UTF-8 strings.<br>
+                            If the given value has a different
+                            encoding, RODB will convert it
+                            automatically from the encoding set in
+                            this value.</span></p>
+                            <p><span class="description">When this
+                            value is an empty string, no conversion
+                            is performed.</span></p>
+                            <p><span class="description">This
+                            setting must match one of the encodings
+                            listed in the <a href=
+                            "https://www.iana.org/assignments/character-sets/character-sets.xhtml">
+                            IANA character sets index</a> (either
+                            the MIME or Name columns).</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="tab-pane fade card-body" id=
                   "tab-pane_parsers_items_anyOf_i4" role=
@@ -1602,8 +1911,523 @@
                     </div><span class=
                     "badge badge-dark value-type">Type:
                     object</span><br>
-                    <p><span class="description">Split
-                    Parser</span></p>
+                    <h1><span class="description">Split
+                    parser</span></h1>
+                    <p><span class="description">Splits a string to
+                    an array of values and applies another parser
+                    on each value.</span></p>
+                    <h3><span class=
+                    "description">Examples:</span></h3>
+                    <div class="highlight jumbotron">
+                      <pre><span class=
+                      "description"><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">splitStringsOnSlashes</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">split</span>
+<span class="nt">delimiter</span><span class=
+"p">:</span> <span class="s">"/"</span>
+<span class="nt">parser</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">string</span>
+</code></span></pre>
+                    </div>
+                    <div class="highlight jumbotron">
+                      <pre><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">extractOnlyIntegers</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">split</span>
+<span class="nt">delimiter</span><span class=
+"p">:</span> <span class="s">"[^0-9]+"</span>
+<span class="nt">delimiterIsRegexp</span><span class=
+"p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">parser</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">integer</span>
+</code></pre>
+                    </div><span class=
+                    "badge badge-info no-additional">No Additional
+                    Properties</span>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i4_name">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i4_name">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i4_name"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i4_name" onclick=
+                          "setAnchor('#parsers_items_anyOf_i4_name')">
+                          <span class="property-name">name</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i4_name"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i4_name"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i4_name">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4" onclick=
+                              "anchorLink('parsers_items_anyOf_i4')">
+                              split</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4_name"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i4_name')">
+                              name</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span><br>
+                            <p><span class="description">The name
+                            of this parser, which any other
+                            component will use to refer to
+                            it.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i4_type">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i4_type">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i4_type"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i4_type" onclick=
+                          "setAnchor('#parsers_items_anyOf_i4_type')">
+                          <span class="property-name">type</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i4_type"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i4_type"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i4_type">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4" onclick=
+                              "anchorLink('parsers_items_anyOf_i4')">
+                              split</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4_type"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i4_type')">
+                              type</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            const</span><br>
+                            <span class="const-value" id=
+                            "parsers_items_anyOf_i4_type_const">Specific
+                            value: <code>"split"</code></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i4_delimiter">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i4_delimiter">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i4_delimiter"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i4_delimiter"
+                          onclick=
+                          "setAnchor('#parsers_items_anyOf_i4_delimiter')">
+                          <span class=
+                          "property-name">delimiter</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i4_delimiter"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i4_delimiter"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i4_delimiter">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4" onclick=
+                              "anchorLink('parsers_items_anyOf_i4')">
+                              split</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4_delimiter"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i4_delimiter')">
+                              delimiter</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span><br>
+                            <h3><span class="description">If
+                            <code>delimiterIsRegexp</code> is
+                            <code>false</code></span></h3>
+                            <p><span class="description">This is
+                            the string on which the value will be
+                            splitted to an array.<br>
+                            The implementation uses the <a href=
+                            "https://pkg.go.dev/strings#Split">strings.Split</a>
+                            function of GoLang:</span></p>
+                            <pre><span class=
+                            "description"><code>Split slices s into all substrings separated by sep and returns a slice of the substrings between those separators.
+If s does not contain sep and sep is not empty, Split returns a slice of length 1 whose only element is s.
+If sep is empty, Split splits after each UTF-8 sequence. If both s and sep are empty, Split returns an empty slice.
+</code></span></pre>
+                            <h3><span class="description">If
+                            <code>delimiterIsRegexp</code> is
+                            <code>true</code></span></h3>
+                            <p><span class="description">This is
+                            the regular expression that will be
+                            used to split a string.<br>
+                            The regexp syntax is the RE2 one
+                            described <a href=
+                            "https://github.com/google/re2/wiki/Syntax">
+                            here</a>.<br>
+                            More specifically, it uses the native
+                            Golang's regexp engine.<br>
+                            You can find more details about the
+                            engine's implementation <a href=
+                            "https://pkg.go.dev/regexp#pkg-overview">
+                            here</a>.</span></p>
+                            <p><span class="description">The
+                            specific algorithm that is used is the
+                            <a href=
+                            "https://pkg.go.dev/regexp#Regexp.Split">
+                            regexp.Split</a> function of GoLang,
+                            with <code>n=-1</code>.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i4_delimiterIsRegexp">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i4_delimiterIsRegexp">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i4_delimiterIsRegexp"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i4_delimiterIsRegexp"
+                          onclick=
+                          "setAnchor('#parsers_items_anyOf_i4_delimiterIsRegexp')">
+                          <span class=
+                          "property-name">delimiterIsRegexp</span></button></h2>
+                        </div>
+                        <div id=
+                        "parsers_items_anyOf_i4_delimiterIsRegexp"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i4_delimiterIsRegexp"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i4_delimiterIsRegexp">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4" onclick=
+                              "anchorLink('parsers_items_anyOf_i4')">
+                              split</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4_delimiterIsRegexp"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i4_delimiterIsRegexp')">
+                              delimiterIsRegexp</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            boolean</span> <span class=
+                            "badge badge-success default-value">Default:
+                            false</span><br>
+                            <p><span class="description">Defines
+                            whether the delimiter should be
+                            interpreted as a regular expression or
+                            as a litteral string.<br>
+                            Please see the definition of the
+                            <code>delimiter</code> setting for more
+                            information.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i4_parser">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i4_parser">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i4_parser"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i4_parser" onclick=
+                          "setAnchor('#parsers_items_anyOf_i4_parser')">
+                          <span class="property-name">parser</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i4_parser"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i4_parser"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i4_parser">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4" onclick=
+                              "anchorLink('parsers_items_anyOf_i4')">
+                              split</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i4_parser"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i4_parser')">
+                              parser</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span><br>
+                            <p><span class="description">After
+                            splitting the value, another parser
+                            will be applied to each member of the
+                            resulting array.<br>
+                            This is the name of this parser.<br>
+                            If no specific change is required and
+                            an array of strings is expected, please
+                            use <code>parser:
+                            string</code>.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="tab-pane fade card-body" id=
                   "tab-pane_parsers_items_anyOf_i5" role=
@@ -1641,12 +2465,218 @@
                       "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
                       </svg> <a href="#parsers_items_anyOf_i5"
                       onclick=
-                      "anchorLink('parsers_items_anyOf_i5')">string</a>
+                      "anchorLink('parsers_items_anyOf_i5')">json</a>
                     </div><span class=
                     "badge badge-dark value-type">Type:
                     object</span><br>
-                    <p><span class="description">String
-                    Parser</span></p>
+                    <h1><span class="description">JSON
+                    parser</span></h1>
+                    <p><span class="description">Parses a JSON
+                    value (string) to any type it contains (object,
+                    array...).</span></p>
+                    <p><span class="description">While it is
+                    possible to declare your own, it would be
+                    equivalent to the default one, because there
+                    are currently no available settings.</span></p>
+                    <h3><span class=
+                    "description">Example:</span></h3>
+                    <div class="highlight jumbotron">
+                      <pre><span class=
+                      "description"><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">customJson</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">json</span>
+</code></span></pre>
+                    </div>
+                    <h3>Default instance</h3>
+                    <p>A default instance of this parser is already
+                    automatically created as such:</p>
+                    <div class="highlight jumbotron">
+                      <pre><code><span class=
+                      "nt">name</span><span class=
+                      "p">:</span> <span class=
+                      "l l-Scalar l-Scalar-Plain">json</span>
+<span class="nt">type</span><span class="p">:</span> <span class=
+"l l-Scalar l-Scalar-Plain">json</span>
+</code></pre>
+                    </div><span class=
+                    "badge badge-info no-additional">No Additional
+                    Properties</span>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i5_name">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i5_name">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i5_name"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i5_name" onclick=
+                          "setAnchor('#parsers_items_anyOf_i5_name')">
+                          <span class="property-name">name</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i5_name"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i5_name"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i5_name">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i5" onclick=
+                              "anchorLink('parsers_items_anyOf_i5')">
+                              json</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i5_name"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i5_name')">
+                              name</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            string</span><br>
+                            <p><span class="description">The name
+                            of this parser, which any other
+                            component will use to refer to
+                            it.</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion" id=
+                    "accordionparsers_items_anyOf_i5_type">
+                      <div class="card">
+                        <div class="card-header" id=
+                        "headingparsers_items_anyOf_i5_type">
+                          <h2 class="mb-0"><button class=
+                          "btn btn-link property-name-button" type=
+                          "button" data-toggle="collapse"
+                          data-target=
+                          "#parsers_items_anyOf_i5_type"
+                          aria-expanded="" aria-controls=
+                          "parsers_items_anyOf_i5_type" onclick=
+                          "setAnchor('#parsers_items_anyOf_i5_type')">
+                          <span class="property-name">type</span>
+                          <span class=
+                          "badge badge-warning required-property">Required</span></button></h2>
+                        </div>
+                        <div id="parsers_items_anyOf_i5_type"
+                        class="collapse property-definition-div"
+                        aria-labelledby=
+                        "headingparsers_items_anyOf_i5_type"
+                        data-parent=
+                        "#accordionparsers_items_anyOf_i5_type">
+                          <div class="card-body pl-5">
+                            <div class="breadcrumbs">
+                              root <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers" onclick=
+                              "anchorLink('parsers')">parsers</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items"
+                              onclick=
+                              "anchorLink('parsers_items')">items</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href="#parsers_items_anyOf"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf')">anyOf</a>
+                              <svg width="1em" height="1em"
+                              viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i5" onclick=
+                              "anchorLink('parsers_items_anyOf_i5')">
+                              json</a> <svg width="1em" height=
+                              "1em" viewbox="0 0 16 16" class=
+                              "bi bi-arrow-right-short" fill=
+                              "currentColor" xmlns=
+                              "http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d=
+                              "M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"></path>
+                              </svg> <a href=
+                              "#parsers_items_anyOf_i5_type"
+                              onclick=
+                              "anchorLink('parsers_items_anyOf_i5_type')">
+                              type</a>
+                            </div><span class=
+                            "badge badge-dark value-type">Type:
+                            const</span><br>
+                            <span class="const-value" id=
+                            "parsers_items_anyOf_i5_type_const">Specific
+                            value: <code>"json"</code></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

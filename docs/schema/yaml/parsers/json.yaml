@@ -1,0 +1,33 @@
+$id: https://rodb.io/schema/yaml/parsers/json.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: json
+description: |
+  # JSON parser
+  Parses a JSON value (string) to any type it contains (object, array...).
+
+  While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.
+
+  ### Example:
+  ```yaml
+  name: customJson
+  type: json
+  ```
+
+  ### Default instance
+  A default instance of this parser is already automatically created as such:
+  ```yaml
+  name: json
+  type: json
+  ```
+additionalProperties: false
+required:
+  - name
+  - type
+properties:
+  name:
+    type: string
+    description: |
+      The name of this parser, which any other component will use to refer to it.
+  type:
+    const: "json"

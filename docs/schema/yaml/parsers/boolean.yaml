@@ -20,6 +20,15 @@ description: |
   trueValues: ["1"]
   falseValues: ["0"]
   ```
+
+  ### Default instance
+  A default instance of this parser is already automatically created as such:
+  ```yaml
+  name: boolean
+  type: boolean
+  trueValues:  ["true", "1", "TRUE"]
+  falseValues: ["false", "0", "FALSE"]
+  ```
 additionalProperties: false
 required:
   - name

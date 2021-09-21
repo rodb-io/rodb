@@ -19,6 +19,15 @@ description: |
   decimalSeparator: "."
   ignoreCharacters: "€$¥"
   ```
+
+  ### Default instance
+  A default instance of this parser is already automatically created as such:
+  ```yaml
+  name: float
+  type: float
+  decimalSeparator: "."
+  ignoreCharacters: ""
+  ```
 additionalProperties: false
 required:
   - name

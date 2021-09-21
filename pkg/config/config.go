@@ -116,7 +116,8 @@ func (config *Config) addDefaultConfigs(log *logrus.Logger) {
 
 	for _, parserConfig := range []parser.Config{
 		&parser.StringConfig{
-			Name: "string",
+			Name:               "string",
+			ConvertFromCharset: "",
 		},
 		&parser.IntegerConfig{
 			Name:             "integer",

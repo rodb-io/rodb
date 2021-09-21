@@ -10,6 +10,7 @@ properties:
       # Parsers
 
       TODO parsers introduction
+      TODO repeat the default parsers config here
 
       ### Example:
       ```yaml
@@ -33,18 +34,12 @@ properties:
           title: float
         - $ref: ./parsers/boolean.yaml
           title: boolean
-        - type: object
-          title: json
-          description: JSON Parser
-          additionalProperties: false
-        - type: object
-          title: split
-          description: Split Parser
-          additionalProperties: false
-        - type: object
+        - $ref: ./parsers/string.yaml
           title: string
-          description: String Parser
-          additionalProperties: false
+        - $ref: ./parsers/split.yaml
+          title: split
+        - $ref: ./parsers/json.yaml
+          title: json
   inputs:
     type: array
     items:
