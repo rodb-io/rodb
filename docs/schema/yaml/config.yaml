@@ -9,8 +9,14 @@ properties:
     description: |
       # Parsers
 
-      TODO parsers introduction
-      TODO repeat the default parsers config here
+      In RODB, a parser is an object that allows you to convert a string value into another data type.
+      There are many kind of parsers described below.
+
+      RODB never tries to guess any data type or magically convert any data.
+      This means for example that every value extracted from a CSV file is a string by default, even if the column only contains digits.
+      To get a number, you would need to apply an `integer` or `float` parser to the column.
+
+      The parsers are used by the input (data) and output (user inputs) layers.
 
       ### Example:
       ```yaml

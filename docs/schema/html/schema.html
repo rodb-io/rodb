@@ -52,8 +52,14 @@
     <a href="#parsers" onclick="anchorLink('parsers')">parsers</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
 <span class="description"><h1>Parsers</h1>
 
-<p>TODO parsers introduction<br />
-TODO repeat the default parsers config here</p>
+<p>In RODB, a parser is an object that allows you to convert a string value into another data type.<br />
+There are many kind of parsers described below.</p>
+
+<p>RODB never tries to guess any data type or magically convert any data.<br />
+This means for example that every value extracted from a CSV file is a string by default, even if the column only contains digits.<br />
+To get a number, you would need to apply an <code>integer</code> or <code>float</code> parser to the column.</p>
+
+<p>The parsers are used by the input (data) and output (user inputs) layers.</p>
 
 <h3>Example:</h3>
 
