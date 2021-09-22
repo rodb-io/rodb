@@ -1,12 +1,8 @@
 ---
 layout: default
-title: Documentation - Setup
-permalink: /documentation/setup
+title: Configuration
+permalink: /configuration
 ---
-
-{% include menus/documentation.html %}
-
-TODO Setup documentation and figure out how to integrate the json schema
 
 <iframe class="schema-doc"></iframe>
 <script type="text/javascript">

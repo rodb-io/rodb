@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Homepage
+title: Get started
 permalink: /
 ---
 
@@ -10,3 +10,5 @@ RODB is a fast and composable service that allows you to parse, index and publis
 - through multiple services: HTTP(s), Websockets...
 
 It is currently under active development.
+
+TODO Setup documentation and figure out how to integrate the json schema

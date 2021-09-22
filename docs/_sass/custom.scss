@@ -29,20 +29,6 @@ pre {
   }
 }
 
-.documentation-menu {
-  @include large {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  @include medium {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  @include small {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 .examples-menu {
   grid-column-gap: 0.3rem;
   grid-row-gap: 0.3rem;
