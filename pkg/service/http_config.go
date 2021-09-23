@@ -67,11 +67,11 @@ func (config *HttpConfig) Validate(outputs map[string]output.Config, log *logrus
 	alreadyExistingPaths := make(map[string]bool)
 	for i, routeConfig := range config.Routes {
 		if err := routeConfig.Validate(outputs, log); err != nil {
-			return fmt.Errorf("http.route[%v].%w", i, err)
+			return fmt.Errorf("http.routes[%v].%w", i, err)
 		}
 
 		if _, alreadyExists := alreadyExistingPaths[routeConfig.Path]; alreadyExists {
-			return fmt.Errorf("http.output[%v]: Duplicate path '%v' in array.", i, routeConfig.Path)
+			return fmt.Errorf("http.routes[%v]: Duplicate path '%v' in array.", i, routeConfig.Path)
 		}
 		alreadyExistingPaths[routeConfig.Path] = true
 	}

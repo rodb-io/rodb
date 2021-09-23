@@ -152,18 +152,3 @@ outputs:
         property: id
         index: defaultIndex
         parser: integer
-services:
-  - name: defaultService
-    type: http
-    http:
-      listen: ":80"
-    https:
-      listen: ":443"
-      certificatePath: "./foo.cert"
-      privateKeyPath: "./foo.key"
-    errorsType: application/json
-    routes:
-      - path: "/dummies"
-        output: defaultJsonArrayOutput
-      - path: "/dummies/{id}"
-        output: defaultJsonObjectOutput
