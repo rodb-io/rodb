@@ -2716,11 +2716,28 @@ TODO repeat the default indexes config here</p>
     <a href="#services" onclick="anchorLink('services')">services</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
 <span class="description"><h1>Services</h1>
 
-<p>TODO services introduction</p>
+<p>In RODB, a service is an object through which the outputs are exposed to the outside world. Most commonly, it is a server.<br />
+Currently, the only type of service that is supported is HTTP, but more will come in the future.</p>
+
+<p>It is possible to define multiple services in the same RODB instance.</p>
 
 <h3>Example:</h3>
 
-<div class="highlight jumbotron"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">TODO</span>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
+    <span class="nt">http</span><span class="p">:</span>
+      <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:80&quot;</span>
+    <span class="nt">https</span><span class="p">:</span>
+      <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:443&quot;</span>
+      <span class="nt">certificatePath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.crt&quot;</span>
+      <span class="nt">privateKeyPath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.key&quot;</span>
+    <span class="nt">errorsType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">application/json</span>
+    <span class="nt">routes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users&quot;</span>
+        <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">usersList</span>
+      <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users/{id}&quot;</span>
+        <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">singleUser</span>
 </code></pre></div>
 </span>
 
