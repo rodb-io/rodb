@@ -1,0 +1,16 @@
+$id: https://rodb.io/schema/yaml/services/services.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: array
+description: |
+  # Services
+
+  TODO services introduction
+
+  ### Example:
+  ```yaml
+  TODO
+  ```
+items:
+  anyOf:
+    - $ref: ./http.yaml
+      title: HTTP

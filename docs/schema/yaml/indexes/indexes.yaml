@@ -1,0 +1,26 @@
+$id: https://rodb.io/schema/yaml/indexes/indexes.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: array
+description: |
+  # Indexes
+
+  TODO indexes introduction
+  TODO repeat the default indexes config here
+
+  ### Example:
+  ```yaml
+  TODO
+  ```
+items:
+  type: object
+  anyOf:
+    - $ref: ./map.yaml
+      title: Map
+    - $ref: ./sqlite.yaml
+      title: SQLite
+    - $ref: ./fts5.yaml
+      title: FTS5
+    - $ref: ./wildcard.yaml
+      title: Wildcard
+    - $ref: ./noop.yaml
+      title: NoOp

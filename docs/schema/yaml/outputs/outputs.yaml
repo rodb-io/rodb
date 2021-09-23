@@ -1,0 +1,18 @@
+$id: https://rodb.io/schema/yaml/outputs/outputs.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: array
+description: |
+  # Outputs
+
+  TODO outputs introduction
+
+  ### Example:
+  ```yaml
+  TODO
+  ```
+items:
+  anyOf:
+    - $ref: ./json-object.yaml
+      title: JSON Object
+    - $ref: ./json-array.yaml
+      title: JSON Array

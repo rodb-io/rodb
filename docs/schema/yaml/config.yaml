@@ -1,124 +1,16 @@
-$id: https://rodb.io/schema/yaml/schema.yaml
+$id: https://rodb.io/schema/yaml/config.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Configuration file for RODB
 type: object
 additionalProperties: false
 properties:
   parsers:
-    type: array
-    description: |
-      # Parsers
-
-      In RODB, a parser is an object that allows you to convert a string value into another data type.
-      There are many kind of parsers described below.
-
-      RODB never tries to guess any data type or magically convert any data.
-      This means for example that every value extracted from a CSV file is a string by default, even if the column only contains digits.
-      To get a number, you would need to apply an `integer` or `float` parser to the column.
-
-      The parsers are used by the input (data) and output (user inputs) layers.
-
-      ### Example:
-      ```yaml
-      parsers:
-        - name: booleanYesNo
-          type: boolean
-          falseValues: ["No", "NO", "no"]
-          trueValues: ["Yes", "YES", "yes"]
-        - name: integerWithCommas
-          type: integer
-          ignoreCharacters: ","
-        - name: shiftJisString
-          type: string
-          convertFromCharset: "Shift_JIS"
-      ```
-    items:
-      anyOf:
-        - $ref: ./parsers/integer.yaml
-          title: Integer
-        - $ref: ./parsers/float.yaml
-          title: Float
-        - $ref: ./parsers/boolean.yaml
-          title: Boolean
-        - $ref: ./parsers/string.yaml
-          title: String
-        - $ref: ./parsers/split.yaml
-          title: Split
-        - $ref: ./parsers/json.yaml
-          title: JSON
+    $ref: ./parsers/parsers.yaml
   inputs:
-    type: array
-    description: |
-      # Inputs
-
-      TODO inputs introduction
-
-      ### Example:
-      ```yaml
-      TODO
-      ```
-    items:
-      anyOf:
-        - $ref: ./inputs/csv.yaml
-          title: CSV
-        - $ref: ./inputs/json.yaml
-          title: JSON
-        - $ref: ./inputs/xml.yaml
-          title: XML
+    $ref: ./inputs/inputs.yaml
   indexes:
-    type: array
-    description: |
-      # Indexes
-
-      TODO indexes introduction
-      TODO repeat the default indexes config here
-
-      ### Example:
-      ```yaml
-      TODO
-      ```
-    items:
-      type: object
-      anyOf:
-        - $ref: ./indexes/map.yaml
-          title: Map
-        - $ref: ./indexes/sqlite.yaml
-          title: SQLite
-        - $ref: ./indexes/fts5.yaml
-          title: FTS5
-        - $ref: ./indexes/wildcard.yaml
-          title: Wildcard
-        - $ref: ./indexes/noop.yaml
-          title: NoOp
+    $ref: ./indexes/indexes.yaml
   outputs:
-    type: array
-    description: |
-      # Outputs
-
-      TODO outputs introduction
-
-      ### Example:
-      ```yaml
-      TODO
-      ```
-    items:
-      anyOf:
-        - $ref: ./outputs/json-object.yaml
-          title: JSON Object
-        - $ref: ./outputs/json-array.yaml
-          title: JSON Array
+    $ref: ./outputs/outputs.yaml
   services:
-    type: array
-    description: |
-      # Services
-
-      TODO services introduction
-
-      ### Example:
-      ```yaml
-      TODO
-      ```
-    items:
-      anyOf:
-        - $ref: ./services/http.yaml
-          title: HTTP
+    $ref: ./services/services.yaml
