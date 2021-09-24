@@ -64,6 +64,10 @@ func (config *HttpConfig) Validate(outputs map[string]output.Config, log *logrus
 		}
 	}
 
+	if len(config.Routes) == 0 {
+		return errors.New("routes is empty. At least one route is required to start an HTTP service.")
+	}
+
 	alreadyExistingPaths := make(map[string]bool)
 	for i, routeConfig := range config.Routes {
 		if err := routeConfig.Validate(outputs, log); err != nil {

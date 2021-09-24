@@ -6,6 +6,8 @@ description: |
   # Split parser
   Splits a string to an array of values and applies another parser on each value.
 
+  This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
+
   ### Examples:
   ```yaml
   name: splitStringsOnSlashes

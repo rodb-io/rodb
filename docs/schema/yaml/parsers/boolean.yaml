@@ -45,12 +45,14 @@ properties:
     const: "boolean"
   trueValues:
     type: array
+    minItems: 1
     items:
       type: string
     description: |
       This is a list of values that will be converted to 'true'.
   falseValues:
     type: array
+    minItems: 1
     items:
       type: string
     description: |

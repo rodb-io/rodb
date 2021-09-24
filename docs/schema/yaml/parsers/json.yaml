@@ -9,6 +9,8 @@ description: |
 
   While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.
 
+  This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
+
   ### Example:
   ```yaml
   name: customJson

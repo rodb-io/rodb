@@ -1,0 +1,79 @@
+$id: https://rodb.io/schema/yaml/outputs/definitions/relationships.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+additionalProperties:
+  type: object
+  description: |
+    An object with the name of the relationship as a key, and it's configuration as a value.
+  required:
+    - input
+    - match
+  additionalProperties: false
+  properties:
+    input:
+      type: string
+      description: |
+        The name of the input from which the data of this relationship will be fetched.
+    isArray:
+      type: boolean
+      default: false
+      description: |
+        Indicates if the resulting value must be an array (`true`) or a single object (`false`).
+        When `false`, only the first record matching the criterias will be returned. Any other record gets ignored.
+    limit:
+      type: integer
+      minimum: 1
+      description: |
+        Only effective when `isArray` is `true`.
+        If defined, truncates the number of items in the relationship to the given amount.
+    sort:
+      type: array
+      description: |
+        Only effective when `isArray` is `true`.
+        Defines how the array items will be sorted.
+        The priority of the sort depends on the position in this array.
+        The first defined property has a higher priority.
+      items:
+        type: object
+        required:
+          - property
+        additionalProperties: false
+        properties:
+          property:
+            type: string
+            description: |
+              The property on which values must be sorted.
+          ascending:
+            type: boolean
+            default: true
+            description: |
+              `true` to sort the `property` values in ascending order, `false` for descending order.
+    match:
+      type: array
+      minItems: 1
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - parentProperty
+          - childProperty
+        properties:
+          parentProperty:
+            type: string
+            description: |
+              The name of the property in the parent object that holds the value to use to filter child objects.
+          childProperty:
+            type: string
+            description: |
+              The name of the property on which to filter in the related object.
+          childIndex:
+            type: string
+            default: "default"
+            description: |
+              The name of the index to use when searching a value in `childProperty` and the given input.
+              No index (`default`) means that no indexing will be used, thus iterating all the records from the data source.
+    relationships:
+      type: object
+      description: |
+        Any sub-relationships that may be necessary.
+        This object structure is the same than the parent `relationships` one.

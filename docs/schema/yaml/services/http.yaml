@@ -39,6 +39,7 @@ additionalProperties: false
 required:
   - name
   - type
+  - routes
 properties:
   name:
     type: string
@@ -50,6 +51,7 @@ properties:
     type: object
     description: |
       Makes this service listen to a network interface and TCP port using the HTTP protocol.
+    additionalProperties: false
     properties:
       listen:
         $ref: "./definitions/listen.yaml"
@@ -60,6 +62,7 @@ properties:
     required:
       - certificatePath
       - privateKeyPath
+    additionalProperties: false
     properties:
       listen:
         $ref: "./definitions/listen.yaml"
@@ -84,6 +87,7 @@ properties:
     type: array
     description: |
       All the routes to be made available on this service.
+    minItems: 1
     items:
       type: object
       description: |
@@ -91,6 +95,7 @@ properties:
       required:
         - output
         - path
+      additionalProperties: false
       properties:
         path:
           type: string

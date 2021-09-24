@@ -58,6 +58,10 @@ func (config *RelationshipConfig) Validate(
 		alreadyExistingSortProperties[sort.Property] = true
 	}
 
+	if len(config.Match) == 0 {
+		return fmt.Errorf("match: Cannot define a relationship without matched properties.")
+	}
+
 	alreadyExistingChildProperty := make(map[string]bool)
 	for matchIndex, match := range config.Match {
 		logPrefix := fmt.Sprintf("match.%v.", matchIndex)

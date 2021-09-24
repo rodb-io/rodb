@@ -23,7 +23,7 @@ func (config *BooleanConfig) Validate(parsers map[string]Config, log *logrus.Ent
 	if len(config.TrueValues) == 0 {
 		return errors.New("boolean.trueValues is required")
 	}
-	if len(config.TrueValues) == 0 {
+	if len(config.FalseValues) == 0 {
 		return errors.New("boolean.falseValues is required")
 	}
 
