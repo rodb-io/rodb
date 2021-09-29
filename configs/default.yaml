@@ -1,26 +1,4 @@
 inputs:
-  - name: defaultInput
-    type: csv
-    path: ./dummy.csv
-    dieOnInputChange: true
-    ignoreFirstRow: true
-    delimiter: ","
-    columns:
-      - name: id
-        parser: defaultInteger
-      - name: name
-        parser: defaultString
-      - name: number
-        parser: defaultFloat
-      - name: bool
-        parser: defaultBoolean
-  - name: defaultInput2
-    type: csv
-    path: ./dummy2.csv
-    dieOnInputChange: true
-    ignoreFirstRow: true
-    autodetectColumns: true
-    delimiter: ","
   - name: defaultInput3
     type: xml
     path: ./dummy.xml
