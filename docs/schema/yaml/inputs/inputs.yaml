@@ -3,12 +3,25 @@ $schema: http://json-schema.org/draft-07/schema#
 type: array
 description: |
   # Inputs
-
-  TODO inputs introduction
+  An input defines the data source and format to be used in RODB.
 
   ### Example:
   ```yaml
-  TODO
+  inputs:
+    - name: cities
+      type: csv
+      path: ./cities.csv
+      ignoreFirstRow: true
+      columns:
+        - name: name
+          parser: string
+        - name: prefecture
+          parser: string
+        - name: population
+          parser: integer
+    - name: countries
+      type: json
+      path: ./countries.json
   ```
 items:
   anyOf:

@@ -2011,11 +2011,25 @@ If no specific change is required and an array of strings is expected, please us
     <a href="#inputs" onclick="anchorLink('inputs')">inputs</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
 <span class="description"><h1>Inputs</h1>
 
-<p>TODO inputs introduction</p>
+<p>An input defines the data source and format to be used in RODB.</p>
 
 <h3>Example:</h3>
 
-<div class="highlight jumbotron"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">TODO</span>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cities</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csv</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./cities.csv</span>
+    <span class="nt">ignoreFirstRow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">columns</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
+        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prefecture</span>
+        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">population</span>
+        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./countries.json</span>
 </code></pre></div>
 </span>
 
