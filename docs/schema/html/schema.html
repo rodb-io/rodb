@@ -2014,9 +2014,6 @@ If no specific change is required and an array of strings is expected, please us
 <p>An input defines the data source and format to be used in RODB.<br />
 It also defines how to translate each record in the data source to an internal structure to be used in RODB.</p>
 
-<p>RODB only ever reads the input files from the filesystem.<br />
-Other data sources (NFS, SSH, S3...) should be handled by mounting them in the filesystem using external tools.</p>
-
 <h3>Example:</h3>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span>
@@ -2324,8 +2321,13 @@ This input provides several settings described below.</p>
             />
         </svg>
     <a href="#inputs_items_anyOf_i0_path" onclick="anchorLink('inputs_items_anyOf_i0_path')">path</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
-<span class="description"><p>The relative or absolute path to the CSV file on this filesystem.</p>
+<span class="description"><p>The relative or absolute path to the data file on this filesystem.</p>
+
+<p>RODB only reads the input files from the filesystem.<br />
+Other data sources (NFS, SSH, S3...) should be handled by mounting them in the filesystem using external tools (Docker or Kubernetes volumes, sshfs, s3fs...).</p>
 </span>
+
+    
             
 
             
@@ -2863,10 +2865,12 @@ It must be unique among this input.</p>
         </svg>
     <a href="#inputs_items_anyOf_i0_dieOnInputChange" onclick="anchorLink('inputs_items_anyOf_i0_dieOnInputChange')">dieOnInputChange</a></div><span class="badge badge-dark value-type">Type: boolean</span> <span class="badge badge-success default-value">Default: true</span><br/>
 <span class="description"><p>RODB internally identifies each record using it's binary offset in the file.<br />
-Because of this, any change in the CSV file while RODB is running can move those offsets, thus corrupting the indexes.<br />
+Because of this, any change in the data file while RODB is running can move those offsets, thus corrupting the indexes.<br />
 To avoid returning corrupted data, the default behaviour of RODB is to stop the service with an error whenever it happens.<br />
 While not recommended, setting this property to <code>false</code> would prevent RODB from stopping when the data source changes.</p>
 </span>
+
+    
             
 
             
@@ -2910,7 +2914,205 @@ While not recommended, setting this property to <code>false</code> would prevent
             />
         </svg>
     <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><p>TODO</p>
+<span class="description"><h1>JSON Input</h1>
+
+<p>A JSON input reads data from a file containing one JSON document per row.<br />
+Each CSV document translates in one record and must be an object.</p>
+
+<p>Files containing a single JSON array of records are not supported.</p>
+
+<h3>Examples:</h3>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
+<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./countries.json</span>
+</code></pre></div>
+</span>
+
+     <span class="badge badge-info no-additional">No Additional Properties</span>
+            
+
+            
+            
+
+            
+<div class="accordion" id="accordioninputs_items_anyOf_i1_name">
+    <div class="card">
+        <div class="card-header" id="headinginputs_items_anyOf_i1_name">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#inputs_items_anyOf_i1_name"
+                        aria-expanded="" aria-controls="inputs_items_anyOf_i1_name" onclick="setAnchor('#inputs_items_anyOf_i1_name')"><span class="property-name">name</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="inputs_items_anyOf_i1_name"
+             class="collapse property-definition-div" aria-labelledby="headinginputs_items_anyOf_i1_name"
+             data-parent="#accordioninputs_items_anyOf_i1_name">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs" onclick="anchorLink('inputs')">inputs</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items" onclick="anchorLink('inputs_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf" onclick="anchorLink('inputs_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1_name" onclick="anchorLink('inputs_items_anyOf_i1_name')">name</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of this input, which any other component will use to refer to it.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordioninputs_items_anyOf_i1_type">
+    <div class="card">
+        <div class="card-header" id="headinginputs_items_anyOf_i1_type">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#inputs_items_anyOf_i1_type"
+                        aria-expanded="" aria-controls="inputs_items_anyOf_i1_type" onclick="setAnchor('#inputs_items_anyOf_i1_type')"><span class="property-name">type</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="inputs_items_anyOf_i1_type"
+             class="collapse property-definition-div" aria-labelledby="headinginputs_items_anyOf_i1_type"
+             data-parent="#accordioninputs_items_anyOf_i1_type">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs" onclick="anchorLink('inputs')">inputs</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items" onclick="anchorLink('inputs_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf" onclick="anchorLink('inputs_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1_type" onclick="anchorLink('inputs_items_anyOf_i1_type')">type</a></div><span class="badge badge-dark value-type">Type: const</span><br/>
+<span class="const-value" id="inputs_items_anyOf_i1_type_const">Specific value: <code>"json"</code></span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordioninputs_items_anyOf_i1_path">
+    <div class="card">
+        <div class="card-header" id="headinginputs_items_anyOf_i1_path">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#inputs_items_anyOf_i1_path"
+                        aria-expanded="" aria-controls="inputs_items_anyOf_i1_path" onclick="setAnchor('#inputs_items_anyOf_i1_path')"><span class="property-name">path</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="inputs_items_anyOf_i1_path"
+             class="collapse property-definition-div" aria-labelledby="headinginputs_items_anyOf_i1_path"
+             data-parent="#accordioninputs_items_anyOf_i1_path">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs" onclick="anchorLink('inputs')">inputs</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items" onclick="anchorLink('inputs_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf" onclick="anchorLink('inputs_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1_path" onclick="anchorLink('inputs_items_anyOf_i1_path')">path</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The relative or absolute path to the data file on this filesystem.</p>
+
+<p>RODB only reads the input files from the filesystem.<br />
+Other data sources (NFS, SSH, S3...) should be handled by mounting them in the filesystem using external tools (Docker or Kubernetes volumes, sshfs, s3fs...).</p>
 </span>
 
     
@@ -2920,6 +3122,77 @@ While not recommended, setting this property to <code>false</code> would prevent
             
 
             
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordioninputs_items_anyOf_i1_dieOnInputChange">
+    <div class="card">
+        <div class="card-header" id="headinginputs_items_anyOf_i1_dieOnInputChange">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#inputs_items_anyOf_i1_dieOnInputChange"
+                        aria-expanded="" aria-controls="inputs_items_anyOf_i1_dieOnInputChange" onclick="setAnchor('#inputs_items_anyOf_i1_dieOnInputChange')"><span class="property-name">dieOnInputChange</span></button>
+            </h2>
+        </div>
+
+        <div id="inputs_items_anyOf_i1_dieOnInputChange"
+             class="collapse property-definition-div" aria-labelledby="headinginputs_items_anyOf_i1_dieOnInputChange"
+             data-parent="#accordioninputs_items_anyOf_i1_dieOnInputChange">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs" onclick="anchorLink('inputs')">inputs</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items" onclick="anchorLink('inputs_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf" onclick="anchorLink('inputs_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#inputs_items_anyOf_i1_dieOnInputChange" onclick="anchorLink('inputs_items_anyOf_i1_dieOnInputChange')">dieOnInputChange</a></div><span class="badge badge-dark value-type">Type: boolean</span> <span class="badge badge-success default-value">Default: true</span><br/>
+<span class="description"><p>RODB internally identifies each record using it's binary offset in the file.<br />
+Because of this, any change in the data file while RODB is running can move those offsets, thus corrupting the indexes.<br />
+To avoid returning corrupted data, the default behaviour of RODB is to stop the service with an error whenever it happens.<br />
+While not recommended, setting this property to <code>false</code> would prevent RODB from stopping when the data source changes.</p>
+</span>
+
+    
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
         </div><div class="tab-pane fade card-body "
              id="tab-pane_inputs_items_anyOf_i2" role="tabpanel">
             

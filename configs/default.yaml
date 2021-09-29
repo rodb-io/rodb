@@ -38,10 +38,6 @@ inputs:
           - name: prop_a
             parser: defaultInteger
             xpath: "/*/foo::text()"
-  - name: defaultInput4
-    type: json
-    path: ./dummy.json
-    dieOnInputChange: true
 indexes:
   - name: defaultIndex
     type: map

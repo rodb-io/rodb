@@ -6,9 +6,6 @@ description: |
   An input defines the data source and format to be used in RODB.
   It also defines how to translate each record in the data source to an internal structure to be used in RODB.
 
-  RODB only ever reads the input files from the filesystem.
-  Other data sources (NFS, SSH, S3...) should be handled by mounting them in the filesystem using external tools.
-
   ### Example:
   ```yaml
   inputs:

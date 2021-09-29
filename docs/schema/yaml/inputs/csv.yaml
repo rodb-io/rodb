@@ -43,9 +43,7 @@ properties:
   type:
     const: "csv"
   path:
-    type: string
-    description: |
-      The relative or absolute path to the CSV file on this filesystem.
+    $ref: "./definitions/path.yaml"
   delimiter:
     type: string
     default: ","
@@ -100,10 +98,4 @@ properties:
           description: |
             The name of the parser to apply on this column's value.
   dieOnInputChange:
-    type: boolean
-    default: true
-    description: |
-      RODB internally identifies each record using it's binary offset in the file.
-      Because of this, any change in the CSV file while RODB is running can move those offsets, thus corrupting the indexes.
-      To avoid returning corrupted data, the default behaviour of RODB is to stop the service with an error whenever it happens.
-      While not recommended, setting this property to `false` would prevent RODB from stopping when the data source changes.
+    $ref: "./definitions/die-on-input-change.yaml"
