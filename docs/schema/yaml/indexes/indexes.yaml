@@ -4,12 +4,25 @@ type: array
 description: |
   # Indexes
 
-  TODO indexes introduction
-  TODO repeat the default indexes config here
+  An index allows RODB to retrieve specific records using given search criterias. Indexes are especially useful when handling big input data or for specific search requirements (full-text search for example).
 
   ### Example:
   ```yaml
-  TODO
+  indexes:
+    - name: userId
+      type: map
+      input: users
+      properties:
+        - id
+    - name: name
+      type: sqlite
+      dsn: ":memory:"
+      input: users
+      properties:
+        - name: firstName
+          collate: nocase
+        - name: lastName
+          collate: nocase
   ```
 items:
   type: object
