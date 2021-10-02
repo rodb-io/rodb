@@ -1,4 +1,49 @@
 $id: https://rodb.io/schema/yaml/indexes/map.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-description: TODO
+title: map
+description: |
+  # Map index
+  The map index uses an in-memory map to index the data.
+  It is always created at startup and lost when RODB stops.
+  It can only match strictly equal values (including strings).
+
+  While it is limited and can take significant amounts of memory, the advantages of the map index are that retrieving any records is extremely fast, and it's setup is easier, since it is stateless.
+
+  ### Example:
+  ```yaml
+  name: posts
+  type: map
+  input: posts
+  properties:
+    - id
+    - status
+    - category
+    - authorId
+  ```
+additionalProperties: false
+required:
+  - name
+  - type
+  - input
+  - properties
+properties:
+  name:
+    type: string
+    description: |
+      The name of this index, which any other component will use to refer to it.
+  type:
+    const: "map"
+  input:
+    type: string
+    description: |
+      The input from which to find the data to index.
+  properties:
+    type: array
+    description: |
+      The properties whose value must be indexed.
+    minItems: 1
+    items:
+      type: string
+      description: |
+        The name of a property from the given input containing the values to be indexed.
