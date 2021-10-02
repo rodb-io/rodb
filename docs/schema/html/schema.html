@@ -4221,12 +4221,26 @@ While not recommended, setting this property to <code>false</code> would prevent
     <a href="#indexes" onclick="anchorLink('indexes')">indexes</a></div><span class="badge badge-dark value-type">Type: array of object</span><br/>
 <span class="description"><h1>Indexes</h1>
 
-<p>TODO indexes introduction<br />
-TODO repeat the default indexes config here</p>
+<p>An index allows RODB to retrieve specific records using given search criterias.<br />
+Indexes are especially useful when handling large input data or specific search requirements (full-text search for example).</p>
 
 <h3>Example:</h3>
 
-<div class="highlight jumbotron"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">TODO</span>
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">indexes</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userId</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">map</span>
+    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
+    <span class="nt">properties</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sqlite</span>
+    <span class="nt">dsn</span><span class="p">:</span> <span class="s">&quot;:memory:&quot;</span>
+    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
+    <span class="nt">properties</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">firstName</span>
+        <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">lastName</span>
+        <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
 </code></pre></div>
 </span>
 
@@ -4318,16 +4332,340 @@ TODO repeat the default indexes config here</p>
             />
         </svg>
     <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><p>TODO</p>
+<span class="description"><h1>Map index</h1>
+
+<p>The map index uses an in-memory map to index the data.<br />
+It is always created at startup and lost when RODB stops.<br />
+It can only match strictly equal values (including strings).</p>
+
+<p>While it is limited and can take significant amounts of memory, the advantages of the map index are that retrieving any records is extremely fast, and it's setup is easier, since it does not need to store any file.</p>
+
+<h3>Example:</h3>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">posts</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">map</span>
+<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">posts</span>
+<span class="nt">properties</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">category</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">authorId</span>
+</code></pre></div>
 </span>
 
+     <span class="badge badge-info no-additional">No Additional Properties</span>
+            
+
+            
+            
+
+            
+<div class="accordion" id="accordionindexes_items_anyOf_i0_name">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i0_name">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i0_name"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i0_name" onclick="setAnchor('#indexes_items_anyOf_i0_name')"><span class="property-name">name</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i0_name"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i0_name"
+             data-parent="#accordionindexes_items_anyOf_i0_name">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_name" onclick="anchorLink('indexes_items_anyOf_i0_name')">name</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of this index, which any other component will use to refer to it.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i0_type">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i0_type">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i0_type"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i0_type" onclick="setAnchor('#indexes_items_anyOf_i0_type')"><span class="property-name">type</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i0_type"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i0_type"
+             data-parent="#accordionindexes_items_anyOf_i0_type">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_type" onclick="anchorLink('indexes_items_anyOf_i0_type')">type</a></div><span class="badge badge-dark value-type">Type: const</span><br/>
+<span class="const-value" id="indexes_items_anyOf_i0_type_const">Specific value: <code>"map"</code></span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i0_input">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i0_input">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i0_input"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i0_input" onclick="setAnchor('#indexes_items_anyOf_i0_input')"><span class="property-name">input</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i0_input"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i0_input"
+             data-parent="#accordionindexes_items_anyOf_i0_input">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_input" onclick="anchorLink('indexes_items_anyOf_i0_input')">input</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The input from which to find the data to index.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i0_properties">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i0_properties">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i0_properties"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i0_properties" onclick="setAnchor('#indexes_items_anyOf_i0_properties')"><span class="property-name">properties</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i0_properties"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i0_properties"
+             data-parent="#accordionindexes_items_anyOf_i0_properties">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_properties" onclick="anchorLink('indexes_items_anyOf_i0_properties')">properties</a></div><span class="badge badge-dark value-type">Type: array of string</span><br/>
+<span class="description"><p>The properties whose value must be indexed.</p>
+</span>
+            
+
+            
+            
+
+            <p><span class="badge badge-light restriction min-items-restriction" id="indexes_items_anyOf_i0_properties_minItems">Must contain a minimum of <code>1</code> items</span></p><h4>Each item of this array must be:</h4>
     
+    <div class="card">
+        <div class="card-body items-definition" id="indexes_items_anyOf_i0_properties_items">
+            
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_properties" onclick="anchorLink('indexes_items_anyOf_i0_properties')">properties</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i0_properties_items" onclick="anchorLink('indexes_items_anyOf_i0_properties_items')">items</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of a property from the given input containing the values to be indexed.</p>
+</span>
             
 
             
             
 
             
+        </div>
+    </div>
+    
+            </div>
+        </div>
+    </div>
+</div>
         </div><div class="tab-pane fade card-body "
              id="tab-pane_indexes_items_anyOf_i1" role="tabpanel">
             
@@ -4447,16 +4785,468 @@ TODO repeat the default indexes config here</p>
             />
         </svg>
     <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><p>TODO</p>
+<span class="description"><h1>Wildcard index</h1>
+
+<p>This index is <em>experimental</em>.</p>
+
+<p>The wildcard index can only index strings. It allows to quickly match any substring in the indexed data.<br />
+The index file is automatically generated at startup, unless it has already been created previously.</p>
+
+<p>It offers a great speed and a simple setup compared to a full-text index, but it's index files can take up a massive amount of space.</p>
+
+<p>Internally, the wildcard uses a binary prefix-tree to index the data.</p>
+
+<h3>Example:</h3>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articleInfo</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">wildcard</span>
+<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./articleInfo.rodb</span>
+<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articles</span>
+<span class="nt">ignoreCase</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">properties</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">title</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">summary</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">content</span>
+</code></pre></div>
 </span>
 
+     <span class="badge badge-info no-additional">No Additional Properties</span>
+            
+
+            
+            
+
+            
+<div class="accordion" id="accordionindexes_items_anyOf_i3_name">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_name">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_name"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_name" onclick="setAnchor('#indexes_items_anyOf_i3_name')"><span class="property-name">name</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_name"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_name"
+             data-parent="#accordionindexes_items_anyOf_i3_name">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_name" onclick="anchorLink('indexes_items_anyOf_i3_name')">name</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of this index, which any other component will use to refer to it.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i3_type">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_type">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_type"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_type" onclick="setAnchor('#indexes_items_anyOf_i3_type')"><span class="property-name">type</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_type"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_type"
+             data-parent="#accordionindexes_items_anyOf_i3_type">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_type" onclick="anchorLink('indexes_items_anyOf_i3_type')">type</a></div><span class="badge badge-dark value-type">Type: const</span><br/>
+<span class="const-value" id="indexes_items_anyOf_i3_type_const">Specific value: <code>"wildcard"</code></span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i3_path">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_path">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_path"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_path" onclick="setAnchor('#indexes_items_anyOf_i3_path')"><span class="property-name">path</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_path"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_path"
+             data-parent="#accordionindexes_items_anyOf_i3_path">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_path" onclick="anchorLink('indexes_items_anyOf_i3_path')">path</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The relative or absolute path where to store the index file on the filesystem.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i3_input">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_input">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_input"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_input" onclick="setAnchor('#indexes_items_anyOf_i3_input')"><span class="property-name">input</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_input"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_input"
+             data-parent="#accordionindexes_items_anyOf_i3_input">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_input" onclick="anchorLink('indexes_items_anyOf_i3_input')">input</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The input from which to find the data to index.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i3_ignoreCase">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_ignoreCase">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_ignoreCase"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_ignoreCase" onclick="setAnchor('#indexes_items_anyOf_i3_ignoreCase')"><span class="property-name">ignoreCase</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_ignoreCase"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_ignoreCase"
+             data-parent="#accordionindexes_items_anyOf_i3_ignoreCase">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_ignoreCase" onclick="anchorLink('indexes_items_anyOf_i3_ignoreCase')">ignoreCase</a></div><span class="badge badge-dark value-type">Type: boolean</span> <span class="badge badge-success default-value">Default: false</span><br/>
+<span class="description"><p>The default behaviour (<code>false</code>) is to be case-sensitive. Setting this parameter to <code>true</code> will make this index case-insensitive.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i3_properties">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i3_properties">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i3_properties"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i3_properties" onclick="setAnchor('#indexes_items_anyOf_i3_properties')"><span class="property-name">properties</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i3_properties"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i3_properties"
+             data-parent="#accordionindexes_items_anyOf_i3_properties">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_properties" onclick="anchorLink('indexes_items_anyOf_i3_properties')">properties</a></div><span class="badge badge-dark value-type">Type: array of string</span><br/>
+<span class="description"><p>The properties whose value must be indexed.</p>
+</span>
+            
+
+            
+            
+
+            <p><span class="badge badge-light restriction min-items-restriction" id="indexes_items_anyOf_i3_properties_minItems">Must contain a minimum of <code>1</code> items</span></p><h4>Each item of this array must be:</h4>
     
+    <div class="card">
+        <div class="card-body items-definition" id="indexes_items_anyOf_i3_properties_items">
+            
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_properties" onclick="anchorLink('indexes_items_anyOf_i3_properties')">properties</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i3_properties_items" onclick="anchorLink('indexes_items_anyOf_i3_properties_items')">items</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of a property from the given input containing the values to be indexed.</p>
+</span>
             
 
             
             
 
             
+        </div>
+    </div>
+    
+            </div>
+        </div>
+    </div>
+</div>
         </div><div class="tab-pane fade card-body "
              id="tab-pane_indexes_items_anyOf_i4" role="tabpanel">
             
@@ -4490,16 +5280,154 @@ TODO repeat the default indexes config here</p>
             />
         </svg>
     <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">NoOp</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><p>TODO</p>
+<span class="description"><h1>NoOp index</h1>
+
+<p>This index does not actually index anything.<br />
+It iterates all the records of the data source to find records matching exactly the given filters.</p>
+
+<p>The reason why it exists is because it is the <code>default</code> index used by the other layers when no index has been specified.</p>
+
+<p>While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.</p>
+
+<h3>Default instance</h3>
+
+<p>A default instance of this index is already automatically created as such:</p>
+
+<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">noop</span>
+</code></pre></div>
 </span>
 
-    
+     <span class="badge badge-info no-additional">No Additional Properties</span>
             
 
             
             
 
             
+<div class="accordion" id="accordionindexes_items_anyOf_i4_name">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i4_name">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i4_name"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i4_name" onclick="setAnchor('#indexes_items_anyOf_i4_name')"><span class="property-name">name</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i4_name"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i4_name"
+             data-parent="#accordionindexes_items_anyOf_i4_name">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">noop</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i4_name" onclick="anchorLink('indexes_items_anyOf_i4_name')">name</a></div><span class="badge badge-dark value-type">Type: string</span><br/>
+<span class="description"><p>The name of this index, which any other component will use to refer to it.</p>
+</span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion" id="accordionindexes_items_anyOf_i4_type">
+    <div class="card">
+        <div class="card-header" id="headingindexes_items_anyOf_i4_type">
+            <h2 class="mb-0">
+                <button class="btn btn-link property-name-button" type="button" data-toggle="collapse" data-target="#indexes_items_anyOf_i4_type"
+                        aria-expanded="" aria-controls="indexes_items_anyOf_i4_type" onclick="setAnchor('#indexes_items_anyOf_i4_type')"><span class="property-name">type</span> <span class="badge badge-warning required-property">Required</span></button>
+            </h2>
+        </div>
+
+        <div id="indexes_items_anyOf_i4_type"
+             class="collapse property-definition-div" aria-labelledby="headingindexes_items_anyOf_i4_type"
+             data-parent="#accordionindexes_items_anyOf_i4_type">
+            <div class="card-body pl-5">
+
+    <div class="breadcrumbs">root
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes" onclick="anchorLink('indexes')">indexes</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items" onclick="anchorLink('indexes_items')">items</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf" onclick="anchorLink('indexes_items_anyOf')">anyOf</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">noop</a>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
+            />
+        </svg>
+    <a href="#indexes_items_anyOf_i4_type" onclick="anchorLink('indexes_items_anyOf_i4_type')">type</a></div><span class="badge badge-dark value-type">Type: const</span><br/>
+<span class="const-value" id="indexes_items_anyOf_i4_type_const">Specific value: <code>"noop"</code></span>
+            
+
+            
+            
+
+            
+            </div>
+        </div>
+    </div>
+</div>
         </div></div></div>
             
 

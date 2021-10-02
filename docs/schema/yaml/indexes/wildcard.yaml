@@ -7,6 +7,7 @@ description: |
   This index is *experimental*.
 
   The wildcard index can only index strings. It allows to quickly match any substring in the indexed data.
+  The index file is automatically generated at startup, unless it has already been created previously.
 
   It offers a great speed and a simple setup compared to a full-text index, but it's index files can take up a massive amount of space.
 

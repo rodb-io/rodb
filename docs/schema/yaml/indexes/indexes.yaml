@@ -4,7 +4,8 @@ type: array
 description: |
   # Indexes
 
-  An index allows RODB to retrieve specific records using given search criterias. Indexes are especially useful when handling big input data or for specific search requirements (full-text search for example).
+  An index allows RODB to retrieve specific records using given search criterias.
+  Indexes are especially useful when handling large input data or specific search requirements (full-text search for example).
 
   ### Example:
   ```yaml

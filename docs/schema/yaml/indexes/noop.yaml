@@ -7,8 +7,7 @@ description: |
   This index does not actually index anything.
   It iterates all the records of the data source to find records matching exactly the given filters.
 
-  The reason why it exists is that there is a default index called `default`.
-  This is the one used by default from the other layers when no index has been specified.
+  The reason why it exists is because it is the `default` index used by the other layers when no index has been specified.
 
   While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.
 
