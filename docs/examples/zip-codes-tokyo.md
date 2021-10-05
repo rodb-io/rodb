@@ -10,15 +10,15 @@ permalink: /examples/zip-codes-tokyo
 
 This is another example, based of an official list of zip codes in Tokyo.
 
-It shows some parsing capabilities, and how to handle relationships between multiple [inputs]({{ site.link.input.root }}).
+It shows some parsing capabilities, and how to handle relationships between multiple [inputs](/configuration/inputs).
 
-It takes a [CSV]({{ site.link.input.csv }}) file encoded as `Shift_JIS` as an input, and provides an [HTTP]({{ site.link.service.http }}) service with two endpoints.
+It takes a [CSV](/configuration/inputs#csv) file encoded as `Shift_JIS` as an input, and provides an [HTTP](/configuration/services#http) service with two endpoints.
 
-The encoding is handled with a custom [string]({{ site.link.parser.string }}) parser that is assigned to the relevant columns.
+The encoding is handled with a custom [string](/configuration/parsers#string) parser that is assigned to the relevant columns.
 
-Using a [boolean]({{ site.link.parser.boolean }}) parser, the strings `0` and `1` are converted to booleans.
+Using a [boolean](/configuration/parsers#boolean) parser, the strings `0` and `1` are converted to booleans.
 
-Other [CSV]({{ site.link.input.csv }}) files containing some type definitions are loaded, and declared as relationships in the [output]({{ site.link.output.root }}), which means it gets inserted as a sub-object in the resulting JSON.
+Other [CSV](/configuration/inputs#csv) files containing some type definitions are loaded, and declared as relationships in the [output](/configuration/outputs), which means it gets inserted as a sub-object in the resulting JSON.
 
 You can download and run this example locally (using Docker) with the following script.
 
@@ -67,7 +67,7 @@ Response body:
 
 ## List the zip codes of a specific municipality
 
-This endpoint provides a `municipality` parameter, that uses a [map]({{ site.link.index.map }}) index.
+This endpoint provides a `municipality` parameter, that uses a [map](/configuration/indexes#map) index.
 
 `GET http://localhost:3000/zip-codes?municipality=渋谷区`
 
@@ -120,7 +120,7 @@ Getting the third page with a size of 10 results per page
 
 This endpoint allows to get a specific record using it's zip-code.
 
-The zip-codes are also indexed using a [map]({{ site.link.index.map }}) index.
+The zip-codes are also indexed using a [map](/configuration/indexes#map) index.
 
 `GET http://localhost:3000/zip-codes/1350064`
 

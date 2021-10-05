@@ -1,14 +1,13 @@
 $id: https://rodb.io/schema/yaml/parsers/split.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: split
+title: Split
 description: |
-  # Split parser
   Splits a string to an array of values and applies another parser on each value.
 
   This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: splitStringsOnSlashes
   type: split

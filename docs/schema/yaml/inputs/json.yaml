@@ -1,15 +1,14 @@
 $id: https://rodb.io/schema/yaml/inputs/json.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: csv
+title: JSON
 description: |
-  # JSON Input
   A JSON input reads data from a file containing one JSON document per row.
   Each CSV document translates in one record and must be an object.
 
   Files containing a single JSON array of records are not supported.
 
-  ### Examples:
+  **Example:**
   ```yaml
   name: countries
   type: json

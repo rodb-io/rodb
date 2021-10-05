@@ -1,12 +1,11 @@
 $id: https://rodb.io/schema/yaml/parsers/float.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: float
+title: Float
 description: |
-  # Float parser
   Parses a string value to a 64-bytes floating-point number.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: formattedFloat
   type: float
@@ -21,7 +20,7 @@ description: |
   ignoreCharacters: "€$¥"
   ```
 
-  ### Default instance
+  **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: float

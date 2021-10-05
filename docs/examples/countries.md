@@ -10,7 +10,7 @@ permalink: /examples/countries
 
 This is the most basic example of how to use RODB.
 
-It takes a single [CSV]({{ site.link.input.csv }}) file as an input, and provides an [HTTP]({{ site.link.service.http }}) service with one endpoint which returns a list of countries.
+It takes a single [CSV](/configuration/inputs/#csv) file as an input, and provides an [HTTP](/configuration/services/#http) service with one endpoint which returns a list of countries.
 
 You can download and run this example locally (using Docker) with the following script.
 

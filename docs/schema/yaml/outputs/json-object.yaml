@@ -1,14 +1,13 @@
 $id: https://rodb.io/schema/yaml/outputs/json-object.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: jsonObject
+title: JSON Object
 description: |
-  # Json Object output
   This output produces a JSON document whose root is an object containing all the properties fetched from the input.
   The object is found in the input by filtering the specified parameters.
   Objects from any input can also be embedded as a relationship.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: venue
   type: jsonObject

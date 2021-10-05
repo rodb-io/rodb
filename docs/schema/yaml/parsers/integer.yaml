@@ -1,12 +1,11 @@
 $id: https://rodb.io/schema/yaml/parsers/integer.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: integer
+title: Integer
 description: |
-  # Integer parser
   Parses a string value to a 64-bytes integer.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: formattedInteger
   type: integer
@@ -19,7 +18,7 @@ description: |
   ignoreCharacters: "€$¥"
   ```
 
-  ### Default instance
+  **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: integer

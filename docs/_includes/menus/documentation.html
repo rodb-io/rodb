@@ -1,0 +1,22 @@
+<div class="custom-menu documentation-menu">
+	<div><a href="/configuration/setup">Setup</a></div>
+
+	<div><a href="/configuration/inputs">Inputs</a></div>
+
+	<div><a href="/configuration/parsers">Parsers</a></div>
+
+	<div><a href="/configuration/indexes">Indexes</a></div>
+
+	<div><a href="/configuration/services">Services</a></div>
+
+	<div><a href="/configuration/outputs">Outputs</a></div>
+</div>
+
+<script type="text/javascript">
+	window.addEventListener('load', function () {
+		currentLinks = document.querySelectorAll('.documentation-menu a[href="' + window.location.pathname + '"]');
+		currentLinks.forEach(function (link) {
+			link.parentNode.classList.add('custom-menu-active');
+		});
+	});
+</script>

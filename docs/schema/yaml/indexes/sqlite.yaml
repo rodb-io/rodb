@@ -1,14 +1,13 @@
 $id: https://rodb.io/schema/yaml/indexes/sqlite.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: sqlite
+title: SQLite
 description: |
-  # SQLite index
   This index internally stores it's data into an SQLite database.
   Depending on the configured connection string, it may be stored in a file or in memory.
   This index can efficiently search on properties with various data types, and allows to use the same SQLite database for multiple indexes.
 
-  ### Example:
+  **Example:**
   ```yaml
   name: users
   type: sqlite

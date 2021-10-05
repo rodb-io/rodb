@@ -1,28 +1,3 @@
 theme: jekyll-theme-cayman
 title: RODB
 description: Read-Only DataBase
-link:
-  parser:
-    integer: "/configuration#tab-pane_parsers_items_anyOf_i0"
-    float: "/configuration#tab-pane_parsers_items_anyOf_i1"
-    boolean: "/configuration#tab-pane_parsers_items_anyOf_i2"
-    string: "/configuration#tab-pane_parsers_items_anyOf_i3"
-    split: "/configuration#tab-pane_parsers_items_anyOf_i4"
-    json: "/configuration#tab-pane_parsers_items_anyOf_i5"
-  input:
-    root: "/configuration#inputs"
-    csv: "/configuration#tab-pane_inputs_items_anyOf_i0"
-    json: "/configuration#tab-pane_inputs_items_anyOf_i1"
-    xml: "/configuration#tab-pane_inputs_items_anyOf_i2"
-  index:
-    map: "/configuration#tab-pane_indexes_items_anyOf_i0"
-    sqlite: "/configuration#tab-pane_indexes_items_anyOf_i1"
-    fts5: "/configuration#tab-pane_indexes_items_anyOf_i2"
-    wildcard: "/configuration#tab-pane_indexes_items_anyOf_i3"
-    noop: "/configuration#tab-pane_indexes_items_anyOf_i4"
-  output:
-    root: "/configuration#outputs"
-    jsonObject: "/configuration#tab-pane_outputs_items_anyOf_i0"
-    jsonArray: "/configuration#tab-pane_outputs_items_anyOf_i1"
-  service:
-    http: "/configuration#services"

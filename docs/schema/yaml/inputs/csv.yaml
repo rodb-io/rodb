@@ -1,13 +1,12 @@
 $id: https://rodb.io/schema/yaml/inputs/csv.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: csv
+title: CSV
 description: |
-  # CSV Input
   A CSV input reads data from a CSV file. Each CSV row translates in one record.
   This input provides several settings described below.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: cities
   type: csv

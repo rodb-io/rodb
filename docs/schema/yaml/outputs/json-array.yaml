@@ -1,15 +1,14 @@
 $id: https://rodb.io/schema/yaml/outputs/json-array.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: jsonArray
+title: JSON Array
 description: |
-  # Json Array output
   This output produces a JSON array whose items are objects fetched from the input.
   The objects are found in the input by filtering the specified parameters.
   Objects from any input can also be embedded as a relationship.
   There is an always-enabled and configurable paging to this array.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: venuesList
   type: jsonArray

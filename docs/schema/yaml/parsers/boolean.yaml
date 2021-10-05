@@ -1,13 +1,12 @@
 $id: https://rodb.io/schema/yaml/parsers/boolean.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: boolean
+title: Boolean
 description: |
-  # Boolean parser
   Converts a string value to a boolean, according to the configured values.
   RODB will output an error if it encounters a value that is neither defined in `trueValues` or `falseValues`.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: booleanYesNo
   type: boolean
@@ -22,7 +21,7 @@ description: |
   falseValues: ["0"]
   ```
 
-  ### Default instance
+  **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: boolean

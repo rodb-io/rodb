@@ -1,14 +1,13 @@
 $id: https://rodb.io/schema/yaml/services/http.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
-title: http
+title: HTTP
 description: |
-  # HTTP Service
   Creates an HTTP service and provides endpoints bound to the given outputs.
 
   At least one of either the `http` or `https` properties must be defined.
 
-  ### Examples:
+  **Examples:**
   ```yaml
   name: httpService
   type: http

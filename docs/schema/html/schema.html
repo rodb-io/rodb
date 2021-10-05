@@ -50,9 +50,7 @@
             />
         </svg>
     <a href="#parsers" onclick="anchorLink('parsers')">parsers</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
-<span class="description"><h1>Parsers</h1>
-
-<p>In RODB, a parser is an object that allows you to convert a string value into another data type.<br />
+<span class="description"><p>In RODB, a parser is an object that allows you to convert a string value into another data type.<br />
 There are many kind of parsers described below.</p>
 
 <p>RODB never tries to guess any data type or magically convert any data.<br />
@@ -61,7 +59,9 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
 
 <p>The parsers are used by the input (data) and output (user inputs) layers.</p>
 
-<h3>Example:</h3>
+<p><strong>Root config key:</strong> <code>parsers</code></p>
+
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">parsers</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanYesNo</span>
@@ -110,32 +110,32 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
             <a class="nav-link active anyOf-option"
                id="parsers_items_anyOf_i0" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i0" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i0')"
-            >Integer</a>
+            >integer.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="parsers_items_anyOf_i1" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i1" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i1')"
-            >Float</a>
+            >float.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="parsers_items_anyOf_i2" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i2" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i2')"
-            >Boolean</a>
+            >boolean.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="parsers_items_anyOf_i3" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i3" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i3')"
-            >String</a>
+            >string.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="parsers_items_anyOf_i4" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i4" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i4')"
-            >Split</a>
+            >split.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="parsers_items_anyOf_i5" data-toggle="tab" href="#tab-pane_parsers_items_anyOf_i5" role="tab"
                onclick="setAnchor('#parsers_items_anyOf_i5')"
-            >JSON</a>
+            >json.yaml</a>
         </li></ul>
 <div class="tab-content card"><div class="tab-pane fade card-body active show"
              id="tab-pane_parsers_items_anyOf_i0" role="tabpanel">
@@ -169,12 +169,10 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">Integer</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Integer parser</h1>
+    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">integer.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Parses a string value to a 64-bytes integer.</p>
 
-<p>Parses a string value to a 64-bytes integer.</p>
-
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">formattedInteger</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
@@ -186,9 +184,8 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
 <span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
 </code></pre></div>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this parser is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this parser is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
@@ -245,7 +242,7 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">integer</a>
+    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">Integer</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -307,7 +304,7 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">integer</a>
+    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">Integer</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -368,7 +365,7 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">integer</a>
+    <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">Integer</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -422,12 +419,10 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">Float</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Float parser</h1>
+    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Parses a string value to a 64-bytes floating-point number.</p>
 
-<p>Parses a string value to a 64-bytes floating-point number.</p>
-
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">formattedFloat</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
@@ -441,9 +436,8 @@ This is useful for example to parse formatted numbers to an integer.</p>
 <span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
 </code></pre></div>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this parser is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this parser is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
@@ -501,7 +495,7 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float</a>
+    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">Float</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -563,7 +557,7 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float</a>
+    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">Float</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -624,7 +618,7 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float</a>
+    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">Float</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -686,7 +680,7 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float</a>
+    <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">Float</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -740,13 +734,11 @@ This is useful for example to parse formatted numbers to an integer.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Boolean parser</h1>
-
-<p>Converts a string value to a boolean, according to the configured values.<br />
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Converts a string value to a boolean, according to the configured values.<br />
 RODB will output an error if it encounters a value that is neither defined in <code>trueValues</code> or <code>falseValues</code>.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanYesNo</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
@@ -760,9 +752,8 @@ RODB will output an error if it encounters a value that is neither defined in <c
 <span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;0&quot;</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this parser is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this parser is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
@@ -820,7 +811,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -882,7 +873,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -943,7 +934,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -992,7 +983,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1063,7 +1054,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1112,7 +1103,7 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">boolean</a>
+    <a href="#parsers_items_anyOf_i2" onclick="anchorLink('parsers_items_anyOf_i2')">Boolean</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1173,24 +1164,21 @@ RODB will output an error if it encounters a value that is neither defined in <c
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">String</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>String parser</h1>
-
-<p>This parser allows to operate some changes on a string.</p>
+    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">string.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This parser allows to operate some changes on a string.</p>
 
 <p>It is currently only useful if you need to read files with a non-unicode encoding.<br />
 Otherwise, while it is possible to declare your own, it would be equivalent to the default one.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shiftJisString</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
 <span class="nt">convertFromCharset</span><span class="p">:</span> <span class="s">&quot;Shift_JIS&quot;</span>
 </code></pre></div>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this parser is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this parser is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
@@ -1247,7 +1235,7 @@ Otherwise, while it is possible to declare your own, it would be equivalent to t
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">string</a>
+    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">String</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1309,7 +1297,7 @@ Otherwise, while it is possible to declare your own, it would be equivalent to t
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">string</a>
+    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">String</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1370,7 +1358,7 @@ Otherwise, while it is possible to declare your own, it would be equivalent to t
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">string</a>
+    <a href="#parsers_items_anyOf_i3" onclick="anchorLink('parsers_items_anyOf_i3')">String</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1427,14 +1415,12 @@ If the given value has a different encoding, RODB will convert it automatically 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Split parser</h1>
-
-<p>Splits a string to an array of values and applies another parser on each value.</p>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Splits a string to an array of values and applies another parser on each value.</p>
 
 <p>This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">splitStringsOnSlashes</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">split</span>
@@ -1499,7 +1485,7 @@ If the given value has a different encoding, RODB will convert it automatically 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split</a>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1561,7 +1547,7 @@ If the given value has a different encoding, RODB will convert it automatically 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split</a>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1622,7 +1608,7 @@ If the given value has a different encoding, RODB will convert it automatically 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split</a>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1701,7 +1687,7 @@ You can find more details about the engine's implementation <a href="https://pkg
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split</a>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1764,7 +1750,7 @@ Please see the definition of the <code>delimiter</code> setting for more informa
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">split</a>
+    <a href="#parsers_items_anyOf_i4" onclick="anchorLink('parsers_items_anyOf_i4')">Split</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1818,25 +1804,22 @@ If no specific change is required and an array of strings is expected, please us
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">JSON</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>JSON parser</h1>
-
-<p>Parses a JSON value (string) to any type it contains (object, array...).<br />
+    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">json.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Parses a JSON value (string) to any type it contains (object, array...).<br />
 (not to be confused with the JSON input parser)</p>
 
 <p>While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.</p>
 
 <p>This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">customJson</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
 </code></pre></div>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this parser is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this parser is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
@@ -1892,7 +1875,7 @@ If no specific change is required and an array of strings is expected, please us
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">json</a>
+    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -1954,7 +1937,7 @@ If no specific change is required and an array of strings is expected, please us
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">json</a>
+    <a href="#parsers_items_anyOf_i5" onclick="anchorLink('parsers_items_anyOf_i5')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2009,12 +1992,12 @@ If no specific change is required and an array of strings is expected, please us
             />
         </svg>
     <a href="#inputs" onclick="anchorLink('inputs')">inputs</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
-<span class="description"><h1>Inputs</h1>
-
-<p>An input defines the data source and format to be used in RODB.<br />
+<span class="description"><p>An input defines the data source and format to be used in RODB.<br />
 It also defines how to translate each record in the data source to an internal structure to be used in RODB.</p>
 
-<h3>Example:</h3>
+<p><strong>Root config key:</strong> <code>inputs</code></p>
+
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cities</span>
@@ -2067,17 +2050,17 @@ It also defines how to translate each record in the data source to an internal s
             <a class="nav-link active anyOf-option"
                id="inputs_items_anyOf_i0" data-toggle="tab" href="#tab-pane_inputs_items_anyOf_i0" role="tab"
                onclick="setAnchor('#inputs_items_anyOf_i0')"
-            >CSV</a>
+            >csv.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="inputs_items_anyOf_i1" data-toggle="tab" href="#tab-pane_inputs_items_anyOf_i1" role="tab"
                onclick="setAnchor('#inputs_items_anyOf_i1')"
-            >JSON</a>
+            >json.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="inputs_items_anyOf_i2" data-toggle="tab" href="#tab-pane_inputs_items_anyOf_i2" role="tab"
                onclick="setAnchor('#inputs_items_anyOf_i2')"
-            >XML</a>
+            >xml.yaml</a>
         </li></ul>
 <div class="tab-content card"><div class="tab-pane fade card-body active show"
              id="tab-pane_inputs_items_anyOf_i0" role="tabpanel">
@@ -2111,13 +2094,11 @@ It also defines how to translate each record in the data source to an internal s
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>CSV Input</h1>
-
-<p>A CSV input reads data from a CSV file. Each CSV row translates in one record.<br />
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>A CSV input reads data from a CSV file. Each CSV row translates in one record.<br />
 This input provides several settings described below.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cities</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csv</span>
@@ -2190,7 +2171,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2252,7 +2233,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2313,7 +2294,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2380,7 +2361,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2442,7 +2423,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2512,7 +2493,7 @@ No transformation being made, case, spaces or special characters are included in
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2578,7 +2559,7 @@ When <code>false</code>, the first row is included in the data.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2630,7 +2611,7 @@ If the number of defined columns is higher than the columns appearing in the dat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2694,7 +2675,7 @@ If the number of defined columns is higher than the columns appearing in the dat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2773,7 +2754,7 @@ It must be unique among this input.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2856,7 +2837,7 @@ It must be unique among this input.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv</a>
+    <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">CSV</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -2913,15 +2894,13 @@ While not recommended, setting this property to <code>false</code> would prevent
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>JSON Input</h1>
-
-<p>A JSON input reads data from a file containing one JSON document per row.<br />
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">json.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>A JSON input reads data from a file containing one JSON document per row.<br />
 Each CSV document translates in one record and must be an object.</p>
 
 <p>Files containing a single JSON array of records are not supported.</p>
 
-<h3>Examples:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
@@ -2978,7 +2957,7 @@ Each CSV document translates in one record and must be an object.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3040,7 +3019,7 @@ Each CSV document translates in one record and must be an object.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3101,7 +3080,7 @@ Each CSV document translates in one record and must be an object.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3168,7 +3147,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">csv</a>
+    <a href="#inputs_items_anyOf_i1" onclick="anchorLink('inputs_items_anyOf_i1')">JSON</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3225,13 +3204,11 @@ While not recommended, setting this property to <code>false</code> would prevent
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>XML Input</h1>
-
-<p>An XML input reads data from an XML file. Each record or value inside the records is defined using XPath.<br />
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>An XML input reads data from an XML file. Each record or value inside the records is defined using XPath.<br />
 This input provides several settings described below.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xml</span>
@@ -3311,7 +3288,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3373,7 +3350,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3434,7 +3411,7 @@ This input provides several settings described below.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3501,7 +3478,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3565,7 +3542,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3614,7 +3591,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3678,7 +3655,7 @@ Other data sources (NFS, SSH, S3...) should be handled by mounting them in the f
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3757,7 +3734,7 @@ It must be unique in this object.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3836,7 +3813,7 @@ It must be unique in this object.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3919,7 +3896,7 @@ Otherwise, the <code>type</code> must be <code>primitive</code> (which is the de
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -3996,7 +3973,7 @@ The value returned by the XPath expression must be either a string (in which cas
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4074,7 +4051,7 @@ Each node in the collection will be processed and parsed individually using the 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4158,7 +4135,7 @@ The definition of this object is the same than the items of the currently descri
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml</a>
+    <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">XML</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4219,12 +4196,12 @@ While not recommended, setting this property to <code>false</code> would prevent
             />
         </svg>
     <a href="#indexes" onclick="anchorLink('indexes')">indexes</a></div><span class="badge badge-dark value-type">Type: array of object</span><br/>
-<span class="description"><h1>Indexes</h1>
-
-<p>An index allows RODB to retrieve specific records using given search criterias.<br />
+<span class="description"><p>An index allows RODB to retrieve specific records using given search criterias.<br />
 Indexes are especially useful when handling large input data or specific search requirements (full-text search for example).</p>
 
-<h3>Example:</h3>
+<p><strong>Root config key:</strong> <code>indexes</code></p>
+
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">indexes</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userId</span>
@@ -4277,27 +4254,27 @@ Indexes are especially useful when handling large input data or specific search 
             <a class="nav-link active anyOf-option"
                id="indexes_items_anyOf_i0" data-toggle="tab" href="#tab-pane_indexes_items_anyOf_i0" role="tab"
                onclick="setAnchor('#indexes_items_anyOf_i0')"
-            >Map</a>
+            >map.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="indexes_items_anyOf_i1" data-toggle="tab" href="#tab-pane_indexes_items_anyOf_i1" role="tab"
                onclick="setAnchor('#indexes_items_anyOf_i1')"
-            >SQLite</a>
+            >sqlite.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="indexes_items_anyOf_i2" data-toggle="tab" href="#tab-pane_indexes_items_anyOf_i2" role="tab"
                onclick="setAnchor('#indexes_items_anyOf_i2')"
-            >FTS5</a>
+            >fts5.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="indexes_items_anyOf_i3" data-toggle="tab" href="#tab-pane_indexes_items_anyOf_i3" role="tab"
                onclick="setAnchor('#indexes_items_anyOf_i3')"
-            >Wildcard</a>
+            >wildcard.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="indexes_items_anyOf_i4" data-toggle="tab" href="#tab-pane_indexes_items_anyOf_i4" role="tab"
                onclick="setAnchor('#indexes_items_anyOf_i4')"
-            >NoOp</a>
+            >noop.yaml</a>
         </li></ul>
 <div class="tab-content card"><div class="tab-pane fade card-body active show"
              id="tab-pane_indexes_items_anyOf_i0" role="tabpanel">
@@ -4331,16 +4308,14 @@ Indexes are especially useful when handling large input data or specific search 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Map index</h1>
-
-<p>The map index uses an in-memory map to index the data.<br />
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>The map index uses an in-memory map to index the data.<br />
 It is always created at startup and lost when RODB stops.<br />
 It can only match strictly equal values (including strings).</p>
 
 <p>While it is limited and can take significant amounts of memory, the advantages of the map index are that retrieving any records is extremely fast, and it's setup is easier, since it does not need to store any file.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">posts</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">map</span>
@@ -4402,7 +4377,7 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4464,7 +4439,7 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4525,7 +4500,7 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4587,7 +4562,7 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4636,7 +4611,7 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">map</a>
+    <a href="#indexes_items_anyOf_i0" onclick="anchorLink('indexes_items_anyOf_i0')">Map</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4698,14 +4673,12 @@ It can only match strictly equal values (including strings).</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>SQLite index</h1>
-
-<p>This index internally stores it's data into an SQLite database.<br />
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This index internally stores it's data into an SQLite database.<br />
 Depending on the configured connection string, it may be stored in a file or in memory.<br />
 This index can efficiently search on properties with various data types, and allows to use the same SQLite database for multiple indexes.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sqlite</span>
@@ -4769,7 +4742,7 @@ This index can efficiently search on properties with various data types, and all
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4831,7 +4804,7 @@ This index can efficiently search on properties with various data types, and all
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4892,7 +4865,7 @@ This index can efficiently search on properties with various data types, and all
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -4959,7 +4932,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5021,7 +4994,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5070,7 +5043,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5134,7 +5107,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5210,7 +5183,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">sqlite</a>
+    <a href="#indexes_items_anyOf_i1" onclick="anchorLink('indexes_items_anyOf_i1')">SQLite</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5288,17 +5261,15 @@ Those values are explained in the <a href="https://www.sqlite.org/datatype3.html
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>FTS5 index</h1>
-
-<p>This is a basic full-text index based on the FTS5 extension of SQLite.</p>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This is a basic full-text index based on the FTS5 extension of SQLite.</p>
 
 <p>Contrarily to the other indexes, when using an fts5 index, the only available property to use from the output is <code>match</code>. The value of this property can be any fts5 query and is fully equivalent to the <code>MATCH</code> operator of SQLite/FTS5.</p>
 
 <p>You can find more information about the <code>match</code> syntax in the <a href="https://www.sqlite.org/fts5.html#full_text_query_syntax">SQLite's documentation</a>.<br />
 The columns available in this query are the same than the list of properties in this index's configuration.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articles</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fts5</span>
@@ -5362,7 +5333,7 @@ The columns available in this query are the same than the list of properties in 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5424,7 +5395,7 @@ The columns available in this query are the same than the list of properties in 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5485,7 +5456,7 @@ The columns available in this query are the same than the list of properties in 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5552,7 +5523,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5614,7 +5585,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5663,7 +5634,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5734,7 +5705,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5796,7 +5767,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5845,7 +5816,7 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">fts5</a>
+    <a href="#indexes_items_anyOf_i2" onclick="anchorLink('indexes_items_anyOf_i2')">FTS5</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -5907,10 +5878,8 @@ The most basic use cases are either the path to the database in the filesystem, 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Wildcard index</h1>
-
-<p>This index is <em>experimental</em>.</p>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This index is <em>experimental</em>.</p>
 
 <p>The wildcard index can only index strings. It allows to quickly match any substring in the indexed data.<br />
 The index file is automatically generated at startup, unless it has already been created previously.</p>
@@ -5919,7 +5888,7 @@ The index file is automatically generated at startup, unless it has already been
 
 <p>Internally, the wildcard uses a binary prefix-tree to index the data.</p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articleInfo</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">wildcard</span>
@@ -5982,7 +5951,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6044,7 +6013,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6105,7 +6074,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6167,7 +6136,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6229,7 +6198,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6291,7 +6260,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6340,7 +6309,7 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">wildcard</a>
+    <a href="#indexes_items_anyOf_i3" onclick="anchorLink('indexes_items_anyOf_i3')">Wildcard</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6402,19 +6371,16 @@ The index file is automatically generated at startup, unless it has already been
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">NoOp</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>NoOp index</h1>
-
-<p>This index does not actually index anything.<br />
+    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">noop.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This index does not actually index anything.<br />
 It iterates all the records of the data source to find records matching exactly the given filters.</p>
 
 <p>The reason why it exists is because it is the <code>default</code> index used by the other layers when no index has been specified.</p>
 
 <p>While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.</p>
 
-<h3>Default instance</h3>
-
-<p>A default instance of this index is already automatically created as such:</p>
+<p><strong>Default instance</strong><br />
+A default instance of this index is already automatically created as such:</p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">noop</span>
@@ -6470,7 +6436,7 @@ It iterates all the records of the data source to find records matching exactly 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">noop</a>
+    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">NoOp</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6532,7 +6498,7 @@ It iterates all the records of the data source to find records matching exactly 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">noop</a>
+    <a href="#indexes_items_anyOf_i4" onclick="anchorLink('indexes_items_anyOf_i4')">NoOp</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6587,11 +6553,11 @@ It iterates all the records of the data source to find records matching exactly 
             />
         </svg>
     <a href="#outputs" onclick="anchorLink('outputs')">outputs</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
-<span class="description"><h1>Outputs</h1>
+<span class="description"><p>An output defines the output format of the data, how to search for it, and any relationship between it.</p>
 
-<p>An output defines the output format of the data, how to search for it, and any relationship between it.</p>
+<p><strong>Root config key:</strong> <code>outputs</code></p>
 
-<h3>Example:</h3>
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">outputs</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venuesList</span>
@@ -6646,12 +6612,12 @@ It iterates all the records of the data source to find records matching exactly 
             <a class="nav-link active anyOf-option"
                id="outputs_items_anyOf_i0" data-toggle="tab" href="#tab-pane_outputs_items_anyOf_i0" role="tab"
                onclick="setAnchor('#outputs_items_anyOf_i0')"
-            >JSON Object</a>
+            >json-object.yaml</a>
         </li><li class="nav-item">
             <a class="nav-link anyOf-option"
                id="outputs_items_anyOf_i1" data-toggle="tab" href="#tab-pane_outputs_items_anyOf_i1" role="tab"
                onclick="setAnchor('#outputs_items_anyOf_i1')"
-            >JSON Array</a>
+            >json-array.yaml</a>
         </li></ul>
 <div class="tab-content card"><div class="tab-pane fade card-body active show"
              id="tab-pane_outputs_items_anyOf_i0" role="tabpanel">
@@ -6685,14 +6651,12 @@ It iterates all the records of the data source to find records matching exactly 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Json Object output</h1>
-
-<p>This output produces a JSON document whose root is an object containing all the properties fetched from the input.<br />
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">json-object.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This output produces a JSON document whose root is an object containing all the properties fetched from the input.<br />
 The object is found in the input by filtering the specified parameters.<br />
 Objects from any input can also be embedded as a relationship.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venue</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonObject</span>
@@ -6774,7 +6738,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6836,7 +6800,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6897,7 +6861,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -6959,7 +6923,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7018,7 +6982,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7083,7 +7047,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7159,7 +7123,7 @@ Objects from any input can also be embedded as a relationship.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7236,7 +7200,7 @@ No index (<code>default</code>) means that no indexing will be used, thus iterat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7321,7 +7285,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7380,7 +7344,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7445,7 +7409,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7521,7 +7485,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7598,7 +7562,7 @@ When <code>false</code>, only the first record matching the criterias will be re
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7675,7 +7639,7 @@ If defined, truncates the number of items in the relationship to the given amoun
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7741,7 +7705,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7819,7 +7783,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -7909,7 +7873,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8006,7 +7970,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8068,7 +8032,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8146,7 +8110,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8236,7 +8200,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8326,7 +8290,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8424,7 +8388,7 @@ No index (<code>default</code>) means that no indexing will be used, thus iterat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8499,15 +8463,13 @@ This object structure is the same than the parent <code>relationships</code> one
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>Json Array output</h1>
-
-<p>This output produces a JSON array whose items are objects fetched from the input.<br />
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">json-array.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>This output produces a JSON array whose items are objects fetched from the input.<br />
 The objects are found in the input by filtering the specified parameters.<br />
 Objects from any input can also be embedded as a relationship.<br />
 There is an always-enabled and configurable paging to this array.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venuesList</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonArray</span>
@@ -8595,7 +8557,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8657,7 +8619,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8718,7 +8680,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8780,7 +8742,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8838,7 +8800,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8907,7 +8869,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -8976,7 +8938,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9049,7 +9011,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9107,7 +9069,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9180,7 +9142,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9239,7 +9201,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9304,7 +9266,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9380,7 +9342,7 @@ There is an always-enabled and configurable paging to this array.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9457,7 +9419,7 @@ No index (<code>default</code>) means that no indexing will be used, thus iterat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9542,7 +9504,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">jsonArray</a>
+    <a href="#outputs_items_anyOf_i1" onclick="anchorLink('outputs_items_anyOf_i1')">JSON Array</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9601,7 +9563,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9666,7 +9628,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9742,7 +9704,7 @@ Only parsers outputting primitive values are allowed here. More complex parsers,
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9819,7 +9781,7 @@ When <code>false</code>, only the first record matching the criterias will be re
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9896,7 +9858,7 @@ If defined, truncates the number of items in the relationship to the given amoun
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -9962,7 +9924,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10040,7 +10002,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10130,7 +10092,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10227,7 +10189,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10289,7 +10251,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10367,7 +10329,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10457,7 +10419,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10547,7 +10509,7 @@ The first defined property has a higher priority.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10645,7 +10607,7 @@ No index (<code>default</code>) means that no indexing will be used, thus iterat
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">jsonObject</a>
+    <a href="#outputs_items_anyOf_i0" onclick="anchorLink('outputs_items_anyOf_i0')">JSON Object</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10724,14 +10686,14 @@ This object structure is the same than the parent <code>relationships</code> one
             />
         </svg>
     <a href="#services" onclick="anchorLink('services')">services</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
-<span class="description"><h1>Services</h1>
-
-<p>In RODB, a service is an object through which the outputs are exposed to the outside world. Most commonly, it is a server.<br />
+<span class="description"><p>In RODB, a service is an object through which the outputs are exposed to the outside world. Most commonly, it is a server.<br />
 Currently, the only type of service that is supported is HTTP, but more will come in the future.</p>
 
 <p>It is possible to define multiple services in the same RODB instance.</p>
 
-<h3>Example:</h3>
+<p><strong>Root config key:</strong> <code>services</code></p>
+
+<p><strong>Example:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
@@ -10808,14 +10770,12 @@ Currently, the only type of service that is supported is HTTP, but more will com
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
-<span class="description"><h1>HTTP Service</h1>
-
-<p>Creates an HTTP service and provides endpoints bound to the given outputs.</p>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
+<span class="description"><p>Creates an HTTP service and provides endpoints bound to the given outputs.</p>
 
 <p>At least one of either the <code>http</code> or <code>https</code> properties must be defined.</p>
 
-<h3>Examples:</h3>
+<p><strong>Examples:</strong></p>
 
 <div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">httpService</span>
 <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
@@ -10892,7 +10852,7 @@ Currently, the only type of service that is supported is HTTP, but more will com
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -10954,7 +10914,7 @@ Currently, the only type of service that is supported is HTTP, but more will com
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11015,7 +10975,7 @@ Currently, the only type of service that is supported is HTTP, but more will com
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11073,7 +11033,7 @@ Currently, the only type of service that is supported is HTTP, but more will com
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11152,7 +11112,7 @@ If the IP is omitted(such as <code>:80</code>) or <code>0.0.0.0</code>, it will 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11210,7 +11170,7 @@ If the IP is omitted(such as <code>:80</code>) or <code>0.0.0.0</code>, it will 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11285,7 +11245,7 @@ If the IP is omitted(such as <code>:80</code>) or <code>0.0.0.0</code>, it will 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11354,7 +11314,7 @@ If the IP is omitted(such as <code>:80</code>) or <code>0.0.0.0</code>, it will 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11427,7 +11387,7 @@ If the IP is omitted(such as <code>:80</code>) or <code>0.0.0.0</code>, it will 
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11493,7 +11453,7 @@ Currently, only JSON is available.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11542,7 +11502,7 @@ Currently, only JSON is available.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11607,7 +11567,7 @@ Currently, only JSON is available.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"
@@ -11687,7 +11647,7 @@ Multiple different placeholders are allowed in the same route.</p>
                 d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"
             />
         </svg>
-    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">http</a>
+    <a href="#services_items_anyOf_i0" onclick="anchorLink('services_items_anyOf_i0')">HTTP</a>
         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-short" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
                 fill-rule="evenodd"

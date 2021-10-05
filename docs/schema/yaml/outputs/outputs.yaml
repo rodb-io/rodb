@@ -1,11 +1,13 @@
 $id: https://rodb.io/schema/yaml/outputs/outputs.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
+title: Outputs
 description: |
-  # Outputs
   An output defines the output format of the data, how to search for it, and any relationship between it.
 
-  ### Example:
+  **Root config key:** `outputs`
+
+  **Example:**
   ```yaml
   outputs:
     - name: venuesList
@@ -28,6 +30,4 @@ description: |
 items:
   anyOf:
     - $ref: ./json-object.yaml
-      title: JSON Object
     - $ref: ./json-array.yaml
-      title: JSON Array
