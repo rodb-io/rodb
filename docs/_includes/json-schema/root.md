@@ -4,11 +4,11 @@
 
 {{ root.description }}
 
+**Root config key:** `{{ include.rootKey }}`
 
-**Type**
+{% include json-schema/type.md definition=root %}
 
-Array of objects, with each object as defined below.
-
+{% include json-schema/examples.md examples=root.examples %}
 
 # Map
 

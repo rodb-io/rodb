@@ -6,34 +6,30 @@ description: |
   Creates an HTTP service and provides endpoints bound to the given outputs.
 
   At least one of either the `http` or `https` properties must be defined.
-
-  **Examples:**
-  ```yaml
-  name: httpService
-  type: http
-  http:
-    listen: ":80"
-  routes:
-    - path: "/users"
-      output: usersList
-    - path: "/users/{id}"
-      output: singleUser
-  ```
-
-  ```yaml
-  name: service
-  type: http
-  http:
-    listen: ":80"
-  https:
-    listen: ":443"
-    certificatePath: "/etc/ssl/certs/example.crt"
-    privateKeyPath: "/etc/ssl/certs/example.key"
-  errorsType: application/json
-  routes:
-    - path: "/"
-      output: mainOutput
-  ```
+examples:
+  - |
+    name: httpService
+    type: http
+    http:
+      listen: ":80"
+    routes:
+      - path: "/users"
+        output: usersList
+      - path: "/users/{id}"
+        output: singleUser
+  - |
+    name: service
+    type: http
+    http:
+      listen: ":80"
+    https:
+      listen: ":443"
+      certificatePath: "/etc/ssl/certs/example.crt"
+      privateKeyPath: "/etc/ssl/certs/example.key"
+    errorsType: application/json
+    routes:
+      - path: "/"
+        output: mainOutput
 additionalProperties: false
 required:
   - name

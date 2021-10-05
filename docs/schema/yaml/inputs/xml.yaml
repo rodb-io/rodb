@@ -5,36 +5,34 @@ title: XML
 description: |
   An XML input reads data from an XML file. Each record or value inside the records is defined using XPath.
   This input provides several settings described below.
-
-  **Example:**
-  ```yaml
-  name: users
-  type: xml
-  path: ./users.xml
-  recordXpath: "//User"
-  properties:
-    - name: id
-      parser: integer
-      xpath: "/Id"
-    - name: name
-      parser: string
-      xpath: "string(//Name)"
-    - name: roleIds
-      type: array
-      xpath: "number(/Roles/Role/@Id)"
-      items:
+examples:
+  - |
+    name: users
+    type: xml
+    path: ./users.xml
+    recordXpath: "//User"
+    properties:
+      - name: id
         parser: integer
-    - name: manager
-      type: object
-      xpath: "/Manager"
-      properties:
-        - name: id
+        xpath: "/Id"
+      - name: name
+        parser: string
+        xpath: "string(//Name)"
+      - name: roleIds
+        type: array
+        xpath: "number(/Roles/Role/@Id)"
+        items:
           parser: integer
-          xpath: "/@Id"
-        - name: name
-          parser: string
-          xpath: "/Name"
-  ```
+      - name: manager
+        type: object
+        xpath: "/Manager"
+        properties:
+          - name: id
+            parser: integer
+            xpath: "/@Id"
+          - name: name
+            parser: string
+            xpath: "/Name"
 additionalProperties: false
 required:
   - name

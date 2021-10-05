@@ -7,45 +7,41 @@ description: |
   The objects are found in the input by filtering the specified parameters.
   Objects from any input can also be embedded as a relationship.
   There is an always-enabled and configurable paging to this array.
-
-  **Examples:**
-  ```yaml
-  name: venuesList
-  type: jsonArray
-  input: venues
-  parameters:
-    city:
-      property: city
-      index: venueAddress
-      parser: string
-  ```
-
-  ```yaml
-  name: userList
-  type: jsonArray
-  input: users
-  parameters:
-    name:
-      property: name
-      index: userInfo
-      parser: string
-  limit:
-    default: 10
-    max: 100
-    parameter: "pageLimit"
-  offset:
-    parameter: "pageOffset"
-  relationships:
-    role:
-      input: roles
-      match:
-        - parentProperty: roleId
-          childProperty: id
-          childIndex: roleIds
-      sort:
-        - property: id
-          ascending: true
-  ```
+examples:
+  - |
+    name: venuesList
+    type: jsonArray
+    input: venues
+    parameters:
+      city:
+        property: city
+        index: venueAddress
+        parser: string
+  - |
+    name: userList
+    type: jsonArray
+    input: users
+    parameters:
+      name:
+        property: name
+        index: userInfo
+        parser: string
+    limit:
+      default: 10
+      max: 100
+      parameter: "pageLimit"
+    offset:
+      parameter: "pageOffset"
+    relationships:
+      role:
+        input: roles
+        match:
+          - parentProperty: roleId
+            childProperty: id
+            childIndex: roleIds
+        sort:
+          - property: id
+            ascending: true
 additionalProperties: false
 required:
   - name

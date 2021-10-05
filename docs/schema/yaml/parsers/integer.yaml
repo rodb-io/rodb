@@ -5,19 +5,6 @@ title: Integer
 description: |
   Parses a string value to a 64-bytes integer.
 
-  **Examples:**
-  ```yaml
-  name: formattedInteger
-  type: integer
-  ignoreCharacters: ", "
-  ```
-
-  ```yaml
-  name: currencyInteger
-  type: integer
-  ignoreCharacters: "€$¥"
-  ```
-
   **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
@@ -25,6 +12,15 @@ description: |
   type: integer
   ignoreCharacters: ""
   ```
+examples:
+  - |
+    name: formattedInteger
+    type: integer
+    ignoreCharacters: ", "
+  - |
+    name: currencyInteger
+    type: integer
+    ignoreCharacters: "€$¥"
 additionalProperties: false
 required:
   - name

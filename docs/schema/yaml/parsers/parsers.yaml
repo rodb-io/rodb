@@ -11,23 +11,19 @@ description: |
   To get a number, you would need to apply an `integer` or `float` parser to the column.
 
   The parsers are used by the input (data) and output (user inputs) layers.
-
-  **Root config key:** `parsers`
-
-  **Example:**
-  ```yaml
-  parsers:
-    - name: booleanYesNo
-      type: boolean
-      falseValues: ["No", "NO", "no"]
-      trueValues: ["Yes", "YES", "yes"]
-    - name: integerWithCommas
-      type: integer
-      ignoreCharacters: ","
-    - name: shiftJisString
-      type: string
-      convertFromCharset: "Shift_JIS"
-  ```
+examples:
+  - |
+    parsers:
+      - name: booleanYesNo
+        type: boolean
+        falseValues: ["No", "NO", "no"]
+        trueValues: ["Yes", "YES", "yes"]
+      - name: integerWithCommas
+        type: integer
+        ignoreCharacters: ","
+      - name: shiftJisString
+        type: string
+        convertFromCharset: "Shift_JIS"
 items:
   anyOf:
     - $ref: ./integer.yaml

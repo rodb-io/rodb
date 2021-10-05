@@ -6,21 +6,18 @@ description: |
   Splits a string to an array of values and applies another parser on each value.
 
   This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
-
-  **Examples:**
-  ```yaml
-  name: splitStringsOnSlashes
-  type: split
-  delimiter: "/"
-  parser: string
-  ```
-  ```yaml
-  name: extractOnlyIntegers
-  type: split
-  delimiter: "[^0-9]+"
-  delimiterIsRegexp: true
-  parser: integer
-  ```
+examples:
+  - |
+    name: splitStringsOnSlashes
+    type: split
+    delimiter: "/"
+    parser: string
+  - |
+    name: extractOnlyIntegers
+    type: split
+    delimiter: "[^0-9]+"
+    delimiterIsRegexp: true
+    parser: integer
 additionalProperties: false
 required:
   - name

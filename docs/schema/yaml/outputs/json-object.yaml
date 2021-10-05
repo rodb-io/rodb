@@ -6,39 +6,35 @@ description: |
   This output produces a JSON document whose root is an object containing all the properties fetched from the input.
   The object is found in the input by filtering the specified parameters.
   Objects from any input can also be embedded as a relationship.
-
-  **Examples:**
-  ```yaml
-  name: venue
-  type: jsonObject
-  input: venues
-  parameters:
-    id:
-      property: id
-      index: venueIds
-      parser: integer
-  ```
-
-  ```yaml
-  name: singleUserById
-  type: jsonObject
-  input: users
-  parameters:
-    id:
-      property: id
-      index: userIds
-      parser: integer
-  relationships:
-    role:
-      input: roles
-      match:
-        - parentProperty: roleId
-          childProperty: id
-          childIndex: roleIds
-      sort:
-        - property: id
-          ascending: true
-  ```
+examples:
+  - |
+    name: venue
+    type: jsonObject
+    input: venues
+    parameters:
+      id:
+        property: id
+        index: venueIds
+        parser: integer
+  - |
+    name: singleUserById
+    type: jsonObject
+    input: users
+    parameters:
+      id:
+        property: id
+        index: userIds
+        parser: integer
+    relationships:
+      role:
+        input: roles
+        match:
+          - parentProperty: roleId
+            childProperty: id
+            childIndex: roleIds
+        sort:
+          - property: id
+            ascending: true
 additionalProperties: false
 required:
   - name

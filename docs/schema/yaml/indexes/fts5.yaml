@@ -9,20 +9,18 @@ description: |
 
   You can find more information about the `match` syntax in the [SQLite's documentation](https://www.sqlite.org/fts5.html#full_text_query_syntax).
   The columns available in this query are the same than the list of properties in this index's configuration.
-
-  **Example:**
-  ```yaml
-  name: articles
-  type: fts5
-  dsn: ./articles.rodb
-  input: articles
-  tokenize: [2, 3]
-  tokenize: "unicode61 remove_diacritics 0 tokenchars '-_'"
-  properties:
-    - id
-    - title
-    - content
-  ```
+examples:
+  - |
+    name: articles
+    type: fts5
+    dsn: ./articles.rodb
+    input: articles
+    tokenize: [2, 3]
+    tokenize: "unicode61 remove_diacritics 0 tokenchars '-_'"
+    properties:
+      - id
+      - title
+      - content
 additionalProperties: false
 required:
   - name

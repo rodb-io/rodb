@@ -6,20 +6,18 @@ description: |
   This index internally stores it's data into an SQLite database.
   Depending on the configured connection string, it may be stored in a file or in memory.
   This index can efficiently search on properties with various data types, and allows to use the same SQLite database for multiple indexes.
-
-  **Example:**
-  ```yaml
-  name: users
-  type: sqlite
-  dsn: ./users.rodb
-  input: users
-  properties:
-    - name: id
-    - name: firstName
-      collate: nocase
-    - name: lastName
-      collate: nocase
-  ```
+examples:
+  - |
+    name: users
+    type: sqlite
+    dsn: ./users.rodb
+    input: users
+    properties:
+      - name: id
+      - name: firstName
+        collate: nocase
+      - name: lastName
+        collate: nocase
 additionalProperties: false
 required:
   - name

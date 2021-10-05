@@ -6,21 +6,6 @@ description: |
   Converts a string value to a boolean, according to the configured values.
   RODB will output an error if it encounters a value that is neither defined in `trueValues` or `falseValues`.
 
-  **Examples:**
-  ```yaml
-  name: booleanYesNo
-  type: boolean
-  falseValues: ["No", "NO", "no"]
-  trueValues: ["Yes", "YES", "yes"]
-  ```
-
-  ```yaml
-  name: booleanZeroOne
-  type: boolean
-  trueValues: ["1"]
-  falseValues: ["0"]
-  ```
-
   **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
@@ -29,6 +14,17 @@ description: |
   trueValues:  ["true", "1", "TRUE"]
   falseValues: ["false", "0", "FALSE"]
   ```
+examples:
+  - |
+    name: booleanYesNo
+    type: boolean
+    falseValues: ["No", "NO", "no"]
+    trueValues: ["Yes", "YES", "yes"]
+  - |
+    name: booleanZeroOne
+    type: boolean
+    trueValues: ["1"]
+    falseValues: ["0"]
 additionalProperties: false
 required:
   - name

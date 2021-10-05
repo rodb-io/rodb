@@ -4,29 +4,25 @@ type: array
 title: Outputs
 description: |
   An output defines the output format of the data, how to search for it, and any relationship between it.
-
-  **Root config key:** `outputs`
-
-  **Example:**
-  ```yaml
-  outputs:
-    - name: venuesList
-      type: jsonArray
-      input: venues
-      parameters:
-        city:
-          property: city
-          index: venueAddress
-          parser: string
-    - name: venue
-      type: jsonObject
-      input: venues
-      parameters:
-        id:
-          property: id
-          index: venueIds
-          parser: integer
-  ```
+examples:
+  - |
+    outputs:
+      - name: venuesList
+        type: jsonArray
+        input: venues
+        parameters:
+          city:
+            property: city
+            index: venueAddress
+            parser: string
+      - name: venue
+        type: jsonObject
+        input: venues
+        parameters:
+          id:
+            property: id
+            index: venueIds
+            parser: integer
 items:
   anyOf:
     - $ref: ./json-object.yaml

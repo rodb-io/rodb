@@ -8,18 +8,16 @@ description: |
   It can only match strictly equal values (including strings).
 
   While it is limited and can take significant amounts of memory, the advantages of the map index are that retrieving any records is extremely fast, and it's setup is easier, since it does not need to store any file.
-
-  **Example:**
-  ```yaml
-  name: posts
-  type: map
-  input: posts
-  properties:
-    - id
-    - status
-    - category
-    - authorId
-  ```
+examples:
+  - |
+    name: posts
+    type: map
+    input: posts
+    properties:
+      - id
+      - status
+      - category
+      - authorId
 additionalProperties: false
 required:
   - name

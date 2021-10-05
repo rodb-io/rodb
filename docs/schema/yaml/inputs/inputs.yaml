@@ -5,27 +5,23 @@ title: Inputs
 description: |
   An input defines the data source and format to be used in RODB.
   It also defines how to translate each record in the data source to an internal structure to be used in RODB.
-
-  **Root config key:** `inputs`
-
-  **Example:**
-  ```yaml
-  inputs:
-    - name: cities
-      type: csv
-      path: ./cities.csv
-      ignoreFirstRow: true
-      columns:
-        - name: name
-          parser: string
-        - name: prefecture
-          parser: string
-        - name: population
-          parser: integer
-    - name: countries
-      type: json
-      path: ./countries.json
-  ```
+examples:
+  - |
+    inputs:
+      - name: cities
+        type: csv
+        path: ./cities.csv
+        ignoreFirstRow: true
+        columns:
+          - name: name
+            parser: string
+          - name: prefecture
+            parser: string
+          - name: population
+            parser: integer
+      - name: countries
+        type: json
+        path: ./countries.json
 items:
   anyOf:
     - $ref: ./csv.yaml

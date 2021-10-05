@@ -7,13 +7,11 @@ description: |
   Each CSV document translates in one record and must be an object.
 
   Files containing a single JSON array of records are not supported.
-
-  **Example:**
-  ```yaml
-  name: countries
-  type: json
-  path: ./countries.json
-  ```
+examples:
+  - |
+    name: countries
+    type: json
+    path: ./countries.json
 additionalProperties: false
 required:
   - name

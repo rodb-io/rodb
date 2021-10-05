@@ -5,21 +5,6 @@ title: Float
 description: |
   Parses a string value to a 64-bytes floating-point number.
 
-  **Examples:**
-  ```yaml
-  name: formattedFloat
-  type: float
-  decimalSeparator: "."
-  ignoreCharacters: ","
-  ```
-
-  ```yaml
-  name: currencyFloat
-  type: float
-  decimalSeparator: "."
-  ignoreCharacters: "€$¥"
-  ```
-
   **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
@@ -28,6 +13,17 @@ description: |
   decimalSeparator: "."
   ignoreCharacters: ""
   ```
+examples:
+  - |
+    name: formattedFloat
+    type: float
+    decimalSeparator: "."
+    ignoreCharacters: ","
+  - |
+    name: currencyFloat
+    type: float
+    decimalSeparator: "."
+    ignoreCharacters: "€$¥"
 additionalProperties: false
 required:
   - name

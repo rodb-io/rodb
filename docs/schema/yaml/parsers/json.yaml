@@ -10,18 +10,16 @@ description: |
 
   This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
 
-  **Example:**
-  ```yaml
-  name: customJson
-  type: json
-  ```
-
   **Default instance**
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: json
   type: json
   ```
+examples:
+  - |
+    name: customJson
+    type: json
 additionalProperties: false
 required:
   - name

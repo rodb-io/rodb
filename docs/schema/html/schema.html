@@ -58,23 +58,6 @@ This means for example that every value extracted from a CSV file is a string by
 To get a number, you would need to apply an <code>integer</code> or <code>float</code> parser to the column.</p>
 
 <p>The parsers are used by the input (data) and output (user inputs) layers.</p>
-
-<p><strong>Root config key:</strong> <code>parsers</code></p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">parsers</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanYesNo</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
-    <span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;No&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;NO&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;no&quot;</span><span class="p p-Indicator">]</span>
-    <span class="nt">trueValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;Yes&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;YES&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;yes&quot;</span><span class="p p-Indicator">]</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integerWithCommas</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-    <span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;,&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shiftJisString</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-    <span class="nt">convertFromCharset</span><span class="p">:</span> <span class="s">&quot;Shift_JIS&quot;</span>
-</code></pre></div>
 </span>
 
     
@@ -172,18 +155,6 @@ To get a number, you would need to apply an <code>integer</code> or <code>float<
     <a href="#parsers_items_anyOf_i0" onclick="anchorLink('parsers_items_anyOf_i0')">integer.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
 <span class="description"><p>Parses a string value to a 64-bytes integer.</p>
 
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">formattedInteger</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;,</span><span class="nv"> </span><span class="s">&quot;</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">currencyInteger</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
-</code></pre></div>
-
 <p><strong>Default instance</strong><br />
 A default instance of this parser is already automatically created as such:</p>
 
@@ -199,7 +170,25 @@ A default instance of this parser is already automatically created as such:</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="parsers_items_anyOf_i0_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">formattedInteger</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">integer</span>
+
+  <span class="s">ignoreCharacters:</span><span class="nv"> </span><span class="s">&quot;,</span><span class="nv"> </span><span class="s">&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div><div id="parsers_items_anyOf_i0_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">currencyInteger</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">integer</span>
+
+  <span class="s">ignoreCharacters:</span><span class="nv"> </span><span class="s">&quot;€$¥&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i0_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i0_name">
@@ -422,20 +411,6 @@ This is useful for example to parse formatted numbers to an integer.</p>
     <a href="#parsers_items_anyOf_i1" onclick="anchorLink('parsers_items_anyOf_i1')">float.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
 <span class="description"><p>Parses a string value to a 64-bytes floating-point number.</p>
 
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">formattedFloat</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
-<span class="nt">decimalSeparator</span><span class="p">:</span> <span class="s">&quot;.&quot;</span>
-<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;,&quot;</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">currencyFloat</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">float</span>
-<span class="nt">decimalSeparator</span><span class="p">:</span> <span class="s">&quot;.&quot;</span>
-<span class="nt">ignoreCharacters</span><span class="p">:</span> <span class="s">&quot;€$¥&quot;</span>
-</code></pre></div>
-
 <p><strong>Default instance</strong><br />
 A default instance of this parser is already automatically created as such:</p>
 
@@ -452,7 +427,29 @@ A default instance of this parser is already automatically created as such:</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="parsers_items_anyOf_i1_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">formattedFloat</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">float</span>
+
+  <span class="s">decimalSeparator:</span><span class="nv"> </span><span class="s">&quot;.&quot;</span>
+
+  <span class="s">ignoreCharacters:</span><span class="nv"> </span><span class="s">&quot;,&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div><div id="parsers_items_anyOf_i1_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">currencyFloat</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">float</span>
+
+  <span class="s">decimalSeparator:</span><span class="nv"> </span><span class="s">&quot;.&quot;</span>
+
+  <span class="s">ignoreCharacters:</span><span class="nv"> </span><span class="s">&quot;€$¥&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i1_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i1_name">
@@ -738,20 +735,6 @@ This is useful for example to parse formatted numbers to an integer.</p>
 <span class="description"><p>Converts a string value to a boolean, according to the configured values.<br />
 RODB will output an error if it encounters a value that is neither defined in <code>trueValues</code> or <code>falseValues</code>.</p>
 
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanYesNo</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
-<span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;No&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;NO&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;no&quot;</span><span class="p p-Indicator">]</span>
-<span class="nt">trueValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;Yes&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;YES&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;yes&quot;</span><span class="p p-Indicator">]</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">booleanZeroOne</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">boolean</span>
-<span class="nt">trueValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;1&quot;</span><span class="p p-Indicator">]</span>
-<span class="nt">falseValues</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;0&quot;</span><span class="p p-Indicator">]</span>
-</code></pre></div>
-
 <p><strong>Default instance</strong><br />
 A default instance of this parser is already automatically created as such:</p>
 
@@ -768,7 +751,29 @@ A default instance of this parser is already automatically created as such:</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="parsers_items_anyOf_i2_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">booleanYesNo</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">boolean</span>
+
+  <span class="s">falseValues:</span><span class="nv"> </span><span class="s">[&quot;No&quot;,</span><span class="nv"> </span><span class="s">&quot;NO&quot;,</span><span class="nv"> </span><span class="s">&quot;no&quot;]</span>
+
+  <span class="s">trueValues:</span><span class="nv"> </span><span class="s">[&quot;Yes&quot;,</span><span class="nv"> </span><span class="s">&quot;YES&quot;,</span><span class="nv"> </span><span class="s">&quot;yes&quot;]</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div><div id="parsers_items_anyOf_i2_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">booleanZeroOne</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">boolean</span>
+
+  <span class="s">trueValues:</span><span class="nv"> </span><span class="s">[&quot;1&quot;]</span>
+
+  <span class="s">falseValues:</span><span class="nv"> </span><span class="s">[&quot;0&quot;]</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i2_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i2_name">
@@ -1170,13 +1175,6 @@ A default instance of this parser is already automatically created as such:</p>
 <p>It is currently only useful if you need to read files with a non-unicode encoding.<br />
 Otherwise, while it is possible to declare your own, it would be equivalent to the default one.</p>
 
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shiftJisString</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-<span class="nt">convertFromCharset</span><span class="p">:</span> <span class="s">&quot;Shift_JIS&quot;</span>
-</code></pre></div>
-
 <p><strong>Default instance</strong><br />
 A default instance of this parser is already automatically created as such:</p>
 
@@ -1192,7 +1190,17 @@ A default instance of this parser is already automatically created as such:</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="parsers_items_anyOf_i3_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">shiftJisString</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">string</span>
+
+  <span class="s">convertFromCharset:</span><span class="nv"> </span><span class="s">&quot;Shift_JIS&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i3_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i3_name">
@@ -1419,21 +1427,6 @@ If the given value has a different encoding, RODB will convert it automatically 
 <span class="description"><p>Splits a string to an array of values and applies another parser on each value.</p>
 
 <p>This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.</p>
-
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">splitStringsOnSlashes</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">split</span>
-<span class="nt">delimiter</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
-<span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">extractOnlyIntegers</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">split</span>
-<span class="nt">delimiter</span><span class="p">:</span> <span class="s">&quot;[^0-9]+&quot;</span>
-<span class="nt">delimiterIsRegexp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -1442,7 +1435,31 @@ If the given value has a different encoding, RODB will convert it automatically 
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="parsers_items_anyOf_i4_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">splitStringsOnSlashes</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">split</span>
+
+  <span class="s">delimiter:</span><span class="nv"> </span><span class="s">&quot;/&quot;</span>
+
+  <span class="s">parser:</span><span class="nv"> </span><span class="s">string</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div><div id="parsers_items_anyOf_i4_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">extractOnlyIntegers</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">split</span>
+
+  <span class="s">delimiter:</span><span class="nv"> </span><span class="s">&quot;[^0-9]+&quot;</span>
+
+  <span class="s">delimiterIsRegexp:</span><span class="nv"> </span><span class="s">true</span>
+
+  <span class="s">parser:</span><span class="nv"> </span><span class="s">integer</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i4_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i4_name">
@@ -1812,12 +1829,6 @@ If no specific change is required and an array of strings is expected, please us
 
 <p>This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.</p>
 
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">customJson</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
-</code></pre></div>
-
 <p><strong>Default instance</strong><br />
 A default instance of this parser is already automatically created as such:</p>
 
@@ -1832,7 +1843,15 @@ A default instance of this parser is already automatically created as such:</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="parsers_items_anyOf_i5_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">customJson</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">json</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionparsers_items_anyOf_i5_name">
     <div class="card">
         <div class="card-header" id="headingparsers_items_anyOf_i5_name">
@@ -1965,7 +1984,14 @@ A default instance of this parser is already automatically created as such:</p>
             
         </div>
     </div>
-    
+    <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="parsers_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;parsers:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">booleanYesNo\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">boolean\n</span><span class="nv">    </span><span class="s">falseValues:</span><span class="nv"> </span><span class="s">[\&quot;No\&quot;,</span><span class="nv"> </span><span class="s">\&quot;\</span>
+  <span class="s">NO\&quot;,</span><span class="nv"> </span><span class="s">\&quot;no\&quot;]\n</span><span class="nv">    </span><span class="s">trueValues:</span><span class="nv"> </span><span class="s">[\&quot;Yes\&quot;,</span><span class="nv"> </span><span class="s">\&quot;YES\&quot;,</span><span class="nv"> </span><span class="s">\&quot;yes\&quot;]\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">integerWithCommas\n\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">type:</span><span class="nv"> </span><span class="s">integer\n</span><span class="nv">    </span><span class="s">ignoreCharacters:</span><span class="nv"> </span><span class="s">\&quot;,\&quot;\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">shiftJisString\n</span><span class="nv">    </span><span class="s">type:\</span>
+  <span class="s">\ string\n</span><span class="nv">    </span><span class="s">convertFromCharset:</span><span class="nv"> </span><span class="s">\&quot;Shift_JIS\&quot;\n&quot;</span>
+</pre></div>
+</div>
             </div>
         </div>
     </div>
@@ -1994,27 +2020,6 @@ A default instance of this parser is already automatically created as such:</p>
     <a href="#inputs" onclick="anchorLink('inputs')">inputs</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
 <span class="description"><p>An input defines the data source and format to be used in RODB.<br />
 It also defines how to translate each record in the data source to an internal structure to be used in RODB.</p>
-
-<p><strong>Root config key:</strong> <code>inputs</code></p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cities</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csv</span>
-    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./cities.csv</span>
-    <span class="nt">ignoreFirstRow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-    <span class="nt">columns</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prefecture</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">population</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
-    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./countries.json</span>
-</code></pre></div>
 </span>
 
     
@@ -2097,29 +2102,6 @@ It also defines how to translate each record in the data source to an internal s
     <a href="#inputs_items_anyOf_i0" onclick="anchorLink('inputs_items_anyOf_i0')">csv.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
 <span class="description"><p>A CSV input reads data from a CSV file. Each CSV row translates in one record.<br />
 This input provides several settings described below.</p>
-
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cities</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csv</span>
-<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./cities.csv</span>
-<span class="nt">ignoreFirstRow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">columns</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prefecture</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">population</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csv</span>
-<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./cities.csv</span>
-<span class="nt">ignoreFirstRow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">autodetectColumns</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">delimiter</span><span class="p">:</span> <span class="s">&quot;,&quot;</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -2128,7 +2110,27 @@ This input provides several settings described below.</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="inputs_items_anyOf_i0_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">cities\ntype:</span><span class="nv"> </span><span class="s">csv\npath:</span><span class="nv"> </span><span class="s">./cities.csv\nignoreFirstRow:</span><span class="nv"> </span><span class="s">true\ncolumns:\n</span><span class="nv">  </span><span class="s">-\</span>
+  <span class="s">\ name:</span><span class="nv"> </span><span class="s">name\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">prefecture\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n</span><span class="nv">  </span><span class="s">-\</span>
+  <span class="s">\ name:</span><span class="nv"> </span><span class="s">population\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n&quot;</span>
+</pre></div>
+</div><div id="inputs_items_anyOf_i0_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">countries</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">csv</span>
+
+  <span class="s">path:</span><span class="nv"> </span><span class="s">./cities.csv</span>
+
+  <span class="s">ignoreFirstRow:</span><span class="nv"> </span><span class="s">true</span>
+
+  <span class="s">autodetectColumns:</span><span class="nv"> </span><span class="s">true</span>
+
+  <span class="s">delimiter:</span><span class="nv"> </span><span class="s">&quot;,&quot;</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordioninputs_items_anyOf_i0_name">
     <div class="card">
         <div class="card-header" id="headinginputs_items_anyOf_i0_name">
@@ -2899,13 +2901,6 @@ While not recommended, setting this property to <code>false</code> would prevent
 Each CSV document translates in one record and must be an object.</p>
 
 <p>Files containing a single JSON array of records are not supported.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">countries</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
-<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./countries.json</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -2914,7 +2909,17 @@ Each CSV document translates in one record and must be an object.</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="inputs_items_anyOf_i1_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&#39;name:</span><span class="nv"> </span><span class="s">countries</span>
+
+  <span class="s">type:</span><span class="nv"> </span><span class="s">json</span>
+
+  <span class="s">path:</span><span class="nv"> </span><span class="s">./countries.json</span>
+
+  <span class="s">&#39;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordioninputs_items_anyOf_i1_name">
     <div class="card">
         <div class="card-header" id="headinginputs_items_anyOf_i1_name">
@@ -3207,36 +3212,6 @@ While not recommended, setting this property to <code>false</code> would prevent
     <a href="#inputs_items_anyOf_i2" onclick="anchorLink('inputs_items_anyOf_i2')">xml.yaml</a></div><span class="badge badge-dark value-type">Type: object</span><br/>
 <span class="description"><p>An XML input reads data from an XML file. Each record or value inside the records is defined using XPath.<br />
 This input provides several settings described below.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xml</span>
-<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./users.xml</span>
-<span class="nt">recordXpath</span><span class="p">:</span> <span class="s">&quot;//User&quot;</span>
-<span class="nt">properties</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-    <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;/Id&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-    <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;string(//Name)&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roleIds</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">array</span>
-    <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;number(/Roles/Role/@Id)&quot;</span>
-    <span class="nt">items</span><span class="p">:</span>
-      <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">manager</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">object</span>
-    <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;/Manager&quot;</span>
-    <span class="nt">properties</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-        <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;/@Id&quot;</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-        <span class="nt">xpath</span><span class="p">:</span> <span class="s">&quot;/Name&quot;</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -3245,7 +3220,17 @@ This input provides several settings described below.</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="inputs_items_anyOf_i2_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">users\ntype:</span><span class="nv"> </span><span class="s">xml\npath:</span><span class="nv"> </span><span class="s">./users.xml\nrecordXpath:</span><span class="nv"> </span><span class="s">\&quot;//User\&quot;\nproperties:\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n</span><span class="nv">    </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;/Id\&quot;\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">name\n</span><span class="nv">    </span><span class="s">parser:\</span>
+  <span class="s">\ string\n</span><span class="nv">    </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;string(//Name)\&quot;\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">roleIds\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">array\n</span><span class="nv">  </span><span class="s">\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;number(/Roles/Role/@Id)\&quot;\n</span><span class="nv">    </span><span class="s">items:\n</span><span class="nv">      </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:\</span>
+  <span class="s">\ manager\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">object\n</span><span class="nv">    </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;/Manager\&quot;\n</span><span class="nv">    </span><span class="s">properties:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:\</span>
+  <span class="s">\ id\n</span><span class="nv">        </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n</span><span class="nv">        </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;/@Id\&quot;\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">name\n</span><span class="nv">   </span><span class="s">\</span>
+  <span class="s">\ </span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n</span><span class="nv">        </span><span class="s">xpath:</span><span class="nv"> </span><span class="s">\&quot;/Name\&quot;\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordioninputs_items_anyOf_i2_name">
     <div class="card">
         <div class="card-header" id="headinginputs_items_anyOf_i2_name">
@@ -4169,7 +4154,14 @@ While not recommended, setting this property to <code>false</code> would prevent
             
         </div>
     </div>
-    
+    <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="inputs_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;inputs:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">cities\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">csv\n</span><span class="nv">    </span><span class="s">path:</span><span class="nv"> </span><span class="s">./cities.csv\n</span><span class="nv">    </span><span class="s">ignoreFirstRow:\</span>
+  <span class="s">\ true\n</span><span class="nv">    </span><span class="s">columns:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">name\n</span><span class="nv">        </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:\</span>
+  <span class="s">\ prefecture\n</span><span class="nv">        </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">population\n</span><span class="nv">        </span><span class="s">parser:\</span>
+  <span class="s">\ integer\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">countries\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">json\n</span><span class="nv">    </span><span class="s">path:</span><span class="nv"> </span><span class="s">./countries.json\n&quot;</span>
+</pre></div>
+</div>
             </div>
         </div>
     </div>
@@ -4198,27 +4190,6 @@ While not recommended, setting this property to <code>false</code> would prevent
     <a href="#indexes" onclick="anchorLink('indexes')">indexes</a></div><span class="badge badge-dark value-type">Type: array of object</span><br/>
 <span class="description"><p>An index allows RODB to retrieve specific records using given search criterias.<br />
 Indexes are especially useful when handling large input data or specific search requirements (full-text search for example).</p>
-
-<p><strong>Root config key:</strong> <code>indexes</code></p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">indexes</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userId</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">map</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-    <span class="nt">properties</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sqlite</span>
-    <span class="nt">dsn</span><span class="p">:</span> <span class="s">&quot;:memory:&quot;</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-    <span class="nt">properties</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">firstName</span>
-        <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">lastName</span>
-        <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
-</code></pre></div>
 </span>
 
     
@@ -4314,18 +4285,6 @@ It is always created at startup and lost when RODB stops.<br />
 It can only match strictly equal values (including strings).</p>
 
 <p>While it is limited and can take significant amounts of memory, the advantages of the map index are that retrieving any records is extremely fast, and it's setup is easier, since it does not need to store any file.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">posts</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">map</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">posts</span>
-<span class="nt">properties</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">category</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">authorId</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -4334,7 +4293,12 @@ It can only match strictly equal values (including strings).</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="indexes_items_anyOf_i0_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">posts\ntype:</span><span class="nv"> </span><span class="s">map\ninput:</span><span class="nv"> </span><span class="s">posts\nproperties:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">status\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">category\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">authorId\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionindexes_items_anyOf_i0_name">
     <div class="card">
         <div class="card-header" id="headingindexes_items_anyOf_i0_name">
@@ -4677,20 +4641,6 @@ It can only match strictly equal values (including strings).</p>
 <span class="description"><p>This index internally stores it's data into an SQLite database.<br />
 Depending on the configured connection string, it may be stored in a file or in memory.<br />
 This index can efficiently search on properties with various data types, and allows to use the same SQLite database for multiple indexes.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sqlite</span>
-<span class="nt">dsn</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./users.rodb</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-<span class="nt">properties</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">firstName</span>
-    <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">lastName</span>
-    <span class="nt">collate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nocase</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -4699,7 +4649,13 @@ This index can efficiently search on properties with various data types, and all
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="indexes_items_anyOf_i1_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">users\ntype:</span><span class="nv"> </span><span class="s">sqlite\ndsn:</span><span class="nv"> </span><span class="s">./users.rodb\ninput:</span><span class="nv"> </span><span class="s">users\nproperties:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:\</span>
+  <span class="s">\ id\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">firstName\n</span><span class="nv">    </span><span class="s">collate:</span><span class="nv"> </span><span class="s">nocase\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">lastName\n</span><span class="nv">    </span><span class="s">collate:\</span>
+  <span class="s">\ nocase\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionindexes_items_anyOf_i1_name">
     <div class="card">
         <div class="card-header" id="headingindexes_items_anyOf_i1_name">
@@ -5268,20 +5224,6 @@ Those values are explained in the <a href="https://www.sqlite.org/datatype3.html
 
 <p>You can find more information about the <code>match</code> syntax in the <a href="https://www.sqlite.org/fts5.html#full_text_query_syntax">SQLite's documentation</a>.<br />
 The columns available in this query are the same than the list of properties in this index's configuration.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articles</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fts5</span>
-<span class="nt">dsn</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./articles.rodb</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articles</span>
-<span class="nt">tokenize</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">,</span> <span class="nv">3</span><span class="p p-Indicator">]</span>
-<span class="nt">tokenize</span><span class="p">:</span> <span class="s">&quot;unicode61</span><span class="nv"> </span><span class="s">remove_diacritics</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">tokenchars</span><span class="nv"> </span><span class="s">&#39;-_&#39;&quot;</span>
-<span class="nt">properties</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">title</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">content</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -5290,7 +5232,13 @@ The columns available in this query are the same than the list of properties in 
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="indexes_items_anyOf_i2_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">articles\ntype:</span><span class="nv"> </span><span class="s">fts5\ndsn:</span><span class="nv"> </span><span class="s">./articles.rodb\ninput:</span><span class="nv"> </span><span class="s">articles\ntokenize:</span><span class="nv"> </span><span class="s">[2,\</span>
+  <span class="s">\ 3]\ntokenize:</span><span class="nv"> </span><span class="s">\&quot;unicode61</span><span class="nv"> </span><span class="s">remove_diacritics</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">tokenchars</span><span class="nv"> </span><span class="s">&#39;-_&#39;\&quot;\nproperties:\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">title\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">content\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionindexes_items_anyOf_i2_name">
     <div class="card">
         <div class="card-header" id="headingindexes_items_anyOf_i2_name">
@@ -5887,19 +5835,6 @@ The index file is automatically generated at startup, unless it has already been
 <p>It offers a great speed and a simple setup compared to a full-text index, but it's index files can take up a massive amount of space.</p>
 
 <p>Internally, the wildcard uses a binary prefix-tree to index the data.</p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articleInfo</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">wildcard</span>
-<span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./articleInfo.rodb</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">articles</span>
-<span class="nt">ignoreCase</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">properties</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">title</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">summary</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">content</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -5908,7 +5843,12 @@ The index file is automatically generated at startup, unless it has already been
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="indexes_items_anyOf_i3_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">articleInfo\ntype:</span><span class="nv"> </span><span class="s">wildcard\npath:</span><span class="nv"> </span><span class="s">./articleInfo.rodb\ninput:</span><span class="nv"> </span><span class="s">articles\nignoreCase:\</span>
+  <span class="s">\ true\nproperties:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">title\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">summary\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">content\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionindexes_items_anyOf_i3_name">
     <div class="card">
         <div class="card-header" id="headingindexes_items_anyOf_i3_name">
@@ -6526,7 +6466,14 @@ A default instance of this index is already automatically created as such:</p>
             
         </div>
     </div>
-    
+    <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="indexes_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;indexes:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">userId\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">map\n</span><span class="nv">    </span><span class="s">input:</span><span class="nv"> </span><span class="s">users\n</span><span class="nv">    </span><span class="s">properties:\n</span><span class="nv">  </span><span class="s">\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">-</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">name\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">sqlite\n</span><span class="nv">    </span><span class="s">dsn:</span><span class="nv"> </span><span class="s">\&quot;:memory:\&quot;\n</span><span class="nv">    </span><span class="s">input:</span><span class="nv"> </span><span class="s">users\n\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">properties:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">firstName\n</span><span class="nv">        </span><span class="s">collate:</span><span class="nv"> </span><span class="s">nocase\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">name:\</span>
+  <span class="s">\ lastName\n</span><span class="nv">        </span><span class="s">collate:</span><span class="nv"> </span><span class="s">nocase\n&quot;</span>
+</pre></div>
+</div>
             </div>
         </div>
     </div>
@@ -6554,29 +6501,6 @@ A default instance of this index is already automatically created as such:</p>
         </svg>
     <a href="#outputs" onclick="anchorLink('outputs')">outputs</a></div><span class="badge badge-dark value-type">Type: array</span><br/>
 <span class="description"><p>An output defines the output format of the data, how to search for it, and any relationship between it.</p>
-
-<p><strong>Root config key:</strong> <code>outputs</code></p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">outputs</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venuesList</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonArray</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venues</span>
-    <span class="nt">parameters</span><span class="p">:</span>
-      <span class="nt">city</span><span class="p">:</span>
-        <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">city</span>
-        <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venueAddress</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venue</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonObject</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venues</span>
-    <span class="nt">parameters</span><span class="p">:</span>
-      <span class="nt">id</span><span class="p">:</span>
-        <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venueIds</span>
-        <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-</code></pre></div>
 </span>
 
     
@@ -6655,38 +6579,6 @@ A default instance of this index is already automatically created as such:</p>
 <span class="description"><p>This output produces a JSON document whose root is an object containing all the properties fetched from the input.<br />
 The object is found in the input by filtering the specified parameters.<br />
 Objects from any input can also be embedded as a relationship.</p>
-
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venue</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonObject</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venues</span>
-<span class="nt">parameters</span><span class="p">:</span>
-  <span class="nt">id</span><span class="p">:</span>
-    <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-    <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venueIds</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">singleUserById</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonObject</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-<span class="nt">parameters</span><span class="p">:</span>
-  <span class="nt">id</span><span class="p">:</span>
-    <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-    <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userIds</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">integer</span>
-<span class="nt">relationships</span><span class="p">:</span>
-  <span class="nt">role</span><span class="p">:</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roles</span>
-    <span class="nt">match</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">parentProperty</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roleId</span>
-        <span class="nt">childProperty</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">childIndex</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roleIds</span>
-    <span class="nt">sort</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">ascending</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -6695,7 +6587,18 @@ Objects from any input can also be embedded as a relationship.</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="outputs_items_anyOf_i0_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">venue\ntype:</span><span class="nv"> </span><span class="s">jsonObject\ninput:</span><span class="nv"> </span><span class="s">venues\nparameters:\n</span><span class="nv">  </span><span class="s">id:\n</span><span class="nv">    </span><span class="s">property:</span><span class="nv"> </span><span class="s">id\n\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">index:</span><span class="nv"> </span><span class="s">venueIds\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n&quot;</span>
+</pre></div>
+</div><div id="outputs_items_anyOf_i0_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">singleUserById\ntype:</span><span class="nv"> </span><span class="s">jsonObject\ninput:</span><span class="nv"> </span><span class="s">users\nparameters:\n</span><span class="nv">  </span><span class="s">id:\n</span><span class="nv">    </span><span class="s">property:\</span>
+  <span class="s">\ id\n</span><span class="nv">    </span><span class="s">index:</span><span class="nv"> </span><span class="s">userIds\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\nrelationships:\n</span><span class="nv">  </span><span class="s">role:\n</span><span class="nv">    </span><span class="s">input:\</span>
+  <span class="s">\ roles\n</span><span class="nv">    </span><span class="s">match:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">parentProperty:</span><span class="nv"> </span><span class="s">roleId\n</span><span class="nv">        </span><span class="s">childProperty:</span><span class="nv"> </span><span class="s">id\n\</span>
+  <span class="s">\ </span><span class="nv">       </span><span class="s">childIndex:</span><span class="nv"> </span><span class="s">roleIds\n</span><span class="nv">    </span><span class="s">sort:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">property:</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">        </span><span class="s">ascending:\</span>
+  <span class="s">\ true\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionoutputs_items_anyOf_i0_name">
     <div class="card">
         <div class="card-header" id="headingoutputs_items_anyOf_i0_name">
@@ -8468,44 +8371,6 @@ This object structure is the same than the parent <code>relationships</code> one
 The objects are found in the input by filtering the specified parameters.<br />
 Objects from any input can also be embedded as a relationship.<br />
 There is an always-enabled and configurable paging to this array.</p>
-
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venuesList</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonArray</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venues</span>
-<span class="nt">parameters</span><span class="p">:</span>
-  <span class="nt">city</span><span class="p">:</span>
-    <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">city</span>
-    <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">venueAddress</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userList</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jsonArray</span>
-<span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
-<span class="nt">parameters</span><span class="p">:</span>
-  <span class="nt">name</span><span class="p">:</span>
-    <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
-    <span class="nt">index</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userInfo</span>
-    <span class="nt">parser</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
-<span class="nt">limit</span><span class="p">:</span>
-  <span class="nt">default</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-  <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-  <span class="nt">parameter</span><span class="p">:</span> <span class="s">&quot;pageLimit&quot;</span>
-<span class="nt">offset</span><span class="p">:</span>
-  <span class="nt">parameter</span><span class="p">:</span> <span class="s">&quot;pageOffset&quot;</span>
-<span class="nt">relationships</span><span class="p">:</span>
-  <span class="nt">role</span><span class="p">:</span>
-    <span class="nt">input</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roles</span>
-    <span class="nt">match</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">parentProperty</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roleId</span>
-        <span class="nt">childProperty</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">childIndex</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">roleIds</span>
-    <span class="nt">sort</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">property</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">id</span>
-        <span class="nt">ascending</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -8514,7 +8379,19 @@ There is an always-enabled and configurable paging to this array.</p>
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="outputs_items_anyOf_i1_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">venuesList\ntype:</span><span class="nv"> </span><span class="s">jsonArray\ninput:</span><span class="nv"> </span><span class="s">venues\nparameters:\n</span><span class="nv">  </span><span class="s">city:\n</span><span class="nv">    </span><span class="s">property:\</span>
+  <span class="s">\ city\n</span><span class="nv">    </span><span class="s">index:</span><span class="nv"> </span><span class="s">venueAddress\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\n&quot;</span>
+</pre></div>
+</div><div id="outputs_items_anyOf_i1_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">userList\ntype:</span><span class="nv"> </span><span class="s">jsonArray\ninput:</span><span class="nv"> </span><span class="s">users\nparameters:\n</span><span class="nv">  </span><span class="s">name:\n</span><span class="nv">    </span><span class="s">property:\</span>
+  <span class="s">\ name\n</span><span class="nv">    </span><span class="s">index:</span><span class="nv"> </span><span class="s">userInfo\n</span><span class="nv">    </span><span class="s">parser:</span><span class="nv"> </span><span class="s">string\nlimit:\n</span><span class="nv">  </span><span class="s">default:</span><span class="nv"> </span><span class="s">10\n</span><span class="nv">  </span><span class="s">max:</span><span class="nv"> </span><span class="s">100\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">parameter:</span><span class="nv"> </span><span class="s">\&quot;pageLimit\&quot;\noffset:\n</span><span class="nv">  </span><span class="s">parameter:</span><span class="nv"> </span><span class="s">\&quot;pageOffset\&quot;\nrelationships:\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">role:\n</span><span class="nv">    </span><span class="s">input:</span><span class="nv"> </span><span class="s">roles\n</span><span class="nv">    </span><span class="s">match:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">parentProperty:</span><span class="nv"> </span><span class="s">roleId\n</span><span class="nv">       </span><span class="s">\</span>
+  <span class="s">\ childProperty:</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">        </span><span class="s">childIndex:</span><span class="nv"> </span><span class="s">roleIds\n</span><span class="nv">    </span><span class="s">sort:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">property:</span><span class="nv"> </span><span class="s">id\n\</span>
+  <span class="s">\ </span><span class="nv">       </span><span class="s">ascending:</span><span class="nv"> </span><span class="s">true\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionoutputs_items_anyOf_i1_name">
     <div class="card">
         <div class="card-header" id="headingoutputs_items_anyOf_i1_name">
@@ -10659,7 +10536,14 @@ This object structure is the same than the parent <code>relationships</code> one
             
         </div>
     </div>
-    
+    <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="outputs_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;outputs:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">venuesList\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">jsonArray\n</span><span class="nv">    </span><span class="s">input:</span><span class="nv"> </span><span class="s">venues\n</span><span class="nv">    </span><span class="s">parameters:\n\</span>
+  <span class="s">\ </span><span class="nv">     </span><span class="s">city:\n</span><span class="nv">        </span><span class="s">property:</span><span class="nv"> </span><span class="s">city\n</span><span class="nv">        </span><span class="s">index:</span><span class="nv"> </span><span class="s">venueAddress\n</span><span class="nv">        </span><span class="s">parser:\</span>
+  <span class="s">\ string\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">venue\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">jsonObject\n</span><span class="nv">    </span><span class="s">input:</span><span class="nv"> </span><span class="s">venues\n</span><span class="nv">    </span><span class="s">parameters:\n\</span>
+  <span class="s">\ </span><span class="nv">     </span><span class="s">id:\n</span><span class="nv">        </span><span class="s">property:</span><span class="nv"> </span><span class="s">id\n</span><span class="nv">        </span><span class="s">index:</span><span class="nv"> </span><span class="s">venueIds\n</span><span class="nv">        </span><span class="s">parser:</span><span class="nv"> </span><span class="s">integer\n&quot;</span>
+</pre></div>
+</div>
             </div>
         </div>
     </div>
@@ -10690,27 +10574,6 @@ This object structure is the same than the parent <code>relationships</code> one
 Currently, the only type of service that is supported is HTTP, but more will come in the future.</p>
 
 <p>It is possible to define multiple services in the same RODB instance.</p>
-
-<p><strong>Root config key:</strong> <code>services</code></p>
-
-<p><strong>Example:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
-    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
-    <span class="nt">http</span><span class="p">:</span>
-      <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:80&quot;</span>
-    <span class="nt">https</span><span class="p">:</span>
-      <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:443&quot;</span>
-      <span class="nt">certificatePath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.crt&quot;</span>
-      <span class="nt">privateKeyPath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.key&quot;</span>
-    <span class="nt">errorsType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">application/json</span>
-    <span class="nt">routes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users&quot;</span>
-        <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">usersList</span>
-      <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users/{id}&quot;</span>
-        <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">singleUser</span>
-</code></pre></div>
 </span>
 
     
@@ -10774,33 +10637,6 @@ Currently, the only type of service that is supported is HTTP, but more will com
 <span class="description"><p>Creates an HTTP service and provides endpoints bound to the given outputs.</p>
 
 <p>At least one of either the <code>http</code> or <code>https</code> properties must be defined.</p>
-
-<p><strong>Examples:</strong></p>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">httpService</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
-<span class="nt">http</span><span class="p">:</span>
-  <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:80&quot;</span>
-<span class="nt">routes</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users&quot;</span>
-    <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">usersList</span>
-  <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/users/{id}&quot;</span>
-    <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">singleUser</span>
-</code></pre></div>
-
-<div class="highlight jumbotron"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
-<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
-<span class="nt">http</span><span class="p">:</span>
-  <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:80&quot;</span>
-<span class="nt">https</span><span class="p">:</span>
-  <span class="nt">listen</span><span class="p">:</span> <span class="s">&quot;:443&quot;</span>
-  <span class="nt">certificatePath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.crt&quot;</span>
-  <span class="nt">privateKeyPath</span><span class="p">:</span> <span class="s">&quot;/etc/ssl/certs/example.key&quot;</span>
-<span class="nt">errorsType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">application/json</span>
-<span class="nt">routes</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
-    <span class="nt">output</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mainOutput</span>
-</code></pre></div>
 </span>
 
      <span class="badge badge-info no-additional">No Additional Properties</span>
@@ -10809,7 +10645,16 @@ Currently, the only type of service that is supported is HTTP, but more will com
             
             
 
-            
+            <br/>
+<div class="badge badge-secondary">Examples:</div>
+<br/><div id="services_items_anyOf_i0_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">httpService\ntype:</span><span class="nv"> </span><span class="s">http\nhttp:\n</span><span class="nv">  </span><span class="s">listen:</span><span class="nv"> </span><span class="s">\&quot;:80\&quot;\nroutes:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">path:</span><span class="nv"> </span><span class="s">\&quot;/users\&quot;\</span>
+  <span class="s">\n</span><span class="nv">    </span><span class="s">output:</span><span class="nv"> </span><span class="s">usersList\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">path:</span><span class="nv"> </span><span class="s">\&quot;/users/{id}\&quot;\n</span><span class="nv">    </span><span class="s">output:</span><span class="nv"> </span><span class="s">singleUser\n&quot;</span>
+</pre></div>
+</div><div id="services_items_anyOf_i0_ex2" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;name:</span><span class="nv"> </span><span class="s">service\ntype:</span><span class="nv"> </span><span class="s">http\nhttp:\n</span><span class="nv">  </span><span class="s">listen:</span><span class="nv"> </span><span class="s">\&quot;:80\&quot;\nhttps:\n</span><span class="nv">  </span><span class="s">listen:</span><span class="nv"> </span><span class="s">\&quot;:443\&quot;\n\</span>
+  <span class="s">\ </span><span class="nv"> </span><span class="s">certificatePath:</span><span class="nv"> </span><span class="s">\&quot;/etc/ssl/certs/example.crt\&quot;\n</span><span class="nv">  </span><span class="s">privateKeyPath:</span><span class="nv"> </span><span class="s">\&quot;/etc/ssl/certs/example.key\&quot;\</span>
+  <span class="s">\nerrorsType:</span><span class="nv"> </span><span class="s">application/json\nroutes:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">path:</span><span class="nv"> </span><span class="s">\&quot;/\&quot;\n</span><span class="nv">    </span><span class="s">output:</span><span class="nv"> </span><span class="s">mainOutput\n&quot;</span>
+</pre></div>
+</div>
 <div class="accordion" id="accordionservices_items_anyOf_i0_name">
     <div class="card">
         <div class="card-header" id="headingservices_items_anyOf_i0_name">
@@ -11690,7 +11535,15 @@ Multiple different placeholders are allowed in the same route.</p>
 </div>
         </div>
     </div>
-    
+    <br/>
+<div class="badge badge-secondary">Example:</div>
+<br/><div id="services_ex1" class="jumbotron examples"><div class="highlight"><pre><span></span><span class="s">&quot;services:\n</span><span class="nv">  </span><span class="s">-</span><span class="nv"> </span><span class="s">name:</span><span class="nv"> </span><span class="s">service\n</span><span class="nv">    </span><span class="s">type:</span><span class="nv"> </span><span class="s">http\n</span><span class="nv">    </span><span class="s">http:\n</span><span class="nv">      </span><span class="s">listen:</span><span class="nv"> </span><span class="s">\&quot;:80\&quot;\n\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">https:\n</span><span class="nv">      </span><span class="s">listen:</span><span class="nv"> </span><span class="s">\&quot;:443\&quot;\n</span><span class="nv">      </span><span class="s">certificatePath:</span><span class="nv"> </span><span class="s">\&quot;/etc/ssl/certs/example.crt\&quot;\</span>
+  <span class="s">\n</span><span class="nv">      </span><span class="s">privateKeyPath:</span><span class="nv"> </span><span class="s">\&quot;/etc/ssl/certs/example.key\&quot;\n</span><span class="nv">    </span><span class="s">errorsType:</span><span class="nv"> </span><span class="s">application/json\n\</span>
+  <span class="s">\ </span><span class="nv">   </span><span class="s">routes:\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">path:</span><span class="nv"> </span><span class="s">\&quot;/users\&quot;\n</span><span class="nv">        </span><span class="s">output:</span><span class="nv"> </span><span class="s">usersList\n</span><span class="nv">      </span><span class="s">-</span><span class="nv"> </span><span class="s">path:\</span>
+  <span class="s">\ \&quot;/users/{id}\&quot;\n</span><span class="nv">        </span><span class="s">output:</span><span class="nv"> </span><span class="s">singleUser\n&quot;</span>
+</pre></div>
+</div>
             </div>
         </div>
     </div>

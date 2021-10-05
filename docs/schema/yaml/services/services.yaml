@@ -7,27 +7,23 @@ description: |
   Currently, the only type of service that is supported is HTTP, but more will come in the future.
 
   It is possible to define multiple services in the same RODB instance.
-
-  **Root config key:** `services`
-
-  **Example:**
-  ```yaml
-  services:
-    - name: service
-      type: http
-      http:
-        listen: ":80"
-      https:
-        listen: ":443"
-        certificatePath: "/etc/ssl/certs/example.crt"
-        privateKeyPath: "/etc/ssl/certs/example.key"
-      errorsType: application/json
-      routes:
-        - path: "/users"
-          output: usersList
-        - path: "/users/{id}"
-          output: singleUser
-  ```
+examples:
+  - |
+    services:
+      - name: service
+        type: http
+        http:
+          listen: ":80"
+        https:
+          listen: ":443"
+          certificatePath: "/etc/ssl/certs/example.crt"
+          privateKeyPath: "/etc/ssl/certs/example.key"
+        errorsType: application/json
+        routes:
+          - path: "/users"
+            output: usersList
+          - path: "/users/{id}"
+            output: singleUser
 items:
   anyOf:
     - $ref: ./http.yaml

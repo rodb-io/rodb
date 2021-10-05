@@ -11,19 +11,17 @@ description: |
   It offers a great speed and a simple setup compared to a full-text index, but it's index files can take up a massive amount of space.
 
   Internally, the wildcard uses a binary prefix-tree to index the data.
-
-  **Example:**
-  ```yaml
-  name: articleInfo
-  type: wildcard
-  path: ./articleInfo.rodb
-  input: articles
-  ignoreCase: true
-  properties:
-    - title
-    - summary
-    - content
-  ```
+examples:
+  - |
+    name: articleInfo
+    type: wildcard
+    path: ./articleInfo.rodb
+    input: articles
+    ignoreCase: true
+    properties:
+      - title
+      - summary
+      - content
 additionalProperties: false
 required:
   - name
