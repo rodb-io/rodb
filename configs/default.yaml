@@ -1,26 +1,4 @@
 indexes:
-  - name: defaultIndex
-    type: map
-    input: defaultInput
-    properties:
-      - id
-      - name
-  - name: defaultIndexWildcard
-    type: wildcard
-    path: ./wildcard.rodb
-    input: defaultInput
-    ignoreCase: true
-    properties:
-      - name
-  - name: defaultIndexSqlite
-    type: sqlite
-    dsn: ./sqlite.rodb
-    input: defaultInput
-    properties:
-      - name: id
-        collate: binary
-      - name: name
-        collate: nocase
   - name: defaultIndexFts5
     type: fts5
     dsn: ./fts5.rodb
