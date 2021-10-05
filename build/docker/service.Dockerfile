@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:experimental
+# syntax = docker/dockerfile:1.3
 FROM golang:1.16-alpine as builder
 
 ENV GOPATH=/go
