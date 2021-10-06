@@ -25,6 +25,7 @@ examples:
         type: string
         convertFromCharset: "Shift_JIS"
 items:
+  type: object
   anyOf:
     - $ref: ./integer.yaml
     - $ref: ./float.yaml

@@ -25,5 +25,6 @@ examples:
           - path: "/users/{id}"
             output: singleUser
 items:
+  type: object
   anyOf:
     - $ref: ./http.yaml

@@ -24,6 +24,7 @@ examples:
             index: venueIds
             parser: integer
 items:
+  type: object
   anyOf:
     - $ref: ./json-object.yaml
     - $ref: ./json-array.yaml

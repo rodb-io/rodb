@@ -23,6 +23,7 @@ examples:
         type: json
         path: ./countries.json
 items:
+  type: object
   anyOf:
     - $ref: ./csv.yaml
     - $ref: ./json.yaml
