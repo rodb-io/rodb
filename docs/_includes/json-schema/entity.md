@@ -15,6 +15,10 @@
 	{%- else -%}
 		{{ include.key }}
 	{%- endif -%}
+
+	{% if include.required == false %}
+		(optional)
+	{% endif %}
 </h{{ include.level }}>
 
 <div class="json-schema-object" markdown="1">
@@ -38,7 +42,7 @@
 {%- endif -%}
 
 {%- if definition.type == "object" -%}
-	{%- include json-schema/properties.md namespace=include.namespace properties=definition.properties level=include.level -%}
+	{%- include json-schema/properties.md namespace=include.namespace properties=definition.properties required=definition.required level=include.level -%}
 {%- endif -%}
 
 </div>
