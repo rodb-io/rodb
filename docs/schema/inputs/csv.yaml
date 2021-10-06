@@ -1,0 +1,96 @@
+$id: https://rodb.io/schema/inputs/csv.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: CSV
+description: |
+  A CSV input reads data from a CSV file. Each CSV row translates in one record.
+  This input provides several settings described below.
+examples:
+  - |
+    name: cities
+    type: csv
+    path: ./cities.csv
+    ignoreFirstRow: true
+    columns:
+      - name: name
+        parser: string
+      - name: prefecture
+        parser: string
+      - name: population
+        parser: integer
+  - |
+    name: countries
+    type: csv
+    path: ./cities.csv
+    ignoreFirstRow: true
+    autodetectColumns: true
+    delimiter: ","
+additionalProperties: false
+required:
+  - name
+  - type
+  - path
+properties:
+  name:
+    type: string
+    description: |
+      The name of this input, which any other component will use to refer to it.
+  type:
+    const: "csv"
+  path:
+    $ref: "./definitions/path.yaml"
+  delimiter:
+    type: string
+    default: ","
+    description: |
+      The character used by the CSV file to separate each column inside a record.
+  autodetectColumns:
+    type: boolean
+    default: false
+    description: |
+      Whether or not RODB should attempt to detect automatically the column list using the first row of the file.
+      When this parameter is `true`, the `columns` parameter must not be defined.
+
+      The property names in the parsed record are strictly identical to the content of the first row of the CSV.
+      No transformation being made, case, spaces or special characters are included in the final property names.
+
+      When this parameter is used, all columns internally gets the `string` type, using the `string` parser. No type detection or casting is attempted.
+
+      Enabling this setting does not prevent the first row from being included in the data. To do this, please refer to the `ignoreFirstRow` parameter.
+  ignoreFirstRow:
+    type: boolean
+    default: false
+    description: |
+      Whether or not the first row of the CSV file should be ignored.
+      When `true`, the first row is not included in the data.
+      When `false`, the first row is included in the data.
+
+      Even if `autodetectColumns` is enabled, the first row will still be included in the data unless `ignoreFirstRow` is set to `true`.
+  columns:
+    type: array
+    description: |
+      This parameter is required, unless `autodetectColumns` is true (in which case it must not be set).
+
+      If the number of defined columns is lower than the columns appearing in the data, the remaining columns are ignored and not included in the record.
+      If the number of defined columns is higher than the columns appearing in the data, the trailing columns are assigned the `null` value.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: |
+            The name of this column. It is the same that is used by the other components of RODB to refer to this property.
+            It must be unique among this input.
+
+            There are no restrictions to the content of this name. Any unicode string is valid.
+        parser:
+          type: string
+          default: "string"
+          description: |
+            The name of the parser to apply on this column's value.
+  dieOnInputChange:
+    $ref: "./definitions/die-on-input-change.yaml"

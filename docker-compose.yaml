@@ -89,13 +89,6 @@ services:
     volumes:
       - $PWD:/srv/jekyll
       - jekyllDependencies:/usr
-  schema-doc:
-    tty: true
-    build:
-      context: .
-      dockerfile: ./build/docker/schema-doc/Dockerfile
-    volumes:
-      - $PWD/docs/schema:/schema
 volumes:
   japaneseDictionaryIndexes:
   peopleIndexes:

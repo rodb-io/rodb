@@ -31,11 +31,11 @@ pre {
 
 .documentation-menu {
   @include large {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 
   @include medium {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 
   @include small {
@@ -62,11 +62,4 @@ pre {
   > div {
     padding: 0.5rem 0.4rem;
   }
-}
-
-iframe.schema-doc {
-  width: 100%;
-  height: 50vh;
-  border: 0;
-  overflow: hidden;
 }

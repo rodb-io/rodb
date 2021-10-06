@@ -1,0 +1,60 @@
+$id: https://rodb.io/schema/indexes/wildcard.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: Wildcard
+description: |
+  This index is *experimental*.
+
+  The wildcard index can only index strings. It allows to quickly match any substring in the indexed data.
+  The index file is automatically generated at startup, unless it has already been created previously.
+
+  It offers a great speed and a simple setup compared to a full-text index, but it's index files can take up a massive amount of space.
+
+  Internally, the wildcard uses a binary prefix-tree to index the data.
+examples:
+  - |
+    name: articleInfo
+    type: wildcard
+    path: ./articleInfo.rodb
+    input: articles
+    ignoreCase: true
+    properties:
+      - title
+      - summary
+      - content
+additionalProperties: false
+required:
+  - name
+  - type
+  - path
+  - input
+  - properties
+properties:
+  name:
+    type: string
+    description: |
+      The name of this index, which any other component will use to refer to it.
+  type:
+    const: "wildcard"
+  path:
+    type: string
+    description: |
+      The relative or absolute path where to store the index file on the filesystem.
+  input:
+    type: string
+    description: |
+      The input from which to find the data to index.
+  ignoreCase:
+    type: boolean
+    default: false
+    description: |
+      The default behaviour (`false`) is to be case-sensitive. Setting this parameter to `true` will make this index case-insensitive.
+  properties:
+    type: array
+    description: |
+      The properties whose value must be indexed.
+    minItems: 1
+    items:
+      type: string
+      description: |
+        The name of a property from the given input containing the values to be indexed.

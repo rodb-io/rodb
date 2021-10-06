@@ -1,0 +1,27 @@
+$id: https://rodb.io/schema/outputs/definitions/parameters.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+additionalProperties:
+  type: object
+  description: |
+    An object with the parameter as a key, and the configuration of the parameter as a value.
+  required:
+    - property
+  additionalProperties: false
+  properties:
+    property:
+      type: string
+      description: |
+        The name of the indexed or input property in which this parameter will be searched for.
+    index:
+      type: string
+      default: "default"
+      description: |
+        The name of the index to use when this parameter is given.
+        No index (`default`) means that no indexing will be used, thus iterating all the records from the data source.
+    parser:
+      type: string
+      default: "string"
+      description: |
+        The parser that will be used to transform or validate the given value before filtering the data with it.
+        Only parsers outputting primitive values are allowed here. More complex parsers, like `split` or `json` cannot be used.

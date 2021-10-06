@@ -1,0 +1,114 @@
+$id: https://rodb.io/schema/inputs/xml.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: XML
+description: |
+  An XML input reads data from an XML file. Each record or value inside the records is defined using XPath.
+  This input provides several settings described below.
+examples:
+  - |
+    name: users
+    type: xml
+    path: ./users.xml
+    recordXpath: "//User"
+    properties:
+      - name: id
+        parser: integer
+        xpath: "/Id"
+      - name: name
+        parser: string
+        xpath: "string(//Name)"
+      - name: roleIds
+        type: array
+        xpath: "number(/Roles/Role/@Id)"
+        items:
+          parser: integer
+      - name: manager
+        type: object
+        xpath: "/Manager"
+        properties:
+          - name: id
+            parser: integer
+            xpath: "/@Id"
+          - name: name
+            parser: string
+            xpath: "/Name"
+additionalProperties: false
+required:
+  - name
+  - type
+  - path
+  - recordXpath
+  - properties
+properties:
+  name:
+    type: string
+    description: |
+      The name of this input, which any other component will use to refer to it.
+  type:
+    const: "xml"
+  path:
+    $ref: "./definitions/path.yaml"
+  recordXpath:
+    type: string
+    description: |
+      An XPath expression that returns a collection of each XML node that should be a record in the resulting data.
+
+      The XPath implementation available in RODB is based on the `antchfx/xpath` Golang package, whose available syntax is described [here](https://github.com/antchfx/xpath#supported-features).
+  properties:
+    type: array
+    description: |
+      Each item in this array describes a different property in the resulting object.
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - xpath
+      properties:
+        name:
+          type: string
+          description: |
+            The name of this property. It is the same that is used by the other components of RODB to refer to it.
+            It must be unique in this object.
+
+            There are no restrictions to the content of this name. Any unicode string is valid.
+        type:
+          type: string
+          enum:
+            - "primitive"
+            - "array"
+            - "object"
+          description: |
+            Defines the data type of this property. Please refer to the details of the other parameters.
+        xpath:
+          type: string
+          description: |
+            An XPath expression that returns the value to assign to this property.
+            The root node of the XPath expression is the node returned by the parent's XPath expression.
+
+            If the returned value is a node, the `type` must be `object`.
+            If the returned value is a collection of nodes, the `type` must be `array`.
+            Otherwise, the `type` must be `primitive` (which is the default value).
+
+            The XPath implementation available in RODB is based on the `antchfx/xpath` Golang package, whose available syntax is described [here](https://github.com/antchfx/xpath#supported-features).
+        parser:
+          type: string
+          default: "string"
+          description: |
+            This parameter is only valid when the `type` parameter is set to `primitive`.
+            The value returned by the XPath expression must be either a string (in which case the value will be processed by the given parser) or of the same type than the parser.
+        items:
+          type: object
+          description: |
+            This parameter is only valid when the `type` parameter is set to `array`.
+            The definition of this object is the same than the items of the currently described `properties` array.
+            Each node in the collection will be processed and parsed individually using the given definition.
+        properties:
+          type: object
+          description: |
+            This parameter is only valid when the `type` parameter is set to `object`.
+            The definition of this object is the same than the items of the currently described `properties` array.
+  dieOnInputChange:
+    $ref: "./definitions/die-on-input-change.yaml"

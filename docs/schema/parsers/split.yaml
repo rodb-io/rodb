@@ -1,0 +1,64 @@
+$id: https://rodb.io/schema/parsers/split.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: Split
+description: |
+  Splits a string to an array of values and applies another parser on each value.
+
+  This parser is not a primitive parser, and thus cannot be used as a parameter in an output object.
+examples:
+  - |
+    name: splitStringsOnSlashes
+    type: split
+    delimiter: "/"
+    parser: string
+  - |
+    name: extractOnlyIntegers
+    type: split
+    delimiter: "[^0-9]+"
+    delimiterIsRegexp: true
+    parser: integer
+additionalProperties: false
+required:
+  - name
+  - type
+  - delimiter
+  - parser
+properties:
+  name:
+    type: string
+    description: |
+      The name of this parser, which any other component will use to refer to it.
+  type:
+    const: "split"
+  delimiter:
+    type: string
+    description: |
+      ### If `delimiterIsRegexp` is `false`
+      This is the string on which the value will be splitted to an array.
+      The implementation uses the [strings.Split](https://pkg.go.dev/strings#Split) function of GoLang:
+      ```
+      Split slices s into all substrings separated by sep and returns a slice of the substrings between those separators.
+      If s does not contain sep and sep is not empty, Split returns a slice of length 1 whose only element is s.
+      If sep is empty, Split splits after each UTF-8 sequence. If both s and sep are empty, Split returns an empty slice.
+      ```
+
+      ### If `delimiterIsRegexp` is `true`
+      This is the regular expression that will be used to split a string.
+      The regexp syntax is the RE2 one described [here](https://github.com/google/re2/wiki/Syntax).
+      More specifically, it uses the native Golang's regexp engine.
+      You can find more details about the engine's implementation [here](https://pkg.go.dev/regexp#pkg-overview).
+
+      The specific algorithm that is used is the [regexp.Split](https://pkg.go.dev/regexp#Regexp.Split) function of GoLang, with `n=-1`.
+  delimiterIsRegexp:
+    type: boolean
+    default: false
+    description: |
+      Defines whether the delimiter should be interpreted as a regular expression or as a litteral string.
+      Please see the definition of the `delimiter` setting for more information.
+  parser:
+    type: string
+    description: |
+      After splitting the value, another parser will be applied to each member of the resulting array.
+      This is the name of this parser.
+      If no specific change is required and an array of strings is expected, please use `parser: string`.

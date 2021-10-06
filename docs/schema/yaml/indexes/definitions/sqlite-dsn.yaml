@@ -1,8 +1,0 @@
-$id: https://rodb.io/schema/yaml/indexes/definitions/sqlite-dsn.yaml
-$schema: http://json-schema.org/draft-07/schema#
-type: string
-description: |
-  The connection string for this SQLite database.
-  The most basic use cases are either the path to the database in the filesystem, or `:memory:`.
-
-  All the syntaxes supported by [go-sqlite3](https://github.com/mattn/go-sqlite3#connection-string) and [sqlite](https://www.sqlite.org/c3ref/open.html) (including the [memory settings](https://www.sqlite.org/inmemorydb.html)) are valid.

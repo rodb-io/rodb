@@ -1,0 +1,106 @@
+$id: https://rodb.io/schema/services/http.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: HTTP
+description: |
+  Creates an HTTP service and provides endpoints bound to the given outputs.
+
+  At least one of either the `http` or `https` properties must be defined.
+examples:
+  - |
+    name: httpService
+    type: http
+    http:
+      listen: ":80"
+    routes:
+      - path: "/users"
+        output: usersList
+      - path: "/users/{id}"
+        output: singleUser
+  - |
+    name: service
+    type: http
+    http:
+      listen: ":80"
+    https:
+      listen: ":443"
+      certificatePath: "/etc/ssl/certs/example.crt"
+      privateKeyPath: "/etc/ssl/certs/example.key"
+    errorsType: application/json
+    routes:
+      - path: "/"
+        output: mainOutput
+additionalProperties: false
+required:
+  - name
+  - type
+  - routes
+properties:
+  name:
+    type: string
+    description: |
+      The name of this service, which any other component will use to refer to it.
+  type:
+    const: "http"
+  http:
+    type: object
+    description: |
+      Makes this service listen to a network interface and TCP port using the HTTP protocol.
+    additionalProperties: false
+    properties:
+      listen:
+        $ref: "./definitions/listen.yaml"
+  https:
+    type: object
+    description: |
+      Makes this service listen to a network interface and TCP port using the HTTPS protocol.
+    required:
+      - certificatePath
+      - privateKeyPath
+    additionalProperties: false
+    properties:
+      listen:
+        $ref: "./definitions/listen.yaml"
+      certificatePath:
+        type: string
+        format: TODO
+        description: |
+          The path to the file containing the certificate to use for the TLS connection.
+      privateKeyPath:
+        type: string
+        format: TODO
+        description: |
+          The path to the file containing the private key to use for the TLS connection.
+  errorsType:
+    type: string
+    enum: ["application/json"]
+    default: "application/json"
+    description: |
+      The expected output type for the error pages on this server.
+      Currently, only JSON is available.
+  routes:
+    type: array
+    description: |
+      All the routes to be made available on this service.
+    minItems: 1
+    items:
+      type: object
+      description: |
+        Details of a single endpoint on this service.
+      required:
+        - output
+        - path
+      additionalProperties: false
+      properties:
+        path:
+          type: string
+          description: |
+            The path on which the output will be made available on this server (starting with a `/`).
+            The path can be any string, but the `{xxx}` (without spaces) placeholders are used to match specific values.
+            The name in those placeholders must match the name of one of the `parameters` defined in the related output.
+            For example, a placeholder `{id}` will automatically match with an output parameter called `id`.
+            Multiple different placeholders are allowed in the same route.
+        output:
+          type: string
+          description: |
+            The name of the output object to which this route will be bound.

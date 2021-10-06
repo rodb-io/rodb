@@ -1,0 +1,43 @@
+$id: https://rodb.io/schema/parsers/string.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: object
+title: String
+description: |
+  This parser allows to operate some changes on a string.
+
+  It is currently only useful if you need to read files with a non-unicode encoding.
+  Otherwise, while it is possible to declare your own, it would be equivalent to the default one.
+
+  **Default instance**
+  A default instance of this parser is already automatically created as such:
+  ```yaml
+  name: string
+  type: string
+  convertFromCharset: ""
+  ```
+examples:
+  - |
+    name: shiftJisString
+    type: string
+    convertFromCharset: "Shift_JIS"
+additionalProperties: false
+required:
+  - name
+  - type
+properties:
+  name:
+    type: string
+    description: |
+      The name of this parser, which any other component will use to refer to it.
+  type:
+    const: "string"
+  convertFromCharset:
+    type: string
+    default: ""
+    description: |
+      Internally, RODB only handles UTF-8 strings.
+      If the given value has a different encoding, RODB will convert it automatically from the encoding set in this value.
+
+      When this value is an empty string, no conversion is performed.
+
+      This setting must match one of the encodings listed in the [IANA character sets index](https://www.iana.org/assignments/character-sets/character-sets.xhtml) (either the MIME or Name columns).

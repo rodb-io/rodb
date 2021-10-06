@@ -1,0 +1,9 @@
+$id: https://rodb.io/schema/inputs/definitions/die-on-input-change.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: boolean
+default: true
+description: |
+  RODB internally identifies each record using it's binary offset in the file.
+  Because of this, any change in the data file while RODB is running can move those offsets, thus corrupting the indexes.
+  To avoid returning corrupted data, the default behaviour of RODB is to stop the service with an error whenever it happens.
+  While not recommended, setting this property to `false` would prevent RODB from stopping when the data source changes.

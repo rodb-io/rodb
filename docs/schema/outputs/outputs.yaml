@@ -1,0 +1,29 @@
+$id: https://rodb.io/schema/outputs/outputs.yaml
+$schema: http://json-schema.org/draft-07/schema#
+type: array
+title: Outputs
+description: |
+  An output defines the output format of the data, how to search for it, and any relationship between it.
+examples:
+  - |
+    outputs:
+      - name: venuesList
+        type: jsonArray
+        input: venues
+        parameters:
+          city:
+            property: city
+            index: venueAddress
+            parser: string
+      - name: venue
+        type: jsonObject
+        input: venues
+        parameters:
+          id:
+            property: id
+            index: venueIds
+            parser: integer
+items:
+  anyOf:
+    - $ref: ./json-object.yaml
+    - $ref: ./json-array.yaml

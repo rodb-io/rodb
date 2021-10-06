@@ -1,8 +1,0 @@
-$id: https://rodb.io/schema/yaml/inputs/definitions/path.yaml
-$schema: http://json-schema.org/draft-07/schema#
-type: string
-description: |
-  The relative or absolute path to the data file on this filesystem.
-
-  RODB only reads the input files from the filesystem.
-  Other data sources (NFS, SSH, S3...) should be handled by mounting them in the filesystem using external tools (Docker or Kubernetes volumes, sshfs, s3fs...).
