@@ -25,8 +25,13 @@ examples:
 items:
   type: object
   anyOf:
-    - $ref: ./map.yaml
-    - $ref: ./sqlite.yaml
-    - $ref: ./fts5.yaml
-    - $ref: ./wildcard.yaml
-    - $ref: ./noop.yaml
+    - title: 'type = "map"'
+      $ref: ./map.yaml
+    - title: 'type = "sqlite"'
+      $ref: ./sqlite.yaml
+    - title: 'type = "fts5"'
+      $ref: ./fts5.yaml
+    - title: 'type = "wildcard"'
+      $ref: ./wildcard.yaml
+    - title: 'type = "noop"'
+      $ref: ./noop.yaml

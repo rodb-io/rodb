@@ -25,6 +25,9 @@ examples:
 items:
   type: object
   anyOf:
-    - $ref: ./csv.yaml
-    - $ref: ./json.yaml
-    - $ref: ./xml.yaml
+    - title: 'type = "csv"'
+      $ref: ./csv.yaml
+    - title: 'type = "json"'
+      $ref: ./json.yaml
+    - title: 'type = "xml"'
+      $ref: ./xml.yaml

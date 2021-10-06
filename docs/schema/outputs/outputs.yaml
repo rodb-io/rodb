@@ -26,5 +26,7 @@ examples:
 items:
   type: object
   anyOf:
-    - $ref: ./json-object.yaml
-    - $ref: ./json-array.yaml
+    - title: 'type = "jsonObject"'
+      $ref: ./json-object.yaml
+    - title: 'type = "jsonArray"'
+      $ref: ./json-array.yaml

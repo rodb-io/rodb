@@ -23,6 +23,8 @@
 
 <div class="json-schema-object" markdown="1">
 
+<span class="breadcrumb">{{ include.breadcrumb }}</span>
+
 {% if definition.type %}
 	{%- include json-schema/type.md definition=definition key=include.key -%}
 {% endif %}
@@ -42,11 +44,11 @@
 {% endif %}
 
 {%- if definition.type == "array" -%}
-	{%- include json-schema/items.md namespace=include.namespace definition=definition level=include.level -%}
+	{%- include json-schema/items.md namespace=include.namespace definition=definition level=include.level breadcrumb=include.breadcrumb -%}
 {%- endif -%}
 
 {%- if definition.type == "object" -%}
-	{%- include json-schema/properties.md namespace=include.namespace definition=definition level=include.level -%}
+	{%- include json-schema/properties.md namespace=include.namespace definition=definition level=include.level breadcrumb=include.breadcrumb -%}
 {%- endif -%}
 
 </div>

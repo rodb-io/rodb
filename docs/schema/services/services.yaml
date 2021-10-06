@@ -27,4 +27,5 @@ examples:
 items:
   type: object
   anyOf:
-    - $ref: ./http.yaml
+    - title: 'type = "http"'
+      $ref: ./http.yaml

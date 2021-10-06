@@ -27,9 +27,15 @@ examples:
 items:
   type: object
   anyOf:
-    - $ref: ./integer.yaml
-    - $ref: ./float.yaml
-    - $ref: ./boolean.yaml
-    - $ref: ./string.yaml
-    - $ref: ./split.yaml
-    - $ref: ./json.yaml
+    - title: 'type = "integer"'
+      $ref: ./integer.yaml
+    - title: 'type = "float"'
+      $ref: ./float.yaml
+    - title: 'type = "boolean"'
+      $ref: ./boolean.yaml
+    - title: 'type = "string"'
+      $ref: ./string.yaml
+    - title: 'type = "split"'
+      $ref: ./split.yaml
+    - title: 'type = "json"'
+      $ref: ./json.yaml
