@@ -5,7 +5,8 @@ title: Float
 description: |
   Parses a string value to a 64-bytes floating-point number.
 
-  **Default instance**
+  **Default instance:**
+
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: float

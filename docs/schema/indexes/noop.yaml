@@ -10,7 +10,8 @@ description: |
 
   While it is possible to declare your own, it would be equivalent to the default one, because there are currently no available settings.
 
-  **Default instance**
+  **Default instance:**
+
   A default instance of this index is already automatically created as such:
   ```yaml
   name: default

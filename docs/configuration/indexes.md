@@ -6,4 +6,4 @@ permalink: /configuration/indexes
 
 {% include menus/documentation.html %}
 
-{% include json-schema/object.md content=site.data.schema.indexes key="indexes" level=1 %}
+{% include json-schema/entity.md namespace=site.data.schema.indexes definition=site.data.schema.indexes.indexes key="indexes" level=1 %}

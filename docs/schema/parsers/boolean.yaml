@@ -6,7 +6,8 @@ description: |
   Converts a string value to a boolean, according to the configured values.
   RODB will output an error if it encounters a value that is neither defined in `trueValues` or `falseValues`.
 
-  **Default instance**
+  **Default instance:**
+
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: boolean

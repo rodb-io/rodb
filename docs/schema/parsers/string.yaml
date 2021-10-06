@@ -8,7 +8,8 @@ description: |
   It is currently only useful if you need to read files with a non-unicode encoding.
   Otherwise, while it is possible to declare your own, it would be equivalent to the default one.
 
-  **Default instance**
+  **Default instance:**
+
   A default instance of this parser is already automatically created as such:
   ```yaml
   name: string

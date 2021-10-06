@@ -3,7 +3,7 @@ $schema: http://json-schema.org/draft-07/schema#
 type: object
 title: Wildcard
 description: |
-  This index is *experimental*.
+  This index is ***experimental***.
 
   The wildcard index can only index strings. It allows to quickly match any substring in the indexed data.
   The index file is automatically generated at startup, unless it has already been created previously.
