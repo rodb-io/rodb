@@ -1,12 +1,12 @@
 **Properties:**
 
-{% for propertyItem in include.properties %}
+{% for propertyItem in include.definition.properties %}
 	{%- assign propertyName = propertyItem[0] -%}
 	{%- assign property = propertyItem[1] -%}
 	{%- assign level = include.level | plus: 1 -%}
 
 	{%- assign required = false -%}
-	{%- for requiredPropertyName in include.required -%}
+	{%- for requiredPropertyName in include.definition.required -%}
 		{%- if propertyName == requiredPropertyName -%}
 			{%- assign required = true -%}
 			{%- break -%}

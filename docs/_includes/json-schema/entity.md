@@ -32,21 +32,21 @@
 {%- endif -%}
 
 {% if definition.const %}
-	{%- include json-schema/const.md const=definition.const -%}
+	{%- include json-schema/const.md definition=definition -%}
 {% endif %}
 
 {{ definition.description }}
 
 {% if definition.examples %}
-	{%- include json-schema/examples.md examples=definition.examples -%}
+	{%- include json-schema/examples.md definition=definition -%}
 {% endif %}
 
 {%- if definition.type == "array" -%}
-	{%- include json-schema/items.md definition=definition namespace=include.namespace level=include.level -%}
+	{%- include json-schema/items.md namespace=include.namespace definition=definition level=include.level -%}
 {%- endif -%}
 
 {%- if definition.type == "object" -%}
-	{%- include json-schema/properties.md namespace=include.namespace properties=definition.properties required=definition.required level=include.level -%}
+	{%- include json-schema/properties.md namespace=include.namespace definition=definition level=include.level -%}
 {%- endif -%}
 
 </div>

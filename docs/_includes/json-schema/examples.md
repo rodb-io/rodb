@@ -1,10 +1,10 @@
-{%- if include.examples.size == 1 -%}
+{%- if include.definition.examples.size == 1 -%}
 	**Example:**
 {%- else -%}
 	**Examples:**
 {%- endif -%}
 
-{%- for example in include.examples -%}
+{%- for example in include.definition.examples -%}
 	{%- highlight yaml -%}
 		{{ example }}
 	{%- endhighlight -%}
