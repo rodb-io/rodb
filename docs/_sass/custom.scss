@@ -63,3 +63,22 @@ pre {
     padding: 0.5rem 0.4rem;
   }
 }
+
+.json-schema-object {
+  border-left: 1px solid $header-bg-color;
+
+  @include large {
+    margin-left: 0.5em;
+    padding-left: 1em;
+  }
+
+  @include medium {
+    margin-left: 0.4em;
+    padding-left: 0.8em;
+  }
+
+  @include small {
+    margin-left: 0.3em;
+    padding-left: 0.6em;
+  }
+}
