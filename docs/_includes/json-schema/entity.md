@@ -9,11 +9,11 @@
 	{%- assign definition = include.definition -%}
 {% endif %}
 
-<h{{ include.level }} id="{{ include.key }}">
+<h{{ include.level }} id="{{ include.breadcrumb | escape }}">
 	{%- if definition.title -%}
 		{{ definition.title }}
 	{%- else -%}
-		{{ include.key }}
+		{{ include.title }}
 	{%- endif -%}
 
 	{% if include.required == false %}
@@ -26,7 +26,7 @@
 <span class="breadcrumb">{{ include.breadcrumb }}</span>
 
 {% if definition.type %}
-	{%- include json-schema/type.md definition=definition key=include.key -%}
+	{%- include json-schema/type.md definition=definition -%}
 {% endif %}
 
 {%- if definition.minItems -%}

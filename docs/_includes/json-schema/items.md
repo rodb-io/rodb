@@ -19,5 +19,5 @@
 		{%- assign breadcrumb = include.breadcrumb | append: "[]" -%}
 	{%- endif -%}
 
-	{%- include json-schema/entity.md namespace=include.namespace definition=include.definition.items key="Items of the array" level=level breadcrumb=breadcrumb -%}
+	{%- include json-schema/entity.md namespace=include.namespace definition=include.definition.items title="Items of the array" level=level breadcrumb=breadcrumb -%}
 {%- endif -%}

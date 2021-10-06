@@ -14,5 +14,5 @@
 		{%- endif -%}
 	{%- endfor -%}
 
-	{%- include json-schema/entity.md namespace=include.namespace definition=property key=propertyName level=level required=required breadcrumb=breadcrumb -%}
+	{%- include json-schema/entity.md namespace=include.namespace definition=property title=propertyName level=level required=required breadcrumb=breadcrumb -%}
 {% endfor %}
