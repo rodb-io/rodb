@@ -27,6 +27,10 @@
 	{%- include json-schema/type.md definition=definition key=include.key -%}
 {% endif %}
 
+{%- if definition.minItems -%}
+	{%- include json-schema/min-items.md definition=definition -%}
+{%- endif -%}
+
 {% if definition.const %}
 	{%- include json-schema/const.md const=definition.const -%}
 {% endif %}
@@ -38,7 +42,7 @@
 {% endif %}
 
 {%- if definition.type == "array" -%}
-	{%- include json-schema/items.md items=definition.items namespace=include.namespace level=include.level -%}
+	{%- include json-schema/items.md definition=definition namespace=include.namespace level=include.level -%}
 {%- endif -%}
 
 {%- if definition.type == "object" -%}
