@@ -6,26 +6,4 @@ permalink: /configuration/parsers
 
 {% include menus/documentation.html %}
 
-# Integer
-
-TODO
-
-# Float
-
-TODO
-
-# Boolean
-
-TODO
-
-# JSON
-
-TODO
-
-# Split
-
-TODO
-
-# String
-
-TODO
+{% include json-schema/object.md content=site.data.schema.parsers key="parsers" level=1 %}

@@ -6,10 +6,4 @@ permalink: /configuration/outputs
 
 {% include menus/documentation.html %}
 
-# Json array
-
-TODO
-
-# Json object
-
-TODO
+{% include json-schema/object.md content=site.data.schema.outputs key="outputs" level=1 %}

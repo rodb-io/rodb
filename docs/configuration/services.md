@@ -6,4 +6,4 @@ permalink: /configuration/services
 
 {% include menus/documentation.html %}
 
-# HTTP
+{% include json-schema/object.md content=site.data.schema.services key="services" level=1 %}
