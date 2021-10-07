@@ -10,15 +10,17 @@
 {% endif %}
 
 <h{{ include.level }} id="{{ include.breadcrumb | escape }}">
-	{%- if definition.title -%}
-		{{ definition.title }}
-	{%- else -%}
-		{{ include.title }}
-	{%- endif -%}
+	<a href="#{{ include.breadcrumb | escape }}">
+		{%- if definition.title -%}
+			{{ definition.title }}
+		{%- else -%}
+			{{ include.title }}
+		{%- endif -%}
 
-	{% if include.required == false %}
-		(optional)
-	{% endif %}
+		{% if include.required == false %}
+			(optional)
+		{% endif %}
+	</a>
 </h{{ include.level }}>
 
 <div class="json-schema-object" markdown="1">

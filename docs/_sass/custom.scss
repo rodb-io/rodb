@@ -87,3 +87,11 @@ pre {
   font-family: monospace;
   font-size: 0.7em;
 }
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a {
+  color: $section-headings-color;
+}

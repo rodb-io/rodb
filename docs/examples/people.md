@@ -10,7 +10,7 @@ permalink: /examples/people
 
 This is a more advanced example, based of a randomly generated list of one million fictious persons.
 
-It takes a file containing multiple [JSON](/configuration/inputs#json) documents as an input, and provides an [HTTP](/configuration/services#http) service with two endpoints.
+It takes a file containing multiple [JSON](/configuration/inputs#inputs[type = &quot;json&quot;]) documents as an input, and provides an [HTTP](/configuration/services#services[type = &quot;http&quot;]) service with two endpoints.
 
 You can download and run this example locally (using Docker) with the following script.
 
@@ -52,7 +52,7 @@ Response body:
 
 ## Search in the database
 
-The `search` filter allows advanced searching and filtering a person by either it's `firstName`, `lastName` or `userName`. This is done by indexing those properties using the [FTS5](/configuration/indexes#fts5) index.
+The `search` filter allows advanced searching and filtering a person by either it's `firstName`, `lastName` or `userName`. This is done by indexing those properties using the [FTS5](/configuration/indexes#indexes[type = &quot;fts5&quot;]) index.
 
 `GET http://localhost:3003/people?search=firstName:John AND lastName:An*`
 
@@ -143,7 +143,7 @@ Response body:
 ## Get a specific person by id
 
 This endpoint allows to get a specific record using it's id property.
-The ids are indexed in an [SQLite](/configuration/indexes#sqlite) database.
+The ids are indexed in an [SQLite](/configuration/indexes#indexes[type = &quot;sqlite&quot;]) database.
 
 `GET http://localhost:3003/people/{id}`
 
