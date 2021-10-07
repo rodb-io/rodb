@@ -35,6 +35,12 @@ required:
   - name
   - type
   - routes
+if:
+  required:
+    - http
+else:
+  required:
+    - https
 properties:
   name:
     type: string
