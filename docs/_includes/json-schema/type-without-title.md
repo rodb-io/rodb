@@ -1,5 +1,10 @@
 {%- if include.definition.type == "array" -%}
-	Array of {% include json-schema/type-without-title.md definition=include.definition.items %}. 
+	{% if include.definition.items -%}
+		Array of {% include json-schema/type-without-title.md definition=include.definition.items %}. 
+	{%- else -%}
+		Array
+	{%- endif -%}
+
 	{% if include.definition.items.anyOf -%}
 		Each item in this array must match one of the following definitions.
 	{%- endif -%}

@@ -103,12 +103,12 @@ properties:
           type: object
           description: |
             This parameter is only valid when the `type` parameter is set to `array`.
-            The definition of this object is the same than the items of the currently described `properties` array.
+            The definition of this object is the same than [the items of the currently described `properties` array](/configuration/inputs#inputs[type = &quot;xml&quot;].properties[]).
             Each node in the collection will be processed and parsed individually using the given definition.
         properties:
-          type: object
+          type: array
           description: |
             This parameter is only valid when the `type` parameter is set to `object`.
-            The definition of this object is the same than the items of the currently described `properties` array.
+            The definition of this array is the same than [the currently described `properties` array](#inputs[type = &quot;xml&quot;].properties[]).
   dieOnInputChange:
     $ref: "./definitions/die-on-input-change.yaml"

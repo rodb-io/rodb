@@ -10,7 +10,7 @@
 
 		{%- include json-schema/entity.md namespace=include.namespace definition=type level=level breadcrumb=breadcrumb -%}
 	{%- endfor -%}
-{%- else -%}
+{%- elsif include.definition.items -%}
 	{%- assign level = include.level | plus: 1 -%}
 
 	{%- if include.definition.items.title -%}
