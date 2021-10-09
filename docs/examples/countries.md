@@ -14,7 +14,7 @@ It takes a single [CSV](/configuration/inputs#inputs[type = &quot;csv&quot;]) fi
 
 You can download and run this example locally (using Docker) with the following script.
 
-{% include scripts/get-example.md exampleName="countries" %}
+{% include get-example.md exampleName="countries" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/countries).
 

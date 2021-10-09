@@ -19,10 +19,27 @@
 		<header class="page-header" role="banner">
 			<h1 class="project-name">{{ site.title | default: site.github.repository_name }} - {{ page.title }}</h1>
 			<h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
-			<a href="/" class="btn">Get started</a>
-			<a href="/examples/countries" class="btn">Examples</a>
-			<a href="/configuration/inputs" class="btn">Configuration</a>
-			<a href="/changelog" class="btn">Changelog</a>
+
+			{% for menu in site.data.menus.main.items %}
+				<a
+					href="{{ menu.href }}"
+					class="
+						{%- if menu.href == page.url -%}
+							btn main-menu-link-active
+						{%- else -%}
+							{%- assign splitByPrefix = page.url | split: menu.activePrefix -%}
+							{%- if menu.activePrefix and splitByPrefix[0] == "" -%}
+								btn main-menu-link-active
+							{%- else -%}
+								btn
+							{%- endif -%}
+						{%- endif -%}
+					"
+				>
+					{{ menu.title }}
+				</a>
+			{%- endfor -%}
+
 			<a href="{{ site.github.repository_url }}" class="btn">GitHub</a>
 		</header>
 

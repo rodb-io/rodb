@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Changelog
-permalink: /changelog/
+permalink: /changelog
 ---
 
 Changelog page coming soon...

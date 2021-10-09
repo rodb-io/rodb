@@ -16,7 +16,7 @@ It also demonstrates the possibility of having the endpoints available via both 
 
 You can download and run this example locally (using Docker) with the following script.
 
-{% include scripts/get-example.md exampleName="japanese-dictionary" %}
+{% include get-example.md exampleName="japanese-dictionary" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/japanese-dictionary).
 

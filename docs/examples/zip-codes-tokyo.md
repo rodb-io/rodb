@@ -22,7 +22,7 @@ Other [CSV](/configuration/inputs#inputs[type = &quot;csv&quot;]) files containi
 
 You can download and run this example locally (using Docker) with the following script.
 
-{% include scripts/get-example.md exampleName="zip-codes-tokyo" %}
+{% include get-example.md exampleName="zip-codes-tokyo" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/zip-codes-tokyo).
 

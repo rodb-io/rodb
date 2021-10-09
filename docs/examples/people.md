@@ -14,7 +14,7 @@ It takes a file containing multiple [JSON](/configuration/inputs#inputs[type = &
 
 You can download and run this example locally (using Docker) with the following script.
 
-{% include scripts/get-example.md exampleName="people" %}
+{% include get-example.md exampleName="people" %}
 
 The source code for this example is also available [here](https://github.com/rodb-io/rodb/tree/master/examples/people).
 
