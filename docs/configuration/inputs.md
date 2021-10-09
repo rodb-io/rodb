@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation - Inputs
+title: Configuration - Inputs
 permalink: /configuration/inputs
 ---
 

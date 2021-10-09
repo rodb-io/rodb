@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation - Parsers
+title: Configuration - Parsers
 permalink: /configuration/parsers
 ---
 

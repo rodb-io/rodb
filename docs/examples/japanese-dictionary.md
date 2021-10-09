@@ -6,7 +6,7 @@ permalink: /examples/japanese-dictionary
 
 {% include menus.html menu=site.data.menus.examples %}
 
-# Japanese dictionary API
+# Example - Japanese dictionary API
 
 This is a more advanced example, that aims to provide a Japanese-English dictionary API. It is based on the [JMdict project](https://www.edrdg.org/jmdict/j_jmdict.html).
 

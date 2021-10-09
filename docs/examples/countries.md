@@ -6,7 +6,7 @@ permalink: /examples/countries
 
 {% include menus.html menu=site.data.menus.examples %}
 
-# Countries API
+# Example - Countries API
 
 This is the most basic example of how to use RODB.
 

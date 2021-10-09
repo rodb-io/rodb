@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation - Services
+title: Configuration - Services
 permalink: /configuration/services
 ---
 

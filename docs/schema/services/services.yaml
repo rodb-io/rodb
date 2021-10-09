@@ -1,7 +1,7 @@
 $id: https://rodb.io/schema/services/services.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
-title: Services
+title: "Configuration - Services"
 description: |
   In RODB, a service is an object through which the outputs are exposed to the outside world. Most commonly, it is a server.
   Currently, the only type of service that is supported is HTTP, but more will come in the future.

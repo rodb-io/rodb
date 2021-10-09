@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation - Indexes
+title: Configuration - Indexes
 permalink: /configuration/indexes
 ---
 

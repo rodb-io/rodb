@@ -6,7 +6,7 @@ permalink: /examples/zip-codes-tokyo
 
 {% include menus.html menu=site.data.menus.examples %}
 
-# Tokyo's zip-codes API
+# Example - Tokyo's zip-codes API
 
 This is another example, based of an official list of zip codes in Tokyo.
 

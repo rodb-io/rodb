@@ -1,7 +1,7 @@
 $id: https://rodb.io/schema/inputs/inputs.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
-title: Inputs
+title: "Configuration - Inputs"
 description: |
   An input defines the data source and format to be used in RODB.
   It also defines how to translate each record in the data source to an internal structure to be used in RODB.

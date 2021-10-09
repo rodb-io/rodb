@@ -1,7 +1,7 @@
 $id: https://rodb.io/schema/outputs/outputs.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
-title: Outputs
+title: "Configuration - Outputs"
 description: |
   An output defines the output format of the data, how to search for it, and any relationship between it.
 examples:

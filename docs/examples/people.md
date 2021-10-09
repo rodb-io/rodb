@@ -6,7 +6,7 @@ permalink: /examples/people
 
 {% include menus.html menu=site.data.menus.examples %}
 
-# People API
+# Example - People API
 
 This is a more advanced example, based of a randomly generated list of one million fictious persons.
 

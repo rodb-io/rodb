@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation - Outputs
+title: Configuration - Outputs
 permalink: /configuration/outputs
 ---
 
