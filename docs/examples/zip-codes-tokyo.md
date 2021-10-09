@@ -4,7 +4,7 @@ title: Examples - Tokyo's zip codes API
 permalink: /examples/zip-codes-tokyo
 ---
 
-{% include menus/examples.html %}
+{% include menus.html menu=site.data.menus.examples %}
 
 # Tokyo's zip-codes API
 

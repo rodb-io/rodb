@@ -1,0 +1,10 @@
+class: "examples-menu"
+items:
+  - href: "/examples/countries"
+    title: "Countries API"
+  - href: "/examples/people"
+    title: "People API"
+  - href: "/examples/japanese-dictionary"
+    title: "Japanese dictionary API"
+  - href: "/examples/zip-codes-tokyo"
+    title: "Tokyo's zip-codes API"

@@ -1,0 +1,12 @@
+class: "configuration-menu"
+items:
+  - href: "/configuration/inputs"
+    title: "Inputs"
+  - href: "/configuration/parsers"
+    title: "Parsers"
+  - href: "/configuration/indexes"
+    title: "Indexes"
+  - href: "/configuration/services"
+    title: "Services"
+  - href: "/configuration/outputs"
+    title: "Outputs"

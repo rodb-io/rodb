@@ -4,7 +4,7 @@ title: Examples - Countries API
 permalink: /examples/countries
 ---
 
-{% include menus/examples.html %}
+{% include menus.html menu=site.data.menus.examples %}
 
 # Countries API
 

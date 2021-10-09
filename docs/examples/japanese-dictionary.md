@@ -4,7 +4,7 @@ title: Examples - Japanese dictionary API
 permalink: /examples/japanese-dictionary
 ---
 
-{% include menus/examples.html %}
+{% include menus.html menu=site.data.menus.examples %}
 
 # Japanese dictionary API
 

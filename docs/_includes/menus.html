@@ -1,0 +1,9 @@
+<div class="custom-menu {{ include.menu.class }}">
+	{% for menu in include.menu.items %}
+		<div class="{%- if menu.href == page.url -%}custom-menu-active{%- endif -%}">
+			<a href="{{ menu.href }}">
+				{{ menu.title }}
+			</a>
+		</div>
+	{%- endfor -%}
+</div>
