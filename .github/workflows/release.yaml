@@ -18,5 +18,8 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Bugfix where git would return the commit message instead of the tag message
+          ref: ${{ github.ref }}
       - run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
       - run: ./build/ci/release.sh
