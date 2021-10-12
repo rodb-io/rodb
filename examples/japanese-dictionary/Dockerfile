@@ -26,4 +26,4 @@ COPY --from=data /JMdict /srv/JMdict.xml
 COPY --from=data /etc/ssl/certs/rodb.key /etc
 COPY --from=data /etc/ssl/certs/rodb.crt /etc
 
-CMD ["--config=/etc/rodb.yaml", "--verbose"]
+CMD ["--config=/etc/rodb.yaml", "--loglevel=debug"]

@@ -13,4 +13,4 @@ FROM $BASE_IMAGE
 COPY ./config.yaml /etc/rodb.yaml
 COPY --from=data /people /srv/people.json
 
-CMD ["--config=/etc/rodb.yaml", "--verbose"]
+CMD ["--config=/etc/rodb.yaml", "--loglevel=debug"]

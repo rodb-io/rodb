@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"os"
@@ -14,29 +15,40 @@ import (
 )
 
 func main() {
-	verbose := flag.BoolP("verbose", "v", false, "Enable verbose console output")
+	logLevelString := flag.StringP(
+		"loglevel",
+		"l",
+		logrus.InfoLevel.String(),
+		"Changes the logging level.\nSupported values: panic, fatal, error, warn[ing], info, debug, trace",
+	)
 	configPath := flag.StringP("config", "c", "rodb.yaml", "Path to the configuration file")
 	flag.Parse()
 
+	logLevel, err := logrus.ParseLevel(*logLevelString)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		flag.PrintDefaults()
+		os.Exit(1)
+		return
+	}
+
 	log := logrus.New()
+	log.SetLevel(logLevel)
 	log.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp: true,
 	})
-	if *verbose {
-		log.SetLevel(logrus.TraceLevel)
-	} else {
-		log.SetLevel(logrus.InfoLevel)
-	}
 
 	config, err := config.NewConfigFromYamlFile(*configPath, log)
 	if err != nil {
 		log.Errorf("Error initializing config: %v", err)
+		os.Exit(1)
 		return
 	}
 
 	parsers, err := parser.NewFromConfigs(config.Parsers)
 	if err != nil {
 		log.Errorf("Error initializing parsers: %v", err)
+		os.Exit(1)
 		return
 	}
 	defer (func() {
@@ -48,6 +60,7 @@ func main() {
 	inputs, err := input.NewFromConfigs(config.Inputs, parsers)
 	if err != nil {
 		log.Errorf("Error initializing inputs: %v", err)
+		os.Exit(1)
 		return
 	}
 	defer (func() {
@@ -59,6 +72,7 @@ func main() {
 	indexes, err := index.NewFromConfigs(config.Indexes, inputs)
 	if err != nil {
 		log.Errorf("Error initializing indexes: %v", err)
+		os.Exit(1)
 		return
 	}
 	defer (func() {
@@ -70,6 +84,7 @@ func main() {
 	outputs, err := output.NewFromConfigs(config.Outputs, inputs, indexes, parsers)
 	if err != nil {
 		log.Errorf("Error initializing outputs: %v", err)
+		os.Exit(1)
 		return
 	}
 	defer (func() {
@@ -81,6 +96,7 @@ func main() {
 	services, err := service.NewFromConfigs(config.Services, outputs, log)
 	if err != nil {
 		log.Errorf("Error initializing services: %v", err)
+		os.Exit(1)
 		return
 	}
 	go (func() {
@@ -96,6 +112,7 @@ func main() {
 
 	if err := service.Wait(services); err != nil {
 		log.Error(err)
+		os.Exit(1)
 		return
 	}
 }
