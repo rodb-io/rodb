@@ -14,12 +14,46 @@ It also handles parsing and indexing the data.
 
 # Architecture
 
-TODO architecture and components
+TODO architecture and components (diagram)
 
 # Getting started
 
-TODO provide multiple ways: bash, docker-compose, kubernetes...
-TODO mention examples
+RODB is available as a docker image at `ghcr.io/rodb-io/rodb:{{ site.github.latest_release.name }}`.
+
+Several advanced examples are also available here [here](/examples/countries).
+
+As a very basic starter, this script creates and runs an API:
+
+```bash
+mkdir -p ./rodb-sample && echo "
+inputs:
+  - name: days
+    type: csv
+    path: /sample/days.csv
+    ignoreFirstRow: true
+    autodetectColumns: true
+outputs:
+  - name: days
+    type: jsonArray
+    input: days
+services:
+  - name: server
+    type: http
+    http:
+      listen: ':8080'
+    routes:
+      - path: '/'
+        output: days
+" > ./rodb-sample/rodb.yaml
+echo -e "day\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nSunday" > ./rodb-sample/days.csv
+docker run --rm -it -p 8080:8080 -w /sample -v $PWD/rodb-sample:/sample ghcr.io/rodb-io/rodb:{{ site.github.latest_release.name }}
+```
+
+# Command line flags
+
+The following arguments are available:
+- `--config`, `-c`: Custom path to the configuration file. The default value is `rodb.yaml` (in the current working directory).
+- `--loglevel`, `-l`: Changes the logging level. Supported values: `panic`, `fatal`, `error`, `warn[ing]`, `info`, `debug`, `trace`. The default value is `info`.
 
 # Configuration file structure
 
@@ -69,9 +103,3 @@ services:
 ```
 
 The configuration file structure is also provided as a JSON-schema [here](https://github.com/rodb-io/rodb/blob/master/docs/schema/config.yaml).
-
-# Command line flags
-
-The following arguments are available:
-- `--config`, `-c`: Custom path to the configuration file. The default value is `rodb.yaml` (in the current working directory).
-- `--loglevel`, `-l`: Changes the logging level. Supported values: `panic`, `fatal`, `error`, `warn[ing]`, `info`, `debug`, `trace`. The default value is `info`.
