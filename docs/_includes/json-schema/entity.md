@@ -35,6 +35,10 @@
 	{%- include json-schema/min-items.md definition=definition -%}
 {%- endif -%}
 
+{% if definition.default %}
+	{%- include json-schema/default.md definition=definition -%}
+{% endif %}
+
 {% if definition.const %}
 	{%- include json-schema/const.md definition=definition -%}
 {% endif %}
