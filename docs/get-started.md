@@ -14,7 +14,7 @@ It also handles parsing and indexing the data.
 
 # Architecture
 
-TODO architecture and components (diagram)
+{% include architecture.svg %}
 
 # Getting started
 
