@@ -57,7 +57,7 @@ Response body:
 
 ## Search a specific Japanese word
 
-The `word` filter allows filters on a Japanese word. It is based on the [SQLite](/configuration/indexes#indexes[type = &quot;sqlite&quot;]) index and only allows exact matching of the whole words.
+The `word` parameter allows filtering on a Japanese word. It is based on the [SQLite](/configuration/indexes#indexes[type = &quot;sqlite&quot;]) index and only allows exact matching of the whole words.
 
 `GET http://localhost:3001/?word=読む`
 
@@ -77,7 +77,7 @@ Response body:
 
 The `translation` filter allows to search a word by it's translation, using a [Wildcard](/configuration/indexes#indexes[type = &quot;wildcard&quot;]) index.
 
-`GET http://localhost:3001/people/{id}`
+`GET http://localhost:3001/?translation=run`
 
 Response body:
 
