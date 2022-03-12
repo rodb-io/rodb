@@ -3,11 +3,11 @@ package index
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/sirupsen/logrus"
 	sqlitePackage "github.com/rodb-io/rodb/pkg/index/sqlite"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/parser"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"testing"
 )

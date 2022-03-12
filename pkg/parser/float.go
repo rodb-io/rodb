@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"regexp"
 	"github.com/rodb-io/rodb/pkg/util"
+	"regexp"
 	"strconv"
 	"strings"
 )

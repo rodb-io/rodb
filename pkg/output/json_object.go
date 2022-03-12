@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	indexPackage "github.com/rodb-io/rodb/pkg/index"
 	inputPackage "github.com/rodb-io/rodb/pkg/input"
 	recordPackage "github.com/rodb-io/rodb/pkg/input/record"
 	parserPackage "github.com/rodb-io/rodb/pkg/parser"
+	"io"
 )
 
 type JsonObject struct {

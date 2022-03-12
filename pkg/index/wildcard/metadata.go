@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"io"
 	"github.com/rodb-io/rodb/pkg/input"
+	"io"
 	"time"
 )
 

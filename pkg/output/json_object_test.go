@@ -3,11 +3,11 @@ package output
 import (
 	"bytes"
 	"encoding/json"
-	"io"
-	"io/ioutil"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	parameterPackage "github.com/rodb-io/rodb/pkg/output/parameter"
 	relationshipPackage "github.com/rodb-io/rodb/pkg/output/relationship"
+	"io"
+	"io/ioutil"
 	"testing"
 )
 

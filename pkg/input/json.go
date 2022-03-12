@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
-	"io"
-	"os"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/util"
+	"io"
+	"os"
 	"sync"
 	"time"
 )

@@ -3,11 +3,11 @@ package input
 import (
 	"fmt"
 	"github.com/antchfx/xpath"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
-	"github.com/rodb-io/rodb/pkg/input/record"
-	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

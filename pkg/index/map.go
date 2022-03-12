@@ -3,10 +3,10 @@ package index
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/util"
+	"reflect"
 )
 
 // Index for the values of a single property

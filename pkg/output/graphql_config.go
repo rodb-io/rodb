@@ -2,10 +2,10 @@ package output
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	indexPackage "github.com/rodb-io/rodb/pkg/index"
 	inputPackage "github.com/rodb-io/rodb/pkg/input"
 	parserPackage "github.com/rodb-io/rodb/pkg/parser"
+	"github.com/sirupsen/logrus"
 )
 
 type GraphQLConfig struct {

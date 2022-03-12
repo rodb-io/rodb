@@ -2,12 +2,12 @@ package input
 
 import (
 	"fmt"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"os"
-	"github.com/rodb-io/rodb/pkg/input/record"
-	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

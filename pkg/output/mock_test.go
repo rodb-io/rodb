@@ -3,9 +3,9 @@ package output
 import (
 	"bytes"
 	"errors"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"io"
 	"io/ioutil"
-	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

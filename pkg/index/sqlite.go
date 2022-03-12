@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"reflect"
 	sqlitePackage "github.com/rodb-io/rodb/pkg/index/sqlite"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/util"
+	"reflect"
 	"strings"
 )
 

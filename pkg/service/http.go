@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/output"
+	"github.com/rodb-io/rodb/pkg/util"
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
@@ -13,9 +16,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"github.com/rodb-io/rodb/pkg/input/record"
-	"github.com/rodb-io/rodb/pkg/output"
-	"github.com/rodb-io/rodb/pkg/util"
 	"sync"
 )
 

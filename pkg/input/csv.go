@@ -6,11 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
-	"io"
-	"os"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/rodb-io/rodb/pkg/util"
+	"io"
+	"os"
 	"sync"
 	"time"
 )

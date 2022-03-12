@@ -3,8 +3,8 @@ package index
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/sirupsen/logrus"
 )
 
 var Fts5PropertyCollateAllowedValues = []string{"BINARY", "NOCASE", "RTIRM"}

@@ -3,9 +3,9 @@ package index
 import (
 	"errors"
 	"fmt"
+	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/sirupsen/logrus"
 	"os"
-	"github.com/rodb-io/rodb/pkg/input"
 )
 
 type WildcardConfig struct {

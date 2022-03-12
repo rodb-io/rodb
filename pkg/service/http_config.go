@@ -3,10 +3,10 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"os"
 	"github.com/rodb-io/rodb/pkg/output"
 	"github.com/rodb-io/rodb/pkg/util"
+	"github.com/sirupsen/logrus"
+	"os"
 )
 
 type HttpConfig struct {

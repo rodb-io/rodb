@@ -3,9 +3,9 @@ package index
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/util"
+	"github.com/sirupsen/logrus"
 	"strings"
 )
 

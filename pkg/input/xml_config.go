@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/antchfx/xpath"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"os"
-	"github.com/rodb-io/rodb/pkg/parser"
 )
 
 type XmlInputPropertyType string

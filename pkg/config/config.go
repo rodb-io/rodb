@@ -2,15 +2,15 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	yaml "gopkg.in/yaml.v2"
-	"io/ioutil"
-	"os"
 	"github.com/rodb-io/rodb/pkg/index"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/output"
 	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/rodb-io/rodb/pkg/service"
+	"github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
 )
 
 type configParser struct {

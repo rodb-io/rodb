@@ -2,12 +2,12 @@ package index
 
 import (
 	"fmt"
-	"os"
-	"reflect"
 	wildcardPackage "github.com/rodb-io/rodb/pkg/index/wildcard"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/util"
+	"os"
+	"reflect"
 	"strings"
 )
 

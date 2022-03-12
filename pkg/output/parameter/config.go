@@ -3,10 +3,10 @@ package parameter
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/rodb-io/rodb/pkg/index"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/parser"
+	"github.com/sirupsen/logrus"
 )
 
 type ParameterConfig struct {

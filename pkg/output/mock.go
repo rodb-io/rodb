@@ -1,8 +1,8 @@
 package output
 
 import (
-	"io"
 	"github.com/rodb-io/rodb/pkg/parser"
+	"io"
 )
 
 type Mock struct {

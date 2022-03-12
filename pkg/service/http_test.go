@@ -2,14 +2,14 @@ package service
 
 import (
 	"encoding/json"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	outputPackage "github.com/rodb-io/rodb/pkg/output"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
-	"github.com/rodb-io/rodb/pkg/input/record"
-	outputPackage "github.com/rodb-io/rodb/pkg/output"
-	"github.com/rodb-io/rodb/pkg/parser"
 	"strings"
 	"testing"
 )

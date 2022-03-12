@@ -1,11 +1,11 @@
 package index
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/rodb-io/rodb/pkg/index/wildcard"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
 	"github.com/rodb-io/rodb/pkg/parser"
+	"github.com/sirupsen/logrus"
 	"sort"
 	"strconv"
 	"strings"

@@ -2,9 +2,9 @@ package index
 
 import (
 	"fmt"
-	"reflect"
 	"github.com/rodb-io/rodb/pkg/input"
 	"github.com/rodb-io/rodb/pkg/input/record"
+	"reflect"
 )
 
 // A noop index is able to search into any data,

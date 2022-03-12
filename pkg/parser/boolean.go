@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"regexp"
 	"github.com/rodb-io/rodb/pkg/util"
+	"regexp"
 	"strings"
 )
 

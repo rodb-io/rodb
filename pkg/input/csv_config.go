@@ -3,9 +3,9 @@ package input
 import (
 	"errors"
 	"fmt"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"os"
-	"github.com/rodb-io/rodb/pkg/parser"
 )
 
 type CsvConfig struct {

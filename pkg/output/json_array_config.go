@@ -3,12 +3,12 @@ package output
 import (
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	indexPackage "github.com/rodb-io/rodb/pkg/index"
 	inputPackage "github.com/rodb-io/rodb/pkg/input"
 	parameterPackage "github.com/rodb-io/rodb/pkg/output/parameter"
 	relationshipPackage "github.com/rodb-io/rodb/pkg/output/relationship"
 	parserPackage "github.com/rodb-io/rodb/pkg/parser"
+	"github.com/sirupsen/logrus"
 )
 
 type JsonArrayConfig struct {

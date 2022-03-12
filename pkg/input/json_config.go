@@ -2,9 +2,9 @@ package input
 
 import (
 	"errors"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"github.com/sirupsen/logrus"
 	"os"
-	"github.com/rodb-io/rodb/pkg/parser"
 )
 
 type JsonConfig struct {
