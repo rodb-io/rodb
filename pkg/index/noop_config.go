@@ -3,7 +3,7 @@ package index
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input"
 )
 
 type NoopConfig struct {

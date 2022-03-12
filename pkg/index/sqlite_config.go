@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/util"
 	"strings"
 )
 

@@ -8,9 +8,9 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/parser"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/util"
 	"sync"
 	"time"
 )

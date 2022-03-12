@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/indexes/indexes.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/indexes/indexes.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
 title: "Configuration - Indexes"

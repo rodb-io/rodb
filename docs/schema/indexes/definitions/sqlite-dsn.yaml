@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/indexes/definitions/sqlite-dsn.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/indexes/definitions/sqlite-dsn.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: string
 description: |

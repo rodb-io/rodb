@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/indexes/fts5.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/indexes/fts5.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
 title: FTS5

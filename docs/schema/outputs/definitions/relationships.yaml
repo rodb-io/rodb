@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/outputs/definitions/relationships.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/outputs/definitions/relationships.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
 additionalProperties:

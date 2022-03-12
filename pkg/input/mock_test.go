@@ -1,8 +1,8 @@
 package input
 
 import (
-	recordPackage "rodb.io/pkg/input/record"
-	"rodb.io/pkg/parser"
+	recordPackage "github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

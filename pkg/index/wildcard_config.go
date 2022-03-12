@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
-	"rodb.io/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input"
 )
 
 type WildcardConfig struct {

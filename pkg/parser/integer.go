@@ -2,7 +2,7 @@ package parser
 
 import (
 	"regexp"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/util"
 	"strconv"
 )
 

@@ -2,8 +2,8 @@ package input
 
 import (
 	"fmt"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"strconv"
 	"strings"
 )

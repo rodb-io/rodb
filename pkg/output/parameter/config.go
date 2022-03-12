@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/index"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/index"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/parser"
 )
 
 type ParameterConfig struct {

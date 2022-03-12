@@ -1,11 +1,11 @@
 package output
 
 import (
-	"rodb.io/pkg/index"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
-	relationshipPackage "rodb.io/pkg/output/relationship"
-	"rodb.io/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/index"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	relationshipPackage "github.com/rodb-io/rodb/pkg/output/relationship"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

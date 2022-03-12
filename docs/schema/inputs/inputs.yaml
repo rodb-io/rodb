@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/inputs/inputs.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/inputs/inputs.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: array
 title: "Configuration - Inputs"

@@ -2,7 +2,7 @@ package input
 
 import (
 	"fmt"
-	"rodb.io/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

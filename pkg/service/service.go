@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/output"
+	"github.com/rodb-io/rodb/pkg/output"
 )
 
 type Service interface {

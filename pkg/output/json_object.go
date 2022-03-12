@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	indexPackage "rodb.io/pkg/index"
-	inputPackage "rodb.io/pkg/input"
-	recordPackage "rodb.io/pkg/input/record"
-	parserPackage "rodb.io/pkg/parser"
+	indexPackage "github.com/rodb-io/rodb/pkg/index"
+	inputPackage "github.com/rodb-io/rodb/pkg/input"
+	recordPackage "github.com/rodb-io/rodb/pkg/input/record"
+	parserPackage "github.com/rodb-io/rodb/pkg/parser"
 )
 
 type JsonObject struct {

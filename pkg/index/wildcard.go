@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	wildcardPackage "rodb.io/pkg/index/wildcard"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/util"
+	wildcardPackage "github.com/rodb-io/rodb/pkg/index/wildcard"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/util"
 	"strings"
 )
 

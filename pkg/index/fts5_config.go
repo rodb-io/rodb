@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input"
 )
 
 var Fts5PropertyCollateAllowedValues = []string{"BINARY", "NOCASE", "RTIRM"}

@@ -1,4 +1,4 @@
-module rodb.io
+module github.com/rodb-io/rodb
 
 go 1.16
 

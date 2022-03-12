@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 	"regexp"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/util"
 	"strings"
 )
 

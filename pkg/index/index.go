@@ -3,8 +3,8 @@ package index
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
 )
 
 type Index interface {

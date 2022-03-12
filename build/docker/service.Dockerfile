@@ -5,7 +5,7 @@ ENV GOPATH=/go
 ENV GOCACHE=/gocache
 ENV GOROOT=/usr/local/go
 ENV CGO_ENABLED=1
-ENV RODB_PACKAGE_NAME=rodb.io
+ENV RODB_PACKAGE_NAME=github.com/rodb-io/rodb
 ENV RODB_PATH=$GOROOT/src/${RODB_PACKAGE_NAME}
 
 RUN apk add --no-cache gcc musl-dev
@@ -47,7 +47,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 FROM scratch
 LABEL org.label-schema.name="RODB"
-LABEL org.label-schema.url="https://www.rodb.io"
+LABEL org.label-schema.url="https://rodb-io.github.io/rodb/"
 LABEL org.label-schema.vcs-url="github.com:rodb-io/rodb.git"
 
 WORKDIR /

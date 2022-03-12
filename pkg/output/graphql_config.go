@@ -3,9 +3,9 @@ package output
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
-	indexPackage "rodb.io/pkg/index"
-	inputPackage "rodb.io/pkg/input"
-	parserPackage "rodb.io/pkg/parser"
+	indexPackage "github.com/rodb-io/rodb/pkg/index"
+	inputPackage "github.com/rodb-io/rodb/pkg/input"
+	parserPackage "github.com/rodb-io/rodb/pkg/parser"
 )
 
 type GraphQLConfig struct {

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/util"
 )
 
 // Index for the values of a single property

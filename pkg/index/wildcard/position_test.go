@@ -2,7 +2,7 @@ package wildcard
 
 import (
 	"fmt"
-	"rodb.io/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/input/record"
 	"testing"
 )
 

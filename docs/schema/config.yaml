@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/config.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/config.yaml
 $schema: http://json-schema.org/draft-07/schema#
 description: Configuration file for RODB
 type: object

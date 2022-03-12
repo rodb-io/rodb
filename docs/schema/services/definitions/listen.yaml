@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/services/definitions/listen.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/services/definitions/listen.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: string
 default: "127.0.0.1:0"

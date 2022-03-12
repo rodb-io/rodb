@@ -13,9 +13,9 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/output"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/output"
+	"github.com/rodb-io/rodb/pkg/util"
 	"sync"
 )
 
@@ -180,7 +180,7 @@ func (service *Http) createPathRegexp(
 
 func (service *Http) getHandlerFunc() http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
-		response.Header().Set("X-Powered-By", "RODB (rodb.io)")
+		response.Header().Set("X-Powered-By", "RODB (https://rodb-io.github.io/rodb/)")
 
 		route := service.getMatchingRoute(request)
 		if route == nil {

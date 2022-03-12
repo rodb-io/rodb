@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/util"
 )
 
 type inputParser struct {

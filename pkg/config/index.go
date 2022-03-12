@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"rodb.io/pkg/index"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/index"
+	"github.com/rodb-io/rodb/pkg/util"
 )
 
 type indexParser struct {

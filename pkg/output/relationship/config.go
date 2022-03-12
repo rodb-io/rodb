@@ -3,9 +3,9 @@ package relationship
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"rodb.io/pkg/index"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/index"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
 )
 
 type RelationshipConfig struct {

@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	indexPackage "rodb.io/pkg/index"
-	inputPackage "rodb.io/pkg/input"
-	parameterPackage "rodb.io/pkg/output/parameter"
-	relationshipPackage "rodb.io/pkg/output/relationship"
-	parserPackage "rodb.io/pkg/parser"
+	indexPackage "github.com/rodb-io/rodb/pkg/index"
+	inputPackage "github.com/rodb-io/rodb/pkg/input"
+	parameterPackage "github.com/rodb-io/rodb/pkg/output/parameter"
+	relationshipPackage "github.com/rodb-io/rodb/pkg/output/relationship"
+	parserPackage "github.com/rodb-io/rodb/pkg/parser"
 )
 
 type JsonArrayConfig struct {

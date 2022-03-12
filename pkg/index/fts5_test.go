@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sirupsen/logrus"
-	sqlitePackage "rodb.io/pkg/index/sqlite"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/parser"
+	sqlitePackage "github.com/rodb-io/rodb/pkg/index/sqlite"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

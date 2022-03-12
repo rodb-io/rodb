@@ -6,12 +6,12 @@ import (
 	flag "github.com/spf13/pflag"
 	"os"
 	"os/signal"
-	"rodb.io/pkg/config"
-	"rodb.io/pkg/index"
-	"rodb.io/pkg/input"
-	"rodb.io/pkg/output"
-	"rodb.io/pkg/parser"
-	"rodb.io/pkg/service"
+	"github.com/rodb-io/rodb/pkg/config"
+	"github.com/rodb-io/rodb/pkg/index"
+	"github.com/rodb-io/rodb/pkg/input"
+	"github.com/rodb-io/rodb/pkg/output"
+	"github.com/rodb-io/rodb/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/service"
 )
 
 func main() {

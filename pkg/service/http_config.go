@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
-	"rodb.io/pkg/output"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/output"
+	"github.com/rodb-io/rodb/pkg/util"
 )
 
 type HttpConfig struct {

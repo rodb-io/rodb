@@ -6,8 +6,8 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"rodb.io/pkg/input/record"
-	"rodb.io/pkg/parser"
+	"github.com/rodb-io/rodb/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/parser"
 	"testing"
 )
 

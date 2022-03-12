@@ -2,7 +2,7 @@ package wildcard
 
 import (
 	"encoding/binary"
-	"rodb.io/pkg/input/record"
+	"github.com/rodb-io/rodb/pkg/input/record"
 )
 
 type PositionLinkedListOffset int64

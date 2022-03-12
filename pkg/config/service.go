@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"rodb.io/pkg/service"
-	"rodb.io/pkg/util"
+	"github.com/rodb-io/rodb/pkg/service"
+	"github.com/rodb-io/rodb/pkg/util"
 )
 
 type serviceParser struct {

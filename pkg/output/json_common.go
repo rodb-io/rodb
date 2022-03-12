@@ -3,10 +3,10 @@ package output
 import (
 	"errors"
 	"fmt"
-	indexPackage "rodb.io/pkg/index"
-	inputPackage "rodb.io/pkg/input"
-	recordPackage "rodb.io/pkg/input/record"
-	relationshipPackage "rodb.io/pkg/output/relationship"
+	indexPackage "github.com/rodb-io/rodb/pkg/index"
+	inputPackage "github.com/rodb-io/rodb/pkg/input"
+	recordPackage "github.com/rodb-io/rodb/pkg/input/record"
+	relationshipPackage "github.com/rodb-io/rodb/pkg/output/relationship"
 )
 
 func checkRelationshipMatches(

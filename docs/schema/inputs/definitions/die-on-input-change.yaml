@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/inputs/definitions/die-on-input-change.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/inputs/definitions/die-on-input-change.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: boolean
 default: true

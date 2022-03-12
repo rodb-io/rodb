@@ -1,4 +1,4 @@
-$id: https://rodb.io/schema/inputs/csv.yaml
+$id: https://rodb-io.github.io/rodb.github.io/rodb/schema/inputs/csv.yaml
 $schema: http://json-schema.org/draft-07/schema#
 type: object
 title: CSV
