@@ -9,6 +9,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/pflag v1.0.5
-	golang.org/x/text v0.3.5
+	golang.org/x/text v0.3.8
 	gopkg.in/yaml.v2 v2.4.0
 )
